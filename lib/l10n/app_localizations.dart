@@ -120,6 +120,24 @@ abstract class AppLocalizations {
   /// **'No saved routines.'**
   String get noRoutines;
 
+  /// No description provided for @loadingProfiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading routines...'**
+  String get loadingProfiles;
+
+  /// No description provided for @profileLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load routines from server.'**
+  String get profileLoadError;
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
   /// No description provided for @createRoutine.
   ///
   /// In en, this message translates to:
@@ -659,6 +677,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Done'**
   String get workoutDone;
+
+  /// No description provided for @workoutRemainingReps.
+  ///
+  /// In en, this message translates to:
+  /// **'Reps left'**
+  String get workoutRemainingReps;
+
+  /// No description provided for @workoutRemainingSets.
+  ///
+  /// In en, this message translates to:
+  /// **'Sets left'**
+  String get workoutRemainingSets;
+
+  /// No description provided for @workoutNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get workoutNext;
 
   /// No description provided for @settingsTitle.
   ///

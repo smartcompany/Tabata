@@ -18,6 +18,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noRoutines => 'No saved routines.';
 
   @override
+  String get loadingProfiles => 'Loading routines...';
+
+  @override
+  String get profileLoadError => 'Could not load routines from server.';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
   String get createRoutine => 'Create routine';
 
   @override
@@ -320,6 +329,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get workoutDone => 'Done';
+
+  @override
+  String get workoutRemainingReps => 'Reps left';
+
+  @override
+  String get workoutRemainingSets => 'Sets left';
+
+  @override
+  String get workoutNext => 'Next';
 
   @override
   String get settingsTitle => 'Settings';

@@ -54,6 +54,10 @@ class WorkoutTimerSnapshot {
     if (phase.durationSec == 0) return 1;
     return 1 - (remainingSec / phase.durationSec);
   }
+
+  int get remainingRepsInSet => totalReps - repIndex + 1;
+
+  int get remainingSetsInExercise => totalSets - setIndex + 1;
 }
 
 class WorkoutTimerEngine extends ChangeNotifier {
@@ -68,11 +72,20 @@ class WorkoutTimerEngine extends ChangeNotifier {
   late final List<_QueuedPhase> _phases;
   int _phaseIndex = 0;
   int _remainingSec = 0;
+  int _elapsedSec = 0;
   bool _isPaused = false;
   Timer? _timer;
   late WorkoutTimerSnapshot _snapshot;
 
   WorkoutTimerSnapshot get snapshot => _snapshot;
+
+  int get elapsedSec => _elapsedSec;
+
+  WorkoutPhase? get nextPhase {
+    final nextIndex = _phaseIndex + 1;
+    if (nextIndex >= _phases.length) return null;
+    return _phases[nextIndex].phase;
+  }
 
   List<Exercise> get _exercises => routine.orderedExercises;
 
@@ -116,6 +129,9 @@ class WorkoutTimerEngine extends ChangeNotifier {
   }
 
   void _tick() {
+    if (!_isPaused) {
+      _elapsedSec++;
+    }
     if (_remainingSec > 1) {
       _remainingSec--;
       _refreshSnapshot();

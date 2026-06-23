@@ -18,6 +18,15 @@ class AppLocalizationsJa extends AppLocalizations {
   String get noRoutines => '保存されたルーティンがありません。';
 
   @override
+  String get loadingProfiles => 'ルーティンを読み込み中...';
+
+  @override
+  String get profileLoadError => 'サーバーからルーティンを読み込めませんでした。';
+
+  @override
+  String get retry => '再試行';
+
+  @override
   String get createRoutine => 'ルーティンを作成';
 
   @override
@@ -320,6 +329,15 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get workoutDone => '完了';
+
+  @override
+  String get workoutRemainingReps => '残り回数';
+
+  @override
+  String get workoutRemainingSets => '残りセット';
+
+  @override
+  String get workoutNext => '次';
 
   @override
   String get settingsTitle => '設定';

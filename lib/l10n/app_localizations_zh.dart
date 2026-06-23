@@ -18,6 +18,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get noRoutines => '没有已保存的训练。';
 
   @override
+  String get loadingProfiles => '正在加载训练...';
+
+  @override
+  String get profileLoadError => '无法从服务器加载训练。';
+
+  @override
+  String get retry => '重试';
+
+  @override
   String get createRoutine => '创建训练';
 
   @override
@@ -320,6 +329,15 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get workoutDone => '完成';
+
+  @override
+  String get workoutRemainingReps => '剩余次数';
+
+  @override
+  String get workoutRemainingSets => '剩余组数';
+
+  @override
+  String get workoutNext => '下一个';
 
   @override
   String get settingsTitle => '设置';

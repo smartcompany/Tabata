@@ -18,6 +18,15 @@ class AppLocalizationsKo extends AppLocalizations {
   String get noRoutines => '저장된 루틴이 없습니다.';
 
   @override
+  String get loadingProfiles => '루틴을 불러오는 중...';
+
+  @override
+  String get profileLoadError => '서버에서 루틴을 불러오지 못했습니다.';
+
+  @override
+  String get retry => '다시 시도';
+
+  @override
   String get createRoutine => '루틴 만들기';
 
   @override
@@ -320,6 +329,15 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get workoutDone => '완료';
+
+  @override
+  String get workoutRemainingReps => '남은 횟수';
+
+  @override
+  String get workoutRemainingSets => '남은 세트';
+
+  @override
+  String get workoutNext => '다음';
 
   @override
   String get settingsTitle => '설정';

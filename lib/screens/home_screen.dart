@@ -28,7 +28,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late List<Routine> _routines;
+  List<Routine> _routines = [];
+  bool _loading = true;
+  String? _loadError;
 
   @override
   void initState() {
@@ -36,8 +38,27 @@ class _HomeScreenState extends State<HomeScreen> {
     _load();
   }
 
-  void _load() {
-    setState(() => _routines = widget.repository.loadAll());
+  Future<void> _load() async {
+    setState(() {
+      _loading = true;
+      _loadError = null;
+    });
+
+    try {
+      await widget.repository.refreshRemoteProfiles();
+      if (!mounted) return;
+      setState(() {
+        _routines = widget.repository.loadAll();
+        _loading = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _routines = widget.repository.loadAll();
+        _loading = false;
+        _loadError = AppLocalizations.of(context).profileLoadError;
+      });
+    }
   }
 
   Future<void> _openImport() async {
@@ -87,52 +108,87 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: _routines.isEmpty
-          ? Center(child: Text(l10n.noRoutines))
-          : ListView.separated(
-              padding: const EdgeInsets.all(16),
-              itemCount: _routines.length,
-              separatorBuilder: (context, index) => const SizedBox(height: 12),
-              itemBuilder: (context, index) {
-                final routine = _routines[index];
-                final duration = routineDurationSec(routine);
-                return Card(
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 12,
-                    ),
-                    title: Text(
-                      routine.title,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    subtitle: Padding(
-                      padding: const EdgeInsets.only(top: 6),
-                      child: Text(
-                        l10n.routineCountDuration(
-                          routine.orderedExercises.length,
-                          formatDurationShort(duration, l10n),
+      body: _loading
+          ? Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const CircularProgressIndicator(),
+                  const SizedBox(height: 16),
+                  Text(l10n.loadingProfiles),
+                ],
+              ),
+            )
+          : RefreshIndicator(
+              onRefresh: _load,
+              child: ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.all(16),
+                children: [
+                  if (_loadError != null)
+                    Card(
+                      color: Theme.of(context).colorScheme.errorContainer,
+                      child: ListTile(
+                        title: Text(_loadError!),
+                        trailing: TextButton(
+                          onPressed: _load,
+                          child: Text(l10n.retry),
                         ),
                       ),
                     ),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () async {
-                      await Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => RoutineDetailScreen(
-                            repository: widget.repository,
-                            routineId: routine.id,
+                  if (_routines.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 48),
+                      child: Center(child: Text(l10n.noRoutines)),
+                    )
+                  else
+                    ...List.generate(_routines.length, (index) {
+                      final routine = _routines[index];
+                      final duration = routineDurationSec(routine);
+                      return Padding(
+                        padding: EdgeInsets.only(
+                          bottom: index == _routines.length - 1 ? 0 : 12,
+                        ),
+                        child: Card(
+                          child: ListTile(
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 12,
+                            ),
+                            title: Text(
+                              routine.title,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            subtitle: Padding(
+                              padding: const EdgeInsets.only(top: 6),
+                              child: Text(
+                                l10n.routineCountDuration(
+                                  routine.orderedExercises.length,
+                                  formatDurationShort(duration, l10n),
+                                ),
+                              ),
+                            ),
+                            trailing: const Icon(Icons.chevron_right),
+                            onTap: () async {
+                              await Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => RoutineDetailScreen(
+                                    repository: widget.repository,
+                                    routineId: routine.id,
+                                  ),
+                                ),
+                              );
+                              _load();
+                            },
                           ),
                         ),
                       );
-                      _load();
-                    },
-                  ),
-                );
-              },
+                    }),
+                ],
+              ),
             ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _createRoutine,
