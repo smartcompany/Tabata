@@ -1,0 +1,194 @@
+{
+  "@@locale": "ko",
+  "appTitle": "Tabata",
+  "importRoutineTooltip": "루틴 가져오기",
+  "noRoutines": "저장된 루틴이 없습니다.",
+  "createRoutine": "루틴 만들기",
+  "routineCountDuration": "{count}개 운동 · {duration}",
+  "@routineCountDuration": {
+    "placeholders": {
+      "count": {"type": "int"},
+      "duration": {"type": "String"}
+    }
+  },
+  "routineNotFound": "루틴을 찾을 수 없습니다.",
+  "editTooltip": "편집",
+  "shareTooltip": "공유",
+  "estimatedDuration": "예상 {duration}",
+  "@estimatedDuration": {
+    "placeholders": {
+      "duration": {"type": "String"}
+    }
+  },
+  "exerciseListTitle": "운동 목록",
+  "start": "시작",
+  "labelPrepare": "준비",
+  "labelWork": "운동",
+  "labelRelax": "이완",
+  "labelReps": "횟수",
+  "labelSets": "세트",
+  "oneSetDuration": "1세트 {duration}",
+  "@oneSetDuration": {
+    "placeholders": {
+      "duration": {"type": "String"}
+    }
+  },
+  "phaseWithDuration": "{label} · {seconds}초",
+  "@phaseWithDuration": {
+    "placeholders": {
+      "label": {"type": "String"},
+      "seconds": {"type": "int"}
+    }
+  },
+  "durationSeconds": "{seconds}초",
+  "@durationSeconds": {
+    "placeholders": {
+      "seconds": {"type": "int"}
+    }
+  },
+  "countReps": "{count}회",
+  "@countReps": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "countSets": "{count}세트",
+  "@countSets": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "importRoutineTitle": "루틴 가져오기",
+  "importRoutineHint": "공유받은 JSON을 붙여넣으세요.",
+  "importRoutineJsonHint": "JSON 형식의 루틴 데이터 전체를 붙여넣으세요",
+  "import": "가져오기",
+  "save": "저장",
+  "cancel": "취소",
+  "back": "뒤로",
+  "done": "완료",
+  "confirm": "확인",
+  "delete": "삭제",
+  "createRoutineTitle": "루틴 만들기",
+  "editRoutineTitle": "루틴 편집",
+  "deleteRoutineTooltip": "루틴 삭제",
+  "deleteRoutineTitle": "루틴 삭제",
+  "deleteRoutineMessage": "이 루틴을 삭제할까요?",
+  "routineNameLabel": "루틴 이름",
+  "routineNameHint": "예: 회전근개 재활",
+  "descriptionOptionalLabel": "설명 (선택)",
+  "reorderExercisesHint": "길게 눌러 순서 변경",
+  "addExercisesPrompt": "운동을 추가해 주세요",
+  "addExercise": "운동 추가",
+  "requireAtLeastOneExercise": "운동을 1개 이상 추가하세요",
+  "addExerciseTitle": "운동 추가",
+  "editExerciseTitle": "운동 편집",
+  "basicInfoSection": "기본 정보",
+  "exerciseNameLabel": "운동 이름",
+  "exerciseNameHint": "예: 팽귄 운동",
+  "exerciseInstructionLabel": "설명 (선택)",
+  "exerciseInstructionHint": "동작 방법을 적어주세요",
+  "prepareSection": "준비",
+  "phasesSection": "동작 순서",
+  "addWorkPhase": "운동 추가",
+  "addRelaxPhase": "이완 추가",
+  "requireAtLeastOnePhase": "동작을 1개 이상 추가하세요",
+  "reorderPhasesHint": "드래그하여 순서 변경",
+  "workSection": "운동",
+  "relaxSection": "이완",
+  "repeatSection": "반복",
+  "phaseLabel": "동작 라벨",
+  "workLabelHint": "예: 팔을 벌리기",
+  "relaxLabelHint": "예: 팔을 오므리기",
+  "previewSection": "미리보기",
+  "totalDuration": "전체 {duration}",
+  "@totalDuration": {
+    "placeholders": {
+      "duration": {"type": "String"}
+    }
+  },
+  "newExercise": "새 운동",
+  "exerciseListSubtitle": "{phases} · {repsSets} · {oneSet}",
+  "@exerciseListSubtitle": {
+    "placeholders": {
+      "phases": {"type": "String"},
+      "repsSets": {"type": "String"},
+      "oneSet": {"type": "String"}
+    }
+  },
+  "repsSetsSummary": "{reps}회 × {sets}세트",
+  "@repsSetsSummary": {
+    "placeholders": {
+      "reps": {"type": "int"},
+      "sets": {"type": "int"}
+    }
+  },
+  "validationNameRequired": "이름을 입력하세요",
+  "validationLabelRequired": "라벨을 입력하세요",
+  "enterValueTitle": "값 입력",
+  "dragToAdjustHint": "좌우로 드래그하여 조절 · 탭하면 직접 입력",
+  "unitSeconds": "초",
+  "unitMinutes": "분",
+  "tapToSetDuration": "탭하여 시간 설정",
+  "unitReps": "회",
+  "unitSets": "세트",
+  "durationMinutes": "{minutes}분",
+  "@durationMinutes": {
+    "placeholders": {
+      "minutes": {"type": "int"}
+    }
+  },
+  "durationMinutesSeconds": "{minutes}분 {seconds}초",
+  "@durationMinutesSeconds": {
+    "placeholders": {
+      "minutes": {"type": "int"},
+      "seconds": {"type": "int"}
+    }
+  },
+  "durationApproxMinutes": "약 {minutes}분",
+  "@durationApproxMinutes": {
+    "placeholders": {
+      "minutes": {"type": "int"}
+    }
+  },
+  "durationApproxHours": "약 {hours}시간",
+  "@durationApproxHours": {
+    "placeholders": {
+      "hours": {"type": "int"}
+    }
+  },
+  "durationApproxHoursMinutes": "약 {hours}시간 {minutes}분",
+  "@durationApproxHoursMinutes": {
+    "placeholders": {
+      "hours": {"type": "int"},
+      "minutes": {"type": "int"}
+    }
+  },
+  "workoutProgress": "운동 {current}/{total}",
+  "@workoutProgress": {
+    "placeholders": {
+      "current": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "phasePrepare": "준비",
+  "phaseWork": "운동",
+  "phaseRelax": "이완",
+  "phaseCompleted": "완료",
+  "workoutCompletedMessage": "수고하셨습니다",
+  "repSetProgress": "{rep}/{totalReps}회 · {set}/{totalSets}세트",
+  "@repSetProgress": {
+    "placeholders": {
+      "rep": {"type": "int"},
+      "totalReps": {"type": "int"},
+      "set": {"type": "int"},
+      "totalSets": {"type": "int"}
+    }
+  },
+  "skipPhase": "건너뛰기",
+  "pause": "일시정지",
+  "resume": "재개",
+  "skipExercise": "운동 스킵",
+  "workoutDone": "완료",
+  "errorEmptyJson": "빈 데이터입니다.",
+  "errorInvalidRoutineJson": "루틴 JSON 형식이 아닙니다."
+}
