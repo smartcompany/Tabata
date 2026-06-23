@@ -5,7 +5,10 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
+import 'app_localizations_en.dart';
+import 'app_localizations_ja.dart';
 import 'app_localizations_ko.dart';
+import 'app_localizations_zh.dart';
 
 // ignore_for_file: type=lint
 
@@ -92,576 +95,653 @@ abstract class AppLocalizations {
       ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('ko')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('ja'),
+    Locale('ko'),
+    Locale('zh'),
+  ];
 
   /// No description provided for @appTitle.
   ///
-  /// In ko, this message translates to:
+  /// In en, this message translates to:
   /// **'Tabata'**
   String get appTitle;
 
   /// No description provided for @importRoutineTooltip.
   ///
-  /// In ko, this message translates to:
-  /// **'루틴 가져오기'**
+  /// In en, this message translates to:
+  /// **'Import routine'**
   String get importRoutineTooltip;
 
   /// No description provided for @noRoutines.
   ///
-  /// In ko, this message translates to:
-  /// **'저장된 루틴이 없습니다.'**
+  /// In en, this message translates to:
+  /// **'No saved routines.'**
   String get noRoutines;
 
   /// No description provided for @createRoutine.
   ///
-  /// In ko, this message translates to:
-  /// **'루틴 만들기'**
+  /// In en, this message translates to:
+  /// **'Create routine'**
   String get createRoutine;
 
   /// No description provided for @routineCountDuration.
   ///
-  /// In ko, this message translates to:
-  /// **'{count}개 운동 · {duration}'**
+  /// In en, this message translates to:
+  /// **'{count} exercises · {duration}'**
   String routineCountDuration(int count, String duration);
 
   /// No description provided for @routineNotFound.
   ///
-  /// In ko, this message translates to:
-  /// **'루틴을 찾을 수 없습니다.'**
+  /// In en, this message translates to:
+  /// **'Routine not found.'**
   String get routineNotFound;
 
   /// No description provided for @editTooltip.
   ///
-  /// In ko, this message translates to:
-  /// **'편집'**
+  /// In en, this message translates to:
+  /// **'Edit'**
   String get editTooltip;
 
   /// No description provided for @shareTooltip.
   ///
-  /// In ko, this message translates to:
-  /// **'공유'**
+  /// In en, this message translates to:
+  /// **'Share'**
   String get shareTooltip;
 
   /// No description provided for @estimatedDuration.
   ///
-  /// In ko, this message translates to:
-  /// **'예상 {duration}'**
+  /// In en, this message translates to:
+  /// **'Est. {duration}'**
   String estimatedDuration(String duration);
 
   /// No description provided for @exerciseListTitle.
   ///
-  /// In ko, this message translates to:
-  /// **'운동 목록'**
+  /// In en, this message translates to:
+  /// **'Exercises'**
   String get exerciseListTitle;
 
   /// No description provided for @start.
   ///
-  /// In ko, this message translates to:
-  /// **'시작'**
+  /// In en, this message translates to:
+  /// **'Start'**
   String get start;
 
   /// No description provided for @labelPrepare.
   ///
-  /// In ko, this message translates to:
-  /// **'준비'**
+  /// In en, this message translates to:
+  /// **'Prepare'**
   String get labelPrepare;
 
   /// No description provided for @labelWork.
   ///
-  /// In ko, this message translates to:
-  /// **'운동'**
+  /// In en, this message translates to:
+  /// **'Work'**
   String get labelWork;
 
   /// No description provided for @labelRelax.
   ///
-  /// In ko, this message translates to:
-  /// **'이완'**
+  /// In en, this message translates to:
+  /// **'Relax'**
   String get labelRelax;
 
   /// No description provided for @labelReps.
   ///
-  /// In ko, this message translates to:
-  /// **'횟수'**
+  /// In en, this message translates to:
+  /// **'Reps'**
   String get labelReps;
 
   /// No description provided for @labelSets.
   ///
-  /// In ko, this message translates to:
-  /// **'세트'**
+  /// In en, this message translates to:
+  /// **'Sets'**
   String get labelSets;
 
   /// No description provided for @oneSetDuration.
   ///
-  /// In ko, this message translates to:
-  /// **'1세트 {duration}'**
+  /// In en, this message translates to:
+  /// **'1 set {duration}'**
   String oneSetDuration(String duration);
 
   /// No description provided for @phaseWithDuration.
   ///
-  /// In ko, this message translates to:
-  /// **'{label} · {seconds}초'**
+  /// In en, this message translates to:
+  /// **'{label} · {seconds}s'**
   String phaseWithDuration(String label, int seconds);
 
   /// No description provided for @durationSeconds.
   ///
-  /// In ko, this message translates to:
-  /// **'{seconds}초'**
+  /// In en, this message translates to:
+  /// **'{seconds}s'**
   String durationSeconds(int seconds);
 
   /// No description provided for @countReps.
   ///
-  /// In ko, this message translates to:
-  /// **'{count}회'**
+  /// In en, this message translates to:
+  /// **'{count} reps'**
   String countReps(int count);
 
   /// No description provided for @countSets.
   ///
-  /// In ko, this message translates to:
-  /// **'{count}세트'**
+  /// In en, this message translates to:
+  /// **'{count} sets'**
   String countSets(int count);
 
   /// No description provided for @importRoutineTitle.
   ///
-  /// In ko, this message translates to:
-  /// **'루틴 가져오기'**
+  /// In en, this message translates to:
+  /// **'Import routine'**
   String get importRoutineTitle;
 
   /// No description provided for @importRoutineHint.
   ///
-  /// In ko, this message translates to:
-  /// **'공유받은 JSON을 붙여넣으세요.'**
+  /// In en, this message translates to:
+  /// **'Paste shared JSON below.'**
   String get importRoutineHint;
 
   /// No description provided for @importRoutineJsonHint.
   ///
-  /// In ko, this message translates to:
-  /// **'JSON 형식의 루틴 데이터 전체를 붙여넣으세요'**
+  /// In en, this message translates to:
+  /// **'Paste the full routine JSON'**
   String get importRoutineJsonHint;
 
   /// No description provided for @import.
   ///
-  /// In ko, this message translates to:
-  /// **'가져오기'**
+  /// In en, this message translates to:
+  /// **'Import'**
   String get import;
 
   /// No description provided for @save.
   ///
-  /// In ko, this message translates to:
-  /// **'저장'**
+  /// In en, this message translates to:
+  /// **'Save'**
   String get save;
 
   /// No description provided for @cancel.
   ///
-  /// In ko, this message translates to:
-  /// **'취소'**
+  /// In en, this message translates to:
+  /// **'Cancel'**
   String get cancel;
 
   /// No description provided for @back.
   ///
-  /// In ko, this message translates to:
-  /// **'뒤로'**
+  /// In en, this message translates to:
+  /// **'Back'**
   String get back;
 
   /// No description provided for @done.
   ///
-  /// In ko, this message translates to:
-  /// **'완료'**
+  /// In en, this message translates to:
+  /// **'Done'**
   String get done;
 
   /// No description provided for @confirm.
   ///
-  /// In ko, this message translates to:
-  /// **'확인'**
+  /// In en, this message translates to:
+  /// **'Confirm'**
   String get confirm;
 
   /// No description provided for @delete.
   ///
-  /// In ko, this message translates to:
-  /// **'삭제'**
+  /// In en, this message translates to:
+  /// **'Delete'**
   String get delete;
 
   /// No description provided for @createRoutineTitle.
   ///
-  /// In ko, this message translates to:
-  /// **'루틴 만들기'**
+  /// In en, this message translates to:
+  /// **'Create routine'**
   String get createRoutineTitle;
 
   /// No description provided for @editRoutineTitle.
   ///
-  /// In ko, this message translates to:
-  /// **'루틴 편집'**
+  /// In en, this message translates to:
+  /// **'Edit routine'**
   String get editRoutineTitle;
 
   /// No description provided for @deleteRoutineTooltip.
   ///
-  /// In ko, this message translates to:
-  /// **'루틴 삭제'**
+  /// In en, this message translates to:
+  /// **'Delete routine'**
   String get deleteRoutineTooltip;
 
   /// No description provided for @deleteRoutineTitle.
   ///
-  /// In ko, this message translates to:
-  /// **'루틴 삭제'**
+  /// In en, this message translates to:
+  /// **'Delete routine'**
   String get deleteRoutineTitle;
 
   /// No description provided for @deleteRoutineMessage.
   ///
-  /// In ko, this message translates to:
-  /// **'이 루틴을 삭제할까요?'**
+  /// In en, this message translates to:
+  /// **'Delete this routine?'**
   String get deleteRoutineMessage;
 
   /// No description provided for @routineNameLabel.
   ///
-  /// In ko, this message translates to:
-  /// **'루틴 이름'**
+  /// In en, this message translates to:
+  /// **'Routine name'**
   String get routineNameLabel;
 
   /// No description provided for @routineNameHint.
   ///
-  /// In ko, this message translates to:
-  /// **'예: 회전근개 재활'**
+  /// In en, this message translates to:
+  /// **'e.g. Rotator cuff rehab'**
   String get routineNameHint;
 
   /// No description provided for @descriptionOptionalLabel.
   ///
-  /// In ko, this message translates to:
-  /// **'설명 (선택)'**
+  /// In en, this message translates to:
+  /// **'Description (optional)'**
   String get descriptionOptionalLabel;
 
   /// No description provided for @reorderExercisesHint.
   ///
-  /// In ko, this message translates to:
-  /// **'길게 눌러 순서 변경'**
+  /// In en, this message translates to:
+  /// **'Long press to reorder'**
   String get reorderExercisesHint;
 
   /// No description provided for @addExercisesPrompt.
   ///
-  /// In ko, this message translates to:
-  /// **'운동을 추가해 주세요'**
+  /// In en, this message translates to:
+  /// **'Add an exercise'**
   String get addExercisesPrompt;
 
   /// No description provided for @addExercise.
   ///
-  /// In ko, this message translates to:
-  /// **'운동 추가'**
+  /// In en, this message translates to:
+  /// **'Add exercise'**
   String get addExercise;
 
   /// No description provided for @requireAtLeastOneExercise.
   ///
-  /// In ko, this message translates to:
-  /// **'운동을 1개 이상 추가하세요'**
+  /// In en, this message translates to:
+  /// **'Add at least one exercise'**
   String get requireAtLeastOneExercise;
 
   /// No description provided for @addExerciseTitle.
   ///
-  /// In ko, this message translates to:
-  /// **'운동 추가'**
+  /// In en, this message translates to:
+  /// **'Add exercise'**
   String get addExerciseTitle;
 
   /// No description provided for @editExerciseTitle.
   ///
-  /// In ko, this message translates to:
-  /// **'운동 편집'**
+  /// In en, this message translates to:
+  /// **'Edit exercise'**
   String get editExerciseTitle;
 
   /// No description provided for @basicInfoSection.
   ///
-  /// In ko, this message translates to:
-  /// **'기본 정보'**
+  /// In en, this message translates to:
+  /// **'Basic info'**
   String get basicInfoSection;
 
   /// No description provided for @exerciseNameLabel.
   ///
-  /// In ko, this message translates to:
-  /// **'운동 이름'**
+  /// In en, this message translates to:
+  /// **'Exercise name'**
   String get exerciseNameLabel;
 
   /// No description provided for @exerciseNameHint.
   ///
-  /// In ko, this message translates to:
-  /// **'예: 팽귄 운동'**
+  /// In en, this message translates to:
+  /// **'e.g. Penguin exercise'**
   String get exerciseNameHint;
 
   /// No description provided for @exerciseInstructionLabel.
   ///
-  /// In ko, this message translates to:
-  /// **'설명 (선택)'**
+  /// In en, this message translates to:
+  /// **'Instructions (optional)'**
   String get exerciseInstructionLabel;
 
   /// No description provided for @exerciseInstructionHint.
   ///
-  /// In ko, this message translates to:
-  /// **'동작 방법을 적어주세요'**
+  /// In en, this message translates to:
+  /// **'Describe how to perform the movement'**
   String get exerciseInstructionHint;
 
   /// No description provided for @prepareSection.
   ///
-  /// In ko, this message translates to:
-  /// **'준비'**
+  /// In en, this message translates to:
+  /// **'Prepare'**
   String get prepareSection;
 
   /// No description provided for @phasesSection.
   ///
-  /// In ko, this message translates to:
-  /// **'동작 순서'**
+  /// In en, this message translates to:
+  /// **'Phase order'**
   String get phasesSection;
 
   /// No description provided for @addWorkPhase.
   ///
-  /// In ko, this message translates to:
-  /// **'운동 추가'**
+  /// In en, this message translates to:
+  /// **'Add work'**
   String get addWorkPhase;
 
   /// No description provided for @addRelaxPhase.
   ///
-  /// In ko, this message translates to:
-  /// **'이완 추가'**
+  /// In en, this message translates to:
+  /// **'Add relax'**
   String get addRelaxPhase;
 
   /// No description provided for @requireAtLeastOnePhase.
   ///
-  /// In ko, this message translates to:
-  /// **'동작을 1개 이상 추가하세요'**
+  /// In en, this message translates to:
+  /// **'Add at least one phase'**
   String get requireAtLeastOnePhase;
 
   /// No description provided for @reorderPhasesHint.
   ///
-  /// In ko, this message translates to:
-  /// **'드래그하여 순서 변경'**
+  /// In en, this message translates to:
+  /// **'Drag to reorder'**
   String get reorderPhasesHint;
 
   /// No description provided for @workSection.
   ///
-  /// In ko, this message translates to:
-  /// **'운동'**
+  /// In en, this message translates to:
+  /// **'Work'**
   String get workSection;
 
   /// No description provided for @relaxSection.
   ///
-  /// In ko, this message translates to:
-  /// **'이완'**
+  /// In en, this message translates to:
+  /// **'Relax'**
   String get relaxSection;
 
   /// No description provided for @repeatSection.
   ///
-  /// In ko, this message translates to:
-  /// **'반복'**
+  /// In en, this message translates to:
+  /// **'Repeat'**
   String get repeatSection;
 
   /// No description provided for @phaseLabel.
   ///
-  /// In ko, this message translates to:
-  /// **'동작 라벨'**
+  /// In en, this message translates to:
+  /// **'Phase label'**
   String get phaseLabel;
 
   /// No description provided for @workLabelHint.
   ///
-  /// In ko, this message translates to:
-  /// **'예: 팔을 벌리기'**
+  /// In en, this message translates to:
+  /// **'e.g. Arms out'**
   String get workLabelHint;
 
   /// No description provided for @relaxLabelHint.
   ///
-  /// In ko, this message translates to:
-  /// **'예: 팔을 오므리기'**
+  /// In en, this message translates to:
+  /// **'e.g. Arms in'**
   String get relaxLabelHint;
 
   /// No description provided for @previewSection.
   ///
-  /// In ko, this message translates to:
-  /// **'미리보기'**
+  /// In en, this message translates to:
+  /// **'Preview'**
   String get previewSection;
 
   /// No description provided for @totalDuration.
   ///
-  /// In ko, this message translates to:
-  /// **'전체 {duration}'**
+  /// In en, this message translates to:
+  /// **'Total {duration}'**
   String totalDuration(String duration);
 
   /// No description provided for @newExercise.
   ///
-  /// In ko, this message translates to:
-  /// **'새 운동'**
+  /// In en, this message translates to:
+  /// **'New exercise'**
   String get newExercise;
 
   /// No description provided for @exerciseListSubtitle.
   ///
-  /// In ko, this message translates to:
+  /// In en, this message translates to:
   /// **'{phases} · {repsSets} · {oneSet}'**
   String exerciseListSubtitle(String phases, String repsSets, String oneSet);
 
   /// No description provided for @repsSetsSummary.
   ///
-  /// In ko, this message translates to:
-  /// **'{reps}회 × {sets}세트'**
+  /// In en, this message translates to:
+  /// **'{reps} reps × {sets} sets'**
   String repsSetsSummary(int reps, int sets);
 
   /// No description provided for @validationNameRequired.
   ///
-  /// In ko, this message translates to:
-  /// **'이름을 입력하세요'**
+  /// In en, this message translates to:
+  /// **'Enter a name'**
   String get validationNameRequired;
 
   /// No description provided for @validationLabelRequired.
   ///
-  /// In ko, this message translates to:
-  /// **'라벨을 입력하세요'**
+  /// In en, this message translates to:
+  /// **'Enter a label'**
   String get validationLabelRequired;
 
   /// No description provided for @enterValueTitle.
   ///
-  /// In ko, this message translates to:
-  /// **'값 입력'**
+  /// In en, this message translates to:
+  /// **'Enter value'**
   String get enterValueTitle;
 
   /// No description provided for @dragToAdjustHint.
   ///
-  /// In ko, this message translates to:
-  /// **'좌우로 드래그하여 조절 · 탭하면 직접 입력'**
+  /// In en, this message translates to:
+  /// **'Drag left/right to adjust · tap to type'**
   String get dragToAdjustHint;
 
   /// No description provided for @unitSeconds.
   ///
-  /// In ko, this message translates to:
-  /// **'초'**
+  /// In en, this message translates to:
+  /// **'s'**
   String get unitSeconds;
 
   /// No description provided for @unitMinutes.
   ///
-  /// In ko, this message translates to:
-  /// **'분'**
+  /// In en, this message translates to:
+  /// **'min'**
   String get unitMinutes;
 
   /// No description provided for @tapToSetDuration.
   ///
-  /// In ko, this message translates to:
-  /// **'탭하여 시간 설정'**
+  /// In en, this message translates to:
+  /// **'Tap to set duration'**
   String get tapToSetDuration;
 
   /// No description provided for @unitReps.
   ///
-  /// In ko, this message translates to:
-  /// **'회'**
+  /// In en, this message translates to:
+  /// **'reps'**
   String get unitReps;
 
   /// No description provided for @unitSets.
   ///
-  /// In ko, this message translates to:
-  /// **'세트'**
+  /// In en, this message translates to:
+  /// **'sets'**
   String get unitSets;
 
   /// No description provided for @durationMinutes.
   ///
-  /// In ko, this message translates to:
-  /// **'{minutes}분'**
+  /// In en, this message translates to:
+  /// **'{minutes} min'**
   String durationMinutes(int minutes);
 
   /// No description provided for @durationMinutesSeconds.
   ///
-  /// In ko, this message translates to:
-  /// **'{minutes}분 {seconds}초'**
+  /// In en, this message translates to:
+  /// **'{minutes} min {seconds} s'**
   String durationMinutesSeconds(int minutes, int seconds);
 
   /// No description provided for @durationApproxMinutes.
   ///
-  /// In ko, this message translates to:
-  /// **'약 {minutes}분'**
+  /// In en, this message translates to:
+  /// **'~{minutes} min'**
   String durationApproxMinutes(int minutes);
 
   /// No description provided for @durationApproxHours.
   ///
-  /// In ko, this message translates to:
-  /// **'약 {hours}시간'**
+  /// In en, this message translates to:
+  /// **'~{hours} h'**
   String durationApproxHours(int hours);
 
   /// No description provided for @durationApproxHoursMinutes.
   ///
-  /// In ko, this message translates to:
-  /// **'약 {hours}시간 {minutes}분'**
+  /// In en, this message translates to:
+  /// **'~{hours} h {minutes} min'**
   String durationApproxHoursMinutes(int hours, int minutes);
 
   /// No description provided for @workoutProgress.
   ///
-  /// In ko, this message translates to:
-  /// **'운동 {current}/{total}'**
+  /// In en, this message translates to:
+  /// **'Exercise {current}/{total}'**
   String workoutProgress(int current, int total);
 
   /// No description provided for @phasePrepare.
   ///
-  /// In ko, this message translates to:
-  /// **'준비'**
+  /// In en, this message translates to:
+  /// **'Prepare'**
   String get phasePrepare;
 
   /// No description provided for @phaseWork.
   ///
-  /// In ko, this message translates to:
-  /// **'운동'**
+  /// In en, this message translates to:
+  /// **'Work'**
   String get phaseWork;
 
   /// No description provided for @phaseRelax.
   ///
-  /// In ko, this message translates to:
-  /// **'이완'**
+  /// In en, this message translates to:
+  /// **'Relax'**
   String get phaseRelax;
 
   /// No description provided for @phaseCompleted.
   ///
-  /// In ko, this message translates to:
-  /// **'완료'**
+  /// In en, this message translates to:
+  /// **'Done'**
   String get phaseCompleted;
 
   /// No description provided for @workoutCompletedMessage.
   ///
-  /// In ko, this message translates to:
-  /// **'수고하셨습니다'**
+  /// In en, this message translates to:
+  /// **'Great job'**
   String get workoutCompletedMessage;
 
   /// No description provided for @repSetProgress.
   ///
-  /// In ko, this message translates to:
-  /// **'{rep}/{totalReps}회 · {set}/{totalSets}세트'**
+  /// In en, this message translates to:
+  /// **'{rep}/{totalReps} reps · {set}/{totalSets} sets'**
   String repSetProgress(int rep, int totalReps, int set, int totalSets);
 
   /// No description provided for @skipPhase.
   ///
-  /// In ko, this message translates to:
-  /// **'건너뛰기'**
+  /// In en, this message translates to:
+  /// **'Skip'**
   String get skipPhase;
 
   /// No description provided for @pause.
   ///
-  /// In ko, this message translates to:
-  /// **'일시정지'**
+  /// In en, this message translates to:
+  /// **'Pause'**
   String get pause;
 
   /// No description provided for @resume.
   ///
-  /// In ko, this message translates to:
-  /// **'재개'**
+  /// In en, this message translates to:
+  /// **'Resume'**
   String get resume;
 
   /// No description provided for @skipExercise.
   ///
-  /// In ko, this message translates to:
-  /// **'운동 스킵'**
+  /// In en, this message translates to:
+  /// **'Skip exercise'**
   String get skipExercise;
 
   /// No description provided for @workoutDone.
   ///
-  /// In ko, this message translates to:
-  /// **'완료'**
+  /// In en, this message translates to:
+  /// **'Done'**
   String get workoutDone;
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsTitle;
+
+  /// No description provided for @languageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get languageTitle;
+
+  /// No description provided for @languageSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'System default'**
+  String get languageSystem;
+
+  /// No description provided for @languageEnglish.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get languageEnglish;
+
+  /// No description provided for @languageKorean.
+  ///
+  /// In en, this message translates to:
+  /// **'한국어'**
+  String get languageKorean;
+
+  /// No description provided for @languageChinese.
+  ///
+  /// In en, this message translates to:
+  /// **'中文'**
+  String get languageChinese;
+
+  /// No description provided for @languageJapanese.
+  ///
+  /// In en, this message translates to:
+  /// **'日本語'**
+  String get languageJapanese;
+
+  /// No description provided for @voiceGuidance.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice guidance'**
+  String get voiceGuidance;
+
+  /// No description provided for @voiceGuidanceSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Announces phases and countdown during workouts'**
+  String get voiceGuidanceSubtitle;
+
+  /// No description provided for @voiceCountThree.
+  ///
+  /// In en, this message translates to:
+  /// **'three'**
+  String get voiceCountThree;
+
+  /// No description provided for @voiceCountTwo.
+  ///
+  /// In en, this message translates to:
+  /// **'two'**
+  String get voiceCountTwo;
+
+  /// No description provided for @voiceCountOne.
+  ///
+  /// In en, this message translates to:
+  /// **'one'**
+  String get voiceCountOne;
 
   /// No description provided for @errorEmptyJson.
   ///
-  /// In ko, this message translates to:
-  /// **'빈 데이터입니다.'**
+  /// In en, this message translates to:
+  /// **'Empty data.'**
   String get errorEmptyJson;
 
   /// No description provided for @errorInvalidRoutineJson.
   ///
-  /// In ko, this message translates to:
-  /// **'루틴 JSON 형식이 아닙니다.'**
+  /// In en, this message translates to:
+  /// **'Invalid routine JSON.'**
   String get errorInvalidRoutineJson;
 }
 
@@ -676,7 +756,7 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['ko'].contains(locale.languageCode);
+      <String>['en', 'ja', 'ko', 'zh'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -685,8 +765,14 @@ class _AppLocalizationsDelegate
 AppLocalizations lookupAppLocalizations(Locale locale) {
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
+    case 'en':
+      return AppLocalizationsEn();
+    case 'ja':
+      return AppLocalizationsJa();
     case 'ko':
       return AppLocalizationsKo();
+    case 'zh':
+      return AppLocalizationsZh();
   }
 
   throw FlutterError(

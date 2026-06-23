@@ -6,6 +6,9 @@ import '../engine/workout_timer_engine.dart';
 import '../engine/workout_timer_labels.dart';
 import '../l10n/l10n_extensions.dart';
 import '../models/routine.dart';
+import '../services/voice_settings.dart';
+import '../services/workout_voice_coach.dart';
+import '../services/workout_voice_phrases.dart';
 
 class WorkoutScreen extends StatefulWidget {
   const WorkoutScreen({super.key, required this.routine});
@@ -18,6 +21,8 @@ class WorkoutScreen extends StatefulWidget {
 
 class _WorkoutScreenState extends State<WorkoutScreen> {
   WorkoutTimerEngine? _engine;
+  WorkoutVoiceCoach? _voiceCoach;
+  WorkoutTimerSnapshot? _previousSnapshot;
 
   @override
   void didChangeDependencies() {
@@ -30,20 +35,46 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
         prepare: l10n.phasePrepare,
         completedMessage: l10n.workoutCompletedMessage,
       ),
-    )..start();
+    );
     _engine!.addListener(_onTick);
+    _initVoiceCoach(l10n);
+  }
+
+  Future<void> _initVoiceCoach(AppLocalizations l10n) async {
+    final settings = await VoiceSettings.load();
+    if (!mounted) return;
+    _voiceCoach = WorkoutVoiceCoach(
+      phrases: WorkoutVoicePhrases.fromL10n(l10n),
+      settings: settings,
+      locale: Localizations.localeOf(context),
+    );
+    await _voiceCoach!.init(Localizations.localeOf(context));
+    if (!mounted) return;
+    _announceSnapshot();
+    _engine!.start();
   }
 
   void _onTick() {
+    _announceSnapshot();
     setState(() {});
     if (_engine!.snapshot.isCompleted) {
       HapticFeedback.mediumImpact();
     }
   }
 
+  void _announceSnapshot() {
+    final engine = _engine;
+    final coach = _voiceCoach;
+    if (engine == null || coach == null) return;
+    final current = engine.snapshot;
+    coach.handleSnapshot(_previousSnapshot, current);
+    _previousSnapshot = current;
+  }
+
   @override
   void dispose() {
     _engine?.removeListener(_onTick);
+    _voiceCoach?.dispose();
     _engine?.dispose();
     super.dispose();
   }

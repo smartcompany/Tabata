@@ -1,0 +1,206 @@
+{
+  "@@locale": "en",
+  "appTitle": "Tabata",
+  "importRoutineTooltip": "Import routine",
+  "noRoutines": "No saved routines.",
+  "createRoutine": "Create routine",
+  "routineCountDuration": "{count} exercises · {duration}",
+  "@routineCountDuration": {
+    "placeholders": {
+      "count": {"type": "int"},
+      "duration": {"type": "String"}
+    }
+  },
+  "routineNotFound": "Routine not found.",
+  "editTooltip": "Edit",
+  "shareTooltip": "Share",
+  "estimatedDuration": "Est. {duration}",
+  "@estimatedDuration": {
+    "placeholders": {
+      "duration": {"type": "String"}
+    }
+  },
+  "exerciseListTitle": "Exercises",
+  "start": "Start",
+  "labelPrepare": "Prepare",
+  "labelWork": "Work",
+  "labelRelax": "Relax",
+  "labelReps": "Reps",
+  "labelSets": "Sets",
+  "oneSetDuration": "1 set {duration}",
+  "@oneSetDuration": {
+    "placeholders": {
+      "duration": {"type": "String"}
+    }
+  },
+  "phaseWithDuration": "{label} · {seconds}s",
+  "@phaseWithDuration": {
+    "placeholders": {
+      "label": {"type": "String"},
+      "seconds": {"type": "int"}
+    }
+  },
+  "durationSeconds": "{seconds}s",
+  "@durationSeconds": {
+    "placeholders": {
+      "seconds": {"type": "int"}
+    }
+  },
+  "countReps": "{count} reps",
+  "@countReps": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "countSets": "{count} sets",
+  "@countSets": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "importRoutineTitle": "Import routine",
+  "importRoutineHint": "Paste shared JSON below.",
+  "importRoutineJsonHint": "Paste the full routine JSON",
+  "import": "Import",
+  "save": "Save",
+  "cancel": "Cancel",
+  "back": "Back",
+  "done": "Done",
+  "confirm": "Confirm",
+  "delete": "Delete",
+  "createRoutineTitle": "Create routine",
+  "editRoutineTitle": "Edit routine",
+  "deleteRoutineTooltip": "Delete routine",
+  "deleteRoutineTitle": "Delete routine",
+  "deleteRoutineMessage": "Delete this routine?",
+  "routineNameLabel": "Routine name",
+  "routineNameHint": "e.g. Rotator cuff rehab",
+  "descriptionOptionalLabel": "Description (optional)",
+  "reorderExercisesHint": "Long press to reorder",
+  "addExercisesPrompt": "Add an exercise",
+  "addExercise": "Add exercise",
+  "requireAtLeastOneExercise": "Add at least one exercise",
+  "addExerciseTitle": "Add exercise",
+  "editExerciseTitle": "Edit exercise",
+  "basicInfoSection": "Basic info",
+  "exerciseNameLabel": "Exercise name",
+  "exerciseNameHint": "e.g. Penguin exercise",
+  "exerciseInstructionLabel": "Instructions (optional)",
+  "exerciseInstructionHint": "Describe how to perform the movement",
+  "prepareSection": "Prepare",
+  "phasesSection": "Phase order",
+  "addWorkPhase": "Add work",
+  "addRelaxPhase": "Add relax",
+  "requireAtLeastOnePhase": "Add at least one phase",
+  "reorderPhasesHint": "Drag to reorder",
+  "workSection": "Work",
+  "relaxSection": "Relax",
+  "repeatSection": "Repeat",
+  "phaseLabel": "Phase label",
+  "workLabelHint": "e.g. Arms out",
+  "relaxLabelHint": "e.g. Arms in",
+  "previewSection": "Preview",
+  "totalDuration": "Total {duration}",
+  "@totalDuration": {
+    "placeholders": {
+      "duration": {"type": "String"}
+    }
+  },
+  "newExercise": "New exercise",
+  "exerciseListSubtitle": "{phases} · {repsSets} · {oneSet}",
+  "@exerciseListSubtitle": {
+    "placeholders": {
+      "phases": {"type": "String"},
+      "repsSets": {"type": "String"},
+      "oneSet": {"type": "String"}
+    }
+  },
+  "repsSetsSummary": "{reps} reps × {sets} sets",
+  "@repsSetsSummary": {
+    "placeholders": {
+      "reps": {"type": "int"},
+      "sets": {"type": "int"}
+    }
+  },
+  "validationNameRequired": "Enter a name",
+  "validationLabelRequired": "Enter a label",
+  "enterValueTitle": "Enter value",
+  "dragToAdjustHint": "Drag left/right to adjust · tap to type",
+  "unitSeconds": "s",
+  "unitMinutes": "min",
+  "tapToSetDuration": "Tap to set duration",
+  "unitReps": "reps",
+  "unitSets": "sets",
+  "durationMinutes": "{minutes} min",
+  "@durationMinutes": {
+    "placeholders": {
+      "minutes": {"type": "int"}
+    }
+  },
+  "durationMinutesSeconds": "{minutes} min {seconds} s",
+  "@durationMinutesSeconds": {
+    "placeholders": {
+      "minutes": {"type": "int"},
+      "seconds": {"type": "int"}
+    }
+  },
+  "durationApproxMinutes": "~{minutes} min",
+  "@durationApproxMinutes": {
+    "placeholders": {
+      "minutes": {"type": "int"}
+    }
+  },
+  "durationApproxHours": "~{hours} h",
+  "@durationApproxHours": {
+    "placeholders": {
+      "hours": {"type": "int"}
+    }
+  },
+  "durationApproxHoursMinutes": "~{hours} h {minutes} min",
+  "@durationApproxHoursMinutes": {
+    "placeholders": {
+      "hours": {"type": "int"},
+      "minutes": {"type": "int"}
+    }
+  },
+  "workoutProgress": "Exercise {current}/{total}",
+  "@workoutProgress": {
+    "placeholders": {
+      "current": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "phasePrepare": "Prepare",
+  "phaseWork": "Work",
+  "phaseRelax": "Relax",
+  "phaseCompleted": "Done",
+  "workoutCompletedMessage": "Great job",
+  "repSetProgress": "{rep}/{totalReps} reps · {set}/{totalSets} sets",
+  "@repSetProgress": {
+    "placeholders": {
+      "rep": {"type": "int"},
+      "totalReps": {"type": "int"},
+      "set": {"type": "int"},
+      "totalSets": {"type": "int"}
+    }
+  },
+  "skipPhase": "Skip",
+  "pause": "Pause",
+  "resume": "Resume",
+  "skipExercise": "Skip exercise",
+  "workoutDone": "Done",
+  "settingsTitle": "Settings",
+  "languageTitle": "Language",
+  "languageSystem": "System default",
+  "languageEnglish": "English",
+  "languageKorean": "한국어",
+  "languageChinese": "中文",
+  "languageJapanese": "日本語",
+  "voiceGuidance": "Voice guidance",
+  "voiceGuidanceSubtitle": "Announces phases and countdown during workouts",
+  "voiceCountThree": "three",
+  "voiceCountTwo": "two",
+  "voiceCountOne": "one",
+  "errorEmptyJson": "Empty data.",
+  "errorInvalidRoutineJson": "Invalid routine JSON."
+}

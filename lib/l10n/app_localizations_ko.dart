@@ -322,6 +322,42 @@ class AppLocalizationsKo extends AppLocalizations {
   String get workoutDone => '완료';
 
   @override
+  String get settingsTitle => '설정';
+
+  @override
+  String get languageTitle => '언어';
+
+  @override
+  String get languageSystem => '시스템 기본값';
+
+  @override
+  String get languageEnglish => 'English';
+
+  @override
+  String get languageKorean => '한국어';
+
+  @override
+  String get languageChinese => '中文';
+
+  @override
+  String get languageJapanese => '日本語';
+
+  @override
+  String get voiceGuidance => '음성 안내';
+
+  @override
+  String get voiceGuidanceSubtitle => '운동 중 단계와 카운트를 읽어 줍니다';
+
+  @override
+  String get voiceCountThree => '삼';
+
+  @override
+  String get voiceCountTwo => '이';
+
+  @override
+  String get voiceCountOne => '일';
+
+  @override
   String get errorEmptyJson => '빈 데이터입니다.';
 
   @override

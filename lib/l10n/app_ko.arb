@@ -189,6 +189,18 @@
   "resume": "재개",
   "skipExercise": "운동 스킵",
   "workoutDone": "완료",
+  "settingsTitle": "설정",
+  "languageTitle": "언어",
+  "languageSystem": "시스템 기본값",
+  "languageEnglish": "English",
+  "languageKorean": "한국어",
+  "languageChinese": "中文",
+  "languageJapanese": "日本語",
+  "voiceGuidance": "음성 안내",
+  "voiceGuidanceSubtitle": "운동 중 단계와 카운트를 읽어 줍니다",
+  "voiceCountThree": "삼",
+  "voiceCountTwo": "이",
+  "voiceCountOne": "일",
   "errorEmptyJson": "빈 데이터입니다.",
   "errorInvalidRoutineJson": "루틴 JSON 형식이 아닙니다."
 }

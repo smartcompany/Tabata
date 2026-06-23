@@ -4,15 +4,24 @@ import 'package:tabata_timer/l10n/app_localizations.dart';
 import '../data/routine_factory.dart';
 import '../data/routine_repository.dart';
 import '../models/routine.dart';
+import '../services/locale_settings.dart';
 import '../utils/duration_calculator.dart';
 import 'import_routine_screen.dart';
 import 'routine_detail_screen.dart';
 import 'routine_editor_screen.dart';
+import '../widgets/app_settings_sheet.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key, required this.repository});
+  const HomeScreen({
+    super.key,
+    required this.repository,
+    required this.localeSettings,
+    required this.onLocaleChanged,
+  });
 
   final RoutineRepository repository;
+  final LocaleSettings localeSettings;
+  final VoidCallback onLocaleChanged;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -62,6 +71,15 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Text(l10n.appTitle),
         actions: [
+          IconButton(
+            onPressed: () => showAppSettingsSheet(
+              context,
+              localeSettings: widget.localeSettings,
+              onLocaleChanged: widget.onLocaleChanged,
+            ),
+            icon: const Icon(Icons.settings_outlined),
+            tooltip: l10n.settingsTitle,
+          ),
           IconButton(
             onPressed: _openImport,
             icon: const Icon(Icons.download_outlined),
