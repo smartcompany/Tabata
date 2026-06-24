@@ -1,0 +1,8 @@
+app_identifier("com.smartcompany.tabata")
+apple_id("gunnylove@gmail.com")
+
+itc_team_id("117828562")
+team_id("NTCK5U8AWD")
+
+# For more information about the Appfile, see:
+#     https://docs.fastlane.tools/advanced/#appfile

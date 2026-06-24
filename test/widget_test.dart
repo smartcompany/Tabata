@@ -36,6 +36,27 @@ void main() {
     engine.dispose();
   });
 
+  test('skipExercise on last exercise completes workout', () {
+    final routine = createRotatorCuffRoutine();
+    final engine = WorkoutTimerEngine(
+      routine,
+      labels: WorkoutTimerLabels(
+        prepare: l10n.phasePrepare,
+        completedMessage: l10n.workoutCompletedMessage,
+      ),
+    );
+
+    for (var i = 0;
+        i < routine.orderedExercises.length &&
+            !engine.snapshot.isCompleted;
+        i++) {
+      engine.skipExercise();
+    }
+
+    expect(engine.snapshot.isCompleted, isTrue);
+    engine.dispose();
+  });
+
   test('routine json roundtrip preserves data', () {
     final routine = createRotatorCuffRoutine();
     final decoded = RoutineJsonCodec.decode(RoutineJsonCodec.encode(routine));

@@ -1,4 +1,4 @@
-package com.tabata.tabata_timer
+package com.smartcompany.tabata
 
 import io.flutter.embedding.android.FlutterActivity
 

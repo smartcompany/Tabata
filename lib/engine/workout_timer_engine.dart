@@ -119,6 +119,12 @@ class WorkoutTimerEngine extends ChangeNotifier {
         _phases[_phaseIndex].exerciseIndex == current) {
       _phaseIndex++;
     }
+    if (_phaseIndex >= _phases.length) {
+      _timer?.cancel();
+      _remainingSec = 0;
+      _refreshSnapshot(completed: true);
+      return;
+    }
     _loadCurrentPhase();
   }
 

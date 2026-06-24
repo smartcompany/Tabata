@@ -1,0 +1,90 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+
+app_store_connect_api_key(
+  key_id: "7FN57R567Z",
+  issuer_id: "69a6de88-7946-47e3-e053-5b8c7c11a4d1",
+  key_filepath: "/Users/smart/Projects/auth/fastlaneAuthKeys/AuthKey_7FN57R567Z.p8"
+)
+
+default_platform(:ios)
+
+APP_IDENTIFIER = "com.smartcompany.tabata"
+TEAM_ID = "NTCK5U8AWD"
+FLUTTER_PROJECT_ROOT = File.expand_path("../..", __dir__)
+
+def build_flutter_ios_release
+  Dir.chdir(FLUTTER_PROJECT_ROOT) do
+    sh("flutter", "pub", "get")
+    sh("flutter", "build", "ios", "--release", "--no-codesign")
+  end
+end
+
+platform :ios do
+  desc "Push a new release build to the App Store"
+  lane :release do
+    build_flutter_ios_release
+
+    cocoapods(
+      clean_install: true,
+      repo_update: false,
+      silent: false
+    )
+
+    increment_build_number(xcodeproj: "Runner.xcodeproj")
+
+    # Requires App ID "#{APP_IDENTIFIER}" in Apple Developer Portal
+    get_provisioning_profile(
+      app_identifier: APP_IDENTIFIER,
+      adhoc: false,
+      force: true,
+      skip_install: false,
+      team_id: TEAM_ID
+    )
+
+    clean_build_artifacts
+
+    profile_name = lane_context[SharedValues::SIGH_NAME]
+    export_opts = {
+      method: "app-store",
+      uploadBitcode: false,
+      uploadSymbols: true,
+      compileBitcode: false,
+      signingStyle: "manual",
+      teamID: TEAM_ID,
+      provisioningProfiles: {
+        APP_IDENTIFIER => profile_name
+      }
+    }
+
+    build_app(
+      workspace: "Runner.xcworkspace",
+      scheme: "Runner",
+      export_method: "app-store",
+      clean: true,
+      export_options: export_opts
+    )
+
+    begin
+      upload_to_app_store(
+        skip_metadata: true,
+        skip_screenshots: true,
+        skip_app_version_update: true,
+        precheck_include_in_app_purchases: false,
+        force: true,
+        submission_information: {
+          export_compliance: {
+            uses_non_exempt_encryption: false
+          }
+        }
+      )
+    rescue => ex
+      if ex.message.include?("UPLOAD SUCCEEDED") || ex.message.include?("Delivery UUID")
+        UI.success("Upload succeeded! The error is from Apple's metrics service and can be ignored.")
+        UI.message("Please check App Store Connect to confirm the build was uploaded.")
+      else
+        raise ex
+      end
+    end
+  end
+end
