@@ -43,3 +43,10 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+ios/Runner.app.dSYM.zip
+ios/Runner.ipa
+# fastlane cert / sigh artifacts (Keychain에만 보관, repo에 넣지 않음)
+ios/*.cer
+ios/*.p12
+ios/*.certSigningRequest
+ios/*.mobileprovision
