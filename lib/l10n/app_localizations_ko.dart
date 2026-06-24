@@ -9,7 +9,7 @@ class AppLocalizationsKo extends AppLocalizations {
   AppLocalizationsKo([String locale = 'ko']) : super(locale);
 
   @override
-  String get appTitle => 'Tabata';
+  String get appTitle => '모두의 타바타';
 
   @override
   String get importRoutineTooltip => '루틴 가져오기';
@@ -374,6 +374,12 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get voiceGuidanceSubtitle => '운동 중 단계와 카운트를 읽어 줍니다';
+
+  @override
+  String get soundEffects => '효과음';
+
+  @override
+  String get soundEffectsSubtitle => '타이머·횟수·세트 변경 시 소리로 알려 줍니다';
 
   @override
   String get voiceCountThree => '삼';

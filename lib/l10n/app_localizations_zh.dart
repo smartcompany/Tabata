@@ -9,7 +9,7 @@ class AppLocalizationsZh extends AppLocalizations {
   AppLocalizationsZh([String locale = 'zh']) : super(locale);
 
   @override
-  String get appTitle => 'Tabata';
+  String get appTitle => '大家的塔巴塔';
 
   @override
   String get importRoutineTooltip => '导入训练';
@@ -374,6 +374,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get voiceGuidanceSubtitle => '训练时播报阶段与倒计时';
+
+  @override
+  String get soundEffects => '音效';
+
+  @override
+  String get soundEffectsSubtitle => '每秒滴答声，以及次数、组数变化提示音';
 
   @override
   String get voiceCountThree => '三';

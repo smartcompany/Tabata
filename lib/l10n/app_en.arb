@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "appTitle": "Tabata",
+  "appTitle": "Everyone's Tabata",
   "importRoutineTooltip": "Import routine",
   "noRoutines": "No saved routines.",
   "loadingProfiles": "Loading routines...",
@@ -207,6 +207,8 @@
   "languageJapanese": "日本語",
   "voiceGuidance": "Voice guidance",
   "voiceGuidanceSubtitle": "Announces phases and countdown during workouts",
+  "soundEffects": "Sound effects",
+  "soundEffectsSubtitle": "Tick each second and chime when reps or sets change",
   "voiceCountThree": "three",
   "voiceCountTwo": "two",
   "voiceCountOne": "one",

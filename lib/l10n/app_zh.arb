@@ -1,6 +1,6 @@
 {
   "@@locale": "zh",
-  "appTitle": "Tabata",
+  "appTitle": "大家的塔巴塔",
   "importRoutineTooltip": "导入训练",
   "noRoutines": "没有已保存的训练。",
   "loadingProfiles": "正在加载训练...",
@@ -111,6 +111,8 @@
   "languageJapanese": "日本語",
   "voiceGuidance": "语音引导",
   "voiceGuidanceSubtitle": "训练时播报阶段与倒计时",
+  "soundEffects": "音效",
+  "soundEffectsSubtitle": "每秒滴答声，以及次数、组数变化提示音",
   "voiceCountThree": "三",
   "voiceCountTwo": "二",
   "voiceCountOne": "一",

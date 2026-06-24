@@ -105,7 +105,7 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
-  /// **'Tabata'**
+  /// **'Everyone\'s Tabata'**
   String get appTitle;
 
   /// No description provided for @importRoutineTooltip.
@@ -767,6 +767,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Announces phases and countdown during workouts'**
   String get voiceGuidanceSubtitle;
+
+  /// No description provided for @soundEffects.
+  ///
+  /// In en, this message translates to:
+  /// **'Sound effects'**
+  String get soundEffects;
+
+  /// No description provided for @soundEffectsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tick each second and chime when reps or sets change'**
+  String get soundEffectsSubtitle;
 
   /// No description provided for @voiceCountThree.
   ///

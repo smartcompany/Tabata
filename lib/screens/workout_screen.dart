@@ -5,7 +5,9 @@ import 'package:tabata_timer/l10n/app_localizations.dart';
 import '../engine/workout_timer_engine.dart';
 import '../engine/workout_timer_labels.dart';
 import '../models/routine.dart';
+import '../services/sound_settings.dart';
 import '../services/voice_settings.dart';
+import '../services/workout_sound_coach.dart';
 import '../services/workout_voice_coach.dart';
 import '../services/workout_voice_phrases.dart';
 import '../utils/duration_format.dart';
@@ -28,6 +30,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
 
   WorkoutTimerEngine? _engine;
   WorkoutVoiceCoach? _voiceCoach;
+  WorkoutSoundCoach? _soundCoach;
   WorkoutTimerSnapshot? _previousSnapshot;
 
   @override
@@ -48,13 +51,18 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
 
   Future<void> _initVoiceCoach(AppLocalizations l10n) async {
     final settings = await VoiceSettings.load();
+    final soundSettings = await SoundSettings.load();
     if (!mounted) return;
     _voiceCoach = WorkoutVoiceCoach(
       phrases: WorkoutVoicePhrases.fromL10n(l10n),
       settings: settings,
       locale: Localizations.localeOf(context),
     );
-    await _voiceCoach!.init(Localizations.localeOf(context));
+    _soundCoach = WorkoutSoundCoach(settings: soundSettings);
+    await Future.wait([
+      _voiceCoach!.init(Localizations.localeOf(context)),
+      _soundCoach!.init(),
+    ]);
     if (!mounted) return;
     _announceSnapshot();
     _engine!.start();
@@ -71,9 +79,11 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
   void _announceSnapshot() {
     final engine = _engine;
     final coach = _voiceCoach;
-    if (engine == null || coach == null) return;
+    final soundCoach = _soundCoach;
+    if (engine == null) return;
     final current = engine.snapshot;
-    coach.handleSnapshot(_previousSnapshot, current);
+    coach?.handleSnapshot(_previousSnapshot, current);
+    soundCoach?.handleSnapshot(_previousSnapshot, current);
     _previousSnapshot = current;
   }
 
@@ -81,6 +91,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
   void dispose() {
     _engine?.removeListener(_onTick);
     _voiceCoach?.dispose();
+    _soundCoach?.dispose();
     _engine?.dispose();
     super.dispose();
   }

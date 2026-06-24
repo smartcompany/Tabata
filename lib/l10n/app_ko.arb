@@ -1,6 +1,6 @@
 {
   "@@locale": "ko",
-  "appTitle": "Tabata",
+  "appTitle": "모두의 타바타",
   "importRoutineTooltip": "루틴 가져오기",
   "noRoutines": "저장된 루틴이 없습니다.",
   "loadingProfiles": "루틴을 불러오는 중...",
@@ -207,6 +207,8 @@
   "languageJapanese": "日本語",
   "voiceGuidance": "음성 안내",
   "voiceGuidanceSubtitle": "운동 중 단계와 카운트를 읽어 줍니다",
+  "soundEffects": "효과음",
+  "soundEffectsSubtitle": "타이머·횟수·세트 변경 시 소리로 알려 줍니다",
   "voiceCountThree": "삼",
   "voiceCountTwo": "이",
   "voiceCountOne": "일",

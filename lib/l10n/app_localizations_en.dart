@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'Tabata';
+  String get appTitle => 'Everyone\'s Tabata';
 
   @override
   String get importRoutineTooltip => 'Import routine';
@@ -375,6 +375,13 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get voiceGuidanceSubtitle =>
       'Announces phases and countdown during workouts';
+
+  @override
+  String get soundEffects => 'Sound effects';
+
+  @override
+  String get soundEffectsSubtitle =>
+      'Tick each second and chime when reps or sets change';
 
   @override
   String get voiceCountThree => 'three';

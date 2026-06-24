@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tabata_timer/l10n/app_localizations.dart';
 
 import '../services/locale_settings.dart';
+import '../services/sound_settings.dart';
 import '../services/voice_settings.dart';
 
 Future<void> showAppSettingsSheet(
@@ -11,6 +12,7 @@ Future<void> showAppSettingsSheet(
 }) async {
   final l10n = AppLocalizations.of(context);
   final voiceSettings = await VoiceSettings.load();
+  final soundSettings = await SoundSettings.load();
 
   if (!context.mounted) return;
 
@@ -20,6 +22,7 @@ Future<void> showAppSettingsSheet(
     isScrollControlled: true,
     builder: (context) {
       var voiceEnabled = voiceSettings.enabled;
+      var soundEnabled = soundSettings.enabled;
       var selectedLocale = localeSettings.locale;
 
       return StatefulBuilder(
@@ -85,6 +88,16 @@ Future<void> showAppSettingsSheet(
                   onChanged: (value) async {
                     await voiceSettings.setEnabled(value);
                     setSheetState(() => voiceEnabled = value);
+                  },
+                ),
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(l10n.soundEffects),
+                  subtitle: Text(l10n.soundEffectsSubtitle),
+                  value: soundEnabled,
+                  onChanged: (value) async {
+                    await soundSettings.setEnabled(value);
+                    setSheetState(() => soundEnabled = value);
                   },
                 ),
               ],

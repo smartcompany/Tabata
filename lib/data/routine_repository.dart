@@ -32,13 +32,16 @@ class RoutineRepository {
 
   List<Routine> loadAll() {
     final local = _loadLocal();
-    final merged = <String, Routine>{
-      for (final routine in _remoteProfiles) routine.id: routine,
-      for (final routine in local) routine.id: routine,
-    };
-    final routines = merged.values.toList();
-    routines.sort((a, b) => a.title.compareTo(b.title));
-    return routines;
+    final localById = {for (final routine in local) routine.id: routine};
+    final remoteIds = _remoteProfiles.map((routine) => routine.id).toSet();
+
+    final result = <Routine>[
+      for (final remote in _remoteProfiles)
+        localById[remote.id] ?? remote,
+      for (final routine in local)
+        if (!remoteIds.contains(routine.id)) routine,
+    ];
+    return result;
   }
 
   List<Routine> loadLocalOnly() => _loadLocal();

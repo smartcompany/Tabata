@@ -9,7 +9,7 @@ class AppLocalizationsJa extends AppLocalizations {
   AppLocalizationsJa([String locale = 'ja']) : super(locale);
 
   @override
-  String get appTitle => 'Tabata';
+  String get appTitle => 'みんなのタバタ';
 
   @override
   String get importRoutineTooltip => 'ルーティンを取り込む';
@@ -374,6 +374,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get voiceGuidanceSubtitle => 'ワークアウト中にフェーズとカウントを読み上げます';
+
+  @override
+  String get soundEffects => '効果音';
+
+  @override
+  String get soundEffectsSubtitle => '毎秒のティック音と回数・セット変更時の音';
 
   @override
   String get voiceCountThree => 'さん';
