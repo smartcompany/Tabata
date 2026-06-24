@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tabata_timer/l10n/app_localizations.dart';
 
 import '../data/routine_repository.dart';
+import '../models/exercise.dart';
 import '../models/routine.dart';
 import '../services/routine_share_service.dart';
 import '../utils/duration_calculator.dart';
@@ -62,15 +63,25 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
     await _shareService.share(routine);
   }
 
-  void _start() {
-    final routine = _routine;
-    if (routine == null) return;
+  void _openWorkout(Routine routine) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => WorkoutScreen(routine: routine),
         fullscreenDialog: true,
       ),
     );
+  }
+
+  void _start() {
+    final routine = _routine;
+    if (routine == null) return;
+    _openWorkout(routine);
+  }
+
+  void _startExercise(Exercise exercise) {
+    final routine = _routine;
+    if (routine == null) return;
+    _openWorkout(routine.forSingleExercise(exercise));
   }
 
   @override
@@ -123,6 +134,7 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
             (exercise) => ExerciseDetailCard(
               exercise: exercise,
               onTap: _edit,
+              onStart: () => _startExercise(exercise),
             ),
           ),
         ],

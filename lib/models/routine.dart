@@ -65,4 +65,8 @@ class Routine {
       exercises: exercises ?? this.exercises,
     );
   }
+
+  Routine forSingleExercise(Exercise exercise) {
+    return copyWith(exercises: [exercise.copyWith(order: 0)]);
+  }
 }

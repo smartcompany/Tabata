@@ -10,75 +10,103 @@ class ExerciseDetailCard extends StatelessWidget {
     super.key,
     required this.exercise,
     this.onTap,
+    this.onStart,
   });
 
   final Exercise exercise;
   final VoidCallback? onTap;
+  final VoidCallback? onStart;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final content = Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            exercise.name,
-            style: const TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.w600,
-            ),
+    final theme = Theme.of(context);
+    final details = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          exercise.name,
+          style: const TextStyle(
+            fontSize: 17,
+            fontWeight: FontWeight.w600,
           ),
-          if (exercise.instruction.isNotEmpty) ...[
-            const SizedBox(height: 6),
-            Text(exercise.instruction),
-          ],
-          const SizedBox(height: 12),
-          _infoRow(
-            context,
-            l10n.labelPrepare,
-            l10n.durationSeconds(exercise.prepare.durationSec),
-          ),
-          ...exercise.orderedPhases.map(
-            (phase) => _infoRow(
-              context,
-              ExerciseFormatter.phaseKindLabel(phase.kind, l10n),
-              ExerciseFormatter.phaseWithDuration(
-                phase.label,
-                phase.durationSec,
-                l10n,
-              ),
-            ),
-          ),
-          _infoRow(
-            context,
-            l10n.labelReps,
-            l10n.countReps(exercise.reps),
-          ),
-          _infoRow(
-            context,
-            l10n.labelSets,
-            l10n.countSets(exercise.sets),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            ExerciseFormatter.oneSetDuration(exercise, l10n),
-            style: TextStyle(color: Theme.of(context).colorScheme.primary),
-          ),
+        ),
+        if (exercise.instruction.isNotEmpty) ...[
+          const SizedBox(height: 6),
+          Text(exercise.instruction),
         ],
-      ),
+        const SizedBox(height: 12),
+        _infoRow(
+          context,
+          l10n.labelPrepare,
+          l10n.durationSeconds(exercise.prepare.durationSec),
+        ),
+        ...exercise.orderedPhases.map(
+          (phase) => _infoRow(
+            context,
+            ExerciseFormatter.phaseKindLabel(phase.kind, l10n),
+            ExerciseFormatter.phaseWithDuration(
+              phase.label,
+              phase.durationSec,
+              l10n,
+            ),
+          ),
+        ),
+        _infoRow(
+          context,
+          l10n.labelReps,
+          l10n.countReps(exercise.reps),
+        ),
+        _infoRow(
+          context,
+          l10n.labelSets,
+          l10n.countSets(exercise.sets),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          ExerciseFormatter.oneSetDuration(exercise, l10n),
+          style: TextStyle(color: theme.colorScheme.primary),
+        ),
+      ],
     );
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
-      child: onTap == null
-          ? content
-          : InkWell(
-              onTap: onTap,
-              borderRadius: BorderRadius.circular(12),
-              child: content,
-            ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (onTap == null)
+              details
+            else
+              InkWell(
+                onTap: onTap,
+                borderRadius: BorderRadius.circular(8),
+                child: details,
+              ),
+            if (onStart != null) ...[
+              const SizedBox(height: 12),
+              Align(
+                alignment: Alignment.centerRight,
+                child: FilledButton.icon(
+                  onPressed: onStart,
+                  style: FilledButton.styleFrom(
+                    backgroundColor: theme.colorScheme.primaryContainer,
+                    foregroundColor: theme.colorScheme.onPrimaryContainer,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 10,
+                    ),
+                  ),
+                  icon: const Icon(Icons.play_arrow_rounded, size: 20),
+                  label: Text(l10n.start),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
     );
   }
 
