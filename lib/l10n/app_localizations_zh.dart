@@ -260,6 +260,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tapToSetDuration => '点击设置时间';
 
   @override
+  String get tapToSetReps => '点击设置次数';
+
+  @override
+  String get tapToSetSets => '点击设置组数';
+
+  @override
   String get unitReps => '次';
 
   @override
@@ -338,6 +344,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get workoutNext => '下一个';
+
+  @override
+  String get nextPhaseFinish => '结束';
 
   @override
   String get settingsTitle => '设置';

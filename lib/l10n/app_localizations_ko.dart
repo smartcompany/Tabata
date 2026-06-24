@@ -260,6 +260,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String get tapToSetDuration => '탭하여 시간 설정';
 
   @override
+  String get tapToSetReps => '탭하여 횟수 설정';
+
+  @override
+  String get tapToSetSets => '탭하여 세트 설정';
+
+  @override
   String get unitReps => '회';
 
   @override
@@ -338,6 +344,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get workoutNext => '다음';
+
+  @override
+  String get nextPhaseFinish => '종료';
 
   @override
   String get settingsTitle => '설정';

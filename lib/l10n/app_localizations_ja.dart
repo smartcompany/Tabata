@@ -260,6 +260,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get tapToSetDuration => 'タップして時間を設定';
 
   @override
+  String get tapToSetReps => 'タップして回数を設定';
+
+  @override
+  String get tapToSetSets => 'タップしてセットを設定';
+
+  @override
   String get unitReps => '回';
 
   @override
@@ -338,6 +344,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get workoutNext => '次';
+
+  @override
+  String get nextPhaseFinish => '終了';
 
   @override
   String get settingsTitle => '設定';

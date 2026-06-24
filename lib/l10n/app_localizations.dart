@@ -564,6 +564,18 @@ abstract class AppLocalizations {
   /// **'Tap to set duration'**
   String get tapToSetDuration;
 
+  /// No description provided for @tapToSetReps.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to set reps'**
+  String get tapToSetReps;
+
+  /// No description provided for @tapToSetSets.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to set sets'**
+  String get tapToSetSets;
+
   /// No description provided for @unitReps.
   ///
   /// In en, this message translates to:
@@ -695,6 +707,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Next'**
   String get workoutNext;
+
+  /// No description provided for @nextPhaseFinish.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish'**
+  String get nextPhaseFinish;
 
   /// No description provided for @settingsTitle.
   ///

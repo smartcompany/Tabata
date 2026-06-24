@@ -21,9 +21,10 @@ class WorkoutScreen extends StatefulWidget {
 }
 
 class _WorkoutScreenState extends State<WorkoutScreen> {
-  static const _accent = Color(0xFFCDDC39);
+  static const _accent = Color(0xFFE8F55A);
+  static const _bg = Color(0xFF0A0A0A);
   static const _statRepsColor = Color(0xFF4FC3F7);
-  static const _statSetsColor = Color(0xFFFFEE58);
+  static const _statSetsColor = Color(0xFFFFB74D);
 
   WorkoutTimerEngine? _engine;
   WorkoutVoiceCoach? _voiceCoach;
@@ -101,7 +102,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     final engine = _engine;
     if (engine == null) {
       return const Scaffold(
-        backgroundColor: Colors.black,
+        backgroundColor: _bg,
         body: Center(child: CircularProgressIndicator(color: _accent)),
       );
     }
@@ -111,54 +112,43 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     final nextPhase = engine.nextPhase;
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: _bg,
       body: SafeArea(
         bottom: false,
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(4, 8, 4, 12),
+              padding: const EdgeInsets.fromLTRB(8, 8, 8, 4),
               child: Column(
                 children: [
                   Row(
                     children: [
                       IconButton(
                         onPressed: () => Navigator.of(context).pop(),
-                        icon: const Icon(Icons.close, color: Colors.white54),
+                        icon: Icon(
+                          Icons.close_rounded,
+                          color: Colors.white.withValues(alpha: 0.45),
+                        ),
                       ),
                       Expanded(
-                        child: Column(
-                          children: [
-                            Text(
-                              snap.routineTitle,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                color: _accent,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              formatDurationClock(engine.elapsedSec),
-                              style: const TextStyle(
-                                color: Colors.white38,
-                                fontSize: 15,
-                                fontFeatures: [
-                                  FontFeature.tabularFigures(),
-                                ],
-                              ),
-                            ),
-                          ],
+                        child: Text(
+                          snap.routineTitle,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            color: _accent,
+                            fontSize: 17,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: -0.2,
+                          ),
                         ),
                       ),
                       if (!snap.isCompleted)
                         IconButton(
                           onPressed: engine.skipExercise,
                           tooltip: l10n.skipExercise,
-                          icon: const Icon(
-                            Icons.skip_next_rounded,
-                            color: Colors.white54,
+                          icon: Icon(
+                            Icons.chevron_right_rounded,
+                            color: Colors.white.withValues(alpha: 0.45),
                           ),
                         )
                       else
@@ -166,14 +156,24 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                     ],
                   ),
                   if (!snap.isCompleted) ...[
-                    const SizedBox(height: 4),
+                    Text(
+                      formatDurationClock(engine.elapsedSec),
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.38),
+                        fontSize: 14,
+                        fontFeatures: const [
+                          FontFeature.tabularFigures(),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 6),
                     Text(
                       snap.exerciseName,
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 15,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                     const SizedBox(height: 2),
@@ -183,9 +183,9 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                         snap.totalExercises,
                       ),
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: Colors.white38,
-                        fontSize: 13,
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.38),
+                        fontSize: 12,
                       ),
                     ),
                   ],
@@ -202,12 +202,17 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
             ),
             Container(
               width: double.infinity,
-              color: const Color(0xFF121212),
+              decoration: BoxDecoration(
+                color: _bg,
+                border: Border(
+                  top: BorderSide(color: Colors.white.withValues(alpha: 0.06)),
+                ),
+              ),
               padding: EdgeInsets.fromLTRB(
-                24,
                 20,
-                24,
-                20 + MediaQuery.paddingOf(context).bottom,
+                18,
+                20,
+                16 + MediaQuery.paddingOf(context).bottom,
               ),
               child: snap.isCompleted
                   ? FilledButton(
@@ -216,6 +221,9 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                         backgroundColor: _accent,
                         foregroundColor: Colors.black,
                         padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
                       ),
                       child: Text(l10n.workoutDone),
                     )
@@ -224,21 +232,25 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                         Row(
                           children: [
                             Expanded(
-                              child: _StatColumn(
+                              child: _GlassStatBox(
                                 value: '${snap.remainingRepsInSet}',
                                 label: l10n.workoutRemainingReps,
                                 valueColor: _statRepsColor,
                               ),
                             ),
+                            const SizedBox(width: 12),
                             Expanded(
+                              flex: 2,
                               child: _PlayPauseButton(
                                 isPaused: snap.isPaused,
+                                progress: snap.progress,
                                 onPressed: _togglePause,
                                 label: snap.isPaused ? l10n.resume : l10n.pause,
                               ),
                             ),
+                            const SizedBox(width: 12),
                             Expanded(
-                              child: _StatColumn(
+                              child: _GlassStatBox(
                                 value: '${snap.remainingSetsInExercise}',
                                 label: l10n.workoutRemainingSets,
                                 valueColor: _statSetsColor,
@@ -246,12 +258,15 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: 14),
                         TextButton(
                           onPressed: engine.skipPhase,
                           child: Text(
                             l10n.skipPhase,
-                            style: const TextStyle(color: Colors.white38),
+                            style: TextStyle(
+                              color: Colors.white.withValues(alpha: 0.38),
+                              fontSize: 14,
+                            ),
                           ),
                         ),
                       ],
@@ -264,8 +279,8 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
   }
 }
 
-class _StatColumn extends StatelessWidget {
-  const _StatColumn({
+class _GlassStatBox extends StatelessWidget {
+  const _GlassStatBox({
     required this.value,
     required this.label,
     required this.valueColor,
@@ -277,29 +292,39 @@ class _StatColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          value,
-          style: TextStyle(
-            color: valueColor,
-            fontSize: 40,
-            height: 1,
-            fontWeight: FontWeight.w700,
-            fontFeatures: const [FontFeature.tabularFigures()],
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+      ),
+      child: Column(
+        children: [
+          Text(
+            value,
+            style: TextStyle(
+              color: valueColor,
+              fontSize: 34,
+              height: 1,
+              fontWeight: FontWeight.w700,
+              fontFeatures: const [FontFeature.tabularFigures()],
+            ),
           ),
-        ),
-        const SizedBox(height: 6),
-        Text(
-          label,
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            color: Colors.white54,
-            fontSize: 12,
-            fontWeight: FontWeight.w500,
+          const SizedBox(height: 6),
+          Text(
+            label,
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: Colors.white.withValues(alpha: 0.45),
+              fontSize: 11,
+              fontWeight: FontWeight.w500,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -307,15 +332,17 @@ class _StatColumn extends StatelessWidget {
 class _PlayPauseButton extends StatelessWidget {
   const _PlayPauseButton({
     required this.isPaused,
+    required this.progress,
     required this.onPressed,
     required this.label,
   });
 
   final bool isPaused;
+  final double progress;
   final VoidCallback onPressed;
   final String label;
 
-  static const _accent = Color(0xFFCDDC39);
+  static const _accent = Color(0xFFE8F55A);
 
   @override
   Widget build(BuildContext context) {
@@ -332,21 +359,38 @@ class _PlayPauseButton extends StatelessWidget {
                 height: 84,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(color: _accent, width: 4),
+                  boxShadow: [
+                    BoxShadow(
+                      color: _accent.withValues(alpha: 0.35),
+                      blurRadius: 20,
+                      spreadRadius: -2,
+                    ),
+                  ],
+                ),
+                child: CircularProgressIndicator(
+                  value: progress.clamp(0, 1),
+                  strokeWidth: 3.5,
+                  strokeCap: StrokeCap.round,
+                  color: _accent,
+                  backgroundColor: _accent.withValues(alpha: 0.15),
                 ),
               ),
               Material(
                 color: Colors.white,
                 shape: const CircleBorder(),
+                elevation: 4,
+                shadowColor: _accent.withValues(alpha: 0.4),
                 child: InkWell(
                   customBorder: const CircleBorder(),
                   onTap: onPressed,
                   child: SizedBox(
-                    width: 64,
-                    height: 64,
+                    width: 62,
+                    height: 62,
                     child: Icon(
-                      isPaused ? Icons.play_arrow_rounded : Icons.pause_rounded,
-                      size: 36,
+                      isPaused
+                          ? Icons.play_arrow_rounded
+                          : Icons.pause_rounded,
+                      size: 32,
                       color: Colors.black,
                     ),
                   ),

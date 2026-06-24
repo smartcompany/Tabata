@@ -7,7 +7,7 @@ import '../models/phase_config.dart';
 import '../utils/duration_calculator.dart';
 import '../widgets/duration_input_control.dart';
 import '../widgets/exercise_phase_editor_card.dart';
-import '../widgets/value_stepper.dart';
+import '../widgets/integer_input_control.dart';
 
 class ExerciseEditorScreen extends StatefulWidget {
   const ExerciseEditorScreen({
@@ -216,21 +216,33 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
             ),
             const SizedBox(height: 24),
             _sectionTitle(l10n.repeatSection),
-            _labeledStepper(
-              label: l10n.labelReps,
+            Text(
+              l10n.labelReps,
+              style: TextStyle(color: Theme.of(context).colorScheme.outline),
+            ),
+            const SizedBox(height: 8),
+            IntegerInputControl(
               value: _reps,
               min: 1,
               max: 99,
-              suffix: l10n.unitReps,
+              pickerTitle: l10n.labelReps,
+              unitLabel: l10n.unitReps,
+              hintText: l10n.tapToSetReps,
               onChanged: (value) => setState(() => _reps = value),
             ),
-            const SizedBox(height: 12),
-            _labeledStepper(
-              label: l10n.labelSets,
+            const SizedBox(height: 16),
+            Text(
+              l10n.labelSets,
+              style: TextStyle(color: Theme.of(context).colorScheme.outline),
+            ),
+            const SizedBox(height: 8),
+            IntegerInputControl(
               value: _sets,
               min: 1,
               max: 20,
-              suffix: l10n.unitSets,
+              pickerTitle: l10n.labelSets,
+              unitLabel: l10n.unitSets,
+              hintText: l10n.tapToSetSets,
               onChanged: (value) => setState(() => _sets = value),
             ),
             const SizedBox(height: 24),
@@ -280,33 +292,4 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
     );
   }
 
-  Widget _labeledStepper({
-    required String label,
-    required int value,
-    required int min,
-    required int max,
-    required String suffix,
-    required ValueChanged<int> onChanged,
-  }) {
-    return Row(
-      children: [
-        SizedBox(
-          width: 48,
-          child: Text(
-            label,
-            style: TextStyle(color: Theme.of(context).colorScheme.outline),
-          ),
-        ),
-        Expanded(
-          child: ValueStepper(
-            value: value,
-            min: min,
-            max: max,
-            suffix: suffix,
-            onChanged: onChanged,
-          ),
-        ),
-      ],
-    );
-  }
 }
