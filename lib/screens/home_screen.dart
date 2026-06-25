@@ -132,9 +132,18 @@ class _HomeScreenState extends State<HomeScreen>
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(l10n.routineAddedToMyRoutines(forked.title)),
+          duration: const Duration(seconds: 4),
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.fromLTRB(
+            16,
+            0,
+            16,
+            12 + MediaQuery.paddingOf(context).bottom + _bottomBarHeight,
+          ),
           action: SnackBarAction(
             label: l10n.homeTabMyRoutines,
             onPressed: () {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
               _tabController.animateTo(0);
               _openLocalRoutine(forked.id);
             },
