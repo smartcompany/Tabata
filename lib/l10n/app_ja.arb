@@ -41,6 +41,13 @@
   "uploadError": "アップロードに失敗しました。",
   "uploadLoginError": "ログインに失敗しました。",
   "uploadLoadServerIdsError": "サーバーのルーティン一覧を読み込めませんでした。",
+  "uploadServerRoutineSection": "サーバーにアップロード済み",
+  "uploadServerRoutineHint": "タップしてサーバーのルーティンを編集します。保存するとサーバーに反映されます。",
+  "uploadLocalRoutineSection": "端末のルーティン",
+  "uploadLocalRoutineHint": "まだサーバーにないローカルルーティンです。アップロードでサーバーに追加されます。",
+  "uploadNoAdminRoutines": "サーバーに登録された管理者ルーティンがありません。",
+  "uploadEditServerRoutineTitle": "サーバールーティンを編集",
+  "uploadDeleteServerRoutineMessage": "サーバーからこのルーティンを削除しますか？",
   "downloadRoutineTooltip": "ダウンロード",
   "routineDownloadSuccess": "「{title}」をこの端末に保存しました。",
   "@routineDownloadSuccess": {
@@ -57,9 +64,26 @@
   },
   "deleteLocalCopyMessage": "この端末からルーティンを削除しますか？サーバーのルーティンは再ダウンロードできます。",
   "noRoutines": "保存されたルーティンがありません。",
+  "noMyRoutines": "マイルーティンがありません。新規作成するか、共有ルーティンをダウンロードしてください。",
   "noSharedRoutines": "共有されたルーティンがありません。",
-  "homeTabOfficial": "基本ルーティン",
+  "homeTabMyRoutines": "マイルーティン",
   "homeTabShared": "共有ルーティン",
+  "homeDownloadCatalogHint": "ダウンロードするとマイルーティンに追加されます。",
+  "homeCatalogOfficialSection": "基本ルーティン",
+  "homeCatalogSharedSection": "共有ルーティン",
+  "routineAddedToMyRoutines": "「{title}」をマイルーティンに追加しました。",
+  "@routineAddedToMyRoutines": {
+    "placeholders": {
+      "title": {"type": "String"}
+    }
+  },
+  "catalogSavedCount": "マイルーティンに{count}件保存済み",
+  "@catalogSavedCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "openSavedCopy": "開く",
   "loadingProfiles": "ルーティンを読み込み中...",
   "profileLoadError": "サーバーからルーティンを読み込めませんでした。",
   "retry": "再試行",
@@ -68,10 +92,6 @@
   "routineNotFound": "ルーティンが見つかりません。",
   "editTooltip": "編集",
   "shareTooltip": "共有",
-  "rollbackTooltip": "サーバーから復元",
-  "rollbackConfirmMessage": "サーバーのデータに戻しますか？",
-  "rollbackSuccess": "サーバーのデータに復元しました。",
-  "rollbackError": "サーバーからデータを読み込めませんでした。",
   "estimatedDuration": "目安 {duration}",
   "exerciseListTitle": "種目一覧",
   "start": "開始",

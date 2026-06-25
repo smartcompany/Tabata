@@ -5,6 +5,7 @@ import '../data/routine_factory.dart';
 import '../data/routine_repository.dart';
 import '../models/exercise.dart';
 import '../models/routine.dart';
+import '../services/routine_api_client.dart';
 import '../utils/duration_calculator.dart';
 import '../utils/form_validation_scroll.dart';
 import '../widgets/exercise_summary.dart';
@@ -16,11 +17,17 @@ class RoutineEditorScreen extends StatefulWidget {
     required this.repository,
     required this.routine,
     this.isNew = false,
+    this.apiClient,
+    this.adminToken,
+    this.persistToServer = false,
   });
 
   final RoutineRepository repository;
   final Routine routine;
   final bool isNew;
+  final RoutineApiClient? apiClient;
+  final String? adminToken;
+  final bool persistToServer;
 
   @override
   State<RoutineEditorScreen> createState() => _RoutineEditorScreenState();
@@ -65,7 +72,35 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       scrollToKey(_exercisesSectionKey);
       return;
     }
-    await widget.repository.upsert(_draft);
+
+    final l10n = AppLocalizations.of(context);
+    if (widget.persistToServer) {
+      final apiClient = widget.apiClient;
+      final adminToken = widget.adminToken;
+      if (apiClient == null || adminToken == null) return;
+
+      try {
+        await apiClient.uploadProfile(
+          routine: _draft,
+          adminToken: adminToken,
+        );
+      } on RoutineApiException catch (error) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(error.message)),
+        );
+        return;
+      } catch (_) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.uploadError)),
+        );
+        return;
+      }
+    } else {
+      await widget.repository.upsert(_draft);
+    }
+
     if (!mounted) return;
     Navigator.of(context).pop(_draft);
   }
@@ -76,7 +111,11 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text(l10n.deleteRoutineTitle),
-        content: Text(l10n.deleteRoutineMessage),
+        content: Text(
+          widget.persistToServer
+              ? l10n.uploadDeleteServerRoutineMessage
+              : l10n.deleteRoutineMessage,
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -90,7 +129,34 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       ),
     );
     if (confirmed != true || !mounted) return;
-    await widget.repository.delete(widget.routine.id);
+
+    if (widget.persistToServer) {
+      final apiClient = widget.apiClient;
+      final adminToken = widget.adminToken;
+      if (apiClient == null || adminToken == null) return;
+
+      try {
+        await apiClient.deleteDashboardProfile(
+          profileId: widget.routine.id,
+          adminToken: adminToken,
+        );
+      } on RoutineApiException catch (error) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(error.message)),
+        );
+        return;
+      } catch (_) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.uploadError)),
+        );
+        return;
+      }
+    } else {
+      await widget.repository.delete(widget.routine.id);
+    }
+
     if (!mounted) return;
     Navigator.of(context).pop();
   }
@@ -159,7 +225,13 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.isNew ? l10n.createRoutineTitle : l10n.editRoutineTitle),
+        title: Text(
+          widget.isNew
+              ? l10n.createRoutineTitle
+              : widget.persistToServer
+                  ? l10n.uploadEditServerRoutineTitle
+                  : l10n.editRoutineTitle,
+        ),
         actions: [
           if (!widget.isNew)
             IconButton(

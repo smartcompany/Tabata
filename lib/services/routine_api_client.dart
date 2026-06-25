@@ -49,6 +49,40 @@ class RoutineApiClient {
     return summaries.map((summary) => summary.id).toList();
   }
 
+  Future<List<String>> fetchDashboardProfileIds({
+    required String adminToken,
+  }) async {
+    final routines = await fetchDashboardProfiles(adminToken: adminToken);
+    return routines.map((routine) => routine.id).toList();
+  }
+
+  Future<List<Routine>> fetchDashboardProfiles({
+    required String adminToken,
+  }) async {
+    final uri = _baseUri.replace(path: '/api/dashboard/profiles');
+    final response = await _client.get(
+      uri,
+      headers: {'Authorization': 'Bearer $adminToken'},
+    );
+
+    if (response.statusCode == 401) {
+      throw const RoutineApiException('Unauthorized');
+    }
+    if (response.statusCode != 200) {
+      throw RoutineApiException(
+        'Failed to load dashboard profiles (${response.statusCode})',
+      );
+    }
+
+    final body = jsonDecode(response.body) as Map<String, dynamic>;
+    final rows = body['profiles'] as List<dynamic>? ?? [];
+    return [
+      for (final row in rows)
+        if (row is Map<String, dynamic>)
+          Routine.fromJson(row['profile'] as Map<String, dynamic>),
+    ];
+  }
+
   Future<List<Routine>> fetchAllProfiles() async {
     final ids = await fetchProfileIds();
     if (ids.isEmpty) return [];
@@ -122,6 +156,27 @@ class RoutineApiClient {
           ? UploadProfileAction.created
           : UploadProfileAction.updated,
     );
+  }
+
+  Future<void> deleteDashboardProfile({
+    required String profileId,
+    required String adminToken,
+  }) async {
+    final uri = _baseUri.replace(
+      path: '/api/dashboard/profiles/${Uri.encodeComponent(profileId)}',
+    );
+    final response = await _client.delete(
+      uri,
+      headers: {'Authorization': 'Bearer $adminToken'},
+    );
+
+    if (response.statusCode == 404) {
+      throw const RoutineApiException('Profile not found');
+    }
+    if (response.statusCode != 200) {
+      final message = _errorMessage(response) ?? 'Delete failed';
+      throw RoutineApiException(message);
+    }
   }
 
   String? _errorMessage(http.Response response) {

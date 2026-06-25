@@ -81,6 +81,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uploadLoadServerIdsError => 'Could not load server routine list.';
 
   @override
+  String get uploadServerRoutineSection => 'Routines on server';
+
+  @override
+  String get uploadServerRoutineHint =>
+      'Tap to edit on the server. Saving updates the server copy.';
+
+  @override
+  String get uploadLocalRoutineSection => 'Routines on this device';
+
+  @override
+  String get uploadLocalRoutineHint =>
+      'Local routines not yet on the server. Upload adds them to the server.';
+
+  @override
+  String get uploadNoAdminRoutines => 'No admin routines on the server.';
+
+  @override
+  String get uploadEditServerRoutineTitle => 'Edit server routine';
+
+  @override
+  String get uploadDeleteServerRoutineMessage =>
+      'Delete this routine from the server?';
+
+  @override
   String get downloadRoutineTooltip => 'Download';
 
   @override
@@ -104,13 +128,39 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noRoutines => 'No saved routines.';
 
   @override
+  String get noMyRoutines =>
+      'No routines yet. Create one or download from the shared catalog.';
+
+  @override
   String get noSharedRoutines => 'No shared routines.';
 
   @override
-  String get homeTabOfficial => 'Default';
+  String get homeTabMyRoutines => 'My routines';
 
   @override
   String get homeTabShared => 'Shared';
+
+  @override
+  String get homeDownloadCatalogHint => 'Download to add to My routines.';
+
+  @override
+  String get homeCatalogOfficialSection => 'Default routines';
+
+  @override
+  String get homeCatalogSharedSection => 'Shared routines';
+
+  @override
+  String routineAddedToMyRoutines(String title) {
+    return 'Added \"$title\" to My routines.';
+  }
+
+  @override
+  String catalogSavedCount(int count) {
+    return '$count saved in My routines';
+  }
+
+  @override
+  String get openSavedCopy => 'Open';
 
   @override
   String get loadingProfiles => 'Loading routines...';
@@ -137,18 +187,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shareTooltip => 'Share';
-
-  @override
-  String get rollbackTooltip => 'Restore from server';
-
-  @override
-  String get rollbackConfirmMessage => 'Restore this routine from the server?';
-
-  @override
-  String get rollbackSuccess => 'Restored from server.';
-
-  @override
-  String get rollbackError => 'Could not load data from the server.';
 
   @override
   String estimatedDuration(String duration) {

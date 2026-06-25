@@ -3,6 +3,7 @@ import 'package:tabata_timer/l10n/app_localizations.dart';
 
 import '../data/routine_factory.dart';
 import '../data/routine_repository.dart';
+import '../models/profile_summary.dart';
 import '../models/routine.dart';
 import '../services/admin_session.dart';
 import '../services/locale_settings.dart';
@@ -12,6 +13,7 @@ import 'routine_detail_screen.dart';
 import 'routine_editor_screen.dart';
 import 'upload_routine_screen.dart';
 import '../widgets/app_settings_sheet.dart';
+import '../widgets/swipe_reveal_delete.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
@@ -38,32 +40,22 @@ class _HomeScreenState extends State<HomeScreen>
   late final TabController _tabController;
   bool _loading = true;
   String? _loadError;
-  String? _downloadingId;
+  String? _downloadingCatalogId;
+  String? _openSwipeItemKey;
 
-  bool get _isOfficialTab => _tabController.index == 0;
+  static const _bottomBarHeight = 64.0;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    _tabController.addListener(_onTabChanged);
     _load();
   }
 
   @override
   void dispose() {
-    _tabController.removeListener(_onTabChanged);
     _tabController.dispose();
     super.dispose();
-  }
-
-  void _onTabChanged() {
-    if (_tabController.indexIsChanging) return;
-    setState(() {});
-  }
-
-  List<Routine> _routinesForTab({required bool official}) {
-    return widget.repository.loadAll(official: official);
   }
 
   Future<void> _load() async {
@@ -95,6 +87,8 @@ class _HomeScreenState extends State<HomeScreen>
         ),
       ),
     );
+    if (!mounted) return;
+    setState(() {});
   }
 
   Future<void> _createRoutine() async {
@@ -111,87 +105,104 @@ class _HomeScreenState extends State<HomeScreen>
       ),
     );
     if (saved == null) return;
-    _load();
+    if (!mounted) return;
+    setState(() {});
   }
 
-  int _lastDownloadedIndex(List<Routine> routines) {
-    var index = -1;
-    for (var i = 0; i < routines.length; i++) {
-      if (widget.repository.isDownloadedLocally(routines[i].id)) {
-        index = i;
-      }
-    }
-    return index;
-  }
-
-  void _onReorder({
-    required bool official,
-    required int oldIndex,
-    required int newIndex,
-  }) {
-    final routines = _routinesForTab(official: official);
-    final lastDownloaded = _lastDownloadedIndex(routines);
-    if (lastDownloaded < 0) return;
-    if (oldIndex > lastDownloaded || newIndex > lastDownloaded + 1) return;
-
+  void _onReorderMyRoutines(int oldIndex, int newIndex) {
+    final routines = widget.repository.myRoutines;
     if (newIndex > oldIndex) newIndex--;
     final updated = List<Routine>.from(routines);
     final item = updated.removeAt(oldIndex);
-    if (newIndex > lastDownloaded) {
-      newIndex = lastDownloaded;
-    }
     updated.insert(newIndex, item);
-
     widget.repository.saveListOrder(
-      widget.repository.downloadedIdsInDisplayOrder(updated),
+      widget.repository.localIdsInDisplayOrder(updated),
     );
     setState(() {});
   }
 
-  Future<void> _downloadRoutine(Routine routine) async {
+  Future<void> _forkCatalogProfile(ProfileSummary summary) async {
     final l10n = AppLocalizations.of(context);
-    setState(() => _downloadingId = routine.id);
+    setState(() => _downloadingCatalogId = summary.id);
 
     try {
-      await widget.repository.downloadCatalogProfile(routine.id);
+      final forked = await widget.repository.forkCatalogProfile(summary.id);
       if (!mounted) return;
-      setState(() => _downloadingId = null);
+      setState(() => _downloadingCatalogId = null);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.routineDownloadSuccess(routine.title))),
+        SnackBar(
+          content: Text(l10n.routineAddedToMyRoutines(forked.title)),
+          action: SnackBarAction(
+            label: l10n.homeTabMyRoutines,
+            onPressed: () {
+              _tabController.animateTo(0);
+              _openLocalRoutine(forked.id);
+            },
+          ),
+        ),
       );
     } catch (_) {
       if (!mounted) return;
-      setState(() => _downloadingId = null);
+      setState(() => _downloadingCatalogId = null);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.routineDownloadError)),
       );
     }
   }
 
-  Future<void> _openRoutine(Routine routine) async {
-    if (widget.repository.isCatalogStub(routine)) {
-      await _downloadRoutine(routine);
-      return;
-    }
-
+  Future<void> _openCatalogRoutine(String catalogId) async {
     await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => RoutineDetailScreen(
           repository: widget.repository,
-          routineId: routine.id,
+          catalogId: catalogId,
         ),
       ),
     );
-    _load();
+    if (!mounted) return;
+    setState(() {});
   }
 
-  String _subtitle(AppLocalizations l10n, Routine routine) {
-    if (widget.repository.isCatalogStub(routine)) {
-      final count =
-          widget.repository.catalogExerciseCount(routine.id) ?? 0;
-      return l10n.routineCountOnly(count);
-    }
+  Future<void> _confirmDeleteMyRoutine(Routine routine) async {
+    final l10n = AppLocalizations.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.deleteRoutineTitle),
+        content: Text(l10n.deleteRoutineMessage),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(l10n.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(l10n.delete),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
 
+    await widget.repository.delete(routine.id);
+    if (!mounted) return;
+    setState(() => _openSwipeItemKey = null);
+  }
+
+  Future<void> _openLocalRoutine(String routineId) async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => RoutineDetailScreen(
+          repository: widget.repository,
+          routineId: routineId,
+        ),
+      ),
+    );
+    if (!mounted) return;
+    setState(() {});
+  }
+
+  String _myRoutineSubtitle(AppLocalizations l10n, Routine routine) {
     final duration = routineDurationSec(routine);
     return l10n.routineCountDuration(
       routine.orderedExercises.length,
@@ -211,16 +222,11 @@ class _HomeScreenState extends State<HomeScreen>
             icon: const Icon(Icons.settings_outlined),
             tooltip: l10n.settingsTitle,
           ),
-          IconButton(
-            onPressed: _openUpload,
-            icon: const Icon(Icons.upload_outlined),
-            tooltip: l10n.uploadRoutineTooltip,
-          ),
         ],
         bottom: TabBar(
           controller: _tabController,
           tabs: [
-            Tab(text: l10n.homeTabOfficial),
+            Tab(text: l10n.homeTabMyRoutines),
             Tab(text: l10n.homeTabShared),
           ],
         ),
@@ -238,35 +244,32 @@ class _HomeScreenState extends State<HomeScreen>
             )
           : TabBarView(
               controller: _tabController,
+              physics: const NeverScrollableScrollPhysics(),
               children: [
-                _buildRoutineList(l10n),
-                _buildRoutineList(l10n, shared: true),
+                _buildMyRoutinesTab(l10n),
+                _buildDownloadCatalogTab(l10n),
               ],
             ),
-      floatingActionButton: _isOfficialTab
-          ? FloatingActionButton.extended(
-              onPressed: _createRoutine,
-              icon: const Icon(Icons.add),
-              label: Text(l10n.createRoutine),
-            )
-          : null,
+      bottomNavigationBar: _HomeBottomActions(
+        createLabel: l10n.createRoutine,
+        uploadLabel: l10n.uploadRoutineTitle,
+        onCreate: _createRoutine,
+        onUpload: _openUpload,
+      ),
     );
   }
 
-  Widget _buildRoutineList(AppLocalizations l10n, {bool shared = false}) {
-    final official = !shared;
-    final routines = _routinesForTab(official: official);
+  double get _listBottomPadding =>
+      _bottomBarHeight + 16 + MediaQuery.paddingOf(context).bottom;
+
+  Widget _buildMyRoutinesTab(AppLocalizations l10n) {
+    final routines = widget.repository.myRoutines;
 
     return RefreshIndicator(
       onRefresh: _load,
       child: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
-        padding: EdgeInsets.fromLTRB(
-          16,
-          12,
-          16,
-          88 + MediaQuery.paddingOf(context).bottom,
-        ),
+        padding: EdgeInsets.fromLTRB(16, 12, 16, _listBottomPadding),
         children: [
           if (_loadError != null) ...[
             _ErrorBanner(
@@ -279,11 +282,7 @@ class _HomeScreenState extends State<HomeScreen>
           if (routines.isEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 48),
-              child: Center(
-                child: Text(
-                  shared ? l10n.noSharedRoutines : l10n.noRoutines,
-                ),
-              ),
+              child: Center(child: Text(l10n.noMyRoutines)),
             )
           else
             ReorderableListView.builder(
@@ -291,59 +290,38 @@ class _HomeScreenState extends State<HomeScreen>
               physics: const NeverScrollableScrollPhysics(),
               buildDefaultDragHandles: false,
               itemCount: routines.length,
-              onReorder: (oldIndex, newIndex) => _onReorder(
-                official: official,
-                oldIndex: oldIndex,
-                newIndex: newIndex,
-              ),
+              onReorder: _onReorderMyRoutines,
               itemBuilder: (context, index) {
                 final routine = routines[index];
-                final isDownloaded =
-                    widget.repository.isDownloadedLocally(routine.id);
-                final isDownloading = _downloadingId == routine.id;
-
                 return Padding(
                   key: ValueKey(routine.id),
                   padding: EdgeInsets.only(
                     bottom: index == routines.length - 1 ? 0 : 12,
                   ),
-                  child: Card(
-                    child: ListTile(
+                  child: SwipeRevealDelete(
+                    itemKey: routine.id,
+                    openItemKey: _openSwipeItemKey,
+                    onOpenChanged: (key) =>
+                        setState(() => _openSwipeItemKey = key),
+                    deleteLabel: l10n.delete,
+                    onDelete: () => _confirmDeleteMyRoutine(routine),
+                    child: Card(
+                      margin: EdgeInsets.zero,
+                      child: ListTile(
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16,
                         vertical: 12,
                       ),
-                      leading: isDownloaded
-                          ? ReorderableDragStartListener(
-                              index: index,
-                              child: Icon(
-                                Icons.drag_handle,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .outline
-                                    .withValues(alpha: 0.7),
-                              ),
-                            )
-                          : IconButton(
-                              onPressed: isDownloading
-                                  ? null
-                                  : () => _downloadRoutine(routine),
-                              tooltip: l10n.downloadRoutineTooltip,
-                              icon: isDownloading
-                                  ? const SizedBox(
-                                      width: 24,
-                                      height: 24,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                      ),
-                                    )
-                                  : Icon(
-                                      Icons.download_outlined,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primary,
-                                    ),
-                            ),
+                      leading: ReorderableDragStartListener(
+                        index: index,
+                        child: Icon(
+                          Icons.drag_handle,
+                          color: Theme.of(context)
+                              .colorScheme
+                              .outline
+                              .withValues(alpha: 0.7),
+                        ),
+                      ),
                       title: Text(
                         routine.title,
                         style: const TextStyle(
@@ -353,16 +331,214 @@ class _HomeScreenState extends State<HomeScreen>
                       ),
                       subtitle: Padding(
                         padding: const EdgeInsets.only(top: 6),
-                        child: Text(_subtitle(l10n, routine)),
+                        child: Text(_myRoutineSubtitle(l10n, routine)),
                       ),
                       trailing: const Icon(Icons.chevron_right),
-                      onTap: () => _openRoutine(routine),
+                      onTap: () => _openLocalRoutine(routine.id),
                     ),
                   ),
-                );
+                ),
+              );
               },
             ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildDownloadCatalogTab(AppLocalizations l10n) {
+    final official = widget.repository.officialCatalogSummaries;
+    final shared = widget.repository.sharedCatalogSummaries;
+    final isEmpty = official.isEmpty && shared.isEmpty;
+
+    return RefreshIndicator(
+      onRefresh: _load,
+      child: ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: EdgeInsets.fromLTRB(16, 12, 16, _listBottomPadding),
+        children: [
+          if (_loadError != null) ...[
+            _ErrorBanner(
+              message: _loadError!,
+              onRetry: _load,
+              retryLabel: l10n.retry,
+            ),
+            const SizedBox(height: 12),
+          ],
+          Text(
+            l10n.homeDownloadCatalogHint,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.outline,
+                ),
+          ),
+          const SizedBox(height: 16),
+          if (isEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 48),
+              child: Center(child: Text(l10n.noSharedRoutines)),
+            )
+          else ...[
+            if (official.isNotEmpty) ...[
+              _SectionTitle(l10n.homeCatalogOfficialSection),
+              const SizedBox(height: 8),
+              ...official.map(
+                (summary) => _CatalogCard(
+                  summary: summary,
+                  l10n: l10n,
+                  isDownloading: _downloadingCatalogId == summary.id,
+                  isDownloaded: widget.repository.hasDownloadedCatalog(
+                    summary.id,
+                  ),
+                  onOpen: () => _openCatalogRoutine(summary.id),
+                  onDownload: () => _forkCatalogProfile(summary),
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
+            if (shared.isNotEmpty) ...[
+              _SectionTitle(l10n.homeCatalogSharedSection),
+              const SizedBox(height: 8),
+              ...shared.map(
+                (summary) => _CatalogCard(
+                  summary: summary,
+                  l10n: l10n,
+                  isDownloading: _downloadingCatalogId == summary.id,
+                  isDownloaded: widget.repository.hasDownloadedCatalog(
+                    summary.id,
+                  ),
+                  onOpen: () => _openCatalogRoutine(summary.id),
+                  onDownload: () => _forkCatalogProfile(summary),
+                ),
+              ),
+            ],
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _HomeBottomActions extends StatelessWidget {
+  const _HomeBottomActions({
+    required this.createLabel,
+    required this.uploadLabel,
+    required this.onCreate,
+    required this.onUpload,
+  });
+
+  final String createLabel;
+  final String uploadLabel;
+  final VoidCallback onCreate;
+  final VoidCallback onUpload;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Material(
+      elevation: 8,
+      color: colorScheme.surface,
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+          child: Row(
+            children: [
+              Expanded(
+                child: FilledButton.icon(
+                  onPressed: onCreate,
+                  icon: const Icon(Icons.add, size: 20),
+                  label: Text(createLabel),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: onUpload,
+                  icon: const Icon(Icons.upload_outlined, size: 20),
+                  label: Text(uploadLabel),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SectionTitle extends StatelessWidget {
+  const _SectionTitle(this.title);
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      title,
+      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+    );
+  }
+}
+
+class _CatalogCard extends StatelessWidget {
+  const _CatalogCard({
+    required this.summary,
+    required this.l10n,
+    required this.isDownloading,
+    required this.isDownloaded,
+    required this.onOpen,
+    required this.onDownload,
+  });
+
+  final ProfileSummary summary;
+  final AppLocalizations l10n;
+  final bool isDownloading;
+  final bool isDownloaded;
+  final VoidCallback onOpen;
+  final VoidCallback onDownload;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Card(
+        child: ListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 12,
+          ),
+          leading: IconButton(
+            onPressed: isDownloading ? null : onDownload,
+            tooltip: l10n.downloadRoutineTooltip,
+            icon: isDownloading
+                ? const SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : Icon(
+                    isDownloaded
+                        ? Icons.download_done_outlined
+                        : Icons.download_outlined,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+          ),
+          title: Text(
+            summary.title,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          subtitle: Padding(
+            padding: const EdgeInsets.only(top: 6),
+            child: Text(l10n.routineCountOnly(summary.exerciseCount)),
+          ),
+          trailing: const Icon(Icons.chevron_right),
+          onTap: onOpen,
+        ),
       ),
     );
   }

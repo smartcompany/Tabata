@@ -14,11 +14,16 @@ class RoutineDetailScreen extends StatefulWidget {
   const RoutineDetailScreen({
     super.key,
     required this.repository,
-    required this.routineId,
-  });
+    this.routineId,
+    this.catalogId,
+  }) : assert(
+          routineId != null || catalogId != null,
+          'Provide either routineId or catalogId',
+        );
 
   final RoutineRepository repository;
-  final String routineId;
+  final String? routineId;
+  final String? catalogId;
 
   @override
   State<RoutineDetailScreen> createState() => _RoutineDetailScreenState();
@@ -28,20 +33,56 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
   final _shareService = RoutineShareService();
   final _shareButtonKey = GlobalKey();
   Routine? _routine;
+  bool _loadingCatalog = false;
+  String? _catalogLoadError;
+  bool _downloading = false;
+
+  bool get _isCatalogPreview => widget.catalogId != null;
 
   @override
   void initState() {
     super.initState();
-    _routine = widget.repository.findById(widget.routineId);
+    if (_isCatalogPreview) {
+      _loadCatalogRoutine();
+    } else {
+      _routine = widget.repository.findById(widget.routineId!);
+    }
+  }
+
+  Future<void> _loadCatalogRoutine() async {
+    setState(() {
+      _loadingCatalog = true;
+      _catalogLoadError = null;
+    });
+
+    try {
+      final routine =
+          await widget.repository.fetchCatalogRoutine(widget.catalogId!);
+      if (!mounted) return;
+      setState(() {
+        _routine = routine;
+        _loadingCatalog = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _loadingCatalog = false;
+        _catalogLoadError = AppLocalizations.of(context).profileLoadError;
+      });
+    }
   }
 
   void _reload() {
-    setState(() => _routine = widget.repository.findById(widget.routineId));
+    if (_isCatalogPreview) {
+      _loadCatalogRoutine();
+      return;
+    }
+    setState(() => _routine = widget.repository.findById(widget.routineId!));
   }
 
   Future<void> _edit() async {
     final routine = _routine;
-    if (routine == null) return;
+    if (routine == null || _isCatalogPreview) return;
     await Navigator.of(context).push<Routine>(
       MaterialPageRoute(
         builder: (_) => RoutineEditorScreen(
@@ -51,7 +92,7 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
       ),
     );
     if (!mounted) return;
-    if (widget.repository.findById(widget.routineId) == null) {
+    if (widget.repository.findById(widget.routineId!) == null) {
       Navigator.of(context).pop();
       return;
     }
@@ -86,14 +127,11 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
 
   Future<void> _deleteLocally() async {
     final l10n = AppLocalizations.of(context);
-    final isServer = widget.repository.isServerProfile(widget.routineId);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(l10n.deleteRoutineTitle),
-        content: Text(
-          isServer ? l10n.deleteLocalCopyMessage : l10n.deleteRoutineMessage,
-        ),
+        content: Text(l10n.deleteRoutineMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -108,44 +146,49 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
     );
     if (confirmed != true || !mounted) return;
 
-    await widget.repository.delete(widget.routineId);
+    await widget.repository.delete(widget.routineId!);
     if (!mounted) return;
     Navigator.of(context).pop();
   }
 
-  Future<void> _rollback() async {
+  Future<void> _downloadCatalog() async {
+    final catalogId = widget.catalogId;
+    final routine = _routine;
+    if (catalogId == null || routine == null || _downloading) return;
+
     final l10n = AppLocalizations.of(context);
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        content: Text(l10n.rollbackConfirmMessage),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.cancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(l10n.confirm),
-          ),
-        ],
-      ),
-    );
-    if (confirmed != true || !mounted) return;
+    setState(() => _downloading = true);
 
     try {
-      await widget.repository.rollbackToServer(widget.routineId);
+      final forked = await widget.repository.forkCatalogProfile(catalogId);
       if (!mounted) return;
-      _reload();
+      setState(() => _downloading = false);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.rollbackSuccess)),
+        SnackBar(content: Text(l10n.routineAddedToMyRoutines(forked.title))),
       );
     } catch (_) {
       if (!mounted) return;
+      setState(() => _downloading = false);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.rollbackError)),
+        SnackBar(content: Text(l10n.routineDownloadError)),
       );
     }
+  }
+
+  void _openFirstSavedCopy() {
+    final catalogId = widget.catalogId;
+    if (catalogId == null) return;
+    final saved = widget.repository.myRoutinesForkedFromCatalog(catalogId);
+    if (saved.isEmpty) return;
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => RoutineDetailScreen(
+          repository: widget.repository,
+          routineId: saved.first.id,
+        ),
+      ),
+    );
   }
 
   void _openWorkout(Routine routine) {
@@ -172,6 +215,42 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+
+    if (_isCatalogPreview && _loadingCatalog) {
+      return Scaffold(
+        appBar: AppBar(),
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const CircularProgressIndicator(),
+              const SizedBox(height: 16),
+              Text(l10n.loadingProfiles),
+            ],
+          ),
+        ),
+      );
+    }
+
+    if (_catalogLoadError != null) {
+      return Scaffold(
+        appBar: AppBar(),
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(_catalogLoadError!),
+              const SizedBox(height: 12),
+              FilledButton(
+                onPressed: _loadCatalogRoutine,
+                child: Text(l10n.retry),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     final routine = _routine;
     if (routine == null) {
       return Scaffold(
@@ -179,8 +258,8 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
       );
     }
 
-    final isDownloaded = widget.repository.isDownloadedLocally(widget.routineId);
-    if (!isDownloaded) {
+    if (!_isCatalogPreview &&
+        !widget.repository.isLocalRoutine(widget.routineId!)) {
       return Scaffold(
         appBar: AppBar(title: Text(routine.title)),
         body: Center(child: Text(l10n.routineNotFound)),
@@ -189,22 +268,36 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
 
     final exercises = routine.orderedExercises;
     final totalSec = routineDurationSec(routine);
+    final savedCopies = _isCatalogPreview
+        ? widget.repository.myRoutinesForkedFromCatalog(widget.catalogId!)
+        : const <Routine>[];
 
     return Scaffold(
       appBar: AppBar(
         title: Text(routine.title),
         actions: [
-          if (widget.repository.isServerProfile(widget.routineId))
+          if (_isCatalogPreview)
             IconButton(
-              onPressed: _rollback,
-              icon: const Icon(Icons.restore),
-              tooltip: l10n.rollbackTooltip,
+              onPressed: _downloading ? null : _downloadCatalog,
+              tooltip: l10n.downloadRoutineTooltip,
+              icon: _downloading
+                  ? const SizedBox(
+                      width: 22,
+                      height: 22,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : Icon(
+                      savedCopies.isEmpty
+                          ? Icons.download_outlined
+                          : Icons.download_done_outlined,
+                    ),
+            )
+          else
+            IconButton(
+              onPressed: _edit,
+              icon: const Icon(Icons.edit_outlined),
+              tooltip: l10n.editTooltip,
             ),
-          IconButton(
-            onPressed: _edit,
-            icon: const Icon(Icons.edit_outlined),
-            tooltip: l10n.editTooltip,
-          ),
           IconButton(
             key: _shareButtonKey,
             onPressed: _share,
@@ -221,6 +314,28 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
           24 + MediaQuery.paddingOf(context).bottom,
         ),
         children: [
+          if (_isCatalogPreview && savedCopies.isNotEmpty) ...[
+            Card(
+              color: Theme.of(context).colorScheme.primaryContainer,
+              child: ListTile(
+                leading: Icon(
+                  Icons.check_circle_outline,
+                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                ),
+                title: Text(
+                  l10n.catalogSavedCount(savedCopies.length),
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+                  ),
+                ),
+                trailing: TextButton(
+                  onPressed: _openFirstSavedCopy,
+                  child: Text(l10n.openSavedCopy),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
           if (routine.description.isNotEmpty) ...[
             Text(
               routine.description,
@@ -253,22 +368,24 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
           ...exercises.map(
             (exercise) => ExerciseDetailCard(
               exercise: exercise,
-              onTap: _edit,
+              onTap: _isCatalogPreview ? null : _edit,
               onStart: () => _startExercise(exercise),
             ),
           ),
-          const SizedBox(height: 24),
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton.icon(
-              onPressed: _deleteLocally,
-              icon: const Icon(Icons.delete_outline),
-              label: Text(l10n.deleteRoutineTitle),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: Theme.of(context).colorScheme.error,
+          if (!_isCatalogPreview) ...[
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: _deleteLocally,
+                icon: const Icon(Icons.delete_outline),
+                label: Text(l10n.deleteRoutineTitle),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: Theme.of(context).colorScheme.error,
+                ),
               ),
             ),
-          ),
+          ],
         ],
       ),
     );

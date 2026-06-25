@@ -80,6 +80,27 @@ class AppLocalizationsZh extends AppLocalizations {
   String get uploadLoadServerIdsError => '无法加载服务器训练列表。';
 
   @override
+  String get uploadServerRoutineSection => '已上传到服务器';
+
+  @override
+  String get uploadServerRoutineHint => '点击编辑服务器上的训练。保存后会更新服务器副本。';
+
+  @override
+  String get uploadLocalRoutineSection => '本设备上的训练';
+
+  @override
+  String get uploadLocalRoutineHint => '尚未上传到服务器的本地训练。上传后会添加到服务器。';
+
+  @override
+  String get uploadNoAdminRoutines => '服务器上没有管理员训练。';
+
+  @override
+  String get uploadEditServerRoutineTitle => '编辑服务器训练';
+
+  @override
+  String get uploadDeleteServerRoutineMessage => '要从服务器删除此训练吗？';
+
+  @override
   String get downloadRoutineTooltip => '下载';
 
   @override
@@ -102,13 +123,38 @@ class AppLocalizationsZh extends AppLocalizations {
   String get noRoutines => '没有已保存的训练。';
 
   @override
+  String get noMyRoutines => '还没有训练。请新建或从共享目录下载。';
+
+  @override
   String get noSharedRoutines => '没有共享的训练。';
 
   @override
-  String get homeTabOfficial => '默认训练';
+  String get homeTabMyRoutines => '我的训练';
 
   @override
   String get homeTabShared => '共享训练';
+
+  @override
+  String get homeDownloadCatalogHint => '下载后会添加到「我的训练」。';
+
+  @override
+  String get homeCatalogOfficialSection => '默认训练';
+
+  @override
+  String get homeCatalogSharedSection => '共享训练';
+
+  @override
+  String routineAddedToMyRoutines(String title) {
+    return '已将「$title」添加到我的训练。';
+  }
+
+  @override
+  String catalogSavedCount(int count) {
+    return '我的训练中已保存 $count 个';
+  }
+
+  @override
+  String get openSavedCopy => '打开';
 
   @override
   String get loadingProfiles => '正在加载训练...';
@@ -135,18 +181,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get shareTooltip => '分享';
-
-  @override
-  String get rollbackTooltip => '从服务器恢复';
-
-  @override
-  String get rollbackConfirmMessage => '要从服务器数据恢复吗？';
-
-  @override
-  String get rollbackSuccess => '已从服务器恢复。';
-
-  @override
-  String get rollbackError => '无法从服务器加载数据。';
 
   @override
   String estimatedDuration(String duration) {

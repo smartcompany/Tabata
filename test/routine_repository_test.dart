@@ -7,13 +7,17 @@ import 'package:tabata_timer/services/routine_api_client.dart';
 
 class _FakeApiClient extends RoutineApiClient {
   _FakeApiClient({
-    required List<ProfileSummary> summaries,
+    List<ProfileSummary>? officialSummaries,
+    List<ProfileSummary>? sharedSummaries,
+    List<ProfileSummary>? summaries,
     required Map<String, Routine> profiles,
-  })  : _summaries = summaries,
+  })  : _officialSummaries = officialSummaries ?? summaries ?? const [],
+        _sharedSummaries = sharedSummaries ?? const [],
         _profiles = profiles,
         super();
 
-  final List<ProfileSummary> _summaries;
+  final List<ProfileSummary> _officialSummaries;
+  final List<ProfileSummary> _sharedSummaries;
   final Map<String, Routine> _profiles;
   var fetchProfileCallCount = 0;
 
@@ -21,11 +25,11 @@ class _FakeApiClient extends RoutineApiClient {
   Future<List<ProfileSummary>> fetchProfileSummaries({
     bool official = true,
   }) async =>
-      _summaries;
+      official ? _officialSummaries : _sharedSummaries;
 
   @override
   Future<List<String>> fetchProfileIds() async =>
-      _summaries.map((summary) => summary.id).toList();
+      _officialSummaries.map((summary) => summary.id).toList();
 
   @override
   Future<Routine> fetchProfile(String id) async {
@@ -38,12 +42,18 @@ class _FakeApiClient extends RoutineApiClient {
   }
 }
 
-ProfileSummary _summary(String id, {String title = 'Test', int count = 1}) {
+ProfileSummary _summary(
+  String id, {
+  String title = 'Test',
+  int count = 1,
+  String ownerId = ProfileSummary.officialCatalogOwner,
+}) {
   return ProfileSummary(
     id: id,
     title: title,
     description: '',
     exerciseCount: count,
+    ownerId: ownerId,
   );
 }
 
@@ -71,12 +81,13 @@ void main() {
     await repository.refreshRemoteProfiles();
 
     expect(api.fetchProfileCallCount, 0);
-    expect(repository.loadLocalOnly(), isEmpty);
-    expect(repository.isServerProfile('tabata-basic'), isTrue);
-    expect(repository.isCatalogStub(repository.loadAll().single), isTrue);
+    expect(repository.myRoutines, isEmpty);
+    expect(repository.isCatalogId('tabata-basic'), isTrue);
+    expect(repository.isLocalRoutine('tabata-basic'), isFalse);
+    expect(repository.officialCatalogSummaries.single.id, 'tabata-basic');
   });
 
-  test('downloadCatalogProfile saves locally', () async {
+  test('forkCatalogProfile saves a new local routine with new id', () async {
     final serverRoutine = _routine('tabata-basic', title: 'Server');
     final api = _FakeApiClient(
       summaries: [_summary('tabata-basic', title: 'Server')],
@@ -85,44 +96,32 @@ void main() {
     final repository = await RoutineRepository.create(apiClient: api);
     await repository.refreshRemoteProfiles();
 
-    final downloaded = await repository.downloadCatalogProfile('tabata-basic');
+    final forked = await repository.forkCatalogProfile('tabata-basic');
 
     expect(api.fetchProfileCallCount, 1);
-    expect(downloaded.title, 'Server');
-    expect(repository.isDownloadedLocally('tabata-basic'), isTrue);
-    expect(repository.isCatalogStub(downloaded), isFalse);
+    expect(forked.title, 'Server');
+    expect(forked.id, isNot('tabata-basic'));
+    expect(repository.isLocalRoutine(forked.id), isTrue);
+    expect(repository.isCatalogId('tabata-basic'), isTrue);
+    expect(repository.myRoutines.map((r) => r.id), [forked.id]);
   });
 
-  test('undownloaded catalog routines appear after downloaded ones', () async {
-    SharedPreferences.setMockInitialValues({
-      'local_routines_v1':
-          '[{"schemaVersion":1,"id":"local-a","title":"Local","description":"","exercises":[]}]',
-    });
-
+  test('forking same catalog twice creates two local routines', () async {
     final api = _FakeApiClient(
-      summaries: [
-        _summary('tabata-basic', title: 'Server'),
-        _summary('tabata-core', title: 'Core'),
-      ],
-      profiles: {
-        'tabata-basic': _routine('tabata-basic', title: 'Server'),
-        'tabata-core': _routine('tabata-core', title: 'Core'),
-      },
+      summaries: [_summary('tabata-basic', title: 'Server')],
+      profiles: {'tabata-basic': _routine('tabata-basic', title: 'Server')},
     );
     final repository = await RoutineRepository.create(apiClient: api);
     await repository.refreshRemoteProfiles();
 
-    final routines = repository.loadAll();
-    expect(routines.map((routine) => routine.id), [
-      'local-a',
-      'tabata-basic',
-      'tabata-core',
-    ]);
-    expect(repository.isCatalogStub(routines[1]), isTrue);
-    expect(repository.isCatalogStub(routines[2]), isTrue);
+    final first = await repository.forkCatalogProfile('tabata-basic');
+    final second = await repository.forkCatalogProfile('tabata-basic');
+
+    expect(first.id, isNot(second.id));
+    expect(repository.myRoutines, hasLength(2));
   });
 
-  test('skips download when profile id already exists locally', () async {
+  test('legacy migration reconciles fork metadata for catalog ids', () async {
     SharedPreferences.setMockInitialValues({
       'local_routines_v1':
           '[{"schemaVersion":1,"id":"tabata-basic","title":"Custom","description":"","exercises":[]}]',
@@ -138,15 +137,10 @@ void main() {
 
     expect(api.fetchProfileCallCount, 0);
     expect(repository.findById('tabata-basic')!.title, 'Custom');
-    expect(repository.isCatalogStub(repository.loadAll().single), isFalse);
+    expect(repository.myRoutines.single.id, 'tabata-basic');
   });
 
-  test('delete removes local copy and catalog stub reappears', () async {
-    SharedPreferences.setMockInitialValues({
-      'local_routines_v1':
-          '[{"schemaVersion":1,"id":"tabata-basic","title":"Custom","description":"","exercises":[]}]',
-    });
-
+  test('delete removes local routine only', () async {
     final api = _FakeApiClient(
       summaries: [_summary('tabata-basic', title: 'Server')],
       profiles: {'tabata-basic': _routine('tabata-basic', title: 'Server')},
@@ -154,56 +148,48 @@ void main() {
     final repository = await RoutineRepository.create(apiClient: api);
     await repository.refreshRemoteProfiles();
 
-    await repository.delete('tabata-basic');
+    final forked = await repository.forkCatalogProfile('tabata-basic');
+    await repository.delete(forked.id);
 
-    expect(repository.loadLocalOnly(), isEmpty);
-    expect(repository.isCatalogStub(repository.loadAll().single), isTrue);
+    expect(repository.myRoutines, isEmpty);
+    expect(repository.isCatalogId('tabata-basic'), isTrue);
   });
 
-  test('rollbackToServer replaces local copy with server data', () async {
+  test('myRoutines respects saved list order', () async {
     SharedPreferences.setMockInitialValues({
-      'local_routines_v1':
-          '[{"schemaVersion":1,"id":"tabata-basic","title":"Custom","description":"","exercises":[]}]',
-    });
-
-    final serverRoutine = _routine('tabata-basic', title: 'Server default');
-    final api = _FakeApiClient(
-      summaries: [_summary('tabata-basic', title: 'Server')],
-      profiles: {'tabata-basic': serverRoutine},
-    );
-    final repository = await RoutineRepository.create(apiClient: api);
-    await repository.refreshRemoteProfiles();
-
-    final restored = await repository.rollbackToServer('tabata-basic');
-
-    expect(restored.title, 'Server default');
-    expect(repository.findById('tabata-basic')!.title, 'Server default');
-    expect(api.fetchProfileCallCount, 1);
-  });
-
-  test('loadAll respects saved list order for downloaded routines', () async {
-    SharedPreferences.setMockInitialValues({
-      'local_routines_v1':
-          '[{"schemaVersion":1,"id":"a","title":"A","description":"","exercises":[]},'
-          '{"schemaVersion":1,"id":"b","title":"B","description":"","exercises":[]}]',
+      'local_routine_records_v1':
+          '[{"routine":{"schemaVersion":1,"id":"a","title":"A","description":"","exercises":[]}},'
+          '{"routine":{"schemaVersion":1,"id":"b","title":"B","description":"","exercises":[]}}]',
       'routine_list_order_v1': ['b', 'a'],
     });
 
+    final api = _FakeApiClient(summaries: [], profiles: {});
+    final repository = await RoutineRepository.create(apiClient: api);
+
+    expect(repository.myRoutines.map((routine) => routine.id), ['b', 'a']);
+  });
+
+  test('shared catalog excludes admin owner profiles', () async {
     final api = _FakeApiClient(
-      summaries: [
-        _summary('a', title: 'A'),
-        _summary('b', title: 'B'),
+      officialSummaries: [
+        _summary('official-a', title: 'Official'),
+      ],
+      sharedSummaries: [
+        _summary('shared-a', title: 'Shared', ownerId: 'user-1'),
+        _summary('official-a', title: 'Leaked', ownerId: 'admin'),
       ],
       profiles: {
-        'a': _routine('a', title: 'A'),
-        'b': _routine('b', title: 'B'),
+        'official-a': _routine('official-a', title: 'Official'),
+        'shared-a': _routine('shared-a', title: 'Shared'),
       },
     );
     final repository = await RoutineRepository.create(apiClient: api);
+
     await repository.refreshRemoteProfiles();
 
-    final routines = repository.loadAll();
-    expect(routines.map((routine) => routine.id), ['b', 'a']);
+    expect(repository.officialCatalogSummaries.map((s) => s.id), ['official-a']);
+    expect(repository.sharedCatalogSummaries.map((s) => s.id), ['shared-a']);
+    expect(repository.myRoutines, isEmpty);
   });
 
   test('saveListOrder persists custom order', () async {
@@ -212,7 +198,7 @@ void main() {
 
     await repository.saveListOrder(['c', 'a', 'b']);
 
-    expect(repository.loadAll(), isEmpty);
+    expect(repository.myRoutines, isEmpty);
     final prefs = await SharedPreferences.getInstance();
     expect(prefs.getStringList('routine_list_order_v1'), ['c', 'a', 'b']);
   });

@@ -228,6 +228,48 @@ abstract class AppLocalizations {
   /// **'Could not load server routine list.'**
   String get uploadLoadServerIdsError;
 
+  /// No description provided for @uploadServerRoutineSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Routines on server'**
+  String get uploadServerRoutineSection;
+
+  /// No description provided for @uploadServerRoutineHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to edit on the server. Saving updates the server copy.'**
+  String get uploadServerRoutineHint;
+
+  /// No description provided for @uploadLocalRoutineSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Routines on this device'**
+  String get uploadLocalRoutineSection;
+
+  /// No description provided for @uploadLocalRoutineHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Local routines not yet on the server. Upload adds them to the server.'**
+  String get uploadLocalRoutineHint;
+
+  /// No description provided for @uploadNoAdminRoutines.
+  ///
+  /// In en, this message translates to:
+  /// **'No admin routines on the server.'**
+  String get uploadNoAdminRoutines;
+
+  /// No description provided for @uploadEditServerRoutineTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit server routine'**
+  String get uploadEditServerRoutineTitle;
+
+  /// No description provided for @uploadDeleteServerRoutineMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this routine from the server?'**
+  String get uploadDeleteServerRoutineMessage;
+
   /// No description provided for @downloadRoutineTooltip.
   ///
   /// In en, this message translates to:
@@ -264,23 +306,65 @@ abstract class AppLocalizations {
   /// **'No saved routines.'**
   String get noRoutines;
 
+  /// No description provided for @noMyRoutines.
+  ///
+  /// In en, this message translates to:
+  /// **'No routines yet. Create one or download from the shared catalog.'**
+  String get noMyRoutines;
+
   /// No description provided for @noSharedRoutines.
   ///
   /// In en, this message translates to:
   /// **'No shared routines.'**
   String get noSharedRoutines;
 
-  /// No description provided for @homeTabOfficial.
+  /// No description provided for @homeTabMyRoutines.
   ///
   /// In en, this message translates to:
-  /// **'Default'**
-  String get homeTabOfficial;
+  /// **'My routines'**
+  String get homeTabMyRoutines;
 
   /// No description provided for @homeTabShared.
   ///
   /// In en, this message translates to:
   /// **'Shared'**
   String get homeTabShared;
+
+  /// No description provided for @homeDownloadCatalogHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Download to add to My routines.'**
+  String get homeDownloadCatalogHint;
+
+  /// No description provided for @homeCatalogOfficialSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Default routines'**
+  String get homeCatalogOfficialSection;
+
+  /// No description provided for @homeCatalogSharedSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared routines'**
+  String get homeCatalogSharedSection;
+
+  /// No description provided for @routineAddedToMyRoutines.
+  ///
+  /// In en, this message translates to:
+  /// **'Added \"{title}\" to My routines.'**
+  String routineAddedToMyRoutines(String title);
+
+  /// No description provided for @catalogSavedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} saved in My routines'**
+  String catalogSavedCount(int count);
+
+  /// No description provided for @openSavedCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get openSavedCopy;
 
   /// No description provided for @loadingProfiles.
   ///
@@ -329,30 +413,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Share'**
   String get shareTooltip;
-
-  /// No description provided for @rollbackTooltip.
-  ///
-  /// In en, this message translates to:
-  /// **'Restore from server'**
-  String get rollbackTooltip;
-
-  /// No description provided for @rollbackConfirmMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'Restore this routine from the server?'**
-  String get rollbackConfirmMessage;
-
-  /// No description provided for @rollbackSuccess.
-  ///
-  /// In en, this message translates to:
-  /// **'Restored from server.'**
-  String get rollbackSuccess;
-
-  /// No description provided for @rollbackError.
-  ///
-  /// In en, this message translates to:
-  /// **'Could not load data from the server.'**
-  String get rollbackError;
 
   /// No description provided for @estimatedDuration.
   ///

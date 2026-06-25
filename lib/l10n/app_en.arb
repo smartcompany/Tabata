@@ -41,6 +41,13 @@
   "uploadError": "Upload failed.",
   "uploadLoginError": "Sign in failed.",
   "uploadLoadServerIdsError": "Could not load server routine list.",
+  "uploadServerRoutineSection": "Routines on server",
+  "uploadServerRoutineHint": "Tap to edit on the server. Saving updates the server copy.",
+  "uploadLocalRoutineSection": "Routines on this device",
+  "uploadLocalRoutineHint": "Local routines not yet on the server. Upload adds them to the server.",
+  "uploadNoAdminRoutines": "No admin routines on the server.",
+  "uploadEditServerRoutineTitle": "Edit server routine",
+  "uploadDeleteServerRoutineMessage": "Delete this routine from the server?",
   "downloadRoutineTooltip": "Download",
   "routineDownloadSuccess": "Saved \"{title}\" to this device.",
   "@routineDownloadSuccess": {
@@ -57,9 +64,26 @@
   },
   "deleteLocalCopyMessage": "Remove this routine from this device? Server routines can be downloaded again.",
   "noRoutines": "No saved routines.",
+  "noMyRoutines": "No routines yet. Create one or download from the shared catalog.",
   "noSharedRoutines": "No shared routines.",
-  "homeTabOfficial": "Default",
+  "homeTabMyRoutines": "My routines",
   "homeTabShared": "Shared",
+  "homeDownloadCatalogHint": "Download to add to My routines.",
+  "homeCatalogOfficialSection": "Default routines",
+  "homeCatalogSharedSection": "Shared routines",
+  "routineAddedToMyRoutines": "Added \"{title}\" to My routines.",
+  "@routineAddedToMyRoutines": {
+    "placeholders": {
+      "title": {"type": "String"}
+    }
+  },
+  "catalogSavedCount": "{count} saved in My routines",
+  "@catalogSavedCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "openSavedCopy": "Open",
   "loadingProfiles": "Loading routines...",
   "profileLoadError": "Could not load routines from server.",
   "retry": "Retry",
@@ -74,10 +98,6 @@
   "routineNotFound": "Routine not found.",
   "editTooltip": "Edit",
   "shareTooltip": "Share",
-  "rollbackTooltip": "Restore from server",
-  "rollbackConfirmMessage": "Restore this routine from the server?",
-  "rollbackSuccess": "Restored from server.",
-  "rollbackError": "Could not load data from the server.",
   "estimatedDuration": "Est. {duration}",
   "@estimatedDuration": {
     "placeholders": {

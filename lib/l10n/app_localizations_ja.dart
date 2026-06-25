@@ -80,6 +80,29 @@ class AppLocalizationsJa extends AppLocalizations {
   String get uploadLoadServerIdsError => 'サーバーのルーティン一覧を読み込めませんでした。';
 
   @override
+  String get uploadServerRoutineSection => 'サーバーにアップロード済み';
+
+  @override
+  String get uploadServerRoutineHint =>
+      'タップしてサーバーのルーティンを編集します。保存するとサーバーに反映されます。';
+
+  @override
+  String get uploadLocalRoutineSection => '端末のルーティン';
+
+  @override
+  String get uploadLocalRoutineHint =>
+      'まだサーバーにないローカルルーティンです。アップロードでサーバーに追加されます。';
+
+  @override
+  String get uploadNoAdminRoutines => 'サーバーに登録された管理者ルーティンがありません。';
+
+  @override
+  String get uploadEditServerRoutineTitle => 'サーバールーティンを編集';
+
+  @override
+  String get uploadDeleteServerRoutineMessage => 'サーバーからこのルーティンを削除しますか？';
+
+  @override
   String get downloadRoutineTooltip => 'ダウンロード';
 
   @override
@@ -103,13 +126,38 @@ class AppLocalizationsJa extends AppLocalizations {
   String get noRoutines => '保存されたルーティンがありません。';
 
   @override
+  String get noMyRoutines => 'マイルーティンがありません。新規作成するか、共有ルーティンをダウンロードしてください。';
+
+  @override
   String get noSharedRoutines => '共有されたルーティンがありません。';
 
   @override
-  String get homeTabOfficial => '基本ルーティン';
+  String get homeTabMyRoutines => 'マイルーティン';
 
   @override
   String get homeTabShared => '共有ルーティン';
+
+  @override
+  String get homeDownloadCatalogHint => 'ダウンロードするとマイルーティンに追加されます。';
+
+  @override
+  String get homeCatalogOfficialSection => '基本ルーティン';
+
+  @override
+  String get homeCatalogSharedSection => '共有ルーティン';
+
+  @override
+  String routineAddedToMyRoutines(String title) {
+    return '「$title」をマイルーティンに追加しました。';
+  }
+
+  @override
+  String catalogSavedCount(int count) {
+    return 'マイルーティンに$count件保存済み';
+  }
+
+  @override
+  String get openSavedCopy => '開く';
 
   @override
   String get loadingProfiles => 'ルーティンを読み込み中...';
@@ -136,18 +184,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get shareTooltip => '共有';
-
-  @override
-  String get rollbackTooltip => 'サーバーから復元';
-
-  @override
-  String get rollbackConfirmMessage => 'サーバーのデータに戻しますか？';
-
-  @override
-  String get rollbackSuccess => 'サーバーのデータに復元しました。';
-
-  @override
-  String get rollbackError => 'サーバーからデータを読み込めませんでした。';
 
   @override
   String estimatedDuration(String duration) {

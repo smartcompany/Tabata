@@ -80,6 +80,27 @@ class AppLocalizationsKo extends AppLocalizations {
   String get uploadLoadServerIdsError => '서버 루틴 목록을 불러오지 못했습니다.';
 
   @override
+  String get uploadServerRoutineSection => '서버에 업로드된 루틴';
+
+  @override
+  String get uploadServerRoutineHint => '탭하여 서버 루틴을 편집합니다. 저장하면 서버에 반영됩니다.';
+
+  @override
+  String get uploadLocalRoutineSection => '기기에 있는 루틴';
+
+  @override
+  String get uploadLocalRoutineHint => '아직 서버에 없는 로컬 루틴입니다. 업로드하면 서버에 추가됩니다.';
+
+  @override
+  String get uploadNoAdminRoutines => '서버에 등록된 관리자 루틴이 없습니다.';
+
+  @override
+  String get uploadEditServerRoutineTitle => '서버 루틴 편집';
+
+  @override
+  String get uploadDeleteServerRoutineMessage => '서버에서 이 루틴을 삭제할까요?';
+
+  @override
   String get downloadRoutineTooltip => '다운로드';
 
   @override
@@ -103,13 +124,38 @@ class AppLocalizationsKo extends AppLocalizations {
   String get noRoutines => '저장된 루틴이 없습니다.';
 
   @override
+  String get noMyRoutines => '내 루틴이 없습니다. 새로 만들거나 공유된 루틴을 다운로드하세요.';
+
+  @override
   String get noSharedRoutines => '공유된 루틴이 없습니다.';
 
   @override
-  String get homeTabOfficial => '기본 루틴';
+  String get homeTabMyRoutines => '내 루틴';
 
   @override
   String get homeTabShared => '공유된 루틴';
+
+  @override
+  String get homeDownloadCatalogHint => '다운로드하면 내 루틴에 추가됩니다.';
+
+  @override
+  String get homeCatalogOfficialSection => '기본 루틴';
+
+  @override
+  String get homeCatalogSharedSection => '공유된 루틴';
+
+  @override
+  String routineAddedToMyRoutines(String title) {
+    return '「$title」 루틴을 내 루틴에 추가했습니다.';
+  }
+
+  @override
+  String catalogSavedCount(int count) {
+    return '내 루틴에 $count개 저장됨';
+  }
+
+  @override
+  String get openSavedCopy => '열기';
 
   @override
   String get loadingProfiles => '루틴을 불러오는 중...';
@@ -136,18 +182,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get shareTooltip => '공유';
-
-  @override
-  String get rollbackTooltip => '서버 데이터로 롤백';
-
-  @override
-  String get rollbackConfirmMessage => '서버 데이터로 롤백 하시겠습니까?';
-
-  @override
-  String get rollbackSuccess => '서버 데이터로 복원했습니다.';
-
-  @override
-  String get rollbackError => '서버에서 데이터를 불러오지 못했습니다.';
 
   @override
   String estimatedDuration(String duration) {

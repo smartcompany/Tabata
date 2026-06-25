@@ -6,6 +6,8 @@ import '../models/routine.dart';
 import '../services/admin_session.dart';
 import '../services/routine_api_client.dart';
 import '../utils/duration_calculator.dart';
+import '../widgets/swipe_reveal_delete.dart';
+import 'routine_editor_screen.dart';
 
 class UploadRoutineScreen extends StatefulWidget {
   const UploadRoutineScreen({
@@ -27,20 +29,23 @@ class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
 
+  List<Routine> _serverRoutines = [];
   List<Routine> _localRoutines = [];
-  Set<String> _serverIds = {};
-  bool _loading = true;
+  bool _loading = false;
   bool _loggingIn = false;
   bool _uploading = false;
   String? _loadError;
   String? _loginError;
+  String? _openSwipeItemKey;
 
   bool get _isLoggedIn => widget.adminSession.isLoggedIn;
 
   @override
   void initState() {
     super.initState();
-    _load();
+    if (_isLoggedIn) {
+      _loadAfterLogin();
+    }
   }
 
   @override
@@ -50,24 +55,55 @@ class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
     super.dispose();
   }
 
-  Future<void> _load() async {
+  Future<void> _loadAfterLogin() async {
+    final token = widget.adminSession.token;
+    if (token == null || token.isEmpty) {
+      setState(() {
+        _serverRoutines = [];
+        _localRoutines = [];
+        _loading = false;
+        _loadError = null;
+      });
+      return;
+    }
+
     setState(() {
       _loading = true;
       _loadError = null;
     });
 
     try {
-      final ids = await widget.apiClient.fetchProfileIds();
+      final serverRoutines = await widget.apiClient.fetchDashboardProfiles(
+        adminToken: token,
+      );
+      final serverIds = serverRoutines.map((routine) => routine.id).toSet();
+      final localRoutines = widget.repository
+          .loadLocalOnly()
+          .where((routine) => !serverIds.contains(routine.id))
+          .toList();
+
       if (!mounted) return;
       setState(() {
-        _serverIds = ids.toSet();
-        _localRoutines = widget.repository.loadLocalOnly();
+        _serverRoutines = serverRoutines;
+        _localRoutines = localRoutines;
         _loading = false;
+      });
+    } on RoutineApiException catch (error) {
+      if (!mounted) return;
+      if (error.message == 'Unauthorized') {
+        await widget.adminSession.clear();
+      }
+      setState(() {
+        _serverRoutines = [];
+        _localRoutines = [];
+        _loading = false;
+        _loadError = AppLocalizations.of(context).uploadLoadServerIdsError;
       });
     } catch (_) {
       if (!mounted) return;
       setState(() {
-        _localRoutines = widget.repository.loadLocalOnly();
+        _serverRoutines = [];
+        _localRoutines = [];
         _loading = false;
         _loadError = AppLocalizations.of(context).uploadLoadServerIdsError;
       });
@@ -91,6 +127,7 @@ class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
         _loggingIn = false;
         _passwordController.clear();
       });
+      await _loadAfterLogin();
     } on RoutineApiException catch (error) {
       if (!mounted) return;
       setState(() {
@@ -109,24 +146,56 @@ class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
   Future<void> _logout() async {
     await widget.adminSession.clear();
     if (!mounted) return;
-    setState(() {});
+    setState(() {
+      _serverRoutines = [];
+      _localRoutines = [];
+      _loadError = null;
+      _loginError = null;
+    });
   }
 
-  Future<void> _upload(Routine routine) async {
+  Future<void> _editServerRoutine(Routine routine) async {
+    final token = widget.adminSession.token;
+    if (token == null) return;
+
+    await Navigator.of(context).push<Routine>(
+      MaterialPageRoute(
+        builder: (_) => RoutineEditorScreen(
+          repository: widget.repository,
+          routine: routine,
+          apiClient: widget.apiClient,
+          adminToken: token,
+          persistToServer: true,
+        ),
+      ),
+    );
+    if (!mounted) return;
+    await _loadAfterLogin();
+  }
+
+  Future<void> _editLocalRoutine(Routine routine) async {
+    await Navigator.of(context).push<Routine>(
+      MaterialPageRoute(
+        builder: (_) => RoutineEditorScreen(
+          repository: widget.repository,
+          routine: routine,
+        ),
+      ),
+    );
+    if (!mounted) return;
+    await _loadAfterLogin();
+  }
+
+  Future<void> _uploadLocalRoutine(Routine routine) async {
     final l10n = AppLocalizations.of(context);
     final token = widget.adminSession.token;
     if (token == null) return;
 
-    final isUpdate = _serverIds.contains(routine.id);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(l10n.uploadConfirmTitle),
-        content: Text(
-          isUpdate
-              ? l10n.uploadConfirmUpdate(routine.title)
-              : l10n.uploadConfirmCreate(routine.title),
-        ),
+        content: Text(l10n.uploadConfirmCreate(routine.title)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -150,10 +219,9 @@ class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
       );
       if (!mounted) return;
 
-      setState(() {
-        _uploading = false;
-        _serverIds = {..._serverIds, routine.id};
-      });
+      setState(() => _uploading = false);
+      await _loadAfterLogin();
+      if (!mounted) return;
 
       final message = result.action == UploadProfileAction.created
           ? l10n.uploadSuccessCreated(routine.title)
@@ -177,6 +245,121 @@ class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
     }
   }
 
+  Future<void> _confirmDeleteServerRoutine(Routine routine) async {
+    if (_uploading) return;
+    final l10n = AppLocalizations.of(context);
+    final token = widget.adminSession.token;
+    if (token == null) return;
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.deleteRoutineTitle),
+        content: Text(l10n.uploadDeleteServerRoutineMessage),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(l10n.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(l10n.delete),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+
+    setState(() => _uploading = true);
+    try {
+      await widget.apiClient.deleteDashboardProfile(
+        profileId: routine.id,
+        adminToken: token,
+      );
+      if (!mounted) return;
+      setState(() {
+        _uploading = false;
+        _openSwipeItemKey = null;
+      });
+      await _loadAfterLogin();
+    } on RoutineApiException catch (error) {
+      if (!mounted) return;
+      setState(() => _uploading = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(error.message)),
+      );
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _uploading = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.uploadError)),
+      );
+    }
+  }
+
+  Future<void> _confirmDeleteLocalRoutine(Routine routine) async {
+    if (_uploading) return;
+    final l10n = AppLocalizations.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.deleteRoutineTitle),
+        content: Text(l10n.deleteRoutineMessage),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(l10n.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(l10n.delete),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+
+    await widget.repository.delete(routine.id);
+    if (!mounted) return;
+    setState(() => _openSwipeItemKey = null);
+    await _loadAfterLogin();
+  }
+
+  Widget _routineCard({
+    required String swipeKey,
+    required Routine routine,
+    required AppLocalizations l10n,
+    required Widget trailing,
+    required VoidCallback onDelete,
+    VoidCallback? onTap,
+  }) {
+    final duration = routineDurationSec(routine);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: SwipeRevealDelete(
+        itemKey: swipeKey,
+        openItemKey: _openSwipeItemKey,
+        onOpenChanged: (key) => setState(() => _openSwipeItemKey = key),
+        deleteLabel: l10n.delete,
+        onDelete: onDelete,
+        child: Card(
+          margin: EdgeInsets.zero,
+          child: ListTile(
+            title: Text(routine.title),
+            subtitle: Text(
+              l10n.routineCountDuration(
+                routine.orderedExercises.length,
+                formatDurationShort(duration, l10n),
+              ),
+            ),
+            trailing: trailing,
+            onTap: onTap,
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -192,116 +375,143 @@ class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
             ),
         ],
       ),
-      body: _loading
-          ? const Center(child: CircularProgressIndicator())
-          : ListView(
-              padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
-              children: [
-                if (_loadError != null) ...[
-                  Card(
-                    color: Theme.of(context).colorScheme.errorContainer,
-                    child: ListTile(
-                      title: Text(_loadError!),
-                      trailing: TextButton(
-                        onPressed: _load,
-                        child: Text(l10n.retry),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                ],
-                if (!_isLoggedIn) ...[
-                  Text(
-                    l10n.uploadAdminLoginHint,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                  const SizedBox(height: 16),
-                  TextField(
-                    controller: _usernameController,
-                    decoration: InputDecoration(
-                      labelText: l10n.uploadAdminUsername,
-                      border: const OutlineInputBorder(),
-                    ),
-                    textInputAction: TextInputAction.next,
-                    autocorrect: false,
-                  ),
-                  const SizedBox(height: 12),
-                  TextField(
-                    controller: _passwordController,
-                    decoration: InputDecoration(
-                      labelText: l10n.uploadAdminPassword,
-                      border: const OutlineInputBorder(),
-                    ),
-                    obscureText: true,
-                    onSubmitted: (_) => _login(),
-                  ),
-                  if (_loginError != null) ...[
-                    const SizedBox(height: 8),
-                    Text(
-                      _loginError!,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.error,
-                      ),
-                    ),
-                  ],
-                  const SizedBox(height: 16),
-                  SizedBox(
-                    width: double.infinity,
-                    child: FilledButton(
-                      onPressed: _loggingIn ? null : _login,
-                      child: _loggingIn
-                          ? const SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : Text(l10n.uploadAdminLogin),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                ] else ...[
-                  Text(
-                    l10n.uploadSelectRoutine,
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  const SizedBox(height: 12),
-                ],
-                if (_localRoutines.isEmpty)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 32),
-                    child: Center(child: Text(l10n.uploadNoLocalRoutines)),
-                  )
-                else
-                  ..._localRoutines.map((routine) {
-                    final onServer = _serverIds.contains(routine.id);
-                    final duration = routineDurationSec(routine);
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: Card(
-                        child: ListTile(
-                          title: Text(routine.title),
-                          subtitle: Text(
-                            l10n.routineCountDuration(
-                              routine.orderedExercises.length,
-                              formatDurationShort(duration, l10n),
-                            ),
-                          ),
-                          trailing: _isLoggedIn
-                              ? FilledButton.tonal(
-                                  onPressed: _uploading
-                                      ? null
-                                      : () => _upload(routine),
-                                  child: Text(
-                                    onServer ? l10n.uploadUpdate : l10n.upload,
-                                  ),
-                                )
-                              : null,
-                        ),
-                      ),
-                    );
-                  }),
-              ],
+      body: ListView(
+        padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+        children: [
+          if (!_isLoggedIn) ...[
+            Text(
+              l10n.uploadAdminLoginHint,
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: _usernameController,
+              decoration: InputDecoration(
+                labelText: l10n.uploadAdminUsername,
+                border: const OutlineInputBorder(),
+              ),
+              textInputAction: TextInputAction.next,
+              autocorrect: false,
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _passwordController,
+              decoration: InputDecoration(
+                labelText: l10n.uploadAdminPassword,
+                border: const OutlineInputBorder(),
+              ),
+              obscureText: true,
+              onSubmitted: (_) => _login(),
+            ),
+            if (_loginError != null) ...[
+              const SizedBox(height: 8),
+              Text(
+                _loginError!,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.error,
+                ),
+              ),
+            ],
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton(
+                onPressed: _loggingIn ? null : _login,
+                child: _loggingIn
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : Text(l10n.uploadAdminLogin),
+              ),
+            ),
+          ] else ...[
+            if (_loading)
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 48),
+                child: Center(child: CircularProgressIndicator()),
+              )
+            else ...[
+              if (_loadError != null) ...[
+                Card(
+                  color: Theme.of(context).colorScheme.errorContainer,
+                  child: ListTile(
+                    title: Text(_loadError!),
+                    trailing: TextButton(
+                      onPressed: _loadAfterLogin,
+                      child: Text(l10n.retry),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+              ],
+              Text(
+                l10n.uploadServerRoutineSection,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                l10n.uploadServerRoutineHint,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.outline,
+                    ),
+              ),
+              const SizedBox(height: 12),
+              if (_serverRoutines.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 24),
+                  child: Center(child: Text(l10n.uploadNoAdminRoutines)),
+                )
+              else
+                ..._serverRoutines.map(
+                  (routine) => _routineCard(
+                    swipeKey: 'server:${routine.id}',
+                    routine: routine,
+                    l10n: l10n,
+                    trailing: const Icon(Icons.chevron_right),
+                    onDelete: () => _confirmDeleteServerRoutine(routine),
+                    onTap: _uploading ? null : () => _editServerRoutine(routine),
+                  ),
+                ),
+              const SizedBox(height: 8),
+              Text(
+                l10n.uploadLocalRoutineSection,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                l10n.uploadLocalRoutineHint,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.outline,
+                    ),
+              ),
+              const SizedBox(height: 12),
+              if (_localRoutines.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 32),
+                  child: Center(child: Text(l10n.uploadNoLocalRoutines)),
+                )
+              else
+                ..._localRoutines.map(
+                  (routine) => _routineCard(
+                    swipeKey: 'local:${routine.id}',
+                    routine: routine,
+                    l10n: l10n,
+                    trailing: FilledButton.tonal(
+                      onPressed: _uploading
+                          ? null
+                          : () => _uploadLocalRoutine(routine),
+                      child: Text(l10n.upload),
+                    ),
+                    onDelete: () => _confirmDeleteLocalRoutine(routine),
+                    onTap: _uploading ? null : () => _editLocalRoutine(routine),
+                  ),
+                ),
+            ],
+          ],
+        ],
+      ),
     );
   }
 }

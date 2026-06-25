@@ -41,6 +41,13 @@
   "uploadError": "上传失败。",
   "uploadLoginError": "登录失败。",
   "uploadLoadServerIdsError": "无法加载服务器训练列表。",
+  "uploadServerRoutineSection": "已上传到服务器",
+  "uploadServerRoutineHint": "点击编辑服务器上的训练。保存后会更新服务器副本。",
+  "uploadLocalRoutineSection": "本设备上的训练",
+  "uploadLocalRoutineHint": "尚未上传到服务器的本地训练。上传后会添加到服务器。",
+  "uploadNoAdminRoutines": "服务器上没有管理员训练。",
+  "uploadEditServerRoutineTitle": "编辑服务器训练",
+  "uploadDeleteServerRoutineMessage": "要从服务器删除此训练吗？",
   "downloadRoutineTooltip": "下载",
   "routineDownloadSuccess": "已将「{title}」保存到此设备。",
   "@routineDownloadSuccess": {
@@ -57,9 +64,26 @@
   },
   "deleteLocalCopyMessage": "要从本设备删除此训练吗？服务器训练可重新下载。",
   "noRoutines": "没有已保存的训练。",
+  "noMyRoutines": "还没有训练。请新建或从共享目录下载。",
   "noSharedRoutines": "没有共享的训练。",
-  "homeTabOfficial": "默认训练",
+  "homeTabMyRoutines": "我的训练",
   "homeTabShared": "共享训练",
+  "homeDownloadCatalogHint": "下载后会添加到「我的训练」。",
+  "homeCatalogOfficialSection": "默认训练",
+  "homeCatalogSharedSection": "共享训练",
+  "routineAddedToMyRoutines": "已将「{title}」添加到我的训练。",
+  "@routineAddedToMyRoutines": {
+    "placeholders": {
+      "title": {"type": "String"}
+    }
+  },
+  "catalogSavedCount": "我的训练中已保存 {count} 个",
+  "@catalogSavedCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "openSavedCopy": "打开",
   "loadingProfiles": "正在加载训练...",
   "profileLoadError": "无法从服务器加载训练。",
   "retry": "重试",
@@ -68,10 +92,6 @@
   "routineNotFound": "未找到训练。",
   "editTooltip": "编辑",
   "shareTooltip": "分享",
-  "rollbackTooltip": "从服务器恢复",
-  "rollbackConfirmMessage": "要从服务器数据恢复吗？",
-  "rollbackSuccess": "已从服务器恢复。",
-  "rollbackError": "无法从服务器加载数据。",
   "estimatedDuration": "预计 {duration}",
   "exerciseListTitle": "动作列表",
   "start": "开始",
