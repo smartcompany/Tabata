@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tabata_timer/l10n/app_localizations.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 import '../engine/workout_timer_engine.dart';
 import '../engine/workout_timer_labels.dart';
 import '../models/routine.dart';
-import '../services/sound_settings.dart';
-import '../services/voice_settings.dart';
+import '../services/workout_announce_gap.dart';
 import '../services/workout_sound_coach.dart';
 import '../services/workout_voice_coach.dart';
 import '../services/workout_voice_phrases.dart';
 import '../utils/duration_format.dart';
+import '../widgets/app_settings_sheet.dart';
 import '../widgets/workout_phase_stage.dart';
 
 class WorkoutScreen extends StatefulWidget {
@@ -32,6 +33,14 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
   WorkoutVoiceCoach? _voiceCoach;
   WorkoutSoundCoach? _soundCoach;
   WorkoutTimerSnapshot? _previousSnapshot;
+  WorkoutTimerSnapshot? _lastSoundSnapshot;
+  Future<void>? _announceQueue;
+
+  @override
+  void initState() {
+    super.initState();
+    WakelockPlus.enable();
+  }
 
   @override
   void didChangeDependencies() {
@@ -50,50 +59,70 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
   }
 
   Future<void> _initVoiceCoach(AppLocalizations l10n) async {
-    final settings = await VoiceSettings.load();
-    final soundSettings = await SoundSettings.load();
     if (!mounted) return;
+    _soundCoach = WorkoutSoundCoach();
     _voiceCoach = WorkoutVoiceCoach(
       phrases: WorkoutVoicePhrases.fromL10n(l10n),
-      settings: settings,
       locale: Localizations.localeOf(context),
+      onAudioSessionRestored: () => _soundCoach!.refreshAudioSession(),
     );
-    _soundCoach = WorkoutSoundCoach(settings: soundSettings);
     await Future.wait([
       _voiceCoach!.init(Localizations.localeOf(context)),
       _soundCoach!.init(),
     ]);
     if (!mounted) return;
-    _announceSnapshot();
+    _scheduleAnnounce();
     _engine!.start();
   }
 
   void _onTick() {
-    _announceSnapshot();
+    final engine = _engine;
+    if (engine != null) {
+      final current = engine.snapshot;
+      final soundPrevious = _lastSoundSnapshot;
+      _soundCoach?.handleTick(soundPrevious, current);
+      _soundCoach?.handleEvents(soundPrevious, current);
+      _lastSoundSnapshot = current;
+    }
+    _scheduleAnnounce();
     setState(() {});
     if (_engine!.snapshot.isCompleted) {
       HapticFeedback.mediumImpact();
     }
   }
 
-  void _announceSnapshot() {
+  void _scheduleAnnounce() {
     final engine = _engine;
-    final coach = _voiceCoach;
-    final soundCoach = _soundCoach;
     if (engine == null) return;
-    final current = engine.snapshot;
-    coach?.handleSnapshot(_previousSnapshot, current);
-    soundCoach?.handleSnapshot(_previousSnapshot, current);
-    _previousSnapshot = current;
+
+    final capturedCurrent = engine.snapshot;
+    _announceQueue = (_announceQueue ?? Future<void>.value()).then((_) async {
+      final previous = _previousSnapshot;
+      if (needsWorkRelaxSessionGap(previous, capturedCurrent)) {
+        await Future<void>.delayed(workRelaxSessionGap);
+      }
+      await _voiceCoach?.handleSnapshot(previous, capturedCurrent);
+      _previousSnapshot = capturedCurrent;
+    });
   }
 
   @override
   void dispose() {
+    WakelockPlus.disable();
     _engine?.removeListener(_onTick);
-    _voiceCoach?.dispose();
+    final announceQueue = _announceQueue;
+    if (announceQueue != null) {
+      announceQueue.then((_) => _voiceCoach?.dispose());
+    } else {
+      _voiceCoach?.dispose();
+    }
     _soundCoach?.dispose();
     _engine?.dispose();
     super.dispose();
+  }
+
+  Future<void> _openSettings() async {
+    await showAppSettingsSheet(context);
   }
 
   void _togglePause() {
@@ -155,10 +184,10 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                       ),
                       if (!snap.isCompleted)
                         IconButton(
-                          onPressed: engine.skipExercise,
-                          tooltip: l10n.skipExercise,
+                          onPressed: _openSettings,
+                          tooltip: l10n.settingsTitle,
                           icon: Icon(
-                            Icons.chevron_right_rounded,
+                            Icons.settings_outlined,
                             color: Colors.white.withValues(alpha: 0.45),
                           ),
                         )

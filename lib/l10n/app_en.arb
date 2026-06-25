@@ -17,6 +17,10 @@
   "routineNotFound": "Routine not found.",
   "editTooltip": "Edit",
   "shareTooltip": "Share",
+  "rollbackTooltip": "Restore from server",
+  "rollbackConfirmMessage": "Restore this routine from the server?",
+  "rollbackSuccess": "Restored from server.",
+  "rollbackError": "Could not load data from the server.",
   "estimatedDuration": "Est. {duration}",
   "@estimatedDuration": {
     "placeholders": {
@@ -25,6 +29,7 @@
   },
   "exerciseListTitle": "Exercises",
   "start": "Start",
+  "startAll": "Start all",
   "labelPrepare": "Prepare",
   "labelWork": "Work",
   "labelRelax": "Relax",
@@ -41,6 +46,28 @@
     "placeholders": {
       "label": {"type": "String"},
       "seconds": {"type": "int"}
+    }
+  },
+  "phaseWithCountTiming": "{label} · {count} reps × {seconds}s",
+  "@phaseWithCountTiming": {
+    "placeholders": {
+      "label": {"type": "String"},
+      "count": {"type": "int"},
+      "seconds": {"type": "int"}
+    }
+  },
+  "phaseTimingModeDuration": "Duration",
+  "phaseTimingModeCount": "Count",
+  "labelPhaseCount": "Reps",
+  "labelSecondsPerRep": "Per rep",
+  "tapToSetPhaseCount": "Tap to set reps",
+  "countOrderAscending": "Ascending",
+  "countOrderDescending": "Descending",
+  "repCountProgress": "{current} / {total}",
+  "@repCountProgress": {
+    "placeholders": {
+      "current": {"type": "int"},
+      "total": {"type": "int"}
     }
   },
   "durationSeconds": "{seconds}s",

@@ -1,12 +1,15 @@
 import 'package:tabata_timer/l10n/app_localizations.dart';
 
 import '../models/exercise.dart';
+import '../models/exercise_phase.dart';
 import '../models/routine.dart';
+
+int phaseDurationSec(ExercisePhase phase) => phase.effectiveDurationSec;
 
 int repDurationSec(Exercise exercise) {
   return exercise.orderedPhases.fold(
     0,
-    (sum, phase) => sum + phase.durationSec,
+    (sum, phase) => sum + phaseDurationSec(phase),
   );
 }
 

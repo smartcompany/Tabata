@@ -49,4 +49,14 @@ abstract final class JsonField {
     }
     return value;
   }
+
+  static int? optionalInt(
+    Map<String, dynamic> json,
+    String key, {
+    int? min,
+    int? max,
+  }) {
+    if (!json.containsKey(key) || json[key] == null) return null;
+    return requiredInt(json, key, min: min, max: max);
+  }
 }

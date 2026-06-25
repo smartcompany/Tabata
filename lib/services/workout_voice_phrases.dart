@@ -7,6 +7,7 @@ class WorkoutVoicePhrases {
     required this.relax,
     required this.completed,
     required this.countdown,
+    required this.repCount,
   });
 
   factory WorkoutVoicePhrases.fromL10n(AppLocalizations l10n) {
@@ -21,6 +22,7 @@ class WorkoutVoicePhrases {
         1 => l10n.voiceCountOne,
         _ => '$seconds',
       },
+      repCount: (repNumber) => l10n.countReps(repNumber),
     );
   }
 
@@ -29,4 +31,5 @@ class WorkoutVoicePhrases {
   final String relax;
   final String completed;
   final String Function(int seconds) countdown;
+  final String Function(int repNumber) repCount;
 }

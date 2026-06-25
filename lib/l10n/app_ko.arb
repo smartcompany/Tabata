@@ -17,6 +17,10 @@
   "routineNotFound": "루틴을 찾을 수 없습니다.",
   "editTooltip": "편집",
   "shareTooltip": "공유",
+  "rollbackTooltip": "서버 데이터로 롤백",
+  "rollbackConfirmMessage": "서버 데이터로 롤백 하시겠습니까?",
+  "rollbackSuccess": "서버 데이터로 복원했습니다.",
+  "rollbackError": "서버에서 데이터를 불러오지 못했습니다.",
   "estimatedDuration": "예상 {duration}",
   "@estimatedDuration": {
     "placeholders": {
@@ -25,6 +29,7 @@
   },
   "exerciseListTitle": "운동 목록",
   "start": "시작",
+  "startAll": "전체 시작",
   "labelPrepare": "준비",
   "labelWork": "운동",
   "labelRelax": "이완",
@@ -41,6 +46,28 @@
     "placeholders": {
       "label": {"type": "String"},
       "seconds": {"type": "int"}
+    }
+  },
+  "phaseWithCountTiming": "{label} · {count}회 × {seconds}초",
+  "@phaseWithCountTiming": {
+    "placeholders": {
+      "label": {"type": "String"},
+      "count": {"type": "int"},
+      "seconds": {"type": "int"}
+    }
+  },
+  "phaseTimingModeDuration": "시간",
+  "phaseTimingModeCount": "카운트",
+  "labelPhaseCount": "회수",
+  "labelSecondsPerRep": "회당 시간",
+  "tapToSetPhaseCount": "탭하여 회수 설정",
+  "countOrderAscending": "순서",
+  "countOrderDescending": "역순",
+  "repCountProgress": "{current} / {total}",
+  "@repCountProgress": {
+    "placeholders": {
+      "current": {"type": "int"},
+      "total": {"type": "int"}
     }
   },
   "durationSeconds": "{seconds}초",

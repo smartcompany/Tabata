@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:tabata_timer/l10n/app_localizations.dart';
 
+import '../models/exercise_limits.dart';
 import '../models/exercise_phase.dart';
 import '../utils/exercise_formatter.dart';
 import 'duration_input_control.dart';
+import 'integer_input_control.dart';
 
 class ExercisePhaseEditorCard extends StatefulWidget {
   const ExercisePhaseEditorCard({
@@ -49,11 +51,22 @@ class _ExercisePhaseEditorCardState extends State<ExercisePhaseEditorCard> {
     super.dispose();
   }
 
-  void _emit({String? label, int? durationSec}) {
+  void _emit({
+    String? label,
+    int? durationSec,
+    PhaseTimingMode? timingMode,
+    int? countReps,
+    int? secondsPerRep,
+    CountOrder? countOrder,
+  }) {
     widget.onChanged(
       widget.phase.copyWith(
         label: label ?? _labelController.text.trim(),
         durationSec: durationSec ?? widget.phase.durationSec,
+        timingMode: timingMode ?? widget.phase.timingMode,
+        countReps: countReps ?? widget.phase.countReps,
+        secondsPerRep: secondsPerRep ?? widget.phase.secondsPerRep,
+        countOrder: countOrder ?? widget.phase.countOrder,
       ),
     );
   }
@@ -125,14 +138,70 @@ class _ExercisePhaseEditorCardState extends State<ExercisePhaseEditorCard> {
               },
               onChanged: (_) => _emit(),
             ),
+            if (widget.phase.kind == ExercisePhaseKind.work ||
+                widget.phase.kind == ExercisePhaseKind.relax) ...[
+              const SizedBox(height: 12),
+              SegmentedButton<PhaseTimingMode>(
+                segments: [
+                  ButtonSegment(
+                    value: PhaseTimingMode.duration,
+                    label: Text(l10n.phaseTimingModeDuration),
+                  ),
+                  ButtonSegment(
+                    value: PhaseTimingMode.count,
+                    label: Text(l10n.phaseTimingModeCount),
+                  ),
+                ],
+                selected: {widget.phase.timingMode},
+                onSelectionChanged: (selection) {
+                  _emit(timingMode: selection.first);
+                },
+              ),
+            ],
             const SizedBox(height: 8),
-            DurationInputControl(
-              valueSec: widget.phase.durationSec,
-              minSec: 1,
-              maxSec: 120,
-              pickerTitle: kindLabel,
-              onChanged: (value) => _emit(durationSec: value),
-            ),
+            if (widget.phase.isCountMode) ...[
+              IntegerInputControl(
+                value: widget.phase.countReps,
+                min: ExerciseLimits.minCountReps,
+                max: ExerciseLimits.maxCountReps,
+                pickerTitle: l10n.labelPhaseCount,
+                unitLabel: l10n.unitReps,
+                hintText: l10n.tapToSetPhaseCount,
+                onChanged: (value) => _emit(countReps: value),
+              ),
+              const SizedBox(height: 8),
+              DurationInputControl(
+                valueSec: widget.phase.secondsPerRep,
+                minSec: ExerciseLimits.minSecondsPerRep,
+                maxSec: ExerciseLimits.maxSecondsPerRep,
+                pickerTitle: l10n.labelSecondsPerRep,
+                onChanged: (value) => _emit(secondsPerRep: value),
+              ),
+              const SizedBox(height: 8),
+              SegmentedButton<CountOrder>(
+                segments: [
+                  ButtonSegment(
+                    value: CountOrder.ascending,
+                    label: Text(l10n.countOrderAscending),
+                  ),
+                  ButtonSegment(
+                    value: CountOrder.descending,
+                    label: Text(l10n.countOrderDescending),
+                  ),
+                ],
+                selected: {widget.phase.countOrder},
+                onSelectionChanged: (selection) {
+                  _emit(countOrder: selection.first);
+                },
+              ),
+            ] else
+              DurationInputControl(
+                valueSec: widget.phase.durationSec,
+                minSec: ExerciseLimits.minWorkRelaxDurationSec,
+                maxSec: 120,
+                pickerTitle: kindLabel,
+                onChanged: (value) => _emit(durationSec: value),
+              ),
           ],
         ),
       ),

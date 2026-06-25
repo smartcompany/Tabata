@@ -1,33 +1,55 @@
 import '../engine/workout_timer_engine.dart';
 
-enum VoiceCueKind { phaseStart, countdown, completed }
+enum VoiceCueKind { exerciseName, phaseStart, countdown, repCount, completed }
 
 class VoiceCue {
   const VoiceCue._(
     this.kind, {
     this.phaseKind,
     this.label,
+    this.phaseDurationSec,
     this.seconds,
+    this.repNumber,
+    this.totalReps,
+    this.exerciseName,
   });
+
+  const VoiceCue.exerciseName(String name)
+      : this._(VoiceCueKind.exerciseName, exerciseName: name);
 
   const VoiceCue.phaseStart({
     required WorkoutPhaseKind phaseKind,
     required String label,
+    required int phaseDurationSec,
   }) : this._(
           VoiceCueKind.phaseStart,
           phaseKind: phaseKind,
           label: label,
+          phaseDurationSec: phaseDurationSec,
         );
 
   const VoiceCue.countdown(int seconds)
       : this._(VoiceCueKind.countdown, seconds: seconds);
+
+  const VoiceCue.repCount({
+    required int repNumber,
+    required int totalReps,
+  }) : this._(
+          VoiceCueKind.repCount,
+          repNumber: repNumber,
+          totalReps: totalReps,
+        );
 
   const VoiceCue.completed() : this._(VoiceCueKind.completed);
 
   final VoiceCueKind kind;
   final WorkoutPhaseKind? phaseKind;
   final String? label;
+  final int? phaseDurationSec;
   final int? seconds;
+  final int? repNumber;
+  final int? totalReps;
+  final String? exerciseName;
 }
 
 class WorkoutVoicePlanner {
@@ -46,14 +68,43 @@ class WorkoutVoicePlanner {
 
     final cues = <VoiceCue>[];
 
+    if (_exerciseChanged(previous, current) &&
+        current.exerciseName.isNotEmpty) {
+      cues.add(VoiceCue.exerciseName(current.exerciseName));
+    }
+
     if (_phaseChanged(previous, current)) {
-      cues.add(
-        VoiceCue.phaseStart(
-          phaseKind: current.phase.kind,
-          label: current.phase.label,
-        ),
-      );
+      if (current.phase.isCountRep) {
+        final sequenceStart = previous == null ||
+            previous.isCompleted ||
+            previous.phase.phaseGroupKey != current.phase.phaseGroupKey;
+        if (sequenceStart) {
+          cues.add(
+            VoiceCue.phaseStart(
+              phaseKind: current.phase.kind,
+              label: current.phase.label,
+              phaseDurationSec:
+                  current.phase.totalCountReps * current.phase.durationSec,
+            ),
+          );
+        }
+        cues.add(
+          VoiceCue.repCount(
+            repNumber: current.phase.countRepNumber,
+            totalReps: current.phase.totalCountReps,
+          ),
+        );
+      } else {
+        cues.add(
+          VoiceCue.phaseStart(
+            phaseKind: current.phase.kind,
+            label: current.phase.label,
+            phaseDurationSec: current.phase.durationSec,
+          ),
+        );
+      }
     } else if (previous != null &&
+        !current.phase.isCountRep &&
         _shouldCountdown(
           previousRemaining: previous.remainingSec,
           currentRemaining: current.remainingSec,
@@ -72,10 +123,24 @@ class WorkoutVoicePlanner {
     if (previous == null || previous.isCompleted) return true;
     if (previous.phase.kind != current.phase.kind) return true;
     if (previous.phase.label != current.phase.label) return true;
+    if (previous.phase.phaseGroupKey != current.phase.phaseGroupKey) {
+      return true;
+    }
+    if (previous.phase.countRepNumber != current.phase.countRepNumber) {
+      return true;
+    }
     if (previous.exerciseIndex != current.exerciseIndex) return true;
     if (previous.setIndex != current.setIndex) return true;
     if (previous.repIndex != current.repIndex) return true;
     return false;
+  }
+
+  bool _exerciseChanged(
+    WorkoutTimerSnapshot? previous,
+    WorkoutTimerSnapshot current,
+  ) {
+    if (previous == null || previous.isCompleted) return true;
+    return previous.exerciseIndex != current.exerciseIndex;
   }
 
   bool _shouldCountdown({

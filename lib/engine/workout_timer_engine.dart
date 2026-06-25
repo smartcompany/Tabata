@@ -14,11 +14,19 @@ class WorkoutPhase {
     required this.kind,
     required this.label,
     required this.durationSec,
+    this.countRepNumber = 0,
+    this.totalCountReps = 0,
+    this.phaseGroupKey = '',
   });
 
   final WorkoutPhaseKind kind;
   final String label;
   final int durationSec;
+  final int countRepNumber;
+  final int totalCountReps;
+  final String phaseGroupKey;
+
+  bool get isCountRep => countRepNumber > 0 && totalCountReps > 0;
 }
 
 class WorkoutTimerSnapshot {
@@ -193,20 +201,11 @@ class WorkoutTimerEngine extends ChangeNotifier {
             prepareUsed = true;
           }
           for (final step in exercise.orderedPhases) {
-            if (step.durationSec <= 0) continue;
-            _phases.add(
-              _QueuedPhase(
-                exerciseIndex: ei,
-                setIndex: set,
-                repIndex: rep,
-                phase: WorkoutPhase(
-                  kind: step.kind == ExercisePhaseKind.work
-                      ? WorkoutPhaseKind.work
-                      : WorkoutPhaseKind.relax,
-                  label: step.label,
-                  durationSec: step.durationSec,
-                ),
-              ),
+            _enqueuePhase(
+              exerciseIndex: ei,
+              setIndex: set,
+              repIndex: rep,
+              step: step,
             );
           }
         }
@@ -215,6 +214,55 @@ class WorkoutTimerEngine extends ChangeNotifier {
     if (_phases.isNotEmpty) {
       _remainingSec = _phases.first.phase.durationSec;
     }
+  }
+
+  void _enqueuePhase({
+    required int exerciseIndex,
+    required int setIndex,
+    required int repIndex,
+    required ExercisePhase step,
+  }) {
+    if (step.isCountMode) {
+      if (step.countReps <= 0 || step.secondsPerRep <= 0) return;
+      final groupKey = '${exerciseIndex}_${step.id}_${setIndex}_$repIndex';
+      final phaseKind = step.kind == ExercisePhaseKind.work
+          ? WorkoutPhaseKind.work
+          : WorkoutPhaseKind.relax;
+      for (final n in step.countRepSequence) {
+        _phases.add(
+          _QueuedPhase(
+            exerciseIndex: exerciseIndex,
+            setIndex: setIndex,
+            repIndex: repIndex,
+            phase: WorkoutPhase(
+              kind: phaseKind,
+              label: step.label,
+              durationSec: step.secondsPerRep,
+              countRepNumber: n,
+              totalCountReps: step.countReps,
+              phaseGroupKey: groupKey,
+            ),
+          ),
+        );
+      }
+      return;
+    }
+
+    if (step.effectiveDurationSec <= 0) return;
+    _phases.add(
+      _QueuedPhase(
+        exerciseIndex: exerciseIndex,
+        setIndex: setIndex,
+        repIndex: repIndex,
+        phase: WorkoutPhase(
+          kind: step.kind == ExercisePhaseKind.work
+              ? WorkoutPhaseKind.work
+              : WorkoutPhaseKind.relax,
+          label: step.label,
+          durationSec: step.durationSec,
+        ),
+      ),
+    );
   }
 
   WorkoutTimerSnapshot _createSnapshot({bool completed = false}) {

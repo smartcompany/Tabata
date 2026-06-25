@@ -63,6 +63,41 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
     await _shareService.share(routine);
   }
 
+  Future<void> _rollback() async {
+    final l10n = AppLocalizations.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: Text(l10n.rollbackConfirmMessage),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(l10n.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(l10n.confirm),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+
+    try {
+      await widget.repository.rollbackToServer(widget.routineId);
+      if (!mounted) return;
+      _reload();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.rollbackSuccess)),
+      );
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.rollbackError)),
+      );
+    }
+  }
+
   void _openWorkout(Routine routine) {
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -101,6 +136,12 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
       appBar: AppBar(
         title: Text(routine.title),
         actions: [
+          if (widget.repository.isServerProfile(widget.routineId))
+            IconButton(
+              onPressed: _rollback,
+              icon: const Icon(Icons.restore),
+              tooltip: l10n.rollbackTooltip,
+            ),
           IconButton(
             onPressed: _edit,
             icon: const Icon(Icons.edit_outlined),
@@ -114,7 +155,7 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
         ],
       ),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 8, 20, 100),
+        padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
         children: [
           if (routine.description.isNotEmpty) ...[
             Text(
@@ -125,9 +166,24 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
           ],
           EstimatedDurationCard(totalSec: totalSec),
           const SizedBox(height: 20),
-          Text(
-            l10n.exerciseListTitle,
-            style: Theme.of(context).textTheme.titleMedium,
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  l10n.exerciseListTitle,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ),
+              FilledButton.icon(
+                onPressed: _start,
+                icon: const Icon(Icons.play_arrow, size: 18),
+                label: Text(l10n.startAll),
+                style: FilledButton.styleFrom(
+                  visualDensity: VisualDensity.compact,
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 12),
           ...exercises.map(
@@ -138,11 +194,6 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
             ),
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _start,
-        icon: const Icon(Icons.play_arrow),
-        label: Text(l10n.start),
       ),
     );
   }

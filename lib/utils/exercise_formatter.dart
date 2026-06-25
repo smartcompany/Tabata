@@ -25,11 +25,23 @@ abstract final class ExerciseFormatter {
     return l10n.phaseWithDuration(label, seconds);
   }
 
+  static String phaseTimingSummary(
+    ExercisePhase phase,
+    AppLocalizations l10n,
+  ) {
+    if (phase.isCountMode) {
+      return l10n.phaseWithCountTiming(
+        phase.label,
+        phase.countReps,
+        phase.secondsPerRep,
+      );
+    }
+    return phaseWithDuration(phase.label, phase.durationSec, l10n);
+  }
+
   static String phasesSummary(Exercise exercise, AppLocalizations l10n) {
     return exercise.orderedPhases
-        .map(
-          (phase) => phaseWithDuration(phase.label, phase.durationSec, l10n),
-        )
+        .map((phase) => phaseTimingSummary(phase, l10n))
         .join(' → ');
   }
 

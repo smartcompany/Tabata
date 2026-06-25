@@ -7,6 +7,25 @@ import '../models/routine.dart';
 
 const _uuid = Uuid();
 
+ExercisePhase _countPhase({
+  required ExercisePhaseKind kind,
+  required String label,
+  required int order,
+  required int countReps,
+  required int secondsPerRep,
+}) {
+  return ExercisePhase(
+    id: _uuid.v4(),
+    kind: kind,
+    label: label,
+    durationSec: secondsPerRep,
+    order: order,
+    timingMode: PhaseTimingMode.count,
+    countReps: countReps,
+    secondsPerRep: secondsPerRep,
+  );
+}
+
 Routine createRotatorCuffRoutine() {
   return Routine(
     id: 'rotator-cuff-seed',
@@ -21,22 +40,22 @@ Routine createRotatorCuffRoutine() {
         order: 0,
         prepare: const TimedPhase(durationSec: 5),
         phases: [
-          ExercisePhase(
-            id: _uuid.v4(),
+          _countPhase(
             kind: ExercisePhaseKind.work,
             label: '팔을 벌리기',
-            durationSec: 8,
             order: 0,
+            countReps: 10,
+            secondsPerRep: 8,
           ),
-          ExercisePhase(
-            id: _uuid.v4(),
+          _countPhase(
             kind: ExercisePhaseKind.relax,
             label: '팔을 오므리기',
-            durationSec: 8,
             order: 1,
+            countReps: 10,
+            secondsPerRep: 8,
           ),
         ],
-        reps: 10,
+        reps: 1,
         sets: 5,
       ),
       Exercise(
@@ -46,22 +65,22 @@ Routine createRotatorCuffRoutine() {
         order: 1,
         prepare: const TimedPhase(durationSec: 5),
         phases: [
-          ExercisePhase(
-            id: _uuid.v4(),
+          _countPhase(
             kind: ExercisePhaseKind.work,
             label: '팔꿈치를 폈다 올리기',
-            durationSec: 5,
             order: 0,
+            countReps: 5,
+            secondsPerRep: 5,
           ),
-          ExercisePhase(
-            id: _uuid.v4(),
+          _countPhase(
             kind: ExercisePhaseKind.relax,
             label: '팔꿈치를 내리기',
-            durationSec: 5,
             order: 1,
+            countReps: 5,
+            secondsPerRep: 5,
           ),
         ],
-        reps: 5,
+        reps: 1,
         sets: 5,
       ),
       Exercise(

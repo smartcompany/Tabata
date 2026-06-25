@@ -21,7 +21,7 @@ class RoutineApiClient {
 
   Uri get _baseUri => Uri.parse(ApiConfig.profileApiBaseUrl);
 
-  Future<List<Routine>> fetchAllProfiles() async {
+  Future<List<String>> fetchProfileIds() async {
     final listUri = _baseUri.replace(path: '/api/profiles');
     final listResponse = await _client.get(listUri);
     if (listResponse.statusCode != 200) {
@@ -32,15 +32,17 @@ class RoutineApiClient {
 
     final listBody = jsonDecode(listResponse.body) as Map<String, dynamic>;
     final summaries = listBody['profiles'] as List<dynamic>? ?? [];
-    if (summaries.isEmpty) return [];
+    return [
+      for (final summary in summaries)
+        (summary as Map<String, dynamic>)['id'] as String,
+    ];
+  }
 
-    final routines = await Future.wait(
-      summaries.map((summary) async {
-        final id = (summary as Map<String, dynamic>)['id'] as String;
-        return fetchProfile(id);
-      }),
-    );
-    return routines;
+  Future<List<Routine>> fetchAllProfiles() async {
+    final ids = await fetchProfileIds();
+    if (ids.isEmpty) return [];
+
+    return Future.wait(ids.map(fetchProfile));
   }
 
   Future<Routine> fetchProfile(String id) async {

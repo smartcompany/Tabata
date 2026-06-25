@@ -44,6 +44,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shareTooltip => 'Share';
 
   @override
+  String get rollbackTooltip => 'Restore from server';
+
+  @override
+  String get rollbackConfirmMessage => 'Restore this routine from the server?';
+
+  @override
+  String get rollbackSuccess => 'Restored from server.';
+
+  @override
+  String get rollbackError => 'Could not load data from the server.';
+
+  @override
   String estimatedDuration(String duration) {
     return 'Est. $duration';
   }
@@ -53,6 +65,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get start => 'Start';
+
+  @override
+  String get startAll => 'Start all';
 
   @override
   String get labelPrepare => 'Prepare';
@@ -77,6 +92,37 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String phaseWithDuration(String label, int seconds) {
     return '$label · ${seconds}s';
+  }
+
+  @override
+  String phaseWithCountTiming(String label, int count, int seconds) {
+    return '$label · $count reps × ${seconds}s';
+  }
+
+  @override
+  String get phaseTimingModeDuration => 'Duration';
+
+  @override
+  String get phaseTimingModeCount => 'Count';
+
+  @override
+  String get labelPhaseCount => 'Reps';
+
+  @override
+  String get labelSecondsPerRep => 'Per rep';
+
+  @override
+  String get tapToSetPhaseCount => 'Tap to set reps';
+
+  @override
+  String get countOrderAscending => 'Ascending';
+
+  @override
+  String get countOrderDescending => 'Descending';
+
+  @override
+  String repCountProgress(int current, int total) {
+    return '$current / $total';
   }
 
   @override

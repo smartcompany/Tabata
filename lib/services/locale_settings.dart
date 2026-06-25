@@ -13,6 +13,13 @@ class LocaleSettings {
 
   static const defaultLocale = Locale('en');
 
+  static final _listeners = <VoidCallback>[];
+
+  static void addListener(VoidCallback listener) => _listeners.add(listener);
+
+  static void removeListener(VoidCallback listener) =>
+      _listeners.remove(listener);
+
   Locale? get locale {
     final code = _prefs.getString(_keyLanguageCode);
     if (code == null || code.isEmpty) return null;
@@ -23,9 +30,12 @@ class LocaleSettings {
   Future<void> setLocale(Locale? locale) async {
     if (locale == null) {
       await _prefs.remove(_keyLanguageCode);
-      return;
+    } else {
+      await _prefs.setString(_keyLanguageCode, locale.languageCode);
     }
-    await _prefs.setString(_keyLanguageCode, locale.languageCode);
+    for (final listener in List<VoidCallback>.from(_listeners)) {
+      listener();
+    }
   }
 
   static Future<LocaleSettings> load() async {

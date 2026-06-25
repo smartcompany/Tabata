@@ -85,6 +85,29 @@ class _HomeScreenState extends State<HomeScreen> {
     _load();
   }
 
+  void _onReorder(int oldIndex, int newIndex) {
+    setState(() {
+      if (newIndex > oldIndex) newIndex--;
+      final updated = List<Routine>.from(_routines);
+      final item = updated.removeAt(oldIndex);
+      updated.insert(newIndex, item);
+      _routines = updated;
+    });
+    widget.repository.saveListOrder(_routines.map((routine) => routine.id).toList());
+  }
+
+  Future<void> _openRoutine(Routine routine) async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => RoutineDetailScreen(
+          repository: widget.repository,
+          routineId: routine.id,
+        ),
+      ),
+    );
+    _load();
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -93,11 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text(l10n.appTitle),
         actions: [
           IconButton(
-            onPressed: () => showAppSettingsSheet(
-              context,
-              localeSettings: widget.localeSettings,
-              onLocaleChanged: widget.onLocaleChanged,
-            ),
+            onPressed: () => showAppSettingsSheet(context),
             icon: const Icon(Icons.settings_outlined),
             tooltip: l10n.settingsTitle,
           ),
@@ -123,70 +142,80 @@ class _HomeScreenState extends State<HomeScreen> {
               onRefresh: _load,
               child: ListView(
                 physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.fromLTRB(
+                  16,
+                  12,
+                  16,
+                  88 + MediaQuery.paddingOf(context).bottom,
+                ),
                 children: [
-                  if (_loadError != null)
-                    Card(
-                      color: Theme.of(context).colorScheme.errorContainer,
-                      child: ListTile(
-                        title: Text(_loadError!),
-                        trailing: TextButton(
-                          onPressed: _load,
-                          child: Text(l10n.retry),
-                        ),
-                      ),
+                  if (_loadError != null) ...[
+                    _ErrorBanner(
+                      message: _loadError!,
+                      onRetry: _load,
+                      retryLabel: l10n.retry,
                     ),
+                    const SizedBox(height: 12),
+                  ],
                   if (_routines.isEmpty)
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 48),
                       child: Center(child: Text(l10n.noRoutines)),
                     )
                   else
-                    ...List.generate(_routines.length, (index) {
-                      final routine = _routines[index];
-                      final duration = routineDurationSec(routine);
-                      return Padding(
-                        padding: EdgeInsets.only(
-                          bottom: index == _routines.length - 1 ? 0 : 12,
-                        ),
-                        child: Card(
-                          child: ListTile(
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 12,
-                            ),
-                            title: Text(
-                              routine.title,
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
+                    ReorderableListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      buildDefaultDragHandles: false,
+                      itemCount: _routines.length,
+                      onReorder: _onReorder,
+                      itemBuilder: (context, index) {
+                        final routine = _routines[index];
+                        final duration = routineDurationSec(routine);
+                        return Padding(
+                          key: ValueKey(routine.id),
+                          padding: EdgeInsets.only(
+                            bottom: index == _routines.length - 1 ? 0 : 12,
+                          ),
+                          child: Card(
+                            child: ListTile(
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 12,
                               ),
-                            ),
-                            subtitle: Padding(
-                              padding: const EdgeInsets.only(top: 6),
-                              child: Text(
-                                l10n.routineCountDuration(
-                                  routine.orderedExercises.length,
-                                  formatDurationShort(duration, l10n),
+                              leading: ReorderableDragStartListener(
+                                index: index,
+                                child: Icon(
+                                  Icons.drag_handle,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .outline
+                                      .withValues(alpha: 0.7),
                                 ),
                               ),
-                            ),
-                            trailing: const Icon(Icons.chevron_right),
-                            onTap: () async {
-                              await Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) => RoutineDetailScreen(
-                                    repository: widget.repository,
-                                    routineId: routine.id,
+                              title: Text(
+                                routine.title,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              subtitle: Padding(
+                                padding: const EdgeInsets.only(top: 6),
+                                child: Text(
+                                  l10n.routineCountDuration(
+                                    routine.orderedExercises.length,
+                                    formatDurationShort(duration, l10n),
                                   ),
                                 ),
-                              );
-                              _load();
-                            },
+                              ),
+                              trailing: const Icon(Icons.chevron_right),
+                              onTap: () => _openRoutine(routine),
+                            ),
                           ),
-                        ),
-                      );
-                    }),
+                        );
+                      },
+                    ),
                 ],
               ),
             ),
@@ -194,6 +223,32 @@ class _HomeScreenState extends State<HomeScreen> {
         onPressed: _createRoutine,
         icon: const Icon(Icons.add),
         label: Text(l10n.createRoutine),
+      ),
+    );
+  }
+}
+
+class _ErrorBanner extends StatelessWidget {
+  const _ErrorBanner({
+    required this.message,
+    required this.onRetry,
+    required this.retryLabel,
+  });
+
+  final String message;
+  final VoidCallback onRetry;
+  final String retryLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: Theme.of(context).colorScheme.errorContainer,
+      child: ListTile(
+        title: Text(message),
+        trailing: TextButton(
+          onPressed: onRetry,
+          child: Text(retryLabel),
+        ),
       ),
     );
   }

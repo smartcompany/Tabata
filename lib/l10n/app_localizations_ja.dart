@@ -44,6 +44,18 @@ class AppLocalizationsJa extends AppLocalizations {
   String get shareTooltip => '共有';
 
   @override
+  String get rollbackTooltip => 'サーバーから復元';
+
+  @override
+  String get rollbackConfirmMessage => 'サーバーのデータに戻しますか？';
+
+  @override
+  String get rollbackSuccess => 'サーバーのデータに復元しました。';
+
+  @override
+  String get rollbackError => 'サーバーからデータを読み込めませんでした。';
+
+  @override
   String estimatedDuration(String duration) {
     return '目安 $duration';
   }
@@ -53,6 +65,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get start => '開始';
+
+  @override
+  String get startAll => '全体開始';
 
   @override
   String get labelPrepare => '準備';
@@ -77,6 +92,37 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String phaseWithDuration(String label, int seconds) {
     return '$label · $seconds 秒';
+  }
+
+  @override
+  String phaseWithCountTiming(String label, int count, int seconds) {
+    return '$label · $count 回 × $seconds 秒';
+  }
+
+  @override
+  String get phaseTimingModeDuration => '時間';
+
+  @override
+  String get phaseTimingModeCount => 'カウント';
+
+  @override
+  String get labelPhaseCount => '回数';
+
+  @override
+  String get labelSecondsPerRep => '1 回あたり';
+
+  @override
+  String get tapToSetPhaseCount => 'タップして回数を設定';
+
+  @override
+  String get countOrderAscending => '順';
+
+  @override
+  String get countOrderDescending => '逆';
+
+  @override
+  String repCountProgress(int current, int total) {
+    return '$current / $total';
   }
 
   @override

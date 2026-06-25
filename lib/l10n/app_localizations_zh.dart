@@ -44,6 +44,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get shareTooltip => '分享';
 
   @override
+  String get rollbackTooltip => '从服务器恢复';
+
+  @override
+  String get rollbackConfirmMessage => '要从服务器数据恢复吗？';
+
+  @override
+  String get rollbackSuccess => '已从服务器恢复。';
+
+  @override
+  String get rollbackError => '无法从服务器加载数据。';
+
+  @override
   String estimatedDuration(String duration) {
     return '预计 $duration';
   }
@@ -53,6 +65,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get start => '开始';
+
+  @override
+  String get startAll => '全部开始';
 
   @override
   String get labelPrepare => '准备';
@@ -77,6 +92,37 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String phaseWithDuration(String label, int seconds) {
     return '$label · $seconds 秒';
+  }
+
+  @override
+  String phaseWithCountTiming(String label, int count, int seconds) {
+    return '$label · $count 次 × $seconds 秒';
+  }
+
+  @override
+  String get phaseTimingModeDuration => '时间';
+
+  @override
+  String get phaseTimingModeCount => '计数';
+
+  @override
+  String get labelPhaseCount => '次数';
+
+  @override
+  String get labelSecondsPerRep => '每次';
+
+  @override
+  String get tapToSetPhaseCount => '点击设置次数';
+
+  @override
+  String get countOrderAscending => '正序';
+
+  @override
+  String get countOrderDescending => '倒序';
+
+  @override
+  String repCountProgress(int current, int total) {
+    return '$current / $total';
   }
 
   @override

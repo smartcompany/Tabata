@@ -168,6 +168,30 @@ abstract class AppLocalizations {
   /// **'Share'**
   String get shareTooltip;
 
+  /// No description provided for @rollbackTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore from server'**
+  String get rollbackTooltip;
+
+  /// No description provided for @rollbackConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore this routine from the server?'**
+  String get rollbackConfirmMessage;
+
+  /// No description provided for @rollbackSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Restored from server.'**
+  String get rollbackSuccess;
+
+  /// No description provided for @rollbackError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load data from the server.'**
+  String get rollbackError;
+
   /// No description provided for @estimatedDuration.
   ///
   /// In en, this message translates to:
@@ -185,6 +209,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Start'**
   String get start;
+
+  /// No description provided for @startAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Start all'**
+  String get startAll;
 
   /// No description provided for @labelPrepare.
   ///
@@ -227,6 +257,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{label} · {seconds}s'**
   String phaseWithDuration(String label, int seconds);
+
+  /// No description provided for @phaseWithCountTiming.
+  ///
+  /// In en, this message translates to:
+  /// **'{label} · {count} reps × {seconds}s'**
+  String phaseWithCountTiming(String label, int count, int seconds);
+
+  /// No description provided for @phaseTimingModeDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration'**
+  String get phaseTimingModeDuration;
+
+  /// No description provided for @phaseTimingModeCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Count'**
+  String get phaseTimingModeCount;
+
+  /// No description provided for @labelPhaseCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Reps'**
+  String get labelPhaseCount;
+
+  /// No description provided for @labelSecondsPerRep.
+  ///
+  /// In en, this message translates to:
+  /// **'Per rep'**
+  String get labelSecondsPerRep;
+
+  /// No description provided for @tapToSetPhaseCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to set reps'**
+  String get tapToSetPhaseCount;
+
+  /// No description provided for @countOrderAscending.
+  ///
+  /// In en, this message translates to:
+  /// **'Ascending'**
+  String get countOrderAscending;
+
+  /// No description provided for @countOrderDescending.
+  ///
+  /// In en, this message translates to:
+  /// **'Descending'**
+  String get countOrderDescending;
+
+  /// No description provided for @repCountProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{current} / {total}'**
+  String repCountProgress(int current, int total);
 
   /// No description provided for @durationSeconds.
   ///

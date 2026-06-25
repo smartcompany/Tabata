@@ -37,6 +37,13 @@ class _TabataAppState extends State<TabataApp> {
   void initState() {
     super.initState();
     _localeOverride = widget.localeSettings.locale;
+    LocaleSettings.addListener(_onLocaleChanged);
+  }
+
+  @override
+  void dispose() {
+    LocaleSettings.removeListener(_onLocaleChanged);
+    super.dispose();
   }
 
   void _onLocaleChanged() {
@@ -71,6 +78,15 @@ class _TabataAppState extends State<TabataApp> {
         useMaterial3: true,
         appBarTheme: const AppBarTheme(centerTitle: true),
       ),
+      builder: (context, child) {
+        if (child == null) return const SizedBox.shrink();
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(
+            textScaler: const TextScaler.linear(1.0),
+          ),
+          child: child,
+        );
+      },
       home: HomeScreen(
         repository: widget.repository,
         localeSettings: widget.localeSettings,

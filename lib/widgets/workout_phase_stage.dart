@@ -50,6 +50,10 @@ class WorkoutPhaseTheme {
 
 String workoutPhaseIdentity(WorkoutTimerSnapshot snap) {
   if (snap.isCompleted) return 'completed';
+  if (snap.phase.isCountRep) {
+    return '${snap.exerciseIndex}-${snap.setIndex}-${snap.repIndex}-'
+        'count-${snap.phase.phaseGroupKey}';
+  }
   return '${snap.exerciseIndex}-${snap.setIndex}-${snap.repIndex}-'
       '${snap.phase.kind.name}-${snap.phase.label}';
 }
@@ -512,6 +516,7 @@ class _MorphingPhaseContent extends StatelessWidget {
     final showPhaseLabel = phase.kind != WorkoutPhaseKind.completed &&
         phase.label.isNotEmpty &&
         phase.label != phaseTitle;
+    final isCountRep = phase.isCountRep;
     final showTimer =
         phase.kind != WorkoutPhaseKind.completed && phase.durationSec > 0;
 
@@ -558,7 +563,51 @@ class _MorphingPhaseContent extends StatelessWidget {
               ),
             ),
           ],
-          if (showTimer) ...[
+          if (isCountRep) ...[
+            SizedBox(height: _lerp(8, 20)),
+            Text(
+              '${phase.countRepNumber}',
+              style: TextStyle(
+                color: theme.glowColor,
+                fontSize: _lerp(36, 72),
+                height: 1,
+                fontWeight: FontWeight.w300,
+                fontFeatures: const [FontFeature.tabularFigures()],
+                shadows: [
+                  Shadow(
+                    color: theme.glowColor.withValues(alpha: 0.65),
+                    blurRadius: 24,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              l10n.repCountProgress(
+                phase.countRepNumber,
+                phase.totalCountReps,
+              ),
+              style: TextStyle(
+                color: Colors.white.withValues(alpha: 0.55),
+                fontSize: _lerp(14, 18),
+                fontWeight: FontWeight.w500,
+                fontFeatures: const [FontFeature.tabularFigures()],
+              ),
+            ),
+          ],
+          if (showTimer && isCountRep) ...[
+            SizedBox(height: _lerp(6, 12)),
+            Text(
+              formatDurationClock(remainingSec),
+              style: TextStyle(
+                color: theme.glowColor.withValues(alpha: 0.75),
+                fontSize: _lerp(18, 28),
+                height: 1,
+                fontWeight: FontWeight.w300,
+                fontFeatures: const [FontFeature.tabularFigures()],
+              ),
+            ),
+          ] else if (showTimer) ...[
             SizedBox(height: _lerp(8, 20)),
             _GlowingTimer(
               remainingSec: remainingSec,

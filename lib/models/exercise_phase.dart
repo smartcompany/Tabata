@@ -20,6 +20,34 @@ enum ExercisePhaseKind {
   String toJson() => name;
 }
 
+enum PhaseTimingMode {
+  duration,
+  count;
+
+  static PhaseTimingMode fromJson(String? value) {
+    return switch (value) {
+      'count' => PhaseTimingMode.count,
+      _ => PhaseTimingMode.duration,
+    };
+  }
+
+  String toJson() => name;
+}
+
+enum CountOrder {
+  ascending,
+  descending;
+
+  static CountOrder fromJson(String? value) {
+    return switch (value) {
+      'descending' => CountOrder.descending,
+      _ => CountOrder.ascending,
+    };
+  }
+
+  String toJson() => name;
+}
+
 class ExercisePhase {
   const ExercisePhase({
     required this.id,
@@ -27,6 +55,10 @@ class ExercisePhase {
     required this.label,
     required this.durationSec,
     required this.order,
+    this.timingMode = PhaseTimingMode.duration,
+    this.countReps = ExerciseLimits.defaultCountReps,
+    this.secondsPerRep = ExerciseLimits.defaultSecondsPerRep,
+    this.countOrder = CountOrder.ascending,
   });
 
   final String id;
@@ -34,16 +66,51 @@ class ExercisePhase {
   final String label;
   final int durationSec;
   final int order;
+  final PhaseTimingMode timingMode;
+  final int countReps;
+  final int secondsPerRep;
+  final CountOrder countOrder;
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'kind': kind.toJson(),
-        'label': label,
-        'durationSec': durationSec,
-        'order': order,
-      };
+  bool get isCountMode => timingMode == PhaseTimingMode.count;
+
+  List<int> get countRepSequence {
+    if (!isCountMode || countReps <= 0) return const [];
+    if (countOrder == CountOrder.descending) {
+      return [for (var n = countReps; n >= 1; n--) n];
+    }
+    return [for (var n = 1; n <= countReps; n++) n];
+  }
+
+  int get effectiveDurationSec {
+    if (isCountMode) {
+      return countReps * secondsPerRep;
+    }
+    return durationSec;
+  }
+
+  Map<String, dynamic> toJson() {
+    final json = <String, dynamic>{
+      'id': id,
+      'kind': kind.toJson(),
+      'label': label,
+      'durationSec': durationSec,
+      'order': order,
+    };
+    if (isCountMode) {
+      json['timingMode'] = timingMode.toJson();
+      json['countReps'] = countReps;
+      json['secondsPerRep'] = secondsPerRep;
+      if (countOrder == CountOrder.descending) {
+        json['countOrder'] = countOrder.toJson();
+      }
+    }
+    return json;
+  }
 
   factory ExercisePhase.fromJson(Map<String, dynamic> json) {
+    final timingMode = PhaseTimingMode.fromJson(
+      JsonField.optionalString(json, 'timingMode'),
+    );
     return ExercisePhase(
       id: JsonField.requiredString(json, 'id'),
       kind: ExercisePhaseKind.fromJson(JsonField.requiredString(json, 'kind')),
@@ -54,6 +121,22 @@ class ExercisePhase {
         min: ExerciseLimits.minWorkRelaxDurationSec,
       ),
       order: JsonField.requiredInt(json, 'order', min: 0),
+      timingMode: timingMode,
+      countReps: JsonField.optionalInt(
+            json,
+            'countReps',
+            min: ExerciseLimits.minCountReps,
+          ) ??
+          ExerciseLimits.defaultCountReps,
+      secondsPerRep: JsonField.optionalInt(
+            json,
+            'secondsPerRep',
+            min: ExerciseLimits.minSecondsPerRep,
+          ) ??
+          ExerciseLimits.defaultSecondsPerRep,
+      countOrder: CountOrder.fromJson(
+        JsonField.optionalString(json, 'countOrder'),
+      ),
     );
   }
 
@@ -63,6 +146,10 @@ class ExercisePhase {
     String? label,
     int? durationSec,
     int? order,
+    PhaseTimingMode? timingMode,
+    int? countReps,
+    int? secondsPerRep,
+    CountOrder? countOrder,
   }) {
     return ExercisePhase(
       id: id ?? this.id,
@@ -70,6 +157,10 @@ class ExercisePhase {
       label: label ?? this.label,
       durationSec: durationSec ?? this.durationSec,
       order: order ?? this.order,
+      timingMode: timingMode ?? this.timingMode,
+      countReps: countReps ?? this.countReps,
+      secondsPerRep: secondsPerRep ?? this.secondsPerRep,
+      countOrder: countOrder ?? this.countOrder,
     );
   }
 }

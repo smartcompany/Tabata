@@ -44,6 +44,18 @@ class AppLocalizationsKo extends AppLocalizations {
   String get shareTooltip => '공유';
 
   @override
+  String get rollbackTooltip => '서버 데이터로 롤백';
+
+  @override
+  String get rollbackConfirmMessage => '서버 데이터로 롤백 하시겠습니까?';
+
+  @override
+  String get rollbackSuccess => '서버 데이터로 복원했습니다.';
+
+  @override
+  String get rollbackError => '서버에서 데이터를 불러오지 못했습니다.';
+
+  @override
   String estimatedDuration(String duration) {
     return '예상 $duration';
   }
@@ -53,6 +65,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get start => '시작';
+
+  @override
+  String get startAll => '전체 시작';
 
   @override
   String get labelPrepare => '준비';
@@ -77,6 +92,37 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String phaseWithDuration(String label, int seconds) {
     return '$label · $seconds초';
+  }
+
+  @override
+  String phaseWithCountTiming(String label, int count, int seconds) {
+    return '$label · $count회 × $seconds초';
+  }
+
+  @override
+  String get phaseTimingModeDuration => '시간';
+
+  @override
+  String get phaseTimingModeCount => '카운트';
+
+  @override
+  String get labelPhaseCount => '회수';
+
+  @override
+  String get labelSecondsPerRep => '회당 시간';
+
+  @override
+  String get tapToSetPhaseCount => '탭하여 회수 설정';
+
+  @override
+  String get countOrderAscending => '순서';
+
+  @override
+  String get countOrderDescending => '역순';
+
+  @override
+  String repCountProgress(int current, int total) {
+    return '$current / $total';
   }
 
   @override

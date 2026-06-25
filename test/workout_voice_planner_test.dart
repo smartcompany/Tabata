@@ -7,6 +7,11 @@ WorkoutTimerSnapshot _snap({
   String label = '팔 벌리기',
   int remainingSec = 8,
   int durationSec = 8,
+  int countRepNumber = 0,
+  int totalCountReps = 0,
+  String phaseGroupKey = '',
+  int exerciseIndex = 1,
+  String exerciseName = '팽귄 운동',
   bool isPaused = false,
   bool isCompleted = false,
 }) {
@@ -15,12 +20,15 @@ WorkoutTimerSnapshot _snap({
       kind: kind,
       label: label,
       durationSec: durationSec,
+      countRepNumber: countRepNumber,
+      totalCountReps: totalCountReps,
+      phaseGroupKey: phaseGroupKey,
     ),
     remainingSec: remainingSec,
-    exerciseIndex: 1,
+    exerciseIndex: exerciseIndex,
     setIndex: 1,
     repIndex: 1,
-    exerciseName: '팽귄 운동',
+    exerciseName: exerciseName,
     routineTitle: '테스트',
     totalExercises: 1,
     totalSets: 1,
@@ -33,12 +41,46 @@ WorkoutTimerSnapshot _snap({
 void main() {
   const planner = WorkoutVoicePlanner();
 
-  test('first snapshot announces phase start', () {
+  test('first snapshot announces exercise name then phase start', () {
     final cues = planner.plan(
       previous: null,
-      current: _snap(kind: WorkoutPhaseKind.prepare, label: '준비'),
+      current: _snap(
+        kind: WorkoutPhaseKind.prepare,
+        label: '준비',
+        exerciseName: '사이드 플랭크',
+      ),
     );
-    expect(cues.length, 1);
+    expect(cues.length, 2);
+    expect(cues[0].kind, VoiceCueKind.exerciseName);
+    expect(cues[0].exerciseName, '사이드 플랭크');
+    expect(cues[1].kind, VoiceCueKind.phaseStart);
+    expect(cues[1].phaseDurationSec, 8);
+  });
+
+  test('new exercise announces name before prepare', () {
+    final previous = _snap(
+      kind: WorkoutPhaseKind.relax,
+      label: '휴식',
+      exerciseIndex: 1,
+      exerciseName: '플랭크',
+    );
+    final current = _snap(
+      kind: WorkoutPhaseKind.prepare,
+      label: '준비',
+      exerciseIndex: 2,
+      exerciseName: '사이드 플랭크',
+    );
+    final cues = planner.plan(previous: previous, current: current);
+    expect(cues.length, 2);
+    expect(cues[0].kind, VoiceCueKind.exerciseName);
+    expect(cues[0].exerciseName, '사이드 플랭크');
+    expect(cues[1].kind, VoiceCueKind.phaseStart);
+  });
+
+  test('same exercise phase change skips exercise name', () {
+    final previous = _snap(kind: WorkoutPhaseKind.work, label: '유지');
+    final current = _snap(kind: WorkoutPhaseKind.relax, label: '휴식');
+    final cues = planner.plan(previous: previous, current: current);
     expect(cues.single.kind, VoiceCueKind.phaseStart);
   });
 
@@ -56,6 +98,78 @@ void main() {
     final current = _snap(remainingSec: 2, durationSec: 3);
     final cues = planner.plan(previous: previous, current: current);
     expect(cues, isEmpty);
+  });
+
+  test('count mode announces rep number on each step', () {
+    final first = _snap(
+      remainingSec: 5,
+      durationSec: 5,
+      countRepNumber: 1,
+      totalCountReps: 3,
+      phaseGroupKey: 'g1',
+    );
+    final cues = planner.plan(previous: null, current: first);
+    expect(cues.length, 3);
+    expect(cues[0].kind, VoiceCueKind.exerciseName);
+    expect(cues[1].kind, VoiceCueKind.phaseStart);
+    expect(cues[2].kind, VoiceCueKind.repCount);
+    expect(cues[2].repNumber, 1);
+
+    final second = _snap(
+      remainingSec: 5,
+      durationSec: 5,
+      countRepNumber: 2,
+      totalCountReps: 3,
+      phaseGroupKey: 'g1',
+    );
+    final nextCues = planner.plan(previous: first, current: second);
+    expect(nextCues.single.kind, VoiceCueKind.repCount);
+    expect(nextCues.single.repNumber, 2);
+  });
+
+  test('count mode skips end countdown', () {
+    final previous = _snap(
+      remainingSec: 4,
+      durationSec: 5,
+      countRepNumber: 2,
+      totalCountReps: 3,
+      phaseGroupKey: 'g1',
+    );
+    final current = _snap(
+      remainingSec: 3,
+      durationSec: 5,
+      countRepNumber: 2,
+      totalCountReps: 3,
+      phaseGroupKey: 'g1',
+    );
+    final cues = planner.plan(previous: previous, current: current);
+    expect(cues, isEmpty);
+  });
+
+  test('descending count announces high to low rep numbers', () {
+    final third = _snap(
+      remainingSec: 5,
+      durationSec: 5,
+      countRepNumber: 3,
+      totalCountReps: 3,
+      phaseGroupKey: 'g1',
+    );
+    final cues = planner.plan(previous: null, current: third);
+    expect(cues.length, 3);
+    expect(cues[0].kind, VoiceCueKind.exerciseName);
+    expect(cues[1].kind, VoiceCueKind.phaseStart);
+    expect(cues[2].kind, VoiceCueKind.repCount);
+    expect(cues[2].repNumber, 3);
+
+    final second = _snap(
+      remainingSec: 5,
+      durationSec: 5,
+      countRepNumber: 2,
+      totalCountReps: 3,
+      phaseGroupKey: 'g1',
+    );
+    final nextCues = planner.plan(previous: third, current: second);
+    expect(nextCues.single.repNumber, 2);
   });
 
   test('completion announces once', () {
