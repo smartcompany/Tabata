@@ -15,7 +15,102 @@ class AppLocalizationsEn extends AppLocalizations {
   String get importRoutineTooltip => 'Import routine';
 
   @override
+  String get uploadRoutineTooltip => 'Upload routine';
+
+  @override
+  String get uploadRoutineTitle => 'Upload routine';
+
+  @override
+  String get uploadAdminLoginHint =>
+      'Sign in with an admin account to publish routines to the server.';
+
+  @override
+  String get uploadAdminUsername => 'Admin username';
+
+  @override
+  String get uploadAdminPassword => 'Password';
+
+  @override
+  String get uploadAdminLogin => 'Admin sign in';
+
+  @override
+  String get uploadLogout => 'Sign out';
+
+  @override
+  String get uploadSelectRoutine => 'Choose a routine to upload';
+
+  @override
+  String get uploadNoLocalRoutines => 'No routines saved on this device.';
+
+  @override
+  String get upload => 'Upload';
+
+  @override
+  String get uploadUpdate => 'Update';
+
+  @override
+  String get uploadConfirmTitle => 'Upload to server';
+
+  @override
+  String uploadConfirmCreate(String title) {
+    return 'Add \"$title\" to the server?';
+  }
+
+  @override
+  String uploadConfirmUpdate(String title) {
+    return 'Update \"$title\" on the server?';
+  }
+
+  @override
+  String uploadSuccessCreated(String title) {
+    return 'Added \"$title\" to the server.';
+  }
+
+  @override
+  String uploadSuccessUpdated(String title) {
+    return 'Updated \"$title\" on the server.';
+  }
+
+  @override
+  String get uploadError => 'Upload failed.';
+
+  @override
+  String get uploadLoginError => 'Sign in failed.';
+
+  @override
+  String get uploadLoadServerIdsError => 'Could not load server routine list.';
+
+  @override
+  String get downloadRoutineTooltip => 'Download';
+
+  @override
+  String routineDownloadSuccess(String title) {
+    return 'Saved \"$title\" to this device.';
+  }
+
+  @override
+  String get routineDownloadError => 'Download failed.';
+
+  @override
+  String routineCountOnly(int count) {
+    return '$count exercises';
+  }
+
+  @override
+  String get deleteLocalCopyMessage =>
+      'Remove this routine from this device? Server routines can be downloaded again.';
+
+  @override
   String get noRoutines => 'No saved routines.';
+
+  @override
+  String get noSharedRoutines => 'No shared routines.';
+
+  @override
+  String get homeTabOfficial => 'Default';
+
+  @override
+  String get homeTabShared => 'Shared';
 
   @override
   String get loadingProfiles => 'Loading routines...';
@@ -190,6 +285,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get routineNameHint => 'e.g. Rotator cuff rehab';
+
+  @override
+  String get defaultRoutineName => 'Default routine';
+
+  @override
+  String get defaultExerciseName => 'Default exercise';
 
   @override
   String get descriptionOptionalLabel => 'Description (optional)';
@@ -396,6 +497,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsTitle => 'Settings';
+
+  @override
+  String get workoutSettingsSection => 'Workout';
+
+  @override
+  String get countSecondsWithTtsTitle => 'Voice second count';
+
+  @override
+  String get countSecondsWithTtsSubtitle =>
+      'Speaks each second in count mode only. When off, beeps play instead.';
 
   @override
   String get languageTitle => 'Language';

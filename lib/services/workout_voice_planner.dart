@@ -55,9 +55,20 @@ class VoiceCue {
 class WorkoutVoicePlanner {
   const WorkoutVoicePlanner();
 
+  /// Cues that must finish before the phase countdown may tick.
+  static bool hasBlockingIntroCues(List<VoiceCue> cues) {
+    return cues.any(
+      (cue) =>
+          cue.kind == VoiceCueKind.exerciseName ||
+          cue.kind == VoiceCueKind.phaseStart ||
+          cue.kind == VoiceCueKind.repCount,
+    );
+  }
+
   List<VoiceCue> plan({
     required WorkoutTimerSnapshot? previous,
     required WorkoutTimerSnapshot current,
+    bool countSecondsWithTts = true,
   }) {
     if (current.isPaused) return const [];
 
@@ -104,6 +115,11 @@ class WorkoutVoicePlanner {
         );
       }
     } else if (previous != null &&
+        countSecondsWithTts &&
+        current.phase.isCountRep &&
+        _countRepSecondElapsed(previous, current)) {
+      cues.add(VoiceCue.countdown(current.remainingSec));
+    } else if (previous != null &&
         !current.phase.isCountRep &&
         _shouldCountdown(
           previousRemaining: previous.remainingSec,
@@ -141,6 +157,28 @@ class WorkoutVoicePlanner {
   ) {
     if (previous == null || previous.isCompleted) return true;
     return previous.exerciseIndex != current.exerciseIndex;
+  }
+
+  bool _countRepSecondElapsed(
+    WorkoutTimerSnapshot previous,
+    WorkoutTimerSnapshot current,
+  ) {
+    if (!_sameCountRepContext(previous, current)) return false;
+    if (previous.remainingSec - current.remainingSec != 1) return false;
+    return current.remainingSec > 0;
+  }
+
+  bool _sameCountRepContext(
+    WorkoutTimerSnapshot previous,
+    WorkoutTimerSnapshot current,
+  ) {
+    return previous.phase.isCountRep &&
+        current.phase.isCountRep &&
+        previous.phase.phaseGroupKey == current.phase.phaseGroupKey &&
+        previous.phase.countRepNumber == current.phase.countRepNumber &&
+        previous.exerciseIndex == current.exerciseIndex &&
+        previous.setIndex == current.setIndex &&
+        previous.repIndex == current.repIndex;
   }
 
   bool _shouldCountdown({

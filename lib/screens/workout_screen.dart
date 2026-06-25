@@ -7,9 +7,11 @@ import '../engine/workout_timer_engine.dart';
 import '../engine/workout_timer_labels.dart';
 import '../models/routine.dart';
 import '../services/workout_announce_gap.dart';
+import '../services/workout_settings.dart';
 import '../services/workout_sound_coach.dart';
 import '../services/workout_voice_coach.dart';
 import '../services/workout_voice_phrases.dart';
+import '../services/workout_voice_planner.dart';
 import '../utils/duration_format.dart';
 import '../widgets/app_settings_sheet.dart';
 import '../widgets/workout_phase_stage.dart';
@@ -24,6 +26,7 @@ class WorkoutScreen extends StatefulWidget {
 }
 
 class _WorkoutScreenState extends State<WorkoutScreen> {
+  static const _voicePlanner = WorkoutVoicePlanner();
   static const _accent = Color(0xFFE8F55A);
   static const _bg = Color(0xFF0A0A0A);
   static const _statRepsColor = Color(0xFF4FC3F7);
@@ -35,6 +38,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
   WorkoutTimerSnapshot? _previousSnapshot;
   WorkoutTimerSnapshot? _lastSoundSnapshot;
   Future<void>? _announceQueue;
+  bool _countSecondsWithTts = true;
 
   @override
   void initState() {
@@ -60,28 +64,46 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
 
   Future<void> _initVoiceCoach(AppLocalizations l10n) async {
     if (!mounted) return;
-    _soundCoach = WorkoutSoundCoach();
+    final settings = await WorkoutSettings.load();
+    if (!mounted) return;
+    _countSecondsWithTts = settings.countSecondsWithTts;
+    _soundCoach = WorkoutSoundCoach()
+      ..countSecondsWithTts = _countSecondsWithTts;
     _voiceCoach = WorkoutVoiceCoach(
       phrases: WorkoutVoicePhrases.fromL10n(l10n),
       locale: Localizations.localeOf(context),
-      onAudioSessionRestored: () => _soundCoach!.refreshAudioSession(),
+      onAudioSessionRestored: () async {
+        await _soundCoach?.refreshAudioSession();
+        if (_engine != null) {
+          await _soundCoach?.syncClock(_engine!.snapshot);
+        }
+      },
     );
     await Future.wait([
       _voiceCoach!.init(Localizations.localeOf(context)),
       _soundCoach!.init(),
     ]);
     if (!mounted) return;
+    _engine!.holdForAnnounce();
     _scheduleAnnounce();
-    _engine!.start();
   }
 
   void _onTick() {
     final engine = _engine;
     if (engine != null) {
       final current = engine.snapshot;
+      final introCues = _voicePlanner.plan(
+        previous: _previousSnapshot,
+        current: current,
+        countSecondsWithTts: _countSecondsWithTts,
+      );
+      if (WorkoutVoicePlanner.hasBlockingIntroCues(introCues) &&
+          !current.isPaused) {
+        engine.holdForAnnounce();
+      }
+
       final soundPrevious = _lastSoundSnapshot;
-      _soundCoach?.handleTick(soundPrevious, current);
-      _soundCoach?.handleEvents(soundPrevious, current);
+      _soundCoach?.handleSnapshot(soundPrevious, current);
       _lastSoundSnapshot = current;
     }
     _scheduleAnnounce();
@@ -98,10 +120,28 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     final capturedCurrent = engine.snapshot;
     _announceQueue = (_announceQueue ?? Future<void>.value()).then((_) async {
       final previous = _previousSnapshot;
+      final introCues = _voicePlanner.plan(
+        previous: previous,
+        current: capturedCurrent,
+        countSecondsWithTts: _countSecondsWithTts,
+      );
+      final blockingIntro =
+          WorkoutVoicePlanner.hasBlockingIntroCues(introCues);
+      if (blockingIntro && !capturedCurrent.isPaused && !engine.isAnnounceHold) {
+        engine.holdForAnnounce();
+      }
       if (needsWorkRelaxSessionGap(previous, capturedCurrent)) {
         await Future<void>.delayed(workRelaxSessionGap);
       }
-      await _voiceCoach?.handleSnapshot(previous, capturedCurrent);
+      await _voiceCoach?.handleSnapshot(
+        previous,
+        capturedCurrent,
+        countSecondsWithTts: _countSecondsWithTts,
+      );
+      if (blockingIntro) {
+        engine.releaseAnnounceHold();
+        await _soundCoach?.syncClock(engine.snapshot);
+      }
       _previousSnapshot = capturedCurrent;
     });
   }
@@ -110,19 +150,30 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
   void dispose() {
     WakelockPlus.disable();
     _engine?.removeListener(_onTick);
-    final announceQueue = _announceQueue;
-    if (announceQueue != null) {
-      announceQueue.then((_) => _voiceCoach?.dispose());
-    } else {
-      _voiceCoach?.dispose();
-    }
-    _soundCoach?.dispose();
+    _engine?.pause();
+
+    final soundCoach = _soundCoach;
+    final voiceCoach = _voiceCoach;
+    _soundCoach = null;
+    _voiceCoach = null;
+
+    (_announceQueue ?? Future<void>.value())
+        .then((_) => voiceCoach?.dispose())
+        .then((_) => soundCoach?.dispose())
+        .catchError((_) {});
+
     _engine?.dispose();
     super.dispose();
   }
 
   Future<void> _openSettings() async {
     await showAppSettingsSheet(context);
+    final settings = await WorkoutSettings.load();
+    if (!mounted) return;
+    setState(() {
+      _countSecondsWithTts = settings.countSecondsWithTts;
+      _soundCoach?.countSecondsWithTts = _countSecondsWithTts;
+    });
   }
 
   void _togglePause() {
@@ -134,6 +185,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     } else {
       engine.pause();
     }
+    _soundCoach?.syncClock(engine.snapshot);
     setState(() {});
   }
 

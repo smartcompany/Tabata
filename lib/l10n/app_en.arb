@@ -2,7 +2,64 @@
   "@@locale": "en",
   "appTitle": "Everyone's Tabata",
   "importRoutineTooltip": "Import routine",
+  "uploadRoutineTooltip": "Upload routine",
+  "uploadRoutineTitle": "Upload routine",
+  "uploadAdminLoginHint": "Sign in with an admin account to publish routines to the server.",
+  "uploadAdminUsername": "Admin username",
+  "uploadAdminPassword": "Password",
+  "uploadAdminLogin": "Admin sign in",
+  "uploadLogout": "Sign out",
+  "uploadSelectRoutine": "Choose a routine to upload",
+  "uploadNoLocalRoutines": "No routines saved on this device.",
+  "upload": "Upload",
+  "uploadUpdate": "Update",
+  "uploadConfirmTitle": "Upload to server",
+  "uploadConfirmCreate": "Add \"{title}\" to the server?",
+  "@uploadConfirmCreate": {
+    "placeholders": {
+      "title": {"type": "String"}
+    }
+  },
+  "uploadConfirmUpdate": "Update \"{title}\" on the server?",
+  "@uploadConfirmUpdate": {
+    "placeholders": {
+      "title": {"type": "String"}
+    }
+  },
+  "uploadSuccessCreated": "Added \"{title}\" to the server.",
+  "@uploadSuccessCreated": {
+    "placeholders": {
+      "title": {"type": "String"}
+    }
+  },
+  "uploadSuccessUpdated": "Updated \"{title}\" on the server.",
+  "@uploadSuccessUpdated": {
+    "placeholders": {
+      "title": {"type": "String"}
+    }
+  },
+  "uploadError": "Upload failed.",
+  "uploadLoginError": "Sign in failed.",
+  "uploadLoadServerIdsError": "Could not load server routine list.",
+  "downloadRoutineTooltip": "Download",
+  "routineDownloadSuccess": "Saved \"{title}\" to this device.",
+  "@routineDownloadSuccess": {
+    "placeholders": {
+      "title": {"type": "String"}
+    }
+  },
+  "routineDownloadError": "Download failed.",
+  "routineCountOnly": "{count} exercises",
+  "@routineCountOnly": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "deleteLocalCopyMessage": "Remove this routine from this device? Server routines can be downloaded again.",
   "noRoutines": "No saved routines.",
+  "noSharedRoutines": "No shared routines.",
+  "homeTabOfficial": "Default",
+  "homeTabShared": "Shared",
   "loadingProfiles": "Loading routines...",
   "profileLoadError": "Could not load routines from server.",
   "retry": "Retry",
@@ -105,6 +162,8 @@
   "deleteRoutineMessage": "Delete this routine?",
   "routineNameLabel": "Routine name",
   "routineNameHint": "e.g. Rotator cuff rehab",
+  "defaultRoutineName": "Default routine",
+  "defaultExerciseName": "Default exercise",
   "descriptionOptionalLabel": "Description (optional)",
   "reorderExercisesHint": "Long press to reorder",
   "addExercisesPrompt": "Add an exercise",
@@ -226,6 +285,9 @@
   "workoutNext": "Next",
   "nextPhaseFinish": "Finish",
   "settingsTitle": "Settings",
+  "workoutSettingsSection": "Workout",
+  "countSecondsWithTtsTitle": "Voice second count",
+  "countSecondsWithTtsSubtitle": "Speaks each second in count mode only. When off, beeps play instead.",
   "languageTitle": "Language",
   "languageSystem": "System default",
   "languageEnglish": "English",

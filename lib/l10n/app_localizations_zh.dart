@@ -15,7 +15,100 @@ class AppLocalizationsZh extends AppLocalizations {
   String get importRoutineTooltip => '导入训练';
 
   @override
+  String get uploadRoutineTooltip => '上传训练';
+
+  @override
+  String get uploadRoutineTitle => '上传训练';
+
+  @override
+  String get uploadAdminLoginHint => '使用管理员账号登录后，可将训练发布到服务器。';
+
+  @override
+  String get uploadAdminUsername => '管理员账号';
+
+  @override
+  String get uploadAdminPassword => '密码';
+
+  @override
+  String get uploadAdminLogin => '管理员登录';
+
+  @override
+  String get uploadLogout => '退出登录';
+
+  @override
+  String get uploadSelectRoutine => '选择要上传的训练';
+
+  @override
+  String get uploadNoLocalRoutines => '本设备没有已保存的训练。';
+
+  @override
+  String get upload => '上传';
+
+  @override
+  String get uploadUpdate => '更新';
+
+  @override
+  String get uploadConfirmTitle => '上传到服务器';
+
+  @override
+  String uploadConfirmCreate(String title) {
+    return '将「$title」新增到服务器？';
+  }
+
+  @override
+  String uploadConfirmUpdate(String title) {
+    return '用服务器数据更新「$title」？';
+  }
+
+  @override
+  String uploadSuccessCreated(String title) {
+    return '已将「$title」添加到服务器。';
+  }
+
+  @override
+  String uploadSuccessUpdated(String title) {
+    return '已在服务器更新「$title」。';
+  }
+
+  @override
+  String get uploadError => '上传失败。';
+
+  @override
+  String get uploadLoginError => '登录失败。';
+
+  @override
+  String get uploadLoadServerIdsError => '无法加载服务器训练列表。';
+
+  @override
+  String get downloadRoutineTooltip => '下载';
+
+  @override
+  String routineDownloadSuccess(String title) {
+    return '已将「$title」保存到此设备。';
+  }
+
+  @override
+  String get routineDownloadError => '下载失败。';
+
+  @override
+  String routineCountOnly(int count) {
+    return '$count 个动作';
+  }
+
+  @override
+  String get deleteLocalCopyMessage => '要从本设备删除此训练吗？服务器训练可重新下载。';
+
+  @override
   String get noRoutines => '没有已保存的训练。';
+
+  @override
+  String get noSharedRoutines => '没有共享的训练。';
+
+  @override
+  String get homeTabOfficial => '默认训练';
+
+  @override
+  String get homeTabShared => '共享训练';
 
   @override
   String get loadingProfiles => '正在加载训练...';
@@ -190,6 +283,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get routineNameHint => '例如：旋转袖康复';
+
+  @override
+  String get defaultRoutineName => '默认训练计划';
+
+  @override
+  String get defaultExerciseName => '默认动作';
 
   @override
   String get descriptionOptionalLabel => '说明（可选）';
@@ -396,6 +495,15 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsTitle => '设置';
+
+  @override
+  String get workoutSettingsSection => '训练';
+
+  @override
+  String get countSecondsWithTtsTitle => '秒数语音计数';
+
+  @override
+  String get countSecondsWithTtsSubtitle => '仅在计数模式下每秒播报数字。关闭后改为播放提示音。';
 
   @override
   String get languageTitle => '语言';

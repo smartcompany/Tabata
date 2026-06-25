@@ -27,6 +27,7 @@ class WorkoutVoiceCoach {
   bool _initialized = false;
   bool _speaking = false;
   bool _backgroundDucked = false;
+  bool _disposed = false;
 
   Future<void> init(Locale locale) async {
     _locale = locale;
@@ -54,10 +55,15 @@ class WorkoutVoiceCoach {
 
   Future<void> handleSnapshot(
     WorkoutTimerSnapshot? previous,
-    WorkoutTimerSnapshot current,
-  ) {
+    WorkoutTimerSnapshot current, {
+    bool countSecondsWithTts = true,
+  }) {
     final task = (_snapshotQueue ?? Future<void>.value()).then(
-      (_) => _handleSnapshot(previous, current),
+      (_) => _handleSnapshot(
+        previous,
+        current,
+        countSecondsWithTts: countSecondsWithTts,
+      ),
     );
     _snapshotQueue = task;
     return task;
@@ -65,14 +71,20 @@ class WorkoutVoiceCoach {
 
   Future<void> _handleSnapshot(
     WorkoutTimerSnapshot? previous,
-    WorkoutTimerSnapshot current,
-  ) async {
+    WorkoutTimerSnapshot current, {
+    bool countSecondsWithTts = true,
+  }) async {
+    if (_disposed) return;
     if (current.isPaused) {
       await stop();
       return;
     }
 
-    final cues = _planner.plan(previous: previous, current: current);
+    final cues = _planner.plan(
+      previous: previous,
+      current: current,
+      countSecondsWithTts: countSecondsWithTts,
+    );
     for (final cue in cues) {
       await _speakCue(cue);
     }
@@ -100,15 +112,18 @@ class WorkoutVoiceCoach {
   }
 
   Future<void> _restoreBackgroundAudioSession() async {
+    if (_disposed) return;
     await WorkoutAudioSession.configure();
+    if (_disposed) return;
     await onAudioSessionRestored?.call();
   }
 
-  /// Duck once for phase announcement + 3-2-1 countdown; restore after "1".
+  /// Duck through chained utterances (exercise name → phase, or 3 → 2 → 1).
   bool _shouldKeepBackgroundDuckedAfter(VoiceCue cue) {
     return switch (cue.kind) {
       VoiceCueKind.exerciseName => true,
-      VoiceCueKind.phaseStart => (cue.phaseDurationSec ?? 0) > 3,
+      // Long phases: unduck after the intro so the clock loop can play.
+      VoiceCueKind.phaseStart => (cue.phaseDurationSec ?? 0) <= 3,
       VoiceCueKind.countdown => cue.seconds! > 1,
       VoiceCueKind.repCount => cue.repNumber! < cue.totalReps!,
       VoiceCueKind.completed => false,
@@ -137,6 +152,8 @@ class WorkoutVoiceCoach {
   }
 
   Future<void> dispose() async {
+    if (_disposed) return;
+    _disposed = true;
     await _snapshotQueue;
     await stop();
   }

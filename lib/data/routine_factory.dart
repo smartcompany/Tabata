@@ -23,7 +23,7 @@ Exercise createEmptyExercise({required int order}) {
     name: '',
     instruction: '',
     order: order,
-    prepare: const TimedPhase(durationSec: 0),
+    prepare: const TimedPhase(durationSec: ExerciseLimits.defaultPrepareDurationSec),
     phases: reindexPhases([
       createEmptyPhase(kind: ExercisePhaseKind.work, order: 0),
       createEmptyPhase(kind: ExercisePhaseKind.relax, order: 1),

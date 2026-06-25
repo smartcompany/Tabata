@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:tabata_timer/l10n/app_localizations.dart';
 
 import '../services/locale_settings.dart';
+import '../services/workout_settings.dart';
 
 Future<void> showAppSettingsSheet(BuildContext context) async {
   final l10n = AppLocalizations.of(context);
   final localeSettings = await LocaleSettings.load();
+  final workoutSettings = await WorkoutSettings.load();
 
   if (!context.mounted) return;
 
@@ -15,6 +17,7 @@ Future<void> showAppSettingsSheet(BuildContext context) async {
     isScrollControlled: true,
     builder: (context) {
       var selectedLocale = localeSettings.locale;
+      var countSecondsWithTts = workoutSettings.countSecondsWithTts;
 
       return StatefulBuilder(
         builder: (context, setSheetState) {
@@ -68,6 +71,21 @@ Future<void> showAppSettingsSheet(BuildContext context) async {
                   label: l10n.languageJapanese,
                   selected: selectedLocale?.languageCode == 'ja',
                   onTap: () => selectLocale(const Locale('ja')),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  l10n.workoutSettingsSection,
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(l10n.countSecondsWithTtsTitle),
+                  subtitle: Text(l10n.countSecondsWithTtsSubtitle),
+                  value: countSecondsWithTts,
+                  onChanged: (value) async {
+                    await workoutSettings.setCountSecondsWithTts(value);
+                    setSheetState(() => countSecondsWithTts = value);
+                  },
                 ),
               ],
             ),

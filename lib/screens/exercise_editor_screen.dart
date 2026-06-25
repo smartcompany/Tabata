@@ -5,6 +5,7 @@ import '../models/exercise.dart';
 import '../models/exercise_phase.dart';
 import '../models/phase_config.dart';
 import '../utils/duration_calculator.dart';
+import '../utils/form_validation_scroll.dart';
 import '../widgets/duration_input_control.dart';
 import '../widgets/exercise_phase_editor_card.dart';
 import '../widgets/integer_input_control.dart';
@@ -25,6 +26,7 @@ class ExerciseEditorScreen extends StatefulWidget {
 
 class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _phasesSectionKey = GlobalKey();
   late final TextEditingController _nameController;
   late final TextEditingController _instructionController;
 
@@ -98,12 +100,13 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
   }
 
   void _save() {
-    if (!_formKey.currentState!.validate()) return;
+    if (!validateFormAndScrollToError(_formKey)) return;
     if (_phases.isEmpty) {
       final l10n = AppLocalizations.of(context);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.requireAtLeastOnePhase)),
       );
+      scrollToKey(_phasesSectionKey);
       return;
     }
     Navigator.of(context).pop(_draft);
@@ -166,6 +169,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
             ),
             const SizedBox(height: 24),
             Row(
+              key: _phasesSectionKey,
               children: [
                 Expanded(child: _sectionTitle(l10n.phasesSection)),
                 Text(

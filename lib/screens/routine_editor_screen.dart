@@ -6,6 +6,7 @@ import '../data/routine_repository.dart';
 import '../models/exercise.dart';
 import '../models/routine.dart';
 import '../utils/duration_calculator.dart';
+import '../utils/form_validation_scroll.dart';
 import '../widgets/exercise_summary.dart';
 import 'exercise_editor_screen.dart';
 
@@ -27,6 +28,7 @@ class RoutineEditorScreen extends StatefulWidget {
 
 class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _exercisesSectionKey = GlobalKey();
   late final TextEditingController _titleController;
   late final TextEditingController _descriptionController;
   late List<Exercise> _exercises;
@@ -54,12 +56,13 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       );
 
   Future<void> _save() async {
-    if (!_formKey.currentState!.validate()) return;
+    if (!validateFormAndScrollToError(_formKey)) return;
     if (_exercises.isEmpty) {
       final l10n = AppLocalizations.of(context);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.requireAtLeastOneExercise)),
       );
+      scrollToKey(_exercisesSectionKey);
       return;
     }
     await widget.repository.upsert(_draft);
@@ -93,7 +96,9 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   Future<void> _addExercise() async {
-    final exercise = createEmptyExercise(order: _exercises.length);
+    final l10n = AppLocalizations.of(context);
+    final exercise = createEmptyExercise(order: _exercises.length)
+        .copyWith(name: l10n.defaultExerciseName);
     final result = await Navigator.of(context).push<Exercise>(
       MaterialPageRoute(
         builder: (_) => ExerciseEditorScreen(exercise: exercise, isNew: true),
@@ -134,6 +139,17 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     });
   }
 
+  Widget _buildAddExerciseButton(AppLocalizations l10n) {
+    return SizedBox(
+      width: double.infinity,
+      child: OutlinedButton.icon(
+        onPressed: _addExercise,
+        icon: const Icon(Icons.add),
+        label: Text(l10n.addExercisesPrompt),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -160,7 +176,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: const EdgeInsets.fromLTRB(20, 8, 20, 100),
+          padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
           children: [
             TextFormField(
               controller: _titleController,
@@ -192,6 +208,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
             if (_exercises.isNotEmpty) EstimatedDurationCard(totalSec: totalSec),
             const SizedBox(height: 20),
             Row(
+              key: _exercisesSectionKey,
               children: [
                 Text(
                   l10n.exerciseListTitle,
@@ -207,14 +224,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
               ],
             ),
             const SizedBox(height: 8),
-            if (_exercises.isEmpty)
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: Center(child: Text(l10n.addExercisesPrompt)),
-                ),
-              )
-            else
+            if (_exercises.isNotEmpty)
               ReorderableListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
@@ -231,13 +241,10 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                   );
                 },
               ),
+            if (_exercises.isNotEmpty) const SizedBox(height: 12),
+            _buildAddExerciseButton(l10n),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _addExercise,
-        icon: const Icon(Icons.add),
-        label: Text(l10n.addExercise),
       ),
     );
   }

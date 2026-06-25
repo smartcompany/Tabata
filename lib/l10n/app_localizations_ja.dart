@@ -15,7 +15,101 @@ class AppLocalizationsJa extends AppLocalizations {
   String get importRoutineTooltip => 'ルーティンを取り込む';
 
   @override
+  String get uploadRoutineTooltip => 'ルーティンをアップロード';
+
+  @override
+  String get uploadRoutineTitle => 'ルーティンをアップロード';
+
+  @override
+  String get uploadAdminLoginHint => '管理者アカウントでログインすると、サーバーにルーティンを公開できます。';
+
+  @override
+  String get uploadAdminUsername => '管理者 ID';
+
+  @override
+  String get uploadAdminPassword => 'パスワード';
+
+  @override
+  String get uploadAdminLogin => '管理者ログイン';
+
+  @override
+  String get uploadLogout => 'ログアウト';
+
+  @override
+  String get uploadSelectRoutine => 'アップロードするルーティンを選んでください';
+
+  @override
+  String get uploadNoLocalRoutines => 'この端末に保存されたルーティンがありません。';
+
+  @override
+  String get upload => 'アップロード';
+
+  @override
+  String get uploadUpdate => '更新';
+
+  @override
+  String get uploadConfirmTitle => 'サーバーにアップロード';
+
+  @override
+  String uploadConfirmCreate(String title) {
+    return '「$title」をサーバーに新規追加しますか？';
+  }
+
+  @override
+  String uploadConfirmUpdate(String title) {
+    return '「$title」をサーバーのデータで更新しますか？';
+  }
+
+  @override
+  String uploadSuccessCreated(String title) {
+    return '「$title」をサーバーに追加しました。';
+  }
+
+  @override
+  String uploadSuccessUpdated(String title) {
+    return '「$title」をサーバーで更新しました。';
+  }
+
+  @override
+  String get uploadError => 'アップロードに失敗しました。';
+
+  @override
+  String get uploadLoginError => 'ログインに失敗しました。';
+
+  @override
+  String get uploadLoadServerIdsError => 'サーバーのルーティン一覧を読み込めませんでした。';
+
+  @override
+  String get downloadRoutineTooltip => 'ダウンロード';
+
+  @override
+  String routineDownloadSuccess(String title) {
+    return '「$title」をこの端末に保存しました。';
+  }
+
+  @override
+  String get routineDownloadError => 'ダウンロードに失敗しました。';
+
+  @override
+  String routineCountOnly(int count) {
+    return '$count 種目';
+  }
+
+  @override
+  String get deleteLocalCopyMessage =>
+      'この端末からルーティンを削除しますか？サーバーのルーティンは再ダウンロードできます。';
+
+  @override
   String get noRoutines => '保存されたルーティンがありません。';
+
+  @override
+  String get noSharedRoutines => '共有されたルーティンがありません。';
+
+  @override
+  String get homeTabOfficial => '基本ルーティン';
+
+  @override
+  String get homeTabShared => '共有ルーティン';
 
   @override
   String get loadingProfiles => 'ルーティンを読み込み中...';
@@ -190,6 +284,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get routineNameHint => '例：回旋筋腱板リハビリ';
+
+  @override
+  String get defaultRoutineName => '基本ルーティン';
+
+  @override
+  String get defaultExerciseName => '基本種目';
 
   @override
   String get descriptionOptionalLabel => '説明（任意）';
@@ -396,6 +496,16 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get settingsTitle => '設定';
+
+  @override
+  String get workoutSettingsSection => 'ワークアウト';
+
+  @override
+  String get countSecondsWithTtsTitle => '秒カウント音声';
+
+  @override
+  String get countSecondsWithTtsSubtitle =>
+      'カウントモードでのみ毎秒数字を読み上げます。オフの場合はビープ音が鳴ります。';
 
   @override
   String get languageTitle => '言語';

@@ -85,4 +85,25 @@ void main() {
     engine.skipPhase();
     expect(engine.snapshot.phase.countRepNumber, 1);
   });
+
+  test('announce hold prevents timer from starting until released', () {
+    final engine = WorkoutTimerEngine(
+      _countRoutine(),
+      labels: const WorkoutTimerLabels(
+        prepare: '준비',
+        completedMessage: '완료',
+      ),
+    );
+
+    expect(engine.isAnnounceHold, isFalse);
+    engine.holdForAnnounce();
+    expect(engine.isAnnounceHold, isTrue);
+    expect(engine.snapshot.isPaused, isFalse);
+
+    engine.start();
+    expect(engine.snapshot.remainingSec, 2);
+
+    engine.releaseAnnounceHold();
+    expect(engine.isAnnounceHold, isFalse);
+  });
 }

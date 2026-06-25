@@ -4,14 +4,20 @@ import 'package:tabata_timer/l10n/app_localizations.dart';
 
 import 'data/routine_repository.dart';
 import 'screens/home_screen.dart';
+import 'services/admin_session.dart';
 import 'services/locale_settings.dart';
+import 'services/routine_api_client.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final repository = await RoutineRepository.create();
+  final apiClient = RoutineApiClient();
+  final repository = await RoutineRepository.create(apiClient: apiClient);
+  final adminSession = await AdminSession.create();
   final localeSettings = await LocaleSettings.load();
   runApp(TabataApp(
     repository: repository,
+    apiClient: apiClient,
+    adminSession: adminSession,
     localeSettings: localeSettings,
   ));
 }
@@ -20,10 +26,14 @@ class TabataApp extends StatefulWidget {
   const TabataApp({
     super.key,
     required this.repository,
+    required this.apiClient,
+    required this.adminSession,
     required this.localeSettings,
   });
 
   final RoutineRepository repository;
+  final RoutineApiClient apiClient;
+  final AdminSession adminSession;
   final LocaleSettings localeSettings;
 
   @override
@@ -89,6 +99,8 @@ class _TabataAppState extends State<TabataApp> {
       },
       home: HomeScreen(
         repository: widget.repository,
+        apiClient: widget.apiClient,
+        adminSession: widget.adminSession,
         localeSettings: widget.localeSettings,
         onLocaleChanged: _onLocaleChanged,
       ),

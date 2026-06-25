@@ -15,7 +15,101 @@ class AppLocalizationsKo extends AppLocalizations {
   String get importRoutineTooltip => '루틴 가져오기';
 
   @override
+  String get uploadRoutineTooltip => '루틴 업로드';
+
+  @override
+  String get uploadRoutineTitle => '루틴 업로드';
+
+  @override
+  String get uploadAdminLoginHint => '관리자 계정으로 로그인하면 서버에 루틴을 올릴 수 있습니다.';
+
+  @override
+  String get uploadAdminUsername => '관리자 아이디';
+
+  @override
+  String get uploadAdminPassword => '비밀번호';
+
+  @override
+  String get uploadAdminLogin => '관리자 로그인';
+
+  @override
+  String get uploadLogout => '로그아웃';
+
+  @override
+  String get uploadSelectRoutine => '업로드할 루틴을 선택하세요';
+
+  @override
+  String get uploadNoLocalRoutines => '기기에 저장된 루틴이 없습니다.';
+
+  @override
+  String get upload => '업로드';
+
+  @override
+  String get uploadUpdate => '갱신';
+
+  @override
+  String get uploadConfirmTitle => '서버에 업로드';
+
+  @override
+  String uploadConfirmCreate(String title) {
+    return '「$title」 루틴을 서버에 새로 추가할까요?';
+  }
+
+  @override
+  String uploadConfirmUpdate(String title) {
+    return '「$title」 루틴을 서버 데이터로 갱신할까요?';
+  }
+
+  @override
+  String uploadSuccessCreated(String title) {
+    return '「$title」 루틴을 서버에 추가했습니다.';
+  }
+
+  @override
+  String uploadSuccessUpdated(String title) {
+    return '「$title」 루틴을 서버에 갱신했습니다.';
+  }
+
+  @override
+  String get uploadError => '업로드에 실패했습니다.';
+
+  @override
+  String get uploadLoginError => '로그인에 실패했습니다.';
+
+  @override
+  String get uploadLoadServerIdsError => '서버 루틴 목록을 불러오지 못했습니다.';
+
+  @override
+  String get downloadRoutineTooltip => '다운로드';
+
+  @override
+  String routineDownloadSuccess(String title) {
+    return '「$title」 루틴을 저장했습니다.';
+  }
+
+  @override
+  String get routineDownloadError => '다운로드에 실패했습니다.';
+
+  @override
+  String routineCountOnly(int count) {
+    return '$count개 운동';
+  }
+
+  @override
+  String get deleteLocalCopyMessage =>
+      '기기에서 이 루틴을 삭제할까요? 서버 루틴은 다시 다운로드할 수 있습니다.';
+
+  @override
   String get noRoutines => '저장된 루틴이 없습니다.';
+
+  @override
+  String get noSharedRoutines => '공유된 루틴이 없습니다.';
+
+  @override
+  String get homeTabOfficial => '기본 루틴';
+
+  @override
+  String get homeTabShared => '공유된 루틴';
 
   @override
   String get loadingProfiles => '루틴을 불러오는 중...';
@@ -190,6 +284,12 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get routineNameHint => '예: 회전근개 재활';
+
+  @override
+  String get defaultRoutineName => '기본 루틴';
+
+  @override
+  String get defaultExerciseName => '기본 운동';
 
   @override
   String get descriptionOptionalLabel => '설명 (선택)';
@@ -396,6 +496,16 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get settingsTitle => '설정';
+
+  @override
+  String get workoutSettingsSection => '운동';
+
+  @override
+  String get countSecondsWithTtsTitle => '초 카운팅 음성';
+
+  @override
+  String get countSecondsWithTtsSubtitle =>
+      '카운트 모드에서만 초마다 숫자를 음성으로 안내합니다. 끄면 비프음이 재생됩니다.';
 
   @override
   String get languageTitle => '언어';

@@ -41,6 +41,26 @@ WorkoutTimerSnapshot _snap({
 void main() {
   const planner = WorkoutVoicePlanner();
 
+  test('hasBlockingIntroCues is true for exercise name and phase start', () {
+    final cues = planner.plan(
+      previous: null,
+      current: _snap(
+        kind: WorkoutPhaseKind.prepare,
+        label: '준비',
+        exerciseName: '밴드 당기기',
+      ),
+    );
+    expect(WorkoutVoicePlanner.hasBlockingIntroCues(cues), isTrue);
+  });
+
+  test('hasBlockingIntroCues is false for end countdown only', () {
+    final cues = planner.plan(
+      previous: _snap(remainingSec: 4, durationSec: 10),
+      current: _snap(remainingSec: 3, durationSec: 10),
+    );
+    expect(WorkoutVoicePlanner.hasBlockingIntroCues(cues), isFalse);
+  });
+
   test('first snapshot announces exercise name then phase start', () {
     final cues = planner.plan(
       previous: null,
@@ -127,7 +147,7 @@ void main() {
     expect(nextCues.single.repNumber, 2);
   });
 
-  test('count mode skips end countdown', () {
+  test('count mode announces remaining seconds when countSecondsWithTts is on', () {
     final previous = _snap(
       remainingSec: 4,
       durationSec: 5,
@@ -143,6 +163,31 @@ void main() {
       phaseGroupKey: 'g1',
     );
     final cues = planner.plan(previous: previous, current: current);
+    expect(cues.length, 1);
+    expect(cues.single.kind, VoiceCueKind.countdown);
+    expect(cues.single.seconds, 3);
+  });
+
+  test('count mode skips second voice when countSecondsWithTts is off', () {
+    final previous = _snap(
+      remainingSec: 4,
+      durationSec: 5,
+      countRepNumber: 2,
+      totalCountReps: 3,
+      phaseGroupKey: 'g1',
+    );
+    final current = _snap(
+      remainingSec: 3,
+      durationSec: 5,
+      countRepNumber: 2,
+      totalCountReps: 3,
+      phaseGroupKey: 'g1',
+    );
+    final cues = planner.plan(
+      previous: previous,
+      current: current,
+      countSecondsWithTts: false,
+    );
     expect(cues, isEmpty);
   });
 

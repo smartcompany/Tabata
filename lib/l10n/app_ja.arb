@@ -2,7 +2,64 @@
   "@@locale": "ja",
   "appTitle": "みんなのタバタ",
   "importRoutineTooltip": "ルーティンを取り込む",
+  "uploadRoutineTooltip": "ルーティンをアップロード",
+  "uploadRoutineTitle": "ルーティンをアップロード",
+  "uploadAdminLoginHint": "管理者アカウントでログインすると、サーバーにルーティンを公開できます。",
+  "uploadAdminUsername": "管理者 ID",
+  "uploadAdminPassword": "パスワード",
+  "uploadAdminLogin": "管理者ログイン",
+  "uploadLogout": "ログアウト",
+  "uploadSelectRoutine": "アップロードするルーティンを選んでください",
+  "uploadNoLocalRoutines": "この端末に保存されたルーティンがありません。",
+  "upload": "アップロード",
+  "uploadUpdate": "更新",
+  "uploadConfirmTitle": "サーバーにアップロード",
+  "uploadConfirmCreate": "「{title}」をサーバーに新規追加しますか？",
+  "@uploadConfirmCreate": {
+    "placeholders": {
+      "title": {"type": "String"}
+    }
+  },
+  "uploadConfirmUpdate": "「{title}」をサーバーのデータで更新しますか？",
+  "@uploadConfirmUpdate": {
+    "placeholders": {
+      "title": {"type": "String"}
+    }
+  },
+  "uploadSuccessCreated": "「{title}」をサーバーに追加しました。",
+  "@uploadSuccessCreated": {
+    "placeholders": {
+      "title": {"type": "String"}
+    }
+  },
+  "uploadSuccessUpdated": "「{title}」をサーバーで更新しました。",
+  "@uploadSuccessUpdated": {
+    "placeholders": {
+      "title": {"type": "String"}
+    }
+  },
+  "uploadError": "アップロードに失敗しました。",
+  "uploadLoginError": "ログインに失敗しました。",
+  "uploadLoadServerIdsError": "サーバーのルーティン一覧を読み込めませんでした。",
+  "downloadRoutineTooltip": "ダウンロード",
+  "routineDownloadSuccess": "「{title}」をこの端末に保存しました。",
+  "@routineDownloadSuccess": {
+    "placeholders": {
+      "title": {"type": "String"}
+    }
+  },
+  "routineDownloadError": "ダウンロードに失敗しました。",
+  "routineCountOnly": "{count} 種目",
+  "@routineCountOnly": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "deleteLocalCopyMessage": "この端末からルーティンを削除しますか？サーバーのルーティンは再ダウンロードできます。",
   "noRoutines": "保存されたルーティンがありません。",
+  "noSharedRoutines": "共有されたルーティンがありません。",
+  "homeTabOfficial": "基本ルーティン",
+  "homeTabShared": "共有ルーティン",
   "loadingProfiles": "ルーティンを読み込み中...",
   "profileLoadError": "サーバーからルーティンを読み込めませんでした。",
   "retry": "再試行",
@@ -55,6 +112,8 @@
   "deleteRoutineMessage": "このルーティンを削除しますか？",
   "routineNameLabel": "ルーティン名",
   "routineNameHint": "例：回旋筋腱板リハビリ",
+  "defaultRoutineName": "基本ルーティン",
+  "defaultExerciseName": "基本種目",
   "descriptionOptionalLabel": "説明（任意）",
   "reorderExercisesHint": "長押しで並べ替え",
   "addExercisesPrompt": "種目を追加してください",
@@ -117,6 +176,9 @@
   "workoutNext": "次",
   "nextPhaseFinish": "終了",
   "settingsTitle": "設定",
+  "workoutSettingsSection": "ワークアウト",
+  "countSecondsWithTtsTitle": "秒カウント音声",
+  "countSecondsWithTtsSubtitle": "カウントモードでのみ毎秒数字を読み上げます。オフの場合はビープ音が鳴ります。",
   "languageTitle": "言語",
   "languageSystem": "システム設定に従う",
   "languageEnglish": "English",

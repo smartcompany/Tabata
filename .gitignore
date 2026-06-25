@@ -50,3 +50,4 @@ ios/*.cer
 ios/*.p12
 ios/*.certSigningRequest
 ios/*.mobileprovision
+ios/fastlane

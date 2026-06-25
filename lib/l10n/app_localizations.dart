@@ -114,11 +114,173 @@ abstract class AppLocalizations {
   /// **'Import routine'**
   String get importRoutineTooltip;
 
+  /// No description provided for @uploadRoutineTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload routine'**
+  String get uploadRoutineTooltip;
+
+  /// No description provided for @uploadRoutineTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload routine'**
+  String get uploadRoutineTitle;
+
+  /// No description provided for @uploadAdminLoginHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with an admin account to publish routines to the server.'**
+  String get uploadAdminLoginHint;
+
+  /// No description provided for @uploadAdminUsername.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin username'**
+  String get uploadAdminUsername;
+
+  /// No description provided for @uploadAdminPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get uploadAdminPassword;
+
+  /// No description provided for @uploadAdminLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin sign in'**
+  String get uploadAdminLogin;
+
+  /// No description provided for @uploadLogout.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get uploadLogout;
+
+  /// No description provided for @uploadSelectRoutine.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a routine to upload'**
+  String get uploadSelectRoutine;
+
+  /// No description provided for @uploadNoLocalRoutines.
+  ///
+  /// In en, this message translates to:
+  /// **'No routines saved on this device.'**
+  String get uploadNoLocalRoutines;
+
+  /// No description provided for @upload.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload'**
+  String get upload;
+
+  /// No description provided for @uploadUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get uploadUpdate;
+
+  /// No description provided for @uploadConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload to server'**
+  String get uploadConfirmTitle;
+
+  /// No description provided for @uploadConfirmCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Add \"{title}\" to the server?'**
+  String uploadConfirmCreate(String title);
+
+  /// No description provided for @uploadConfirmUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Update \"{title}\" on the server?'**
+  String uploadConfirmUpdate(String title);
+
+  /// No description provided for @uploadSuccessCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Added \"{title}\" to the server.'**
+  String uploadSuccessCreated(String title);
+
+  /// No description provided for @uploadSuccessUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated \"{title}\" on the server.'**
+  String uploadSuccessUpdated(String title);
+
+  /// No description provided for @uploadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload failed.'**
+  String get uploadError;
+
+  /// No description provided for @uploadLoginError.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in failed.'**
+  String get uploadLoginError;
+
+  /// No description provided for @uploadLoadServerIdsError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load server routine list.'**
+  String get uploadLoadServerIdsError;
+
+  /// No description provided for @downloadRoutineTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get downloadRoutineTooltip;
+
+  /// No description provided for @routineDownloadSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved \"{title}\" to this device.'**
+  String routineDownloadSuccess(String title);
+
+  /// No description provided for @routineDownloadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Download failed.'**
+  String get routineDownloadError;
+
+  /// No description provided for @routineCountOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} exercises'**
+  String routineCountOnly(int count);
+
+  /// No description provided for @deleteLocalCopyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this routine from this device? Server routines can be downloaded again.'**
+  String get deleteLocalCopyMessage;
+
   /// No description provided for @noRoutines.
   ///
   /// In en, this message translates to:
   /// **'No saved routines.'**
   String get noRoutines;
+
+  /// No description provided for @noSharedRoutines.
+  ///
+  /// In en, this message translates to:
+  /// **'No shared routines.'**
+  String get noSharedRoutines;
+
+  /// No description provided for @homeTabOfficial.
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get homeTabOfficial;
+
+  /// No description provided for @homeTabShared.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared'**
+  String get homeTabShared;
 
   /// No description provided for @loadingProfiles.
   ///
@@ -431,6 +593,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'e.g. Rotator cuff rehab'**
   String get routineNameHint;
+
+  /// No description provided for @defaultRoutineName.
+  ///
+  /// In en, this message translates to:
+  /// **'Default routine'**
+  String get defaultRoutineName;
+
+  /// No description provided for @defaultExerciseName.
+  ///
+  /// In en, this message translates to:
+  /// **'Default exercise'**
+  String get defaultExerciseName;
 
   /// No description provided for @descriptionOptionalLabel.
   ///
@@ -803,6 +977,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Settings'**
   String get settingsTitle;
+
+  /// No description provided for @workoutSettingsSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout'**
+  String get workoutSettingsSection;
+
+  /// No description provided for @countSecondsWithTtsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice second count'**
+  String get countSecondsWithTtsTitle;
+
+  /// No description provided for @countSecondsWithTtsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Speaks each second in count mode only. When off, beeps play instead.'**
+  String get countSecondsWithTtsSubtitle;
 
   /// No description provided for @languageTitle.
   ///

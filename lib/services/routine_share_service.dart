@@ -11,9 +11,16 @@ class RoutineShareService {
     await Clipboard.setData(ClipboardData(text: encode(routine)));
   }
 
-  Future<void> share(Routine routine) async {
+  Future<void> share(
+    Routine routine, {
+    Rect? sharePositionOrigin,
+  }) async {
     await SharePlus.instance.share(
-      ShareParams(text: encode(routine), subject: routine.title),
+      ShareParams(
+        text: encode(routine),
+        subject: routine.title,
+        sharePositionOrigin: sharePositionOrigin,
+      ),
     );
   }
 

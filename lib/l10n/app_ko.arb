@@ -2,7 +2,64 @@
   "@@locale": "ko",
   "appTitle": "모두의 타바타",
   "importRoutineTooltip": "루틴 가져오기",
+  "uploadRoutineTooltip": "루틴 업로드",
+  "uploadRoutineTitle": "루틴 업로드",
+  "uploadAdminLoginHint": "관리자 계정으로 로그인하면 서버에 루틴을 올릴 수 있습니다.",
+  "uploadAdminUsername": "관리자 아이디",
+  "uploadAdminPassword": "비밀번호",
+  "uploadAdminLogin": "관리자 로그인",
+  "uploadLogout": "로그아웃",
+  "uploadSelectRoutine": "업로드할 루틴을 선택하세요",
+  "uploadNoLocalRoutines": "기기에 저장된 루틴이 없습니다.",
+  "upload": "업로드",
+  "uploadUpdate": "갱신",
+  "uploadConfirmTitle": "서버에 업로드",
+  "uploadConfirmCreate": "「{title}」 루틴을 서버에 새로 추가할까요?",
+  "@uploadConfirmCreate": {
+    "placeholders": {
+      "title": {"type": "String"}
+    }
+  },
+  "uploadConfirmUpdate": "「{title}」 루틴을 서버 데이터로 갱신할까요?",
+  "@uploadConfirmUpdate": {
+    "placeholders": {
+      "title": {"type": "String"}
+    }
+  },
+  "uploadSuccessCreated": "「{title}」 루틴을 서버에 추가했습니다.",
+  "@uploadSuccessCreated": {
+    "placeholders": {
+      "title": {"type": "String"}
+    }
+  },
+  "uploadSuccessUpdated": "「{title}」 루틴을 서버에 갱신했습니다.",
+  "@uploadSuccessUpdated": {
+    "placeholders": {
+      "title": {"type": "String"}
+    }
+  },
+  "uploadError": "업로드에 실패했습니다.",
+  "uploadLoginError": "로그인에 실패했습니다.",
+  "uploadLoadServerIdsError": "서버 루틴 목록을 불러오지 못했습니다.",
+  "downloadRoutineTooltip": "다운로드",
+  "routineDownloadSuccess": "「{title}」 루틴을 저장했습니다.",
+  "@routineDownloadSuccess": {
+    "placeholders": {
+      "title": {"type": "String"}
+    }
+  },
+  "routineDownloadError": "다운로드에 실패했습니다.",
+  "routineCountOnly": "{count}개 운동",
+  "@routineCountOnly": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "deleteLocalCopyMessage": "기기에서 이 루틴을 삭제할까요? 서버 루틴은 다시 다운로드할 수 있습니다.",
   "noRoutines": "저장된 루틴이 없습니다.",
+  "noSharedRoutines": "공유된 루틴이 없습니다.",
+  "homeTabOfficial": "기본 루틴",
+  "homeTabShared": "공유된 루틴",
   "loadingProfiles": "루틴을 불러오는 중...",
   "profileLoadError": "서버에서 루틴을 불러오지 못했습니다.",
   "retry": "다시 시도",
@@ -105,6 +162,8 @@
   "deleteRoutineMessage": "이 루틴을 삭제할까요?",
   "routineNameLabel": "루틴 이름",
   "routineNameHint": "예: 회전근개 재활",
+  "defaultRoutineName": "기본 루틴",
+  "defaultExerciseName": "기본 운동",
   "descriptionOptionalLabel": "설명 (선택)",
   "reorderExercisesHint": "길게 눌러 순서 변경",
   "addExercisesPrompt": "운동을 추가해 주세요",
@@ -226,6 +285,9 @@
   "workoutNext": "다음",
   "nextPhaseFinish": "종료",
   "settingsTitle": "설정",
+  "workoutSettingsSection": "운동",
+  "countSecondsWithTtsTitle": "초 카운팅 음성",
+  "countSecondsWithTtsSubtitle": "카운트 모드에서만 초마다 숫자를 음성으로 안내합니다. 끄면 비프음이 재생됩니다.",
   "languageTitle": "언어",
   "languageSystem": "시스템 기본값",
   "languageEnglish": "English",

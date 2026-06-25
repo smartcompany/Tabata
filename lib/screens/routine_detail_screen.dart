@@ -26,6 +26,7 @@ class RoutineDetailScreen extends StatefulWidget {
 
 class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
   final _shareService = RoutineShareService();
+  final _shareButtonKey = GlobalKey();
   Routine? _routine;
 
   @override
@@ -60,7 +61,56 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
   Future<void> _share() async {
     final routine = _routine;
     if (routine == null) return;
-    await _shareService.share(routine);
+    await _shareService.share(
+      routine,
+      sharePositionOrigin: _sharePositionOrigin(),
+    );
+  }
+
+  Rect? _sharePositionOrigin() {
+    final box =
+        _shareButtonKey.currentContext?.findRenderObject() as RenderBox?;
+    if (box != null && box.hasSize) {
+      return box.localToGlobal(Offset.zero) & box.size;
+    }
+
+    final context = this.context;
+    if (!context.mounted) return null;
+    final size = MediaQuery.sizeOf(context);
+    return Rect.fromCenter(
+      center: Offset(size.width / 2, size.height / 2),
+      width: 1,
+      height: 1,
+    );
+  }
+
+  Future<void> _deleteLocally() async {
+    final l10n = AppLocalizations.of(context);
+    final isServer = widget.repository.isServerProfile(widget.routineId);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.deleteRoutineTitle),
+        content: Text(
+          isServer ? l10n.deleteLocalCopyMessage : l10n.deleteRoutineMessage,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(l10n.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(l10n.delete),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+
+    await widget.repository.delete(widget.routineId);
+    if (!mounted) return;
+    Navigator.of(context).pop();
   }
 
   Future<void> _rollback() async {
@@ -129,6 +179,14 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
       );
     }
 
+    final isDownloaded = widget.repository.isDownloadedLocally(widget.routineId);
+    if (!isDownloaded) {
+      return Scaffold(
+        appBar: AppBar(title: Text(routine.title)),
+        body: Center(child: Text(l10n.routineNotFound)),
+      );
+    }
+
     final exercises = routine.orderedExercises;
     final totalSec = routineDurationSec(routine);
 
@@ -148,6 +206,7 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
             tooltip: l10n.editTooltip,
           ),
           IconButton(
+            key: _shareButtonKey,
             onPressed: _share,
             icon: const Icon(Icons.ios_share),
             tooltip: l10n.shareTooltip,
@@ -155,7 +214,12 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
         ],
       ),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+        padding: EdgeInsets.fromLTRB(
+          20,
+          8,
+          20,
+          24 + MediaQuery.paddingOf(context).bottom,
+        ),
         children: [
           if (routine.description.isNotEmpty) ...[
             Text(
@@ -191,6 +255,18 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
               exercise: exercise,
               onTap: _edit,
               onStart: () => _startExercise(exercise),
+            ),
+          ),
+          const SizedBox(height: 24),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: _deleteLocally,
+              icon: const Icon(Icons.delete_outline),
+              label: Text(l10n.deleteRoutineTitle),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Theme.of(context).colorScheme.error,
+              ),
             ),
           ),
         ],

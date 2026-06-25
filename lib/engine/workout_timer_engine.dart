@@ -82,12 +82,15 @@ class WorkoutTimerEngine extends ChangeNotifier {
   int _remainingSec = 0;
   int _elapsedSec = 0;
   bool _isPaused = false;
+  bool _announceHold = false;
   Timer? _timer;
   late WorkoutTimerSnapshot _snapshot;
 
   WorkoutTimerSnapshot get snapshot => _snapshot;
 
   int get elapsedSec => _elapsedSec;
+
+  bool get isAnnounceHold => _announceHold;
 
   WorkoutPhase? get nextPhase {
     final nextIndex = _phaseIndex + 1;
@@ -98,13 +101,26 @@ class WorkoutTimerEngine extends ChangeNotifier {
   List<Exercise> get _exercises => routine.orderedExercises;
 
   void start() {
-    if (_snapshot.isCompleted) return;
+    if (_snapshot.isCompleted || _isPaused || _announceHold) return;
     _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), (_) => _tick());
   }
 
+  /// Freezes the countdown while intro speech plays (exercise name, phase, rep).
+  void holdForAnnounce() {
+    _announceHold = true;
+    _timer?.cancel();
+  }
+
+  void releaseAnnounceHold() {
+    if (!_announceHold) return;
+    _announceHold = false;
+    start();
+  }
+
   void pause() {
     _isPaused = true;
+    _announceHold = false;
     _timer?.cancel();
     _refreshSnapshot();
   }

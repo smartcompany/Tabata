@@ -173,7 +173,7 @@ ExercisePhase createEmptyPhase({
     id: _uuid.v4(),
     kind: kind,
     label: '',
-    durationSec: ExerciseLimits.minWorkRelaxDurationSec,
+    durationSec: ExerciseLimits.defaultWorkRelaxDurationSec,
     order: order,
   );
 }
