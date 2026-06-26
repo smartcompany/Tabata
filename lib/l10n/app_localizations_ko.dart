@@ -89,7 +89,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get uploadLocalRoutineSection => '기기에 있는 루틴';
 
   @override
-  String get uploadLocalRoutineHint => '아직 서버에 없는 로컬 루틴입니다. 업로드하면 서버에 추가됩니다.';
+  String get uploadLocalRoutineHint => '기기에 저장된 루틴입니다. 업로드해도 기기에서 삭제되지 않습니다.';
 
   @override
   String get uploadNoAdminRoutines => '아직 업로드한 루틴이 없습니다.';

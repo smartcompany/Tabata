@@ -44,7 +44,7 @@
   "uploadServerRoutineSection": "アップロード済みルーティン",
   "uploadServerRoutineHint": "タップして編集します。保存するとサーバーに反映されます。",
   "uploadLocalRoutineSection": "端末のルーティン",
-  "uploadLocalRoutineHint": "まだサーバーにないローカルルーティンです。アップロードでサーバーに追加されます。",
+  "uploadLocalRoutineHint": "端末に保存されたルーティンです。アップロードしても端末からは削除されません。",
   "uploadNoAdminRoutines": "まだアップロードしたルーティンがありません。",
   "uploadEditServerRoutineTitle": "サーバールーティンを編集",
   "uploadDeleteServerRoutineMessage": "サーバーからこのルーティンを削除しますか？",

@@ -44,7 +44,7 @@
   "uploadServerRoutineSection": "My uploaded routines",
   "uploadServerRoutineHint": "Tap to edit. Saving updates the server copy.",
   "uploadLocalRoutineSection": "Routines on this device",
-  "uploadLocalRoutineHint": "Local routines not yet on the server. Upload adds them to the server.",
+  "uploadLocalRoutineHint": "Routines saved on this device. Uploading copies them to the server without removing the local copy.",
   "uploadNoAdminRoutines": "No uploaded routines yet.",
   "uploadEditServerRoutineTitle": "Edit server routine",
   "uploadDeleteServerRoutineMessage": "Delete this routine from the server?",

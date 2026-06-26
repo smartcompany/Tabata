@@ -249,7 +249,7 @@ abstract class AppLocalizations {
   /// No description provided for @uploadLocalRoutineHint.
   ///
   /// In en, this message translates to:
-  /// **'Local routines not yet on the server. Upload adds them to the server.'**
+  /// **'Routines saved on this device. Uploading copies them to the server without removing the local copy.'**
   String get uploadLocalRoutineHint;
 
   /// No description provided for @uploadNoAdminRoutines.

@@ -44,7 +44,7 @@
   "uploadServerRoutineSection": "我上传的训练",
   "uploadServerRoutineHint": "点击编辑。保存后会更新服务器副本。",
   "uploadLocalRoutineSection": "本设备上的训练",
-  "uploadLocalRoutineHint": "尚未上传到服务器的本地训练。上传后会添加到服务器。",
+  "uploadLocalRoutineHint": "保存在本设备的训练。上传只会同步到服务器，不会从本设备删除。",
   "uploadNoAdminRoutines": "还没有上传的训练。",
   "uploadEditServerRoutineTitle": "编辑服务器训练",
   "uploadDeleteServerRoutineMessage": "要从服务器删除此训练吗？",

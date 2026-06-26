@@ -192,6 +192,49 @@ void main() {
     expect(repository.myRoutines, isEmpty);
   });
 
+  test('copyForServerUpload always uses a distinct id from the local routine',
+      () async {
+    final api = _FakeApiClient(summaries: [], profiles: {});
+    final repository = await RoutineRepository.create(apiClient: api);
+    final local = _routine('local-a', title: 'Mine');
+
+    final firstUpload = repository.copyForServerUpload(local);
+    final secondUpload = repository.copyForServerUpload(local);
+
+    expect(firstUpload.id, isNot(local.id));
+    expect(secondUpload.id, isNot(local.id));
+    expect(firstUpload.id, isNot(secondUpload.id));
+    expect(firstUpload.title, local.title);
+  });
+
+  test('copyForServerUpload reuses server profile id when updating', () async {
+    final api = _FakeApiClient(summaries: [], profiles: {});
+    final repository = await RoutineRepository.create(apiClient: api);
+    final local = _routine('local-a', title: 'Mine');
+
+    final updated = repository.copyForServerUpload(
+      local,
+      existingServerProfileId: 'server-copy-1',
+    );
+
+    expect(updated.id, 'server-copy-1');
+    expect(updated.id, isNot(local.id));
+  });
+
+  test('setUploadedServerProfileId links local routine to server copy', () async {
+    final api = _FakeApiClient(summaries: [], profiles: {});
+    final repository = await RoutineRepository.create(apiClient: api);
+    await repository.upsert(_routine('local-a', title: 'Mine'));
+
+    await repository.setUploadedServerProfileId(
+      localRoutineId: 'local-a',
+      serverProfileId: 'server-b',
+    );
+
+    expect(repository.uploadedServerProfileIdFor('local-a'), 'server-b');
+    expect(repository.findById('local-a')!.id, 'local-a');
+  });
+
   test('saveListOrder persists custom order', () async {
     final api = _FakeApiClient(summaries: [], profiles: {});
     final repository = await RoutineRepository.create(apiClient: api);

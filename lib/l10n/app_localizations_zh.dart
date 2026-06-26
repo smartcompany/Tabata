@@ -89,7 +89,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get uploadLocalRoutineSection => '本设备上的训练';
 
   @override
-  String get uploadLocalRoutineHint => '尚未上传到服务器的本地训练。上传后会添加到服务器。';
+  String get uploadLocalRoutineHint => '保存在本设备的训练。上传只会同步到服务器，不会从本设备删除。';
 
   @override
   String get uploadNoAdminRoutines => '还没有上传的训练。';

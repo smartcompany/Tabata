@@ -92,7 +92,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get uploadLocalRoutineHint =>
-      'Local routines not yet on the server. Upload adds them to the server.';
+      'Routines saved on this device. Uploading copies them to the server without removing the local copy.';
 
   @override
   String get uploadNoAdminRoutines => 'No uploaded routines yet.';

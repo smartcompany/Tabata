@@ -162,6 +162,38 @@ class RoutineRepository {
 
   List<Routine> loadLocalOnly() => myRoutines;
 
+  String? uploadedServerProfileIdFor(String localRoutineId) =>
+      recordFor(localRoutineId)?.uploadedServerProfileId;
+
+  /// Deep-clones [routine] with a new server profile id (or reuses [existingServerProfileId] to update).
+  Routine copyForServerUpload(
+    Routine routine, {
+    String? existingServerProfileId,
+  }) {
+    return forkRoutine(routine, newRoutineId: existingServerProfileId);
+  }
+
+  Future<void> setUploadedServerProfileId({
+    required String localRoutineId,
+    required String serverProfileId,
+  }) async {
+    final record = recordFor(localRoutineId);
+    if (record == null) return;
+    await _upsertRecord(
+      record.copyWith(uploadedServerProfileId: serverProfileId),
+    );
+  }
+
+  Future<void> clearUploadedServerProfileLink(String serverProfileId) async {
+    var changed = false;
+    _records = _records.map((record) {
+      if (record.uploadedServerProfileId != serverProfileId) return record;
+      changed = true;
+      return record.copyWith(clearUploadedServerProfileId: true);
+    }).toList();
+    if (changed) await _saveRecords();
+  }
+
   Future<void> saveListOrder(List<String> orderedIds) async {
     await _prefs.setStringList(_listOrderKey, orderedIds);
   }
@@ -177,6 +209,7 @@ class RoutineRepository {
         routine: routine,
         forkedFromCatalogId: existing?.forkedFromCatalogId,
         forkedFromOwnerId: existing?.forkedFromOwnerId,
+        uploadedServerProfileId: existing?.uploadedServerProfileId,
       ),
     );
   }

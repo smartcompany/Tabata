@@ -89,8 +89,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get uploadLocalRoutineSection => '端末のルーティン';
 
   @override
-  String get uploadLocalRoutineHint =>
-      'まだサーバーにないローカルルーティンです。アップロードでサーバーに追加されます。';
+  String get uploadLocalRoutineHint => '端末に保存されたルーティンです。アップロードしても端末からは削除されません。';
 
   @override
   String get uploadNoAdminRoutines => 'まだアップロードしたルーティンがありません。';

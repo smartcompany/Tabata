@@ -26,6 +26,7 @@ class UploadRoutineScreen extends StatefulWidget {
 class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
   List<Routine> _serverRoutines = [];
   List<Routine> _localRoutines = [];
+  Set<String> _serverRoutineIds = {};
   bool _loading = true;
   bool _uploading = false;
   String? _loadError;
@@ -46,6 +47,7 @@ class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
       setState(() {
         _serverRoutines = [];
         _localRoutines = [];
+        _serverRoutineIds = {};
         _loading = false;
         _loadError = null;
       });
@@ -61,16 +63,14 @@ class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
       final serverRoutines = await widget.apiClient.fetchUserProfiles(
         userToken: token,
       );
-      final serverIds = serverRoutines.map((routine) => routine.id).toSet();
-      final localRoutines = widget.repository
-          .loadLocalOnly()
-          .where((routine) => !serverIds.contains(routine.id))
-          .toList();
+      final localRoutines = widget.repository.loadLocalOnly();
 
       if (!mounted) return;
       setState(() {
         _serverRoutines = serverRoutines;
         _localRoutines = localRoutines;
+        _serverRoutineIds =
+            serverRoutines.map((routine) => routine.id).toSet();
         _loading = false;
       });
     } on RoutineApiException catch (_) {
@@ -78,6 +78,7 @@ class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
       setState(() {
         _serverRoutines = [];
         _localRoutines = [];
+        _serverRoutineIds = {};
         _loading = false;
         _loadError = AppLocalizations.of(context).uploadLoadServerIdsError;
       });
@@ -86,6 +87,7 @@ class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
       setState(() {
         _serverRoutines = [];
         _localRoutines = [];
+        _serverRoutineIds = {};
         _loading = false;
         _loadError = AppLocalizations.of(context).uploadLoadServerIdsError;
       });
@@ -135,11 +137,19 @@ class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
     final token = await _userToken();
     if (token == null) return;
 
+    final serverProfileId =
+        widget.repository.uploadedServerProfileIdFor(routine.id);
+    final onServer = serverProfileId != null &&
+        _serverRoutineIds.contains(serverProfileId);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(l10n.uploadConfirmTitle),
-        content: Text(l10n.uploadConfirmCreate(routine.title)),
+        content: Text(
+          onServer
+              ? l10n.uploadConfirmUpdate(routine.title)
+              : l10n.uploadConfirmCreate(routine.title),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -157,11 +167,32 @@ class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
     setState(() => _uploading = true);
 
     try {
-      final result = await widget.apiClient.uploadUserProfile(
-        routine: routine,
-        userToken: token,
+      var serverCopy = widget.repository.copyForServerUpload(
+        routine,
+        existingServerProfileId: serverProfileId,
       );
+      UploadProfileResult result;
+      try {
+        result = await widget.apiClient.uploadUserProfile(
+          routine: serverCopy,
+          userToken: token,
+        );
+      } on RoutineApiException catch (error) {
+        final staleLink = serverProfileId != null &&
+            error.message.toLowerCase().contains('profile id already in use');
+        if (!staleLink) rethrow;
+        serverCopy = widget.repository.copyForServerUpload(routine);
+        result = await widget.apiClient.uploadUserProfile(
+          routine: serverCopy,
+          userToken: token,
+        );
+      }
       if (!mounted) return;
+
+      await widget.repository.setUploadedServerProfileId(
+        localRoutineId: routine.id,
+        serverProfileId: serverCopy.id,
+      );
 
       setState(() => _uploading = false);
       await _loadRoutines();
@@ -220,6 +251,7 @@ class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
         profileId: routine.id,
         userToken: token,
       );
+      await widget.repository.clearUploadedServerProfileLink(routine.id);
       if (!mounted) return;
       setState(() {
         _uploading = false;
