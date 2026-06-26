@@ -4,6 +4,7 @@ import 'package:share_lib/share_lib_auth.dart';
 
 import '../app_auth_provider.dart';
 import '../config/auth_config.dart';
+import '../features/legal/privacy_processing_consent.dart';
 import '../models/user.dart';
 import '../screens/profile_setup_screen.dart';
 
@@ -39,9 +40,19 @@ class AuthHelper {
         context,
         MaterialPageRoute(builder: (context) => const ProfileSetupScreen()),
       );
-      return result == true;
+      if (result != true) return false;
     }
 
-    return true;
+    if (!context.mounted) return false;
+
+    if (await isPrivacyProcessingConsentAccepted()) return true;
+    if (!context.mounted) return false;
+
+    final consented = await ensurePrivacyProcessingConsent(context);
+    if (!context.mounted) return false;
+    if (consented) return true;
+
+    await AppAuthProvider.shared.logout();
+    return false;
   }
 }

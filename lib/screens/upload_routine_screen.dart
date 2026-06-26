@@ -3,6 +3,7 @@ import 'package:tabata_timer/l10n/app_localizations.dart';
 
 import '../app_auth_provider.dart';
 import '../data/routine_repository.dart';
+import '../features/legal/privacy_processing_consent.dart';
 import '../models/routine.dart';
 import '../services/routine_api_client.dart';
 import '../utils/duration_calculator.dart';
@@ -95,6 +96,7 @@ class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
   }
 
   Future<void> _logout() async {
+    await clearPrivacyProcessingConsent();
     await AppAuthProvider.shared.logout();
     if (!mounted) return;
     Navigator.of(context).pop();

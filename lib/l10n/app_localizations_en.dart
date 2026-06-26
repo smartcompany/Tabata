@@ -649,4 +649,68 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorInvalidRoutineJson => 'Invalid routine JSON.';
+
+  @override
+  String get settingsLegalSection => 'Legal';
+
+  @override
+  String get settingsPrivacyPolicy => 'Privacy Policy';
+
+  @override
+  String get settingsAppDisclosures => 'Service notice & disclaimers';
+
+  @override
+  String get privacyProcessingConsentTitle => 'Terms, shared content & privacy';
+
+  @override
+  String get privacyProcessingConsentLead =>
+      'To upload or share workout routines (user-generated content), please review and agree below.';
+
+  @override
+  String get privacyProcessingConsentSectionPrivacy => 'Personal data';
+
+  @override
+  String get privacyProcessingConsentSectionUgc => 'Shared routines (UGC)';
+
+  @override
+  String get privacyProcessingConsentUgcIntro =>
+      'Applies when you upload routines visible to other users. YouTube and other video links play via the official embed player only; we do not host or redistribute video files.';
+
+  @override
+  String get privacyProcessingConsentBullet1 =>
+      'We collect: Firebase UID, email (if provided), nickname, uploaded routines (title, description, exercises, image URLs, video link URLs).';
+
+  @override
+  String get privacyProcessingConsentBullet2 =>
+      'Purposes: account identity, routine sharing, abuse prevention, service improvement.';
+
+  @override
+  String get privacyProcessingConsentBullet3 =>
+      'Retention: deleted when you delete your account unless law requires longer retention.';
+
+  @override
+  String get privacyProcessingConsentUgcBullet1 =>
+      'Zero tolerance for illegal, violent, sexual, hateful, spam, or rights-infringing routines, images, or video links.';
+
+  @override
+  String get privacyProcessingConsentUgcBullet2 =>
+      'Violations may result in content removal, upload restrictions, or account suspension.';
+
+  @override
+  String get privacyProcessingConsentUgcBullet3 =>
+      'Report inappropriate shared routines via the developer contact on the app store.';
+
+  @override
+  String get privacyProcessingConsentCheckboxPrivacy =>
+      'I agree to the collection and use of personal data described above.';
+
+  @override
+  String get privacyProcessingConsentCheckboxUgc =>
+      'I agree to the shared routine (UGC) rules and zero-tolerance policy.';
+
+  @override
+  String get privacyProcessingConsentAgree => 'Agree and continue';
+
+  @override
+  String get privacyProcessingConsentDecline => 'Decline';
 }

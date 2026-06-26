@@ -639,4 +639,61 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get errorInvalidRoutineJson => '训练 JSON 格式无效。';
+
+  @override
+  String get settingsLegalSection => '法律信息';
+
+  @override
+  String get settingsPrivacyPolicy => '隐私政策';
+
+  @override
+  String get settingsAppDisclosures => '服务说明与免责声明';
+
+  @override
+  String get privacyProcessingConsentTitle => '条款、共享内容与隐私';
+
+  @override
+  String get privacyProcessingConsentLead => '使用上传或共享训练（用户生成内容）前，请阅读并同意以下内容。';
+
+  @override
+  String get privacyProcessingConsentSectionPrivacy => '个人信息';
+
+  @override
+  String get privacyProcessingConsentSectionUgc => '共享训练（UGC）';
+
+  @override
+  String get privacyProcessingConsentUgcIntro =>
+      '适用于向其他用户公开的上传训练。YouTube 等外部视频链接仅通过官方 embed 播放，不在服务器存储或再分发视频文件。';
+
+  @override
+  String get privacyProcessingConsentBullet1 =>
+      '收集：Firebase UID、邮箱（如有）、昵称、上传的训练（标题、说明、动作、图片 URL、视频链接 URL）。';
+
+  @override
+  String get privacyProcessingConsentBullet2 => '用途：账户识别、训练共享、防止滥用、改进服务。';
+
+  @override
+  String get privacyProcessingConsentBullet3 => '保存与删除：注销账户后删除，法律另有规定的除外。';
+
+  @override
+  String get privacyProcessingConsentUgcBullet1 =>
+      '对违法、暴力、色情、仇恨、垃圾信息或侵权的训练、图片、视频链接零容忍。';
+
+  @override
+  String get privacyProcessingConsentUgcBullet2 => '违规可删除内容、限制上传或暂停账户。';
+
+  @override
+  String get privacyProcessingConsentUgcBullet3 => '可通过应用商店开发者联系方式举报不当共享训练。';
+
+  @override
+  String get privacyProcessingConsentCheckboxPrivacy => '我同意上述个人信息的收集与使用。';
+
+  @override
+  String get privacyProcessingConsentCheckboxUgc => '我同意共享训练（UGC）规则及零容忍政策。';
+
+  @override
+  String get privacyProcessingConsentAgree => '同意并继续';
+
+  @override
+  String get privacyProcessingConsentDecline => '不同意';
 }

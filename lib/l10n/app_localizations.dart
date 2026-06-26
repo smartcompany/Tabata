@@ -1253,6 +1253,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Invalid routine JSON.'**
   String get errorInvalidRoutineJson;
+
+  /// No description provided for @settingsLegalSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Legal'**
+  String get settingsLegalSection;
+
+  /// No description provided for @settingsPrivacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get settingsPrivacyPolicy;
+
+  /// No description provided for @settingsAppDisclosures.
+  ///
+  /// In en, this message translates to:
+  /// **'Service notice & disclaimers'**
+  String get settingsAppDisclosures;
+
+  /// No description provided for @privacyProcessingConsentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms, shared content & privacy'**
+  String get privacyProcessingConsentTitle;
+
+  /// No description provided for @privacyProcessingConsentLead.
+  ///
+  /// In en, this message translates to:
+  /// **'To upload or share workout routines (user-generated content), please review and agree below.'**
+  String get privacyProcessingConsentLead;
+
+  /// No description provided for @privacyProcessingConsentSectionPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal data'**
+  String get privacyProcessingConsentSectionPrivacy;
+
+  /// No description provided for @privacyProcessingConsentSectionUgc.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared routines (UGC)'**
+  String get privacyProcessingConsentSectionUgc;
+
+  /// No description provided for @privacyProcessingConsentUgcIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Applies when you upload routines visible to other users. YouTube and other video links play via the official embed player only; we do not host or redistribute video files.'**
+  String get privacyProcessingConsentUgcIntro;
+
+  /// No description provided for @privacyProcessingConsentBullet1.
+  ///
+  /// In en, this message translates to:
+  /// **'We collect: Firebase UID, email (if provided), nickname, uploaded routines (title, description, exercises, image URLs, video link URLs).'**
+  String get privacyProcessingConsentBullet1;
+
+  /// No description provided for @privacyProcessingConsentBullet2.
+  ///
+  /// In en, this message translates to:
+  /// **'Purposes: account identity, routine sharing, abuse prevention, service improvement.'**
+  String get privacyProcessingConsentBullet2;
+
+  /// No description provided for @privacyProcessingConsentBullet3.
+  ///
+  /// In en, this message translates to:
+  /// **'Retention: deleted when you delete your account unless law requires longer retention.'**
+  String get privacyProcessingConsentBullet3;
+
+  /// No description provided for @privacyProcessingConsentUgcBullet1.
+  ///
+  /// In en, this message translates to:
+  /// **'Zero tolerance for illegal, violent, sexual, hateful, spam, or rights-infringing routines, images, or video links.'**
+  String get privacyProcessingConsentUgcBullet1;
+
+  /// No description provided for @privacyProcessingConsentUgcBullet2.
+  ///
+  /// In en, this message translates to:
+  /// **'Violations may result in content removal, upload restrictions, or account suspension.'**
+  String get privacyProcessingConsentUgcBullet2;
+
+  /// No description provided for @privacyProcessingConsentUgcBullet3.
+  ///
+  /// In en, this message translates to:
+  /// **'Report inappropriate shared routines via the developer contact on the app store.'**
+  String get privacyProcessingConsentUgcBullet3;
+
+  /// No description provided for @privacyProcessingConsentCheckboxPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'I agree to the collection and use of personal data described above.'**
+  String get privacyProcessingConsentCheckboxPrivacy;
+
+  /// No description provided for @privacyProcessingConsentCheckboxUgc.
+  ///
+  /// In en, this message translates to:
+  /// **'I agree to the shared routine (UGC) rules and zero-tolerance policy.'**
+  String get privacyProcessingConsentCheckboxUgc;
+
+  /// No description provided for @privacyProcessingConsentAgree.
+  ///
+  /// In en, this message translates to:
+  /// **'Agree and continue'**
+  String get privacyProcessingConsentAgree;
+
+  /// No description provided for @privacyProcessingConsentDecline.
+  ///
+  /// In en, this message translates to:
+  /// **'Decline'**
+  String get privacyProcessingConsentDecline;
 }
 
 class _AppLocalizationsDelegate

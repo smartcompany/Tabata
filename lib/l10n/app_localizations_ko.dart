@@ -642,4 +642,67 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get errorInvalidRoutineJson => '루틴 JSON 형식이 아닙니다.';
+
+  @override
+  String get settingsLegalSection => '법적 고지';
+
+  @override
+  String get settingsPrivacyPolicy => '개인정보 처리방침';
+
+  @override
+  String get settingsAppDisclosures => '서비스 안내 및 면책';
+
+  @override
+  String get privacyProcessingConsentTitle => '이용약관·공유 콘텐츠 규칙 및 개인정보 동의';
+
+  @override
+  String get privacyProcessingConsentLead =>
+      '루틴 업로드·공유 등 사용자 생성 콘텐츠(UGC) 기능을 이용하시려면 아래를 확인하신 뒤 동의해 주세요.';
+
+  @override
+  String get privacyProcessingConsentSectionPrivacy => '개인정보';
+
+  @override
+  String get privacyProcessingConsentSectionUgc => '공유 루틴(UGC)';
+
+  @override
+  String get privacyProcessingConsentUgcIntro =>
+      '다른 이용자에게 공개되는 루틴 업로드·공유에 적용됩니다. YouTube 등 외부 동영상 링크는 공식 embed 방식으로만 재생되며, 영상 파일을 서버에 저장·재배포하지 않습니다.';
+
+  @override
+  String get privacyProcessingConsentBullet1 =>
+      '수집 항목: 계정 식별자(Firebase UID), 이메일(있는 경우), 닉네임, 업로드한 루틴(제목·설명·운동 구성·이미지 URL·동영상 링크 URL)';
+
+  @override
+  String get privacyProcessingConsentBullet2 =>
+      '이용 목적: 회원 식별, 루틴 공유·다운로드 제공, 부정 이용 방지 및 서비스 개선';
+
+  @override
+  String get privacyProcessingConsentBullet3 =>
+      '보관 및 파기: 탈퇴 시 관련 법령에 따른 보관 의무가 없는 한 지체 없이 삭제·처리합니다.';
+
+  @override
+  String get privacyProcessingConsentUgcBullet1 =>
+      '무관용 원칙: 불법·폭력·성적·혐오·스팸·타인 권리 침해 루틴·이미지·동영상 링크는 허용하지 않습니다.';
+
+  @override
+  String get privacyProcessingConsentUgcBullet2 =>
+      '위반 시 루틴 삭제, 업로드 제한, 계정 정지 등 조치를 할 수 있습니다.';
+
+  @override
+  String get privacyProcessingConsentUgcBullet3 =>
+      '부적절한 공유 루틴은 앱 스토어 개발자 연락처로 신고해 주세요.';
+
+  @override
+  String get privacyProcessingConsentCheckboxPrivacy => '위 개인정보 수집·이용에 동의합니다.';
+
+  @override
+  String get privacyProcessingConsentCheckboxUgc =>
+      '위 공유 루틴(UGC) 규칙 및 무관용 정책에 동의합니다.';
+
+  @override
+  String get privacyProcessingConsentAgree => '동의하고 계속하기';
+
+  @override
+  String get privacyProcessingConsentDecline => '동의하지 않음';
 }

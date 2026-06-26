@@ -641,4 +641,65 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get errorInvalidRoutineJson => 'ルーティン JSON の形式が正しくありません。';
+
+  @override
+  String get settingsLegalSection => '法的情報';
+
+  @override
+  String get settingsPrivacyPolicy => 'プライバシーポリシー';
+
+  @override
+  String get settingsAppDisclosures => 'サービス案内・免責事項';
+
+  @override
+  String get privacyProcessingConsentTitle => '利用規約・共有コンテンツとプライバシー';
+
+  @override
+  String get privacyProcessingConsentLead =>
+      'ルーティンのアップロード・共有（UGC）を利用するには、以下を確認のうえ同意してください。';
+
+  @override
+  String get privacyProcessingConsentSectionPrivacy => '個人情報';
+
+  @override
+  String get privacyProcessingConsentSectionUgc => '共有ルーティン（UGC）';
+
+  @override
+  String get privacyProcessingConsentUgcIntro =>
+      '他の利用者に公開するルーティンのアップロードに適用されます。YouTubeなどの外部動画リンクは公式embedのみで再生し、動画ファイルをサーバーに保存・再配布しません。';
+
+  @override
+  String get privacyProcessingConsentBullet1 =>
+      '収集：Firebase UID、メール（ある場合）、ニックネーム、アップロードしたルーティン（タイトル・説明・種目・画像URL・動画リンクURL）';
+
+  @override
+  String get privacyProcessingConsentBullet2 => '目的：本人確認、ルーティン共有、不正利用防止、サービス改善';
+
+  @override
+  String get privacyProcessingConsentBullet3 => '保管・削除：退会時に削除（法令で保管が必要な場合を除く）';
+
+  @override
+  String get privacyProcessingConsentUgcBullet1 =>
+      '違法・暴力・性的・ヘイト・スパム・権利侵害のルーティン・画像・動画リンクは許容しません。';
+
+  @override
+  String get privacyProcessingConsentUgcBullet2 =>
+      '違反時は削除、アップロード制限、アカウント停止等の措置を行う場合があります。';
+
+  @override
+  String get privacyProcessingConsentUgcBullet3 =>
+      '不適切な共有ルーティンは App Store の開発者連絡先から報告してください。';
+
+  @override
+  String get privacyProcessingConsentCheckboxPrivacy => '上記の個人情報の収集・利用に同意します。';
+
+  @override
+  String get privacyProcessingConsentCheckboxUgc =>
+      '共有ルーティン（UGC）規則と無容認政策に同意します。';
+
+  @override
+  String get privacyProcessingConsentAgree => '同意して続ける';
+
+  @override
+  String get privacyProcessingConsentDecline => '同意しない';
 }

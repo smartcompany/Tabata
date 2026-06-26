@@ -51,6 +51,8 @@
 		<false/>
 		<key>ITSAppUsesNonExemptEncryption</key>
 		<false/>
+		<key>NSPrivacyPolicyURL</key>
+		<string>https://tabata-server.vercel.app/legal/privacy.html</string>
 		<key>GADApplicationIdentifier</key>
 		<string>ca-app-pub-5520596727761259~4709430997</string>
 		<key>KAKAO_APP_KEY</key>

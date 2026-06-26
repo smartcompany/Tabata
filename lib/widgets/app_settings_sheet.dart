@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:tabata_timer/l10n/app_localizations.dart';
 
+import '../screens/legal_webview_screen.dart';
 import '../services/locale_settings.dart';
 import '../services/workout_settings.dart';
+import '../utils/legal_urls.dart';
 
-Future<void> showAppSettingsSheet(BuildContext context) async {
-  final l10n = AppLocalizations.of(context);
+Future<void> showAppSettingsSheet(BuildContext hostContext) async {
+  final l10n = AppLocalizations.of(hostContext);
   final localeSettings = await LocaleSettings.load();
   final workoutSettings = await WorkoutSettings.load();
 
-  if (!context.mounted) return;
+  if (!hostContext.mounted) return;
 
   await showModalBottomSheet<void>(
-    context: context,
+    context: hostContext,
     showDragHandle: true,
     isScrollControlled: true,
     builder: (context) {
@@ -85,6 +87,39 @@ Future<void> showAppSettingsSheet(BuildContext context) async {
                   onChanged: (value) async {
                     await workoutSettings.setCountSecondsWithTts(value);
                     setSheetState(() => countSecondsWithTts = value);
+                  },
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  l10n.settingsLegalSection,
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(l10n.settingsPrivacyPolicy),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    final locale = Localizations.localeOf(context);
+                    Navigator.of(context).pop();
+                    LegalWebViewScreen.open(
+                      hostContext,
+                      url: LegalUrls.privacyPolicy(locale),
+                      pageTitle: l10n.settingsPrivacyPolicy,
+                    );
+                  },
+                ),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(l10n.settingsAppDisclosures),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    final locale = Localizations.localeOf(context);
+                    Navigator.of(context).pop();
+                    LegalWebViewScreen.open(
+                      hostContext,
+                      url: LegalUrls.appDisclosures(locale),
+                      pageTitle: l10n.settingsAppDisclosures,
+                    );
                   },
                 ),
               ],
