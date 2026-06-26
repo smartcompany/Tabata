@@ -4,7 +4,6 @@ import 'package:tabata_timer/l10n/app_localizations.dart';
 import '../data/routine_repository.dart';
 import '../models/exercise.dart';
 import '../models/routine.dart';
-import '../services/routine_share_service.dart';
 import '../utils/duration_calculator.dart';
 import '../widgets/description_blocks_view.dart';
 import '../widgets/exercise_summary.dart';
@@ -96,12 +95,6 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
       return;
     }
     _reload();
-  }
-
-  Future<void> _share() async {
-    final routine = _routine;
-    if (routine == null) return;
-    await RoutineShareService().share(routine);
   }
 
   String _catalogAuthorLabel(AppLocalizations l10n) {
@@ -295,12 +288,6 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
               onPressed: _edit,
               icon: const Icon(Icons.edit_outlined),
               tooltip: l10n.editTooltip,
-            ),
-          if (!_isCatalogPreview)
-            IconButton(
-              onPressed: _share,
-              icon: const Icon(Icons.ios_share),
-              tooltip: l10n.shareTooltip,
             ),
         ],
       ),
