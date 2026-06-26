@@ -99,6 +99,42 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     );
   }
 
+  Future<bool> _persistDraft() async {
+    final draft = _draft;
+    if (widget.persistToServer) {
+      final apiClient = widget.apiClient;
+      final userAuthToken = widget.userAuthToken ?? _resolvedAuthToken;
+      if (apiClient == null || userAuthToken == null || userAuthToken.isEmpty) {
+        return false;
+      }
+      if (draft.exercises.isEmpty) return false;
+
+      final l10n = AppLocalizations.of(context);
+      try {
+        await apiClient.uploadUserProfile(
+          routine: draft,
+          userToken: userAuthToken,
+        );
+        return true;
+      } on RoutineApiException catch (error) {
+        if (!mounted) return false;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(error.message)),
+        );
+        return false;
+      } catch (_) {
+        if (!mounted) return false;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.uploadError)),
+        );
+        return false;
+      }
+    }
+
+    await widget.repository.upsert(draft);
+    return true;
+  }
+
   Future<void> _save() async {
     if (!validateFormAndScrollToError(_formKey)) return;
     if (_exercises.isEmpty) {
@@ -110,35 +146,8 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       return;
     }
 
-    final l10n = AppLocalizations.of(context);
-    if (widget.persistToServer) {
-      final apiClient = widget.apiClient;
-      final userAuthToken = widget.userAuthToken;
-      if (apiClient == null || userAuthToken == null) return;
-
-      try {
-        await apiClient.uploadUserProfile(
-          routine: _draft,
-          userToken: userAuthToken,
-        );
-      } on RoutineApiException catch (error) {
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(error.message)),
-        );
-        return;
-      } catch (_) {
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.uploadError)),
-        );
-        return;
-      }
-    } else {
-      await widget.repository.upsert(_draft);
-    }
-
-    if (!mounted) return;
+    final saved = await _persistDraft();
+    if (!saved || !mounted) return;
     Navigator.of(context).pop(_draft);
   }
 
@@ -198,6 +207,10 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     Navigator.of(context).pop();
   }
 
+  Future<void> _persistDraftIfNeeded() async {
+    await _persistDraft();
+  }
+
   Future<void> _addExercise() async {
     KeyboardDismissScope.dismiss(context);
     final l10n = AppLocalizations.of(context);
@@ -210,6 +223,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     );
     if (result == null) return;
     setState(() => _exercises = [..._exercises, result]);
+    await _persistDraftIfNeeded();
   }
 
   Future<void> _editExercise(int index) async {
@@ -225,6 +239,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       updated[index] = result;
       _exercises = updated;
     });
+    await _persistDraftIfNeeded();
   }
 
   void _deleteExercise(int index) {

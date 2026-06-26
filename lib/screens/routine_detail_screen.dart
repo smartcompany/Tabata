@@ -70,18 +70,9 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
     }
   }
 
-  void _reload() {
-    if (_isCatalogPreview) {
-      _loadCatalogRoutine();
-      return;
-    }
-    setState(() => _routine = widget.repository.findById(widget.routineId!));
-  }
-
-  Future<void> _edit() async {
     final routine = _routine;
     if (routine == null || _isCatalogPreview) return;
-    await Navigator.of(context).push<Routine>(
+    final updated = await Navigator.of(context).push<Routine>(
       MaterialPageRoute(
         builder: (_) => RoutineEditorScreen(
           repository: widget.repository,
@@ -94,7 +85,9 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
       Navigator.of(context).pop();
       return;
     }
-    _reload();
+    setState(() {
+      _routine = updated ?? widget.repository.findById(widget.routineId!);
+    });
   }
 
   String _catalogAuthorLabel(AppLocalizations l10n) {
