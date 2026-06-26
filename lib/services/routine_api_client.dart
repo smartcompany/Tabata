@@ -56,6 +56,33 @@ class RoutineApiClient {
     return routines.map((routine) => routine.id).toList();
   }
 
+  Future<List<Routine>> fetchUserProfiles({
+    required String userToken,
+  }) async {
+    final uri = _baseUri.replace(path: '/api/user/profiles');
+    final response = await _client.get(
+      uri,
+      headers: {'Authorization': 'Bearer $userToken'},
+    );
+
+    if (response.statusCode == 401) {
+      throw const RoutineApiException('Unauthorized');
+    }
+    if (response.statusCode != 200) {
+      throw RoutineApiException(
+        'Failed to load user profiles (${response.statusCode})',
+      );
+    }
+
+    final body = jsonDecode(response.body) as Map<String, dynamic>;
+    final rows = body['profiles'] as List<dynamic>? ?? [];
+    return [
+      for (final row in rows)
+        if (row is Map<String, dynamic>)
+          Routine.fromJson(row['profile'] as Map<String, dynamic>),
+    ];
+  }
+
   Future<List<Routine>> fetchDashboardProfiles({
     required String adminToken,
   }) async {
@@ -128,6 +155,55 @@ class RoutineApiClient {
       throw const RoutineApiException('Login response missing token');
     }
     return token;
+  }
+
+  Future<UploadProfileResult> uploadUserProfile({
+    required Routine routine,
+    required String userToken,
+  }) async {
+    final uri = _baseUri.replace(path: '/api/user/profiles/upsert');
+    final response = await _client.post(
+      uri,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $userToken',
+      },
+      body: jsonEncode(routine.toJson()),
+    );
+
+    if (response.statusCode != 200 && response.statusCode != 201) {
+      final message = _errorMessage(response) ?? 'Upload failed';
+      throw RoutineApiException(message);
+    }
+
+    final body = jsonDecode(response.body) as Map<String, dynamic>;
+    final action = body['action'] as String? ?? 'updated';
+    return UploadProfileResult(
+      action: action == 'created'
+          ? UploadProfileAction.created
+          : UploadProfileAction.updated,
+    );
+  }
+
+  Future<void> deleteUserProfile({
+    required String profileId,
+    required String userToken,
+  }) async {
+    final uri = _baseUri.replace(
+      path: '/api/user/profiles/${Uri.encodeComponent(profileId)}',
+    );
+    final response = await _client.delete(
+      uri,
+      headers: {'Authorization': 'Bearer $userToken'},
+    );
+
+    if (response.statusCode == 404) {
+      throw const RoutineApiException('Profile not found');
+    }
+    if (response.statusCode != 200) {
+      final message = _errorMessage(response) ?? 'Delete failed';
+      throw RoutineApiException(message);
+    }
   }
 
   Future<UploadProfileResult> uploadProfile({

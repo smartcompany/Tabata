@@ -80,11 +80,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get uploadLoadServerIdsError => 'サーバーのルーティン一覧を読み込めませんでした。';
 
   @override
-  String get uploadServerRoutineSection => 'サーバーにアップロード済み';
+  String get uploadServerRoutineSection => 'アップロード済みルーティン';
 
   @override
-  String get uploadServerRoutineHint =>
-      'タップしてサーバーのルーティンを編集します。保存するとサーバーに反映されます。';
+  String get uploadServerRoutineHint => 'タップして編集します。保存するとサーバーに反映されます。';
 
   @override
   String get uploadLocalRoutineSection => '端末のルーティン';
@@ -94,7 +93,7 @@ class AppLocalizationsJa extends AppLocalizations {
       'まだサーバーにないローカルルーティンです。アップロードでサーバーに追加されます。';
 
   @override
-  String get uploadNoAdminRoutines => 'サーバーに登録された管理者ルーティンがありません。';
+  String get uploadNoAdminRoutines => 'まだアップロードしたルーティンがありません。';
 
   @override
   String get uploadEditServerRoutineTitle => 'サーバールーティンを編集';

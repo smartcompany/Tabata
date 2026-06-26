@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:tabata_timer/l10n/app_localizations.dart';
 
+import '../app_auth_provider.dart';
 import '../data/routine_repository.dart';
 import '../models/routine.dart';
-import '../services/admin_session.dart';
 import '../services/routine_api_client.dart';
 import '../utils/duration_calculator.dart';
 import '../widgets/swipe_reveal_delete.dart';
@@ -14,50 +14,35 @@ class UploadRoutineScreen extends StatefulWidget {
     super.key,
     required this.repository,
     required this.apiClient,
-    required this.adminSession,
   });
 
   final RoutineRepository repository;
   final RoutineApiClient apiClient;
-  final AdminSession adminSession;
 
   @override
   State<UploadRoutineScreen> createState() => _UploadRoutineScreenState();
 }
 
 class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
-  final _usernameController = TextEditingController();
-  final _passwordController = TextEditingController();
-
   List<Routine> _serverRoutines = [];
   List<Routine> _localRoutines = [];
-  bool _loading = false;
-  bool _loggingIn = false;
+  bool _loading = true;
   bool _uploading = false;
   String? _loadError;
-  String? _loginError;
   String? _openSwipeItemKey;
-
-  bool get _isLoggedIn => widget.adminSession.isLoggedIn;
 
   @override
   void initState() {
     super.initState();
-    if (_isLoggedIn) {
-      _loadAfterLogin();
-    }
+    _loadRoutines();
   }
 
-  @override
-  void dispose() {
-    _usernameController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
+  Future<String?> _userToken() => AppAuthProvider.shared.getIdToken();
 
-  Future<void> _loadAfterLogin() async {
-    final token = widget.adminSession.token;
+  Future<void> _loadRoutines() async {
+    final token = await _userToken();
     if (token == null || token.isEmpty) {
+      if (!mounted) return;
       setState(() {
         _serverRoutines = [];
         _localRoutines = [];
@@ -73,8 +58,8 @@ class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
     });
 
     try {
-      final serverRoutines = await widget.apiClient.fetchDashboardProfiles(
-        adminToken: token,
+      final serverRoutines = await widget.apiClient.fetchUserProfiles(
+        userToken: token,
       );
       final serverIds = serverRoutines.map((routine) => routine.id).toSet();
       final localRoutines = widget.repository
@@ -88,11 +73,8 @@ class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
         _localRoutines = localRoutines;
         _loading = false;
       });
-    } on RoutineApiException catch (error) {
+    } on RoutineApiException catch (_) {
       if (!mounted) return;
-      if (error.message == 'Unauthorized') {
-        await widget.adminSession.clear();
-      }
       setState(() {
         _serverRoutines = [];
         _localRoutines = [];
@@ -106,56 +88,18 @@ class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
         _localRoutines = [];
         _loading = false;
         _loadError = AppLocalizations.of(context).uploadLoadServerIdsError;
-      });
-    }
-  }
-
-  Future<void> _login() async {
-    setState(() {
-      _loggingIn = true;
-      _loginError = null;
-    });
-
-    try {
-      final token = await widget.apiClient.loginDashboard(
-        username: _usernameController.text.trim(),
-        password: _passwordController.text,
-      );
-      await widget.adminSession.saveToken(token);
-      if (!mounted) return;
-      setState(() {
-        _loggingIn = false;
-        _passwordController.clear();
-      });
-      await _loadAfterLogin();
-    } on RoutineApiException catch (error) {
-      if (!mounted) return;
-      setState(() {
-        _loggingIn = false;
-        _loginError = error.message;
-      });
-    } catch (_) {
-      if (!mounted) return;
-      setState(() {
-        _loggingIn = false;
-        _loginError = AppLocalizations.of(context).uploadLoginError;
       });
     }
   }
 
   Future<void> _logout() async {
-    await widget.adminSession.clear();
+    await AppAuthProvider.shared.logout();
     if (!mounted) return;
-    setState(() {
-      _serverRoutines = [];
-      _localRoutines = [];
-      _loadError = null;
-      _loginError = null;
-    });
+    Navigator.of(context).pop();
   }
 
   Future<void> _editServerRoutine(Routine routine) async {
-    final token = widget.adminSession.token;
+    final token = await _userToken();
     if (token == null) return;
 
     await Navigator.of(context).push<Routine>(
@@ -164,13 +108,13 @@ class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
           repository: widget.repository,
           routine: routine,
           apiClient: widget.apiClient,
-          adminToken: token,
+          userAuthToken: token,
           persistToServer: true,
         ),
       ),
     );
     if (!mounted) return;
-    await _loadAfterLogin();
+    await _loadRoutines();
   }
 
   Future<void> _editLocalRoutine(Routine routine) async {
@@ -183,12 +127,12 @@ class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
       ),
     );
     if (!mounted) return;
-    await _loadAfterLogin();
+    await _loadRoutines();
   }
 
   Future<void> _uploadLocalRoutine(Routine routine) async {
     final l10n = AppLocalizations.of(context);
-    final token = widget.adminSession.token;
+    final token = await _userToken();
     if (token == null) return;
 
     final confirmed = await showDialog<bool>(
@@ -213,14 +157,14 @@ class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
     setState(() => _uploading = true);
 
     try {
-      final result = await widget.apiClient.uploadProfile(
+      final result = await widget.apiClient.uploadUserProfile(
         routine: routine,
-        adminToken: token,
+        userToken: token,
       );
       if (!mounted) return;
 
       setState(() => _uploading = false);
-      await _loadAfterLogin();
+      await _loadRoutines();
       if (!mounted) return;
 
       final message = result.action == UploadProfileAction.created
@@ -248,7 +192,7 @@ class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
   Future<void> _confirmDeleteServerRoutine(Routine routine) async {
     if (_uploading) return;
     final l10n = AppLocalizations.of(context);
-    final token = widget.adminSession.token;
+    final token = await _userToken();
     if (token == null) return;
 
     final confirmed = await showDialog<bool>(
@@ -272,16 +216,16 @@ class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
 
     setState(() => _uploading = true);
     try {
-      await widget.apiClient.deleteDashboardProfile(
+      await widget.apiClient.deleteUserProfile(
         profileId: routine.id,
-        adminToken: token,
+        userToken: token,
       );
       if (!mounted) return;
       setState(() {
         _uploading = false;
         _openSwipeItemKey = null;
       });
-      await _loadAfterLogin();
+      await _loadRoutines();
     } on RoutineApiException catch (error) {
       if (!mounted) return;
       setState(() => _uploading = false);
@@ -322,7 +266,7 @@ class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
     await widget.repository.delete(routine.id);
     if (!mounted) return;
     setState(() => _openSwipeItemKey = null);
-    await _loadAfterLogin();
+    await _loadRoutines();
   }
 
   Widget _routineCard({
@@ -368,147 +312,95 @@ class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
       appBar: AppBar(
         title: Text(l10n.uploadRoutineTitle),
         actions: [
-          if (_isLoggedIn)
-            TextButton(
-              onPressed: _uploading ? null : _logout,
-              child: Text(l10n.uploadLogout),
-            ),
+          TextButton(
+            onPressed: _uploading ? null : _logout,
+            child: Text(l10n.uploadLogout),
+          ),
         ],
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
         children: [
-          if (!_isLoggedIn) ...[
-            Text(
-              l10n.uploadAdminLoginHint,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _usernameController,
-              decoration: InputDecoration(
-                labelText: l10n.uploadAdminUsername,
-                border: const OutlineInputBorder(),
+          if (_loading)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 48),
+              child: Center(child: CircularProgressIndicator()),
+            )
+          else ...[
+            if (_loadError != null) ...[
+              Card(
+                color: Theme.of(context).colorScheme.errorContainer,
+                child: ListTile(
+                  title: Text(_loadError!),
+                  trailing: TextButton(
+                    onPressed: _loadRoutines,
+                    child: Text(l10n.retry),
+                  ),
+                ),
               ),
-              textInputAction: TextInputAction.next,
-              autocorrect: false,
+              const SizedBox(height: 12),
+            ],
+            Text(
+              l10n.uploadServerRoutineSection,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              l10n.uploadServerRoutineHint,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.outline,
+                  ),
             ),
             const SizedBox(height: 12),
-            TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(
-                labelText: l10n.uploadAdminPassword,
-                border: const OutlineInputBorder(),
-              ),
-              obscureText: true,
-              onSubmitted: (_) => _login(),
-            ),
-            if (_loginError != null) ...[
-              const SizedBox(height: 8),
-              Text(
-                _loginError!,
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.error,
-                ),
-              ),
-            ],
-            const SizedBox(height: 16),
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                onPressed: _loggingIn ? null : _login,
-                child: _loggingIn
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : Text(l10n.uploadAdminLogin),
-              ),
-            ),
-          ] else ...[
-            if (_loading)
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 48),
-                child: Center(child: CircularProgressIndicator()),
+            if (_serverRoutines.isEmpty)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 24),
+                child: Center(child: Text(l10n.uploadNoAdminRoutines)),
               )
-            else ...[
-              if (_loadError != null) ...[
-                Card(
-                  color: Theme.of(context).colorScheme.errorContainer,
-                  child: ListTile(
-                    title: Text(_loadError!),
-                    trailing: TextButton(
-                      onPressed: _loadAfterLogin,
-                      child: Text(l10n.retry),
-                    ),
-                  ),
+            else
+              ..._serverRoutines.map(
+                (routine) => _routineCard(
+                  swipeKey: 'server:${routine.id}',
+                  routine: routine,
+                  l10n: l10n,
+                  trailing: const Icon(Icons.chevron_right),
+                  onDelete: () => _confirmDeleteServerRoutine(routine),
+                  onTap: _uploading ? null : () => _editServerRoutine(routine),
                 ),
-                const SizedBox(height: 12),
-              ],
-              Text(
-                l10n.uploadServerRoutineSection,
-                style: Theme.of(context).textTheme.titleMedium,
               ),
-              const SizedBox(height: 8),
-              Text(
-                l10n.uploadServerRoutineHint,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.outline,
-                    ),
-              ),
-              const SizedBox(height: 12),
-              if (_serverRoutines.isEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 24),
-                  child: Center(child: Text(l10n.uploadNoAdminRoutines)),
-                )
-              else
-                ..._serverRoutines.map(
-                  (routine) => _routineCard(
-                    swipeKey: 'server:${routine.id}',
-                    routine: routine,
-                    l10n: l10n,
-                    trailing: const Icon(Icons.chevron_right),
-                    onDelete: () => _confirmDeleteServerRoutine(routine),
-                    onTap: _uploading ? null : () => _editServerRoutine(routine),
+            const SizedBox(height: 8),
+            Text(
+              l10n.uploadLocalRoutineSection,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              l10n.uploadLocalRoutineHint,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.outline,
                   ),
-                ),
-              const SizedBox(height: 8),
-              Text(
-                l10n.uploadLocalRoutineSection,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                l10n.uploadLocalRoutineHint,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.outline,
-                    ),
-              ),
-              const SizedBox(height: 12),
-              if (_localRoutines.isEmpty)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 32),
-                  child: Center(child: Text(l10n.uploadNoLocalRoutines)),
-                )
-              else
-                ..._localRoutines.map(
-                  (routine) => _routineCard(
-                    swipeKey: 'local:${routine.id}',
-                    routine: routine,
-                    l10n: l10n,
-                    trailing: FilledButton.tonal(
-                      onPressed: _uploading
-                          ? null
-                          : () => _uploadLocalRoutine(routine),
-                      child: Text(l10n.upload),
-                    ),
-                    onDelete: () => _confirmDeleteLocalRoutine(routine),
-                    onTap: _uploading ? null : () => _editLocalRoutine(routine),
+            ),
+            const SizedBox(height: 12),
+            if (_localRoutines.isEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 32),
+                child: Center(child: Text(l10n.uploadNoLocalRoutines)),
+              )
+            else
+              ..._localRoutines.map(
+                (routine) => _routineCard(
+                  swipeKey: 'local:${routine.id}',
+                  routine: routine,
+                  l10n: l10n,
+                  trailing: FilledButton.tonal(
+                    onPressed:
+                        _uploading ? null : () => _uploadLocalRoutine(routine),
+                    child: Text(l10n.upload),
                   ),
+                  onDelete: () => _confirmDeleteLocalRoutine(routine),
+                  onTap: _uploading ? null : () => _editLocalRoutine(routine),
                 ),
-            ],
+              ),
           ],
         ],
       ),

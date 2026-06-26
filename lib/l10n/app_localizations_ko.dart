@@ -80,10 +80,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get uploadLoadServerIdsError => '서버 루틴 목록을 불러오지 못했습니다.';
 
   @override
-  String get uploadServerRoutineSection => '서버에 업로드된 루틴';
+  String get uploadServerRoutineSection => '내가 업로드한 루틴';
 
   @override
-  String get uploadServerRoutineHint => '탭하여 서버 루틴을 편집합니다. 저장하면 서버에 반영됩니다.';
+  String get uploadServerRoutineHint => '탭하여 편집합니다. 저장하면 서버에 반영됩니다.';
 
   @override
   String get uploadLocalRoutineSection => '기기에 있는 루틴';
@@ -92,7 +92,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get uploadLocalRoutineHint => '아직 서버에 없는 로컬 루틴입니다. 업로드하면 서버에 추가됩니다.';
 
   @override
-  String get uploadNoAdminRoutines => '서버에 등록된 관리자 루틴이 없습니다.';
+  String get uploadNoAdminRoutines => '아직 업로드한 루틴이 없습니다.';
 
   @override
   String get uploadEditServerRoutineTitle => '서버 루틴 편집';

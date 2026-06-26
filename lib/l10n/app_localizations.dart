@@ -231,13 +231,13 @@ abstract class AppLocalizations {
   /// No description provided for @uploadServerRoutineSection.
   ///
   /// In en, this message translates to:
-  /// **'Routines on server'**
+  /// **'My uploaded routines'**
   String get uploadServerRoutineSection;
 
   /// No description provided for @uploadServerRoutineHint.
   ///
   /// In en, this message translates to:
-  /// **'Tap to edit on the server. Saving updates the server copy.'**
+  /// **'Tap to edit. Saving updates the server copy.'**
   String get uploadServerRoutineHint;
 
   /// No description provided for @uploadLocalRoutineSection.
@@ -255,7 +255,7 @@ abstract class AppLocalizations {
   /// No description provided for @uploadNoAdminRoutines.
   ///
   /// In en, this message translates to:
-  /// **'No admin routines on the server.'**
+  /// **'No uploaded routines yet.'**
   String get uploadNoAdminRoutines;
 
   /// No description provided for @uploadEditServerRoutineTitle.

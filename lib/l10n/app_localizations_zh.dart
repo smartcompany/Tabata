@@ -80,10 +80,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get uploadLoadServerIdsError => '无法加载服务器训练列表。';
 
   @override
-  String get uploadServerRoutineSection => '已上传到服务器';
+  String get uploadServerRoutineSection => '我上传的训练';
 
   @override
-  String get uploadServerRoutineHint => '点击编辑服务器上的训练。保存后会更新服务器副本。';
+  String get uploadServerRoutineHint => '点击编辑。保存后会更新服务器副本。';
 
   @override
   String get uploadLocalRoutineSection => '本设备上的训练';
@@ -92,7 +92,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get uploadLocalRoutineHint => '尚未上传到服务器的本地训练。上传后会添加到服务器。';
 
   @override
-  String get uploadNoAdminRoutines => '服务器上没有管理员训练。';
+  String get uploadNoAdminRoutines => '还没有上传的训练。';
 
   @override
   String get uploadEditServerRoutineTitle => '编辑服务器训练';

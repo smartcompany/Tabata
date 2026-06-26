@@ -18,7 +18,7 @@ class RoutineEditorScreen extends StatefulWidget {
     required this.routine,
     this.isNew = false,
     this.apiClient,
-    this.adminToken,
+    this.userAuthToken,
     this.persistToServer = false,
   });
 
@@ -26,7 +26,7 @@ class RoutineEditorScreen extends StatefulWidget {
   final Routine routine;
   final bool isNew;
   final RoutineApiClient? apiClient;
-  final String? adminToken;
+  final String? userAuthToken;
   final bool persistToServer;
 
   @override
@@ -76,13 +76,13 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final l10n = AppLocalizations.of(context);
     if (widget.persistToServer) {
       final apiClient = widget.apiClient;
-      final adminToken = widget.adminToken;
-      if (apiClient == null || adminToken == null) return;
+      final userAuthToken = widget.userAuthToken;
+      if (apiClient == null || userAuthToken == null) return;
 
       try {
-        await apiClient.uploadProfile(
+        await apiClient.uploadUserProfile(
           routine: _draft,
-          adminToken: adminToken,
+          userToken: userAuthToken,
         );
       } on RoutineApiException catch (error) {
         if (!mounted) return;
@@ -132,13 +132,13 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
     if (widget.persistToServer) {
       final apiClient = widget.apiClient;
-      final adminToken = widget.adminToken;
-      if (apiClient == null || adminToken == null) return;
+      final userAuthToken = widget.userAuthToken;
+      if (apiClient == null || userAuthToken == null) return;
 
       try {
-        await apiClient.deleteDashboardProfile(
+        await apiClient.deleteUserProfile(
           profileId: widget.routine.id,
-          adminToken: adminToken,
+          userToken: userAuthToken,
         );
       } on RoutineApiException catch (error) {
         if (!mounted) return;

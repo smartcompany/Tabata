@@ -81,11 +81,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uploadLoadServerIdsError => 'Could not load server routine list.';
 
   @override
-  String get uploadServerRoutineSection => 'Routines on server';
+  String get uploadServerRoutineSection => 'My uploaded routines';
 
   @override
   String get uploadServerRoutineHint =>
-      'Tap to edit on the server. Saving updates the server copy.';
+      'Tap to edit. Saving updates the server copy.';
 
   @override
   String get uploadLocalRoutineSection => 'Routines on this device';
@@ -95,7 +95,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Local routines not yet on the server. Upload adds them to the server.';
 
   @override
-  String get uploadNoAdminRoutines => 'No admin routines on the server.';
+  String get uploadNoAdminRoutines => 'No uploaded routines yet.';
 
   @override
   String get uploadEditServerRoutineTitle => 'Edit server routine';

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:share_lib/share_lib.dart' hide AuthHelper;
 import 'package:tabata_timer/l10n/app_localizations.dart';
 
 import '../data/routine_factory.dart';
 import '../data/routine_repository.dart';
 import '../models/profile_summary.dart';
 import '../models/routine.dart';
-import '../services/admin_session.dart';
 import '../services/locale_settings.dart';
 import '../services/routine_api_client.dart';
+import '../utils/auth_helper.dart';
 import '../utils/duration_calculator.dart';
 import 'routine_detail_screen.dart';
 import 'routine_editor_screen.dart';
@@ -20,14 +21,12 @@ class HomeScreen extends StatefulWidget {
     super.key,
     required this.repository,
     required this.apiClient,
-    required this.adminSession,
     required this.localeSettings,
     required this.onLocaleChanged,
   });
 
   final RoutineRepository repository;
   final RoutineApiClient apiClient;
-  final AdminSession adminSession;
   final LocaleSettings localeSettings;
   final VoidCallback onLocaleChanged;
 
@@ -78,12 +77,14 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Future<void> _openUpload() async {
+    final authed = await AuthHelper.requireAuth(context);
+    if (!authed || !mounted) return;
+
     await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => UploadRoutineScreen(
           repository: widget.repository,
           apiClient: widget.apiClient,
-          adminSession: widget.adminSession,
         ),
       ),
     );
@@ -129,26 +130,35 @@ class _HomeScreenState extends State<HomeScreen>
       final forked = await widget.repository.forkCatalogProfile(summary.id);
       if (!mounted) return;
       setState(() => _downloadingCatalogId = null);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.routineAddedToMyRoutines(forked.title)),
-          duration: const Duration(seconds: 4),
-          behavior: SnackBarBehavior.floating,
-          margin: EdgeInsets.fromLTRB(
-            16,
-            0,
-            16,
-            12 + MediaQuery.paddingOf(context).bottom + _bottomBarHeight,
+
+      void showSuccessSnackBar() {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.routineAddedToMyRoutines(forked.title)),
+            duration: const Duration(seconds: 4),
+            behavior: SnackBarBehavior.floating,
+            margin: EdgeInsets.fromLTRB(
+              16,
+              0,
+              16,
+              12 + MediaQuery.paddingOf(context).bottom + _bottomBarHeight,
+            ),
+            action: SnackBarAction(
+              label: l10n.homeTabMyRoutines,
+              onPressed: () {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                _tabController.animateTo(0);
+                _openLocalRoutine(forked.id);
+              },
+            ),
           ),
-          action: SnackBarAction(
-            label: l10n.homeTabMyRoutines,
-            onPressed: () {
-              ScaffoldMessenger.of(context).hideCurrentSnackBar();
-              _tabController.animateTo(0);
-              _openLocalRoutine(forked.id);
-            },
-          ),
-        ),
+        );
+      }
+
+      await AdService.shared.showAd(
+        onAdDismissed: showSuccessSnackBar,
+        onAdFailedToShow: showSuccessSnackBar,
       );
     } catch (_) {
       if (!mounted) return;

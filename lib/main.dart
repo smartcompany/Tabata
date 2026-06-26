@@ -1,23 +1,45 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
+import 'package:share_lib/share_lib_auth.dart';
 import 'package:tabata_timer/l10n/app_localizations.dart';
 
+import 'config/kakao_config.dart';
 import 'data/routine_repository.dart';
+import 'firebase_options.dart';
 import 'screens/home_screen.dart';
-import 'services/admin_session.dart';
+import 'services/ad_settings.dart';
 import 'services/locale_settings.dart';
 import 'services/routine_api_client.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (e) {
+    debugPrint('Firebase init error: $e');
+  }
+
+  if (KakaoConfig.isConfigured) {
+    KakaoSdk.init(
+      nativeAppKey: KakaoConfig.nativeAppKey,
+      javaScriptAppKey: KakaoConfig.javaScriptAppKey,
+    );
+  } else {
+    debugPrint('Kakao SDK skipped: app keys not configured');
+  }
+
   final apiClient = RoutineApiClient();
   final repository = await RoutineRepository.create(apiClient: apiClient);
-  final adminSession = await AdminSession.create();
   final localeSettings = await LocaleSettings.load();
+  await AdSettings.initialize();
   runApp(TabataApp(
     repository: repository,
     apiClient: apiClient,
-    adminSession: adminSession,
     localeSettings: localeSettings,
   ));
 }
@@ -27,13 +49,11 @@ class TabataApp extends StatefulWidget {
     super.key,
     required this.repository,
     required this.apiClient,
-    required this.adminSession,
     required this.localeSettings,
   });
 
   final RoutineRepository repository;
   final RoutineApiClient apiClient;
-  final AdminSession adminSession;
   final LocaleSettings localeSettings;
 
   @override
@@ -68,6 +88,7 @@ class _TabataAppState extends State<TabataApp> {
       locale: _localeOverride,
       localizationsDelegates: const [
         AppLocalizations.delegate,
+        AuthLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
@@ -100,7 +121,6 @@ class _TabataAppState extends State<TabataApp> {
       home: HomeScreen(
         repository: widget.repository,
         apiClient: widget.apiClient,
-        adminSession: widget.adminSession,
         localeSettings: widget.localeSettings,
         onLocaleChanged: _onLocaleChanged,
       ),

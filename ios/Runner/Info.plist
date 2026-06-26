@@ -21,7 +21,7 @@
 		<key>CFBundleSignature</key>
 		<string>????</string>
 		<key>CFBundleVersion</key>
-		<string>8</string>
+		<string>9</string>
 		<key>LSRequiresIPhoneOS</key>
 		<true/>
 		<key>UILaunchStoryboardName</key>
@@ -49,5 +49,36 @@
 		<false/>
 		<key>ITSAppUsesNonExemptEncryption</key>
 		<false/>
+		<key>GADApplicationIdentifier</key>
+		<string>ca-app-pub-5520596727761259~4709430997</string>
+		<key>KAKAO_APP_KEY</key>
+		<string>03b6a4ae680153f2ef7077cd02b70d90</string>
+		<key>LSApplicationQueriesSchemes</key>
+		<array>
+			<string>kakaokompassauth</string>
+			<string>kakaolink</string>
+			<string>kakaotalk</string>
+		</array>
+		<key>CFBundleURLTypes</key>
+		<array>
+			<dict>
+				<key>CFBundleURLName</key>
+				<string>AppleSignIn</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>signinwithapple</string>
+				</array>
+			</dict>
+			<dict>
+				<key>CFBundleURLName</key>
+				<string>KakaoOpen</string>
+				<key>CFBundleTypeRole</key>
+				<string>Editor</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>kakao03b6a4ae680153f2ef7077cd02b70d90</string>
+				</array>
+			</dict>
+		</array>
 	</dict>
 </plist>

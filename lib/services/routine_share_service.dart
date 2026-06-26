@@ -15,12 +15,10 @@ class RoutineShareService {
     Routine routine, {
     Rect? sharePositionOrigin,
   }) async {
-    await SharePlus.instance.share(
-      ShareParams(
-        text: encode(routine),
-        subject: routine.title,
-        sharePositionOrigin: sharePositionOrigin,
-      ),
+    await Share.share(
+      encode(routine),
+      subject: routine.title,
+      sharePositionOrigin: sharePositionOrigin,
     );
   }
 
