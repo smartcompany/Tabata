@@ -71,6 +71,9 @@
   "homeDownloadCatalogHint": "Download to add to My routines.",
   "homeCatalogOfficialSection": "Default routines",
   "homeCatalogSharedSection": "Shared routines",
+  "searchRoutinesTooltip": "Search routines",
+  "searchRoutinesHint": "Search by title or description",
+  "noSearchResults": "No matching routines.",
   "routineAddedToMyRoutines": "Added \"{title}\" to My routines.",
   "@routineAddedToMyRoutines": {
     "placeholders": {
@@ -98,6 +101,13 @@
   "routineNotFound": "Routine not found.",
   "editTooltip": "Edit",
   "shareTooltip": "Share",
+  "catalogAuthor": "By {author}",
+  "@catalogAuthor": {
+    "placeholders": {
+      "author": {"type": "String"}
+    }
+  },
+  "catalogAuthorUnknown": "Unknown",
   "estimatedDuration": "Est. {duration}",
   "@estimatedDuration": {
     "placeholders": {
@@ -185,6 +195,19 @@
   "defaultRoutineName": "Default routine",
   "defaultExerciseName": "Default exercise",
   "descriptionOptionalLabel": "Description (optional)",
+  "descriptionBlocksEmptyHint": "Add text, reference photos, and video links in order.",
+  "descriptionAddText": "Text",
+  "descriptionAddImage": "Photo",
+  "descriptionAddVideo": "Video link",
+  "descriptionTextHint": "Enter description",
+  "descriptionVideoUrlHint": "YouTube or other video URL",
+  "descriptionVideoUrlInvalid": "Enter a valid video URL.",
+  "descriptionVideoBlockLabel": "Video link",
+  "descriptionVideoPlay": "Tap to play",
+  "descriptionVideoExternal": "Open external video",
+  "descriptionImageLoginRequired": "Sign in to add photos.",
+  "descriptionImageUploadError": "Failed to upload photo.",
+  "descriptionImageLoadError": "Could not load image.",
   "reorderExercisesHint": "Long press to reorder",
   "addExercisesPrompt": "Add an exercise",
   "addExercise": "Add exercise",

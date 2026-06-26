@@ -5,6 +5,7 @@ class ProfileSummary {
     required this.description,
     required this.exerciseCount,
     this.ownerId = officialCatalogOwner,
+    this.ownerName,
   });
 
   static const officialCatalogOwner = 'admin';
@@ -14,6 +15,7 @@ class ProfileSummary {
   final String description;
   final int exerciseCount;
   final String ownerId;
+  final String? ownerName;
 
   bool get isOfficialCatalog => ownerId == officialCatalogOwner;
 
@@ -26,6 +28,7 @@ class ProfileSummary {
       description: json['description'] as String? ?? '',
       exerciseCount: json['exerciseCount'] as int? ?? 0,
       ownerId: json['ownerId'] as String? ?? officialCatalogOwner,
+      ownerName: json['ownerName'] as String?,
     );
   }
 }

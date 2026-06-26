@@ -348,6 +348,24 @@ abstract class AppLocalizations {
   /// **'Shared routines'**
   String get homeCatalogSharedSection;
 
+  /// No description provided for @searchRoutinesTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Search routines'**
+  String get searchRoutinesTooltip;
+
+  /// No description provided for @searchRoutinesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by title or description'**
+  String get searchRoutinesHint;
+
+  /// No description provided for @noSearchResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching routines.'**
+  String get noSearchResults;
+
   /// No description provided for @routineAddedToMyRoutines.
   ///
   /// In en, this message translates to:
@@ -413,6 +431,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Share'**
   String get shareTooltip;
+
+  /// No description provided for @catalogAuthor.
+  ///
+  /// In en, this message translates to:
+  /// **'By {author}'**
+  String catalogAuthor(String author);
+
+  /// No description provided for @catalogAuthorUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get catalogAuthorUnknown;
 
   /// No description provided for @estimatedDuration.
   ///
@@ -671,6 +701,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Description (optional)'**
   String get descriptionOptionalLabel;
+
+  /// No description provided for @descriptionBlocksEmptyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add text, reference photos, and video links in order.'**
+  String get descriptionBlocksEmptyHint;
+
+  /// No description provided for @descriptionAddText.
+  ///
+  /// In en, this message translates to:
+  /// **'Text'**
+  String get descriptionAddText;
+
+  /// No description provided for @descriptionAddImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo'**
+  String get descriptionAddImage;
+
+  /// No description provided for @descriptionAddVideo.
+  ///
+  /// In en, this message translates to:
+  /// **'Video link'**
+  String get descriptionAddVideo;
+
+  /// No description provided for @descriptionTextHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter description'**
+  String get descriptionTextHint;
+
+  /// No description provided for @descriptionVideoUrlHint.
+  ///
+  /// In en, this message translates to:
+  /// **'YouTube or other video URL'**
+  String get descriptionVideoUrlHint;
+
+  /// No description provided for @descriptionVideoUrlInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid video URL.'**
+  String get descriptionVideoUrlInvalid;
+
+  /// No description provided for @descriptionVideoBlockLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Video link'**
+  String get descriptionVideoBlockLabel;
+
+  /// No description provided for @descriptionVideoPlay.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to play'**
+  String get descriptionVideoPlay;
+
+  /// No description provided for @descriptionVideoExternal.
+  ///
+  /// In en, this message translates to:
+  /// **'Open external video'**
+  String get descriptionVideoExternal;
+
+  /// No description provided for @descriptionImageLoginRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to add photos.'**
+  String get descriptionImageLoginRequired;
+
+  /// No description provided for @descriptionImageUploadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to upload photo.'**
+  String get descriptionImageUploadError;
+
+  /// No description provided for @descriptionImageLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load image.'**
+  String get descriptionImageLoadError;
 
   /// No description provided for @reorderExercisesHint.
   ///

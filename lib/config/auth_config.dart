@@ -8,7 +8,8 @@ import '../screens/profile_setup_screen.dart';
 /// Firebase Console → Authentication → Google → Web SDK configuration 에서 확인.
 const String kGoogleServerClientId = String.fromEnvironment(
   'GOOGLE_SERVER_CLIENT_ID',
-  defaultValue: '',
+  defaultValue:
+      '247485339323-nkvpl0mj62k1145n0qgq41jtt368oj7t.apps.googleusercontent.com',
 );
 
 const _primaryColor = Color(0xFFE53935);

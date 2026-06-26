@@ -150,6 +150,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeCatalogSharedSection => 'Shared routines';
 
   @override
+  String get searchRoutinesTooltip => 'Search routines';
+
+  @override
+  String get searchRoutinesHint => 'Search by title or description';
+
+  @override
+  String get noSearchResults => 'No matching routines.';
+
+  @override
   String routineAddedToMyRoutines(String title) {
     return 'Added \"$title\" to My routines.';
   }
@@ -187,6 +196,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shareTooltip => 'Share';
+
+  @override
+  String catalogAuthor(String author) {
+    return 'By $author';
+  }
+
+  @override
+  String get catalogAuthorUnknown => 'Unknown';
 
   @override
   String estimatedDuration(String duration) {
@@ -332,6 +349,46 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get descriptionOptionalLabel => 'Description (optional)';
+
+  @override
+  String get descriptionBlocksEmptyHint =>
+      'Add text, reference photos, and video links in order.';
+
+  @override
+  String get descriptionAddText => 'Text';
+
+  @override
+  String get descriptionAddImage => 'Photo';
+
+  @override
+  String get descriptionAddVideo => 'Video link';
+
+  @override
+  String get descriptionTextHint => 'Enter description';
+
+  @override
+  String get descriptionVideoUrlHint => 'YouTube or other video URL';
+
+  @override
+  String get descriptionVideoUrlInvalid => 'Enter a valid video URL.';
+
+  @override
+  String get descriptionVideoBlockLabel => 'Video link';
+
+  @override
+  String get descriptionVideoPlay => 'Tap to play';
+
+  @override
+  String get descriptionVideoExternal => 'Open external video';
+
+  @override
+  String get descriptionImageLoginRequired => 'Sign in to add photos.';
+
+  @override
+  String get descriptionImageUploadError => 'Failed to upload photo.';
+
+  @override
+  String get descriptionImageLoadError => 'Could not load image.';
 
   @override
   String get reorderExercisesHint => 'Long press to reorder';

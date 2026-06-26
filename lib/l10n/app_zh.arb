@@ -71,6 +71,9 @@
   "homeDownloadCatalogHint": "下载后会添加到「我的训练」。",
   "homeCatalogOfficialSection": "默认训练",
   "homeCatalogSharedSection": "共享训练",
+  "searchRoutinesTooltip": "搜索训练",
+  "searchRoutinesHint": "按标题或说明搜索",
+  "noSearchResults": "没有匹配的训练。",
   "routineAddedToMyRoutines": "已将「{title}」添加到我的训练。",
   "@routineAddedToMyRoutines": {
     "placeholders": {
@@ -92,6 +95,13 @@
   "routineNotFound": "未找到训练。",
   "editTooltip": "编辑",
   "shareTooltip": "分享",
+  "catalogAuthor": "作者：{author}",
+  "@catalogAuthor": {
+    "placeholders": {
+      "author": {"type": "String"}
+    }
+  },
+  "catalogAuthorUnknown": "未知",
   "estimatedDuration": "预计 {duration}",
   "exerciseListTitle": "动作列表",
   "start": "开始",
@@ -135,6 +145,19 @@
   "defaultRoutineName": "默认训练计划",
   "defaultExerciseName": "默认动作",
   "descriptionOptionalLabel": "说明（可选）",
+  "descriptionBlocksEmptyHint": "可按顺序添加文字、参考图片和视频链接。",
+  "descriptionAddText": "文字",
+  "descriptionAddImage": "图片",
+  "descriptionAddVideo": "视频链接",
+  "descriptionTextHint": "输入说明",
+  "descriptionVideoUrlHint": "YouTube 等视频 URL",
+  "descriptionVideoUrlInvalid": "请输入有效的视频 URL。",
+  "descriptionVideoBlockLabel": "视频链接",
+  "descriptionVideoPlay": "点击播放",
+  "descriptionVideoExternal": "打开外部视频",
+  "descriptionImageLoginRequired": "添加图片需要先登录。",
+  "descriptionImageUploadError": "图片上传失败。",
+  "descriptionImageLoadError": "无法加载图片。",
   "reorderExercisesHint": "长按可调整顺序",
   "addExercisesPrompt": "请添加动作",
   "addExercise": "添加动作",

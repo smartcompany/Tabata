@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import '../config/api_config.dart';
 import '../models/profile_summary.dart';
 import '../models/routine.dart';
+import 'routine_description_media_service.dart';
 
 class RoutineApiException implements Exception {
   const RoutineApiException(this.message);
@@ -160,7 +161,11 @@ class RoutineApiClient {
   Future<UploadProfileResult> uploadUserProfile({
     required Routine routine,
     required String userToken,
+    RoutineDescriptionMediaService? mediaService,
   }) async {
+    final media = mediaService ?? RoutineDescriptionMediaService();
+    final prepared = await media.prepareForServerUpload(routine, userToken);
+
     final uri = _baseUri.replace(path: '/api/user/profiles/upsert');
     final response = await _client.post(
       uri,
@@ -168,7 +173,7 @@ class RoutineApiClient {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $userToken',
       },
-      body: jsonEncode(routine.toJson()),
+      body: jsonEncode(prepared.toJson()),
     );
 
     if (response.statusCode != 200 && response.statusCode != 201) {

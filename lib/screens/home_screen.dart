@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:share_lib/share_lib.dart' hide AuthHelper;
 import 'package:tabata_timer/l10n/app_localizations.dart';
 
 import '../data/routine_factory.dart';
@@ -37,10 +36,11 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
-  bool _loading = true;
+  bool _loadingCatalog = true;
   String? _loadError;
   String? _downloadingCatalogId;
   String? _openSwipeItemKey;
+  late final TextEditingController _catalogSearchController;
 
   static const _bottomBarHeight = 64.0;
 
@@ -48,29 +48,46 @@ class _HomeScreenState extends State<HomeScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    _load();
+    _catalogSearchController = TextEditingController();
+    _loadCatalogInitial();
   }
 
   @override
   void dispose() {
+    _catalogSearchController.dispose();
     _tabController.dispose();
     super.dispose();
   }
 
-  Future<void> _load() async {
+  Future<void> _loadCatalogInitial() async {
     setState(() {
-      _loading = true;
+      _loadingCatalog = true;
       _loadError = null;
     });
 
     try {
       await widget.repository.refreshRemoteProfiles();
       if (!mounted) return;
-      setState(() => _loading = false);
+      setState(() => _loadingCatalog = false);
     } catch (_) {
       if (!mounted) return;
       setState(() {
-        _loading = false;
+        _loadingCatalog = false;
+        _loadError = AppLocalizations.of(context).profileLoadError;
+      });
+    }
+  }
+
+  Future<void> _refreshCatalog() async {
+    setState(() => _loadError = null);
+
+    try {
+      await widget.repository.refreshRemoteProfiles();
+      if (!mounted) return;
+      setState(() {});
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
         _loadError = AppLocalizations.of(context).profileLoadError;
       });
     }
@@ -89,7 +106,20 @@ class _HomeScreenState extends State<HomeScreen>
       ),
     );
     if (!mounted) return;
-    setState(() {});
+    await _refreshCatalog();
+  }
+
+  List<ProfileSummary> _filterSummaries(List<ProfileSummary> summaries) {
+    final query = _catalogSearchController.text.trim().toLowerCase();
+    if (query.isEmpty) return summaries;
+
+    return summaries
+        .where(
+          (summary) =>
+              summary.title.toLowerCase().contains(query) ||
+              summary.description.toLowerCase().contains(query),
+        )
+        .toList();
   }
 
   Future<void> _createRoutine() async {
@@ -156,10 +186,7 @@ class _HomeScreenState extends State<HomeScreen>
         );
       }
 
-      await AdService.shared.showAd(
-        onAdDismissed: showSuccessSnackBar,
-        onAdFailedToShow: showSuccessSnackBar,
-      );
+      showSuccessSnackBar();
     } catch (_) {
       if (!mounted) return;
       setState(() => _downloadingCatalogId = null);
@@ -250,25 +277,14 @@ class _HomeScreenState extends State<HomeScreen>
           ],
         ),
       ),
-      body: _loading
-          ? Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const CircularProgressIndicator(),
-                  const SizedBox(height: 16),
-                  Text(l10n.loadingProfiles),
-                ],
-              ),
-            )
-          : TabBarView(
-              controller: _tabController,
-              physics: const NeverScrollableScrollPhysics(),
-              children: [
-                _buildMyRoutinesTab(l10n),
-                _buildDownloadCatalogTab(l10n),
-              ],
-            ),
+      body: TabBarView(
+        controller: _tabController,
+        physics: const NeverScrollableScrollPhysics(),
+        children: [
+          _buildMyRoutinesTab(l10n),
+          _buildDownloadCatalogTab(l10n),
+        ],
+      ),
       bottomNavigationBar: _HomeBottomActions(
         createLabel: l10n.createRoutine,
         uploadLabel: l10n.uploadRoutineTitle,
@@ -284,27 +300,17 @@ class _HomeScreenState extends State<HomeScreen>
   Widget _buildMyRoutinesTab(AppLocalizations l10n) {
     final routines = widget.repository.myRoutines;
 
-    return RefreshIndicator(
-      onRefresh: _load,
-      child: ListView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        padding: EdgeInsets.fromLTRB(16, 12, 16, _listBottomPadding),
-        children: [
-          if (_loadError != null) ...[
-            _ErrorBanner(
-              message: _loadError!,
-              onRetry: _load,
-              retryLabel: l10n.retry,
-            ),
-            const SizedBox(height: 12),
-          ],
-          if (routines.isEmpty)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 48),
-              child: Center(child: Text(l10n.noMyRoutines)),
-            )
-          else
-            ReorderableListView.builder(
+    return ListView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      padding: EdgeInsets.fromLTRB(16, 12, 16, _listBottomPadding),
+      children: [
+        if (routines.isEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 48),
+            child: Center(child: Text(l10n.noMyRoutines)),
+          )
+        else
+          ReorderableListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               buildDefaultDragHandles: false,
@@ -360,79 +366,130 @@ class _HomeScreenState extends State<HomeScreen>
               );
               },
             ),
-        ],
-      ),
+      ],
     );
   }
 
   Widget _buildDownloadCatalogTab(AppLocalizations l10n) {
-    final official = widget.repository.officialCatalogSummaries;
-    final shared = widget.repository.sharedCatalogSummaries;
+    final official = _filterSummaries(widget.repository.officialCatalogSummaries);
+    final shared = _filterSummaries(widget.repository.sharedCatalogSummaries);
+    final hasAnyCatalog = widget.repository.officialCatalogSummaries.isNotEmpty ||
+        widget.repository.sharedCatalogSummaries.isNotEmpty;
     final isEmpty = official.isEmpty && shared.isEmpty;
+    final hasSearchQuery = _catalogSearchController.text.trim().isNotEmpty;
 
-    return RefreshIndicator(
-      onRefresh: _load,
-      child: ListView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        padding: EdgeInsets.fromLTRB(16, 12, 16, _listBottomPadding),
-        children: [
-          if (_loadError != null) ...[
-            _ErrorBanner(
-              message: _loadError!,
-              onRetry: _load,
-              retryLabel: l10n.retry,
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+          child: TextField(
+            controller: _catalogSearchController,
+            textInputAction: TextInputAction.search,
+            decoration: InputDecoration(
+              hintText: l10n.searchRoutinesHint,
+              prefixIcon: const Icon(Icons.search),
+              suffixIcon: hasSearchQuery
+                  ? IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () {
+                        _catalogSearchController.clear();
+                        setState(() {});
+                      },
+                    )
+                  : null,
+              border: const OutlineInputBorder(),
+              isDense: true,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 12,
+              ),
             ),
-            const SizedBox(height: 12),
-          ],
-          Text(
-            l10n.homeDownloadCatalogHint,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.outline,
-                ),
+            onChanged: (_) => setState(() {}),
           ),
-          const SizedBox(height: 16),
-          if (isEmpty)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 48),
-              child: Center(child: Text(l10n.noSharedRoutines)),
-            )
-          else ...[
-            if (official.isNotEmpty) ...[
-              _SectionTitle(l10n.homeCatalogOfficialSection),
-              const SizedBox(height: 8),
-              ...official.map(
-                (summary) => _CatalogCard(
-                  summary: summary,
-                  l10n: l10n,
-                  isDownloading: _downloadingCatalogId == summary.id,
-                  isDownloaded: widget.repository.hasDownloadedCatalog(
-                    summary.id,
+        ),
+        Expanded(
+          child: _loadingCatalog
+              ? Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const CircularProgressIndicator(),
+                      const SizedBox(height: 16),
+                      Text(l10n.loadingProfiles),
+                    ],
                   ),
-                  onOpen: () => _openCatalogRoutine(summary.id),
-                  onDownload: () => _forkCatalogProfile(summary),
-                ),
-              ),
-              const SizedBox(height: 16),
-            ],
-            if (shared.isNotEmpty) ...[
-              _SectionTitle(l10n.homeCatalogSharedSection),
-              const SizedBox(height: 8),
-              ...shared.map(
-                (summary) => _CatalogCard(
-                  summary: summary,
-                  l10n: l10n,
-                  isDownloading: _downloadingCatalogId == summary.id,
-                  isDownloaded: widget.repository.hasDownloadedCatalog(
-                    summary.id,
+                )
+              : RefreshIndicator(
+                  onRefresh: _refreshCatalog,
+                  child: ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: EdgeInsets.fromLTRB(16, 0, 16, _listBottomPadding),
+              children: [
+                if (_loadError != null) ...[
+                  _ErrorBanner(
+                    message: _loadError!,
+                    onRetry: _loadCatalogInitial,
+                    retryLabel: l10n.retry,
                   ),
-                  onOpen: () => _openCatalogRoutine(summary.id),
-                  onDownload: () => _forkCatalogProfile(summary),
+                  const SizedBox(height: 12),
+                ],
+                Text(
+                  l10n.homeDownloadCatalogHint,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.outline,
+                      ),
                 ),
-              ),
-            ],
-          ],
-        ],
-      ),
+                const SizedBox(height: 16),
+                if (!hasAnyCatalog)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 48),
+                    child: Center(child: Text(l10n.noSharedRoutines)),
+                  )
+                else if (isEmpty)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 48),
+                    child: Center(child: Text(l10n.noSearchResults)),
+                  )
+                else ...[
+                  if (official.isNotEmpty) ...[
+                    _SectionTitle(l10n.homeCatalogOfficialSection),
+                    const SizedBox(height: 8),
+                    ...official.map(
+                      (summary) => _CatalogCard(
+                        summary: summary,
+                        l10n: l10n,
+                        isDownloading: _downloadingCatalogId == summary.id,
+                        isDownloaded: widget.repository.hasDownloadedCatalog(
+                          summary.id,
+                        ),
+                        onOpen: () => _openCatalogRoutine(summary.id),
+                        onDownload: () => _forkCatalogProfile(summary),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                  if (shared.isNotEmpty) ...[
+                    _SectionTitle(l10n.homeCatalogSharedSection),
+                    const SizedBox(height: 8),
+                    ...shared.map(
+                      (summary) => _CatalogCard(
+                        summary: summary,
+                        l10n: l10n,
+                        isDownloading: _downloadingCatalogId == summary.id,
+                        isDownloaded: widget.repository.hasDownloadedCatalog(
+                          summary.id,
+                        ),
+                        onOpen: () => _openCatalogRoutine(summary.id),
+                        onDownload: () => _forkCatalogProfile(summary),
+                      ),
+                    ),
+                  ],
+                ],
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

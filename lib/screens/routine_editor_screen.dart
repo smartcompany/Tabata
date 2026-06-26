@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:tabata_timer/l10n/app_localizations.dart';
 
+import '../app_auth_provider.dart';
 import '../data/routine_factory.dart';
 import '../data/routine_repository.dart';
+import '../models/description_block.dart';
 import '../models/exercise.dart';
 import '../models/routine.dart';
 import '../services/routine_api_client.dart';
 import '../utils/duration_calculator.dart';
 import '../utils/form_validation_scroll.dart';
+import '../widgets/description_blocks_editor.dart';
 import '../widgets/exercise_summary.dart';
+import '../widgets/keyboard_dismiss_scope.dart';
 import 'exercise_editor_screen.dart';
 
 class RoutineEditorScreen extends StatefulWidget {
@@ -37,30 +41,63 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   final _formKey = GlobalKey<FormState>();
   final _exercisesSectionKey = GlobalKey();
   late final TextEditingController _titleController;
-  late final TextEditingController _descriptionController;
+  late List<DescriptionBlock> _descriptionBlocks;
   late List<Exercise> _exercises;
+  String? _resolvedAuthToken;
 
   @override
   void initState() {
     super.initState();
     _titleController = TextEditingController(text: widget.routine.title);
-    _descriptionController =
-        TextEditingController(text: widget.routine.description);
+    _descriptionBlocks = _initialDescriptionBlocks(widget.routine);
     _exercises = List<Exercise>.from(widget.routine.orderedExercises);
+    _resolvedAuthToken = widget.userAuthToken;
+    if (_resolvedAuthToken == null) {
+      AppAuthProvider.shared.getIdToken().then((token) {
+        if (!mounted) return;
+        setState(() => _resolvedAuthToken = token);
+      });
+    }
+  }
+
+  List<DescriptionBlock> _initialDescriptionBlocks(Routine routine) {
+    final blocks = List<DescriptionBlock>.from(routine.effectiveDescriptionBlocks);
+    if (widget.isNew && blocks.isEmpty) {
+      return [const TextDescriptionBlock(text: '')];
+    }
+    if (blocks.length == 1) {
+      final only = blocks.first;
+      if (only is TextDescriptionBlock && only.text.trim().isEmpty) {
+        return [];
+      }
+    }
+    return blocks;
+  }
+
+  List<DescriptionBlock> _normalizedDescriptionBlocks() {
+    return _descriptionBlocks.where((block) {
+      if (block is TextDescriptionBlock) {
+        return block.text.trim().isNotEmpty;
+      }
+      return true;
+    }).toList();
   }
 
   @override
   void dispose() {
     _titleController.dispose();
-    _descriptionController.dispose();
     super.dispose();
   }
 
-  Routine get _draft => widget.routine.copyWith(
-        title: _titleController.text.trim(),
-        description: _descriptionController.text.trim(),
-        exercises: reindexExercises(_exercises),
-      );
+  Routine get _draft {
+    final blocks = _normalizedDescriptionBlocks();
+    return widget.routine.copyWith(
+      title: _titleController.text.trim(),
+      description: DescriptionBlock.plainText(blocks),
+      descriptionBlocks: blocks,
+      exercises: reindexExercises(_exercises),
+    );
+  }
 
   Future<void> _save() async {
     if (!validateFormAndScrollToError(_formKey)) return;
@@ -162,6 +199,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   Future<void> _addExercise() async {
+    KeyboardDismissScope.dismiss(context);
     final l10n = AppLocalizations.of(context);
     final exercise = createEmptyExercise(order: _exercises.length)
         .copyWith(name: l10n.defaultExerciseName);
@@ -175,6 +213,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   Future<void> _editExercise(int index) async {
+    KeyboardDismissScope.dismiss(context);
     final result = await Navigator.of(context).push<Exercise>(
       MaterialPageRoute(
         builder: (_) => ExerciseEditorScreen(exercise: _exercises[index]),
@@ -189,6 +228,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _deleteExercise(int index) {
+    KeyboardDismissScope.dismiss(context);
     setState(() {
       final updated = List<Exercise>.from(_exercises)..removeAt(index);
       _exercises = reindexExercises(updated);
@@ -196,6 +236,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   }
 
   void _onReorder(int oldIndex, int newIndex) {
+    KeyboardDismissScope.dismiss(context);
     setState(() {
       if (newIndex > oldIndex) newIndex--;
       final updated = List<Exercise>.from(_exercises);
@@ -239,42 +280,37 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
               icon: const Icon(Icons.delete_outline),
               tooltip: l10n.deleteRoutineTooltip,
             ),
-          TextButton(
-            onPressed: _save,
-            child: Text(l10n.save),
-          ),
         ],
       ),
-      body: Form(
-        key: _formKey,
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
-          children: [
-            TextFormField(
-              controller: _titleController,
-              decoration: InputDecoration(
-                labelText: l10n.routineNameLabel,
-                hintText: l10n.routineNameHint,
-                border: const OutlineInputBorder(),
+      body: KeyboardDismissScope(
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+            children: [
+              TextFormField(
+                controller: _titleController,
+                decoration: InputDecoration(
+                  labelText: l10n.routineNameLabel,
+                  hintText: l10n.routineNameHint,
+                  border: const OutlineInputBorder(),
+                ),
+                textInputAction: TextInputAction.done,
+                onEditingComplete: () => KeyboardDismissScope.dismiss(context),
+                onTapOutside: (_) => KeyboardDismissScope.dismiss(context),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return l10n.validationNameRequired;
+                  }
+                  return null;
+                },
+                onChanged: (_) => setState(() {}),
               ),
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return l10n.validationNameRequired;
-                }
-                return null;
-              },
-              onChanged: (_) => setState(() {}),
-            ),
             const SizedBox(height: 12),
-            TextFormField(
-              controller: _descriptionController,
-              decoration: InputDecoration(
-                labelText: l10n.descriptionOptionalLabel,
-                border: const OutlineInputBorder(),
-                alignLabelWithHint: true,
-              ),
-              maxLines: 2,
-              onChanged: (_) => setState(() {}),
+            DescriptionBlocksEditor(
+              routineId: widget.routine.id,
+              blocks: _descriptionBlocks,
+              onChanged: (blocks) => setState(() => _descriptionBlocks = blocks),
             ),
             const SizedBox(height: 16),
             if (_exercises.isNotEmpty) EstimatedDurationCard(totalSec: totalSec),
@@ -315,7 +351,17 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
               ),
             if (_exercises.isNotEmpty) const SizedBox(height: 12),
             _buildAddExerciseButton(l10n),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton(
+                onPressed: _save,
+                child: Text(l10n.save),
+              ),
+            ),
+            SizedBox(height: MediaQuery.paddingOf(context).bottom + 8),
           ],
+        ),
         ),
       ),
     );

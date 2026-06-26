@@ -145,6 +145,15 @@ class AppLocalizationsKo extends AppLocalizations {
   String get homeCatalogSharedSection => '공유된 루틴';
 
   @override
+  String get searchRoutinesTooltip => '루틴 검색';
+
+  @override
+  String get searchRoutinesHint => '제목 또는 설명 검색';
+
+  @override
+  String get noSearchResults => '검색 결과가 없습니다.';
+
+  @override
   String routineAddedToMyRoutines(String title) {
     return '「$title」 루틴을 내 루틴에 추가했습니다.';
   }
@@ -182,6 +191,14 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get shareTooltip => '공유';
+
+  @override
+  String catalogAuthor(String author) {
+    return '저작자: $author';
+  }
+
+  @override
+  String get catalogAuthorUnknown => '알 수 없음';
 
   @override
   String estimatedDuration(String duration) {
@@ -327,6 +344,46 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get descriptionOptionalLabel => '설명 (선택)';
+
+  @override
+  String get descriptionBlocksEmptyHint =>
+      '텍스트, 참고 사진, 영상 링크를 순서대로 추가할 수 있습니다.';
+
+  @override
+  String get descriptionAddText => '텍스트';
+
+  @override
+  String get descriptionAddImage => '사진';
+
+  @override
+  String get descriptionAddVideo => '영상 링크';
+
+  @override
+  String get descriptionTextHint => '설명을 입력하세요';
+
+  @override
+  String get descriptionVideoUrlHint => 'YouTube 등 영상 URL';
+
+  @override
+  String get descriptionVideoUrlInvalid => '올바른 영상 URL을 입력해 주세요.';
+
+  @override
+  String get descriptionVideoBlockLabel => '영상 링크';
+
+  @override
+  String get descriptionVideoPlay => '탭하여 재생';
+
+  @override
+  String get descriptionVideoExternal => '외부 영상 열기';
+
+  @override
+  String get descriptionImageLoginRequired => '사진을 추가하려면 로그인이 필요합니다.';
+
+  @override
+  String get descriptionImageUploadError => '사진 업로드에 실패했습니다.';
+
+  @override
+  String get descriptionImageLoadError => '이미지를 불러오지 못했습니다.';
 
   @override
   String get reorderExercisesHint => '길게 눌러 순서 변경';

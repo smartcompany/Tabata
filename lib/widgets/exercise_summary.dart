@@ -4,6 +4,7 @@ import 'package:tabata_timer/l10n/app_localizations.dart';
 import '../models/exercise.dart';
 import '../utils/duration_calculator.dart';
 import '../utils/exercise_formatter.dart';
+import 'description_blocks_view.dart';
 
 class ExerciseDetailCard extends StatelessWidget {
   const ExerciseDetailCard({
@@ -31,9 +32,9 @@ class ExerciseDetailCard extends StatelessWidget {
             fontWeight: FontWeight.w600,
           ),
         ),
-        if (exercise.instruction.isNotEmpty) ...[
+        if (exercise.effectiveInstructionBlocks.isNotEmpty) ...[
           const SizedBox(height: 6),
-          Text(exercise.instruction),
+          DescriptionBlocksView(blocks: exercise.effectiveInstructionBlocks),
         ],
         const SizedBox(height: 12),
         _infoRow(

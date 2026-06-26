@@ -1,4 +1,5 @@
 import 'exercise.dart';
+import 'description_block.dart';
 import 'json_field.dart';
 
 class Routine {
@@ -7,6 +8,7 @@ class Routine {
     required this.title,
     required this.description,
     required this.exercises,
+    this.descriptionBlocks = const [],
     this.schemaVersion = currentSchemaVersion,
   });
 
@@ -16,7 +18,16 @@ class Routine {
   final String id;
   final String title;
   final String description;
+  final List<DescriptionBlock> descriptionBlocks;
   final List<Exercise> exercises;
+
+  List<DescriptionBlock> get effectiveDescriptionBlocks {
+    if (descriptionBlocks.isNotEmpty) return descriptionBlocks;
+    return DescriptionBlock.fromLegacyDescription(description);
+  }
+
+  String get descriptionPlainText =>
+      DescriptionBlock.plainText(effectiveDescriptionBlocks);
 
   List<Exercise> get orderedExercises {
     final copy = List<Exercise>.from(exercises);
@@ -28,7 +39,9 @@ class Routine {
         'schemaVersion': schemaVersion,
         'id': id,
         'title': title,
-        'description': description,
+        'description': descriptionPlainText,
+        if (descriptionBlocks.isNotEmpty)
+          'descriptionBlocks': DescriptionBlock.listToJson(descriptionBlocks),
         'exercises': exercises.map((e) => e.toJson()).toList(),
       };
 
@@ -39,11 +52,18 @@ class Routine {
     }
 
     final exercisesJson = JsonField.requiredList(json, 'exercises');
+    final legacyDescription = JsonField.optionalString(json, 'description');
+    final blocks = DescriptionBlock.listFromJson(json['descriptionBlocks']);
+    final effectiveBlocks = blocks.isNotEmpty
+        ? blocks
+        : DescriptionBlock.fromLegacyDescription(legacyDescription);
+
     return Routine(
       schemaVersion: schemaVersion,
       id: JsonField.requiredString(json, 'id'),
       title: JsonField.requiredString(json, 'title'),
-      description: JsonField.optionalString(json, 'description'),
+      description: DescriptionBlock.plainText(effectiveBlocks),
+      descriptionBlocks: blocks,
       exercises: exercisesJson
           .map((e) => Exercise.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -55,6 +75,7 @@ class Routine {
     String? id,
     String? title,
     String? description,
+    List<DescriptionBlock>? descriptionBlocks,
     List<Exercise>? exercises,
   }) {
     return Routine(
@@ -62,6 +83,7 @@ class Routine {
       id: id ?? this.id,
       title: title ?? this.title,
       description: description ?? this.description,
+      descriptionBlocks: descriptionBlocks ?? this.descriptionBlocks,
       exercises: exercises ?? this.exercises,
     );
   }

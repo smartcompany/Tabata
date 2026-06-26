@@ -146,6 +146,15 @@ class AppLocalizationsJa extends AppLocalizations {
   String get homeCatalogSharedSection => '共有ルーティン';
 
   @override
+  String get searchRoutinesTooltip => 'ルーティンを検索';
+
+  @override
+  String get searchRoutinesHint => 'タイトルまたは説明で検索';
+
+  @override
+  String get noSearchResults => '該当するルーティンがありません。';
+
+  @override
   String routineAddedToMyRoutines(String title) {
     return '「$title」をマイルーティンに追加しました。';
   }
@@ -183,6 +192,14 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get shareTooltip => '共有';
+
+  @override
+  String catalogAuthor(String author) {
+    return '作成者: $author';
+  }
+
+  @override
+  String get catalogAuthorUnknown => '不明';
 
   @override
   String estimatedDuration(String duration) {
@@ -328,6 +345,45 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get descriptionOptionalLabel => '説明（任意）';
+
+  @override
+  String get descriptionBlocksEmptyHint => 'テキスト・参考写真・動画リンクを順に追加できます。';
+
+  @override
+  String get descriptionAddText => 'テキスト';
+
+  @override
+  String get descriptionAddImage => '写真';
+
+  @override
+  String get descriptionAddVideo => '動画リンク';
+
+  @override
+  String get descriptionTextHint => '説明を入力';
+
+  @override
+  String get descriptionVideoUrlHint => 'YouTubeなどの動画URL';
+
+  @override
+  String get descriptionVideoUrlInvalid => '有効な動画URLを入力してください。';
+
+  @override
+  String get descriptionVideoBlockLabel => '動画リンク';
+
+  @override
+  String get descriptionVideoPlay => 'タップして再生';
+
+  @override
+  String get descriptionVideoExternal => '外部動画を開く';
+
+  @override
+  String get descriptionImageLoginRequired => '写真を追加するにはログインが必要です。';
+
+  @override
+  String get descriptionImageUploadError => '写真のアップロードに失敗しました。';
+
+  @override
+  String get descriptionImageLoadError => '画像を読み込めませんでした。';
 
   @override
   String get reorderExercisesHint => '長押しで並べ替え';

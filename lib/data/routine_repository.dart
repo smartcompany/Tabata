@@ -6,6 +6,7 @@ import '../models/local_routine_record.dart';
 import '../models/profile_summary.dart';
 import '../models/routine.dart';
 import '../services/routine_api_client.dart';
+import '../services/routine_description_media_service.dart';
 import 'routine_fork.dart';
 
 class RoutineRepository {
@@ -136,7 +137,10 @@ class RoutineRepository {
     }
 
     final remote = await _apiClient.fetchProfile(catalogId);
-    final forked = forkRoutine(remote);
+    var forked = forkRoutine(remote);
+    forked = await RoutineDescriptionMediaService().localizeDescriptionImages(
+      forked,
+    );
     final record = LocalRoutineRecord(
       routine: forked,
       forkedFromCatalogId: catalogId,

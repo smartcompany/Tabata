@@ -68,6 +68,9 @@ class TabataAuthApiService implements AuthServiceInterface {
     if (response.statusCode == 404) {
       throw Exception('PROFILE_NOT_SETUP');
     }
+    if (response.statusCode == 503) {
+      throw Exception('SERVER_FIREBASE_NOT_CONFIGURED');
+    }
     if (response.statusCode != 200) {
       if (response.statusCode == 401) {
         throw Exception('인증이 필요합니다. 다시 로그인해주세요.');

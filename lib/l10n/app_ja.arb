@@ -71,6 +71,9 @@
   "homeDownloadCatalogHint": "ダウンロードするとマイルーティンに追加されます。",
   "homeCatalogOfficialSection": "基本ルーティン",
   "homeCatalogSharedSection": "共有ルーティン",
+  "searchRoutinesTooltip": "ルーティンを検索",
+  "searchRoutinesHint": "タイトルまたは説明で検索",
+  "noSearchResults": "該当するルーティンがありません。",
   "routineAddedToMyRoutines": "「{title}」をマイルーティンに追加しました。",
   "@routineAddedToMyRoutines": {
     "placeholders": {
@@ -92,6 +95,13 @@
   "routineNotFound": "ルーティンが見つかりません。",
   "editTooltip": "編集",
   "shareTooltip": "共有",
+  "catalogAuthor": "作成者: {author}",
+  "@catalogAuthor": {
+    "placeholders": {
+      "author": {"type": "String"}
+    }
+  },
+  "catalogAuthorUnknown": "不明",
   "estimatedDuration": "目安 {duration}",
   "exerciseListTitle": "種目一覧",
   "start": "開始",
@@ -135,6 +145,19 @@
   "defaultRoutineName": "基本ルーティン",
   "defaultExerciseName": "基本種目",
   "descriptionOptionalLabel": "説明（任意）",
+  "descriptionBlocksEmptyHint": "テキスト・参考写真・動画リンクを順に追加できます。",
+  "descriptionAddText": "テキスト",
+  "descriptionAddImage": "写真",
+  "descriptionAddVideo": "動画リンク",
+  "descriptionTextHint": "説明を入力",
+  "descriptionVideoUrlHint": "YouTubeなどの動画URL",
+  "descriptionVideoUrlInvalid": "有効な動画URLを入力してください。",
+  "descriptionVideoBlockLabel": "動画リンク",
+  "descriptionVideoPlay": "タップして再生",
+  "descriptionVideoExternal": "外部動画を開く",
+  "descriptionImageLoginRequired": "写真を追加するにはログインが必要です。",
+  "descriptionImageUploadError": "写真のアップロードに失敗しました。",
+  "descriptionImageLoadError": "画像を読み込めませんでした。",
   "reorderExercisesHint": "長押しで並べ替え",
   "addExercisesPrompt": "種目を追加してください",
   "addExercise": "種目を追加",

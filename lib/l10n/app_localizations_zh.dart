@@ -144,6 +144,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get homeCatalogSharedSection => '共享训练';
 
   @override
+  String get searchRoutinesTooltip => '搜索训练';
+
+  @override
+  String get searchRoutinesHint => '按标题或说明搜索';
+
+  @override
+  String get noSearchResults => '没有匹配的训练。';
+
+  @override
   String routineAddedToMyRoutines(String title) {
     return '已将「$title」添加到我的训练。';
   }
@@ -181,6 +190,14 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get shareTooltip => '分享';
+
+  @override
+  String catalogAuthor(String author) {
+    return '作者：$author';
+  }
+
+  @override
+  String get catalogAuthorUnknown => '未知';
 
   @override
   String estimatedDuration(String duration) {
@@ -326,6 +343,45 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get descriptionOptionalLabel => '说明（可选）';
+
+  @override
+  String get descriptionBlocksEmptyHint => '可按顺序添加文字、参考图片和视频链接。';
+
+  @override
+  String get descriptionAddText => '文字';
+
+  @override
+  String get descriptionAddImage => '图片';
+
+  @override
+  String get descriptionAddVideo => '视频链接';
+
+  @override
+  String get descriptionTextHint => '输入说明';
+
+  @override
+  String get descriptionVideoUrlHint => 'YouTube 等视频 URL';
+
+  @override
+  String get descriptionVideoUrlInvalid => '请输入有效的视频 URL。';
+
+  @override
+  String get descriptionVideoBlockLabel => '视频链接';
+
+  @override
+  String get descriptionVideoPlay => '点击播放';
+
+  @override
+  String get descriptionVideoExternal => '打开外部视频';
+
+  @override
+  String get descriptionImageLoginRequired => '添加图片需要先登录。';
+
+  @override
+  String get descriptionImageUploadError => '图片上传失败。';
+
+  @override
+  String get descriptionImageLoadError => '无法加载图片。';
 
   @override
   String get reorderExercisesHint => '长按可调整顺序';

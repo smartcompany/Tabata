@@ -6,6 +6,7 @@ import '../models/exercise.dart';
 import '../models/routine.dart';
 import '../services/routine_share_service.dart';
 import '../utils/duration_calculator.dart';
+import '../widgets/description_blocks_view.dart';
 import '../widgets/exercise_summary.dart';
 import 'routine_editor_screen.dart';
 import 'workout_screen.dart';
@@ -30,8 +31,6 @@ class RoutineDetailScreen extends StatefulWidget {
 }
 
 class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
-  final _shareService = RoutineShareService();
-  final _shareButtonKey = GlobalKey();
   Routine? _routine;
   bool _loadingCatalog = false;
   String? _catalogLoadError;
@@ -102,27 +101,26 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
   Future<void> _share() async {
     final routine = _routine;
     if (routine == null) return;
-    await _shareService.share(
-      routine,
-      sharePositionOrigin: _sharePositionOrigin(),
-    );
+    await RoutineShareService().share(routine);
   }
 
-  Rect? _sharePositionOrigin() {
-    final box =
-        _shareButtonKey.currentContext?.findRenderObject() as RenderBox?;
-    if (box != null && box.hasSize) {
-      return box.localToGlobal(Offset.zero) & box.size;
+  String _catalogAuthorLabel(AppLocalizations l10n) {
+    final catalogId = widget.catalogId;
+    if (catalogId == null) return l10n.catalogAuthorUnknown;
+
+    final summary = widget.repository.catalogSummaryFor(catalogId);
+    if (summary == null) return l10n.catalogAuthorUnknown;
+
+    if (summary.isOfficialCatalog) {
+      return l10n.catalogAuthor(l10n.appTitle);
     }
 
-    final context = this.context;
-    if (!context.mounted) return null;
-    final size = MediaQuery.sizeOf(context);
-    return Rect.fromCenter(
-      center: Offset(size.width / 2, size.height / 2),
-      width: 1,
-      height: 1,
-    );
+    final name = summary.ownerName?.trim();
+    if (name != null && name.isNotEmpty) {
+      return l10n.catalogAuthor(name);
+    }
+
+    return l10n.catalogAuthor(l10n.catalogAuthorUnknown);
   }
 
   Future<void> _deleteLocally() async {
@@ -298,12 +296,12 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
               icon: const Icon(Icons.edit_outlined),
               tooltip: l10n.editTooltip,
             ),
-          IconButton(
-            key: _shareButtonKey,
-            onPressed: _share,
-            icon: const Icon(Icons.ios_share),
-            tooltip: l10n.shareTooltip,
-          ),
+          if (!_isCatalogPreview)
+            IconButton(
+              onPressed: _share,
+              icon: const Icon(Icons.ios_share),
+              tooltip: l10n.shareTooltip,
+            ),
         ],
       ),
       body: ListView(
@@ -336,10 +334,22 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
             ),
             const SizedBox(height: 16),
           ],
-          if (routine.description.isNotEmpty) ...[
+          if (routine.effectiveDescriptionBlocks.isNotEmpty) ...[
+            DescriptionBlocksView(blocks: routine.effectiveDescriptionBlocks),
+            const SizedBox(height: 16),
+          ] else if (routine.description.isNotEmpty) ...[
             Text(
               routine.description,
               style: Theme.of(context).textTheme.bodyLarge,
+            ),
+            const SizedBox(height: 16),
+          ],
+          if (_isCatalogPreview) ...[
+            Text(
+              _catalogAuthorLabel(l10n),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.outline,
+                  ),
             ),
             const SizedBox(height: 16),
           ],
