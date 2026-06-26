@@ -151,12 +151,9 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
     setState(() => _downloading = true);
 
     try {
-      final forked = await widget.repository.forkCatalogProfile(catalogId);
+      await widget.repository.forkCatalogProfile(catalogId);
       if (!mounted) return;
       setState(() => _downloading = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.routineAddedToMyRoutines(forked.title))),
-      );
     } catch (_) {
       if (!mounted) return;
       setState(() => _downloading = false);

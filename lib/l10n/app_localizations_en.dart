@@ -604,6 +604,16 @@ class AppLocalizationsEn extends AppLocalizations {
       'Speaks each second in count mode only. When off, beeps play instead.';
 
   @override
+  String get contentSettingsSection => 'Content';
+
+  @override
+  String get autoTranslateContentTitle => 'Auto-translate content';
+
+  @override
+  String get autoTranslateContentSubtitle =>
+      'Translate titles, descriptions, and exercise names from the server into your app language.';
+
+  @override
   String get languageTitle => 'Language';
 
   @override

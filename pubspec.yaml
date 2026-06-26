@@ -55,6 +55,7 @@ dependencies:
   kakao_flutter_sdk_common: ^1.9.7
   share_lib:
     path: ../../flutter_share_lib
+  translator: ^1.0.4+1
 
 dev_dependencies:
   flutter_test:

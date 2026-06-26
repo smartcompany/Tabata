@@ -598,6 +598,16 @@ class AppLocalizationsJa extends AppLocalizations {
       'カウントモードでのみ毎秒数字を読み上げます。オフの場合はビープ音が鳴ります。';
 
   @override
+  String get contentSettingsSection => 'コンテンツ';
+
+  @override
+  String get autoTranslateContentTitle => 'コンテンツ自動翻訳';
+
+  @override
+  String get autoTranslateContentSubtitle =>
+      'サーバーから読み込んだルーティンのタイトル・説明・種目名をアプリの言語に自動翻訳して表示します。';
+
+  @override
   String get languageTitle => '言語';
 
   @override

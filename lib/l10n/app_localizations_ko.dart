@@ -599,6 +599,16 @@ class AppLocalizationsKo extends AppLocalizations {
       '카운트 모드에서만 초마다 숫자를 음성으로 안내합니다. 끄면 비프음이 재생됩니다.';
 
   @override
+  String get contentSettingsSection => '콘텐츠';
+
+  @override
+  String get autoTranslateContentTitle => '콘텐츠 자동 번역';
+
+  @override
+  String get autoTranslateContentSubtitle =>
+      '서버에서 불러온 루틴 제목·설명·운동 이름을 앱 언어로 자동 번역해 표시합니다.';
+
+  @override
   String get languageTitle => '언어';
 
   @override

@@ -596,6 +596,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get countSecondsWithTtsSubtitle => '仅在计数模式下每秒播报数字。关闭后改为播放提示音。';
 
   @override
+  String get contentSettingsSection => '内容';
+
+  @override
+  String get autoTranslateContentTitle => '内容自动翻译';
+
+  @override
+  String get autoTranslateContentSubtitle => '将服务器加载的训练标题、说明和动作名称自动翻译为应用语言后显示。';
+
+  @override
   String get languageTitle => '语言';
 
   @override

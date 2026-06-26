@@ -10,8 +10,10 @@ import 'data/routine_repository.dart';
 import 'firebase_options.dart';
 import 'screens/home_screen.dart';
 import 'services/ad_settings.dart';
+import 'services/content_settings.dart';
 import 'services/locale_settings.dart';
 import 'services/routine_api_client.dart';
+import 'services/routine_content_localizer.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,59 +35,34 @@ Future<void> main() async {
     debugPrint('Kakao SDK skipped: app keys not configured');
   }
 
-  final apiClient = RoutineApiClient();
+  final contentSettings = await ContentSettings.load();
+  final contentLocalizer = RoutineContentLocalizer(
+    contentSettings: contentSettings,
+  );
+  final apiClient = RoutineApiClient(contentLocalizer: contentLocalizer);
   final repository = await RoutineRepository.create(apiClient: apiClient);
-  final localeSettings = await LocaleSettings.load();
   await AdSettings.initialize();
   runApp(TabataApp(
     repository: repository,
     apiClient: apiClient,
-    localeSettings: localeSettings,
   ));
 }
 
-class TabataApp extends StatefulWidget {
+class TabataApp extends StatelessWidget {
   const TabataApp({
     super.key,
     required this.repository,
     required this.apiClient,
-    required this.localeSettings,
   });
 
   final RoutineRepository repository;
   final RoutineApiClient apiClient;
-  final LocaleSettings localeSettings;
-
-  @override
-  State<TabataApp> createState() => _TabataAppState();
-}
-
-class _TabataAppState extends State<TabataApp> {
-  Locale? _localeOverride;
-
-  @override
-  void initState() {
-    super.initState();
-    _localeOverride = widget.localeSettings.locale;
-    LocaleSettings.addListener(_onLocaleChanged);
-  }
-
-  @override
-  void dispose() {
-    LocaleSettings.removeListener(_onLocaleChanged);
-    super.dispose();
-  }
-
-  void _onLocaleChanged() {
-    setState(() => _localeOverride = widget.localeSettings.locale);
-  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
       debugShowCheckedModeBanner: false,
-      locale: _localeOverride,
       localizationsDelegates: const [
         AppLocalizations.delegate,
         AuthLocalizations.delegate,
@@ -95,8 +72,7 @@ class _TabataAppState extends State<TabataApp> {
       ],
       supportedLocales: AppLocalizations.supportedLocales,
       localeResolutionCallback: (locale, supportedLocales) {
-        return LocaleSettings.resolveLocale(
-          override: _localeOverride,
+        return LocaleSettings.resolveSystemLocale(
           systemLocale: locale,
           supportedLocales: supportedLocales.toList(),
         );
@@ -119,10 +95,8 @@ class _TabataAppState extends State<TabataApp> {
         );
       },
       home: HomeScreen(
-        repository: widget.repository,
-        apiClient: widget.apiClient,
-        localeSettings: widget.localeSettings,
-        onLocaleChanged: _onLocaleChanged,
+        repository: repository,
+        apiClient: apiClient,
       ),
     );
   }

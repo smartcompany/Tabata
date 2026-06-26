@@ -1164,6 +1164,24 @@ abstract class AppLocalizations {
   /// **'Speaks each second in count mode only. When off, beeps play instead.'**
   String get countSecondsWithTtsSubtitle;
 
+  /// No description provided for @contentSettingsSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Content'**
+  String get contentSettingsSection;
+
+  /// No description provided for @autoTranslateContentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-translate content'**
+  String get autoTranslateContentTitle;
+
+  /// No description provided for @autoTranslateContentSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Translate titles, descriptions, and exercise names from the server into your app language.'**
+  String get autoTranslateContentSubtitle;
+
   /// No description provided for @languageTitle.
   ///
   /// In en, this message translates to:

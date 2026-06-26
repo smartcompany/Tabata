@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import '../config/api_config.dart';
 import '../models/profile_summary.dart';
 import '../models/routine.dart';
+import 'routine_content_localizer.dart';
 import 'routine_description_media_service.dart';
 
 class RoutineApiException implements Exception {
@@ -17,9 +18,14 @@ class RoutineApiException implements Exception {
 }
 
 class RoutineApiClient {
-  RoutineApiClient({http.Client? client}) : _client = client ?? http.Client();
+  RoutineApiClient({
+    http.Client? client,
+    RoutineContentLocalizer? contentLocalizer,
+  })  : _client = client ?? http.Client(),
+        _contentLocalizer = contentLocalizer;
 
   final http.Client _client;
+  final RoutineContentLocalizer? _contentLocalizer;
 
   Uri get _baseUri => Uri.parse(ApiConfig.profileApiBaseUrl);
 
@@ -39,10 +45,13 @@ class RoutineApiClient {
 
     final listBody = jsonDecode(listResponse.body) as Map<String, dynamic>;
     final summaries = listBody['profiles'] as List<dynamic>? ?? [];
-    return [
+    final parsed = [
       for (final summary in summaries)
         ProfileSummary.fromJson(summary as Map<String, dynamic>),
     ];
+    final localizer = _contentLocalizer;
+    if (localizer == null) return parsed;
+    return localizer.localizeSummaries(parsed);
   }
 
   Future<List<String>> fetchProfileIds() async {
@@ -77,11 +86,12 @@ class RoutineApiClient {
 
     final body = jsonDecode(response.body) as Map<String, dynamic>;
     final rows = body['profiles'] as List<dynamic>? ?? [];
-    return [
+    final parsed = [
       for (final row in rows)
         if (row is Map<String, dynamic>)
           Routine.fromJson(row['profile'] as Map<String, dynamic>),
     ];
+    return _localizeRoutines(parsed);
   }
 
   Future<List<Routine>> fetchDashboardProfiles({
@@ -104,11 +114,12 @@ class RoutineApiClient {
 
     final body = jsonDecode(response.body) as Map<String, dynamic>;
     final rows = body['profiles'] as List<dynamic>? ?? [];
-    return [
+    final parsed = [
       for (final row in rows)
         if (row is Map<String, dynamic>)
           Routine.fromJson(row['profile'] as Map<String, dynamic>),
     ];
+    return _localizeRoutines(parsed);
   }
 
   Future<List<Routine>> fetchAllProfiles() async {
@@ -128,7 +139,19 @@ class RoutineApiClient {
     }
 
     final body = jsonDecode(response.body) as Map<String, dynamic>;
-    return Routine.fromJson(body);
+    return _localizeRoutine(Routine.fromJson(body));
+  }
+
+  Future<Routine> _localizeRoutine(Routine routine) async {
+    final localizer = _contentLocalizer;
+    if (localizer == null) return routine;
+    return localizer.localizeRoutine(routine);
+  }
+
+  Future<List<Routine>> _localizeRoutines(List<Routine> routines) async {
+    final localizer = _contentLocalizer;
+    if (localizer == null) return routines;
+    return localizer.localizeRoutines(routines);
   }
 
   Future<String> loginDashboard({

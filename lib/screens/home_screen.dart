@@ -5,7 +5,7 @@ import '../data/routine_factory.dart';
 import '../data/routine_repository.dart';
 import '../models/profile_summary.dart';
 import '../models/routine.dart';
-import '../services/locale_settings.dart';
+import '../services/content_settings.dart';
 import '../services/routine_api_client.dart';
 import '../utils/auth_helper.dart';
 import '../utils/duration_calculator.dart';
@@ -20,14 +20,10 @@ class HomeScreen extends StatefulWidget {
     super.key,
     required this.repository,
     required this.apiClient,
-    required this.localeSettings,
-    required this.onLocaleChanged,
   });
 
   final RoutineRepository repository;
   final RoutineApiClient apiClient;
-  final LocaleSettings localeSettings;
-  final VoidCallback onLocaleChanged;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -49,14 +45,21 @@ class _HomeScreenState extends State<HomeScreen>
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     _catalogSearchController = TextEditingController();
+    ContentSettings.addListener(_onCatalogRefreshPreferencesChanged);
     _loadCatalogInitial();
   }
 
   @override
   void dispose() {
+    ContentSettings.removeListener(_onCatalogRefreshPreferencesChanged);
     _catalogSearchController.dispose();
     _tabController.dispose();
     super.dispose();
+  }
+
+  Future<void> _onCatalogRefreshPreferencesChanged() async {
+    if (!mounted) return;
+    await _refreshCatalog();
   }
 
   Future<void> _loadCatalogInitial() async {
@@ -157,36 +160,9 @@ class _HomeScreenState extends State<HomeScreen>
     setState(() => _downloadingCatalogId = summary.id);
 
     try {
-      final forked = await widget.repository.forkCatalogProfile(summary.id);
+      await widget.repository.forkCatalogProfile(summary.id);
       if (!mounted) return;
       setState(() => _downloadingCatalogId = null);
-
-      void showSuccessSnackBar() {
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.routineAddedToMyRoutines(forked.title)),
-            duration: const Duration(seconds: 4),
-            behavior: SnackBarBehavior.floating,
-            margin: EdgeInsets.fromLTRB(
-              16,
-              0,
-              16,
-              12 + MediaQuery.paddingOf(context).bottom + _bottomBarHeight,
-            ),
-            action: SnackBarAction(
-              label: l10n.homeTabMyRoutines,
-              onPressed: () {
-                ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                _tabController.animateTo(0);
-                _openLocalRoutine(forked.id);
-              },
-            ),
-          ),
-        );
-      }
-
-      showSuccessSnackBar();
     } catch (_) {
       if (!mounted) return;
       setState(() => _downloadingCatalogId = null);
@@ -520,18 +496,44 @@ class _HomeBottomActions extends StatelessWidget {
           child: Row(
             children: [
               Expanded(
-                child: FilledButton.icon(
+                child: FilledButton(
                   onPressed: onCreate,
-                  icon: const Icon(Icons.add, size: 20),
-                  label: Text(createLabel),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.add, size: 20),
+                      const SizedBox(width: 8),
+                      Flexible(
+                        child: Text(
+                          createLabel,
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: OutlinedButton.icon(
+                child: OutlinedButton(
                   onPressed: onUpload,
-                  icon: const Icon(Icons.upload_outlined, size: 20),
-                  label: Text(uploadLabel),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.upload_outlined, size: 20),
+                      const SizedBox(width: 8),
+                      Flexible(
+                        child: Text(
+                          uploadLabel,
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
