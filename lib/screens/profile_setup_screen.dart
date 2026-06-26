@@ -42,16 +42,19 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
 
     setState(() => _isSubmitting = true);
     try {
+      final kakaoId = AppAuthProvider.shared.kakaoId;
       final token = await AppAuthProvider.shared.getIdToken();
-      if (token == null || token.isEmpty) {
+      if ((token == null || token.isEmpty) && kakaoId == null) {
         throw Exception('로그인 세션이 만료되었습니다. 다시 로그인해 주세요.');
       }
-      TabataAuthApiService.shared.setToken(token);
+      if (token != null && token.isNotEmpty) {
+        TabataAuthApiService.shared.setToken(token);
+      }
 
       final fullName = _nicknameController.text.trim();
       final result = await TabataAuthApiService.shared.updateProfile(
         fullName: fullName,
-        kakaoId: AppAuthProvider.shared.kakaoId,
+        kakaoId: kakaoId,
       );
 
       if (!mounted) return;

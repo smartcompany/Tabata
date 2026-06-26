@@ -21,11 +21,20 @@ class AuthHelper {
         ),
       );
       if (result != true) return false;
+      if (!AppAuthProvider.shared.isLoggedIn() &&
+          AppAuthProvider.shared.kakaoId == null) {
+        return false;
+      }
     }
 
     if (!context.mounted) return false;
 
-    if (AppAuthProvider.shared.needProfileSetup()) {
+    final needsProfile = AppAuthProvider.shared.needProfileSetup() ||
+        (AppAuthProvider.shared.isLoggedIn() &&
+            AppAuthProvider.shared.userProfile == null) ||
+        (!AppAuthProvider.shared.isLoggedIn() &&
+            AppAuthProvider.shared.kakaoId != null);
+    if (needsProfile) {
       final result = await Navigator.push<bool>(
         context,
         MaterialPageRoute(builder: (context) => const ProfileSetupScreen()),
