@@ -129,11 +129,13 @@ void main() {
       phaseGroupKey: 'g1',
     );
     final cues = planner.plan(previous: null, current: first);
-    expect(cues.length, 3);
+    expect(cues.length, 4);
     expect(cues[0].kind, VoiceCueKind.exerciseName);
     expect(cues[1].kind, VoiceCueKind.phaseStart);
     expect(cues[2].kind, VoiceCueKind.repCount);
     expect(cues[2].repNumber, 1);
+    expect(cues[3].kind, VoiceCueKind.countdown);
+    expect(cues[3].seconds, 5);
 
     final second = _snap(
       remainingSec: 5,
@@ -143,8 +145,26 @@ void main() {
       phaseGroupKey: 'g1',
     );
     final nextCues = planner.plan(previous: first, current: second);
-    expect(nextCues.single.kind, VoiceCueKind.repCount);
-    expect(nextCues.single.repNumber, 2);
+    expect(nextCues.length, 2);
+    expect(nextCues[0].kind, VoiceCueKind.repCount);
+    expect(nextCues[0].repNumber, 2);
+    expect(nextCues[1].kind, VoiceCueKind.countdown);
+    expect(nextCues[1].seconds, 5);
+  });
+
+  test('count mode announces first second at rep start', () {
+    final first = _snap(
+      remainingSec: 10,
+      durationSec: 10,
+      countRepNumber: 1,
+      totalCountReps: 3,
+      phaseGroupKey: 'g1',
+    );
+    final cues = planner.plan(previous: null, current: first);
+    expect(cues.length, 4);
+    expect(cues[2].kind, VoiceCueKind.repCount);
+    expect(cues[3].kind, VoiceCueKind.countdown);
+    expect(cues[3].seconds, 10);
   });
 
   test('count mode announces remaining seconds when countSecondsWithTts is on', () {
@@ -200,11 +220,13 @@ void main() {
       phaseGroupKey: 'g1',
     );
     final cues = planner.plan(previous: null, current: third);
-    expect(cues.length, 3);
+    expect(cues.length, 4);
     expect(cues[0].kind, VoiceCueKind.exerciseName);
     expect(cues[1].kind, VoiceCueKind.phaseStart);
     expect(cues[2].kind, VoiceCueKind.repCount);
     expect(cues[2].repNumber, 3);
+    expect(cues[3].kind, VoiceCueKind.countdown);
+    expect(cues[3].seconds, 5);
 
     final second = _snap(
       remainingSec: 5,
@@ -214,7 +236,9 @@ void main() {
       phaseGroupKey: 'g1',
     );
     final nextCues = planner.plan(previous: third, current: second);
-    expect(nextCues.single.repNumber, 2);
+    expect(nextCues.length, 2);
+    expect(nextCues[0].repNumber, 2);
+    expect(nextCues[1].kind, VoiceCueKind.countdown);
   });
 
   test('completion announces once', () {

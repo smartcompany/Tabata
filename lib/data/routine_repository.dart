@@ -169,8 +169,11 @@ class RoutineRepository {
   Routine copyForServerUpload(
     Routine routine, {
     String? existingServerProfileId,
+    String? contentLanguage,
   }) {
-    return forkRoutine(routine, newRoutineId: existingServerProfileId);
+    final forked = forkRoutine(routine, newRoutineId: existingServerProfileId);
+    if (contentLanguage == null) return forked;
+    return forked.copyWith(contentLanguage: contentLanguage);
   }
 
   Future<void> setUploadedServerProfileId({

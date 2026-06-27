@@ -6,9 +6,13 @@ import '../data/routine_repository.dart';
 import '../features/legal/privacy_processing_consent.dart';
 import '../models/routine.dart';
 import '../services/routine_api_client.dart';
+import '../utils/account_deletion.dart';
+import '../utils/content_language.dart';
 import '../utils/duration_calculator.dart';
 import '../widgets/swipe_reveal_delete.dart';
 import 'routine_editor_screen.dart';
+
+enum _UploadAccountAction { signOut, deleteAccount }
 
 class UploadRoutineScreen extends StatefulWidget {
   const UploadRoutineScreen({
@@ -95,11 +99,15 @@ class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
     }
   }
 
-  Future<void> _logout() async {
+  Future<void> _signOut() async {
     await clearPrivacyProcessingConsent();
     await AppAuthProvider.shared.logout();
     if (!mounted) return;
-    Navigator.of(context).pop();
+    Navigator.of(context).popUntil((route) => route.isFirst);
+  }
+
+  Future<void> _deleteAccount() async {
+    await confirmAndDeleteAccount(context);
   }
 
   Future<void> _editServerRoutine(Routine routine) async {
@@ -136,6 +144,9 @@ class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
 
   Future<void> _uploadLocalRoutine(Routine routine) async {
     final l10n = AppLocalizations.of(context);
+    final contentLanguage = ContentLanguage.current(
+      systemLocale: Localizations.localeOf(context),
+    );
     final token = await _userToken();
     if (token == null) return;
 
@@ -172,6 +183,7 @@ class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
       var serverCopy = widget.repository.copyForServerUpload(
         routine,
         existingServerProfileId: serverProfileId,
+        contentLanguage: contentLanguage,
       );
       UploadProfileResult result;
       try {
@@ -183,7 +195,10 @@ class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
         final staleLink = serverProfileId != null &&
             error.message.toLowerCase().contains('profile id already in use');
         if (!staleLink) rethrow;
-        serverCopy = widget.repository.copyForServerUpload(routine);
+        serverCopy = widget.repository.copyForServerUpload(
+          routine,
+          contentLanguage: contentLanguage,
+        );
         result = await widget.apiClient.uploadUserProfile(
           routine: serverCopy,
           userToken: token,
@@ -346,9 +361,31 @@ class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
       appBar: AppBar(
         title: Text(l10n.uploadRoutineTitle),
         actions: [
-          TextButton(
-            onPressed: _uploading ? null : _logout,
-            child: Text(l10n.uploadLogout),
+          PopupMenuButton<_UploadAccountAction>(
+            enabled: !_uploading,
+            onSelected: (action) {
+              switch (action) {
+                case _UploadAccountAction.signOut:
+                  _signOut();
+                case _UploadAccountAction.deleteAccount:
+                  _deleteAccount();
+              }
+            },
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: _UploadAccountAction.signOut,
+                child: Text(l10n.settingsSignOut),
+              ),
+              PopupMenuItem(
+                value: _UploadAccountAction.deleteAccount,
+                child: Text(
+                  l10n.settingsDeleteAccount,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -397,7 +434,12 @@ class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
                   swipeKey: 'server:${routine.id}',
                   routine: routine,
                   l10n: l10n,
-                  trailing: const Icon(Icons.chevron_right),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.edit_outlined),
+                    tooltip: l10n.editTooltip,
+                    onPressed:
+                        _uploading ? null : () => _editServerRoutine(routine),
+                  ),
                   onDelete: () => _confirmDeleteServerRoutine(routine),
                   onTap: _uploading ? null : () => _editServerRoutine(routine),
                 ),

@@ -36,6 +36,35 @@ class AppLocalizationsJa extends AppLocalizations {
   String get uploadLogout => 'ログアウト';
 
   @override
+  String get deleteAccountTitle => 'アカウント削除';
+
+  @override
+  String get deleteAccountMessage =>
+      'アカウントとサーバーにアップロードしたルーティン・プロフィール・画像が削除されます。この端末のローカルルーティンは残ります。元に戻せません。';
+
+  @override
+  String get deleteAccountConfirm => '削除する';
+
+  @override
+  String get deleteAccountSuccess => 'アカウントを削除しました。';
+
+  @override
+  String get deleteAccountFailed => 'アカウントを削除できませんでした。しばらくしてから再度お試しください。';
+
+  @override
+  String get deleteAccountRecentLoginRequired =>
+      'セキュリティのため、再度ログインしてから削除してください。';
+
+  @override
+  String get settingsAccountSection => 'アカウント';
+
+  @override
+  String get settingsDeleteAccount => 'アカウント削除';
+
+  @override
+  String get settingsSignOut => 'ログアウト';
+
+  @override
   String get uploadSelectRoutine => 'アップロードするルーティンを選んでください';
 
   @override

@@ -37,6 +37,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uploadLogout => 'Sign out';
 
   @override
+  String get deleteAccountTitle => 'Delete account';
+
+  @override
+  String get deleteAccountMessage =>
+      'Your account and uploaded routines, profile, and images on the server will be deleted. Local routines on this device are kept. This cannot be undone.';
+
+  @override
+  String get deleteAccountConfirm => 'Delete account';
+
+  @override
+  String get deleteAccountSuccess => 'Your account has been deleted.';
+
+  @override
+  String get deleteAccountFailed =>
+      'Could not delete your account. Please try again later.';
+
+  @override
+  String get deleteAccountRecentLoginRequired =>
+      'For security, sign in again and then delete your account.';
+
+  @override
+  String get settingsAccountSection => 'Account';
+
+  @override
+  String get settingsDeleteAccount => 'Delete account';
+
+  @override
+  String get settingsSignOut => 'Sign out';
+
+  @override
   String get uploadSelectRoutine => 'Choose a routine to upload';
 
   @override

@@ -70,6 +70,7 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
     }
   }
 
+  Future<void> _edit() async {
     final routine = _routine;
     if (routine == null || _isCatalogPreview) return;
     final updated = await Navigator.of(context).push<Routine>(

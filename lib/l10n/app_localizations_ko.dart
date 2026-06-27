@@ -36,6 +36,35 @@ class AppLocalizationsKo extends AppLocalizations {
   String get uploadLogout => '로그아웃';
 
   @override
+  String get deleteAccountTitle => '회원 탈퇴';
+
+  @override
+  String get deleteAccountMessage =>
+      '계정과 서버에 업로드한 루틴·프로필·이미지가 삭제됩니다. 기기에 저장된 로컬 루틴은 유지됩니다. 이 작업은 되돌릴 수 없습니다.';
+
+  @override
+  String get deleteAccountConfirm => '탈퇴';
+
+  @override
+  String get deleteAccountSuccess => '회원 탈퇴가 완료되었습니다.';
+
+  @override
+  String get deleteAccountFailed => '회원 탈퇴에 실패했습니다. 잠시 후 다시 시도해 주세요.';
+
+  @override
+  String get deleteAccountRecentLoginRequired =>
+      '보안을 위해 다시 로그인한 뒤 탈퇴를 시도해 주세요.';
+
+  @override
+  String get settingsAccountSection => '계정';
+
+  @override
+  String get settingsDeleteAccount => '회원 탈퇴';
+
+  @override
+  String get settingsSignOut => '로그아웃';
+
+  @override
   String get uploadSelectRoutine => '업로드할 루틴을 선택하세요';
 
   @override

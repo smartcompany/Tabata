@@ -105,6 +105,9 @@ class WorkoutVoicePlanner {
             totalReps: current.phase.totalCountReps,
           ),
         );
+        if (countSecondsWithTts && current.remainingSec > 0) {
+          cues.add(VoiceCue.countdown(current.remainingSec));
+        }
       } else {
         cues.add(
           VoiceCue.phaseStart(

@@ -36,6 +36,34 @@ class AppLocalizationsZh extends AppLocalizations {
   String get uploadLogout => '退出登录';
 
   @override
+  String get deleteAccountTitle => '注销账户';
+
+  @override
+  String get deleteAccountMessage =>
+      '将删除您的账户及服务器上的上传训练、个人资料与图片。本机本地训练会保留。此操作无法撤销。';
+
+  @override
+  String get deleteAccountConfirm => '注销';
+
+  @override
+  String get deleteAccountSuccess => '账户已注销。';
+
+  @override
+  String get deleteAccountFailed => '注销失败，请稍后重试。';
+
+  @override
+  String get deleteAccountRecentLoginRequired => '为保障安全，请重新登录后再注销。';
+
+  @override
+  String get settingsAccountSection => '账户';
+
+  @override
+  String get settingsDeleteAccount => '注销账户';
+
+  @override
+  String get settingsSignOut => '退出登录';
+
+  @override
   String get uploadSelectRoutine => '选择要上传的训练';
 
   @override

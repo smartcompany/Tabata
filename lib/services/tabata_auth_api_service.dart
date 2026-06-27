@@ -108,4 +108,26 @@ class TabataAuthApiService implements AuthServiceInterface {
     }
     return User.fromJson(data);
   }
+
+  Future<void> deleteAccount() async {
+    final response = await http.delete(
+      Uri.parse('$baseUrl/users/me'),
+      headers: _headers,
+    );
+    if (response.statusCode == 401) {
+      throw Exception('인증이 필요합니다. 다시 로그인해주세요.');
+    }
+    if (response.statusCode == 503) {
+      throw Exception('SERVER_NOT_CONFIGURED');
+    }
+    if (response.statusCode != 200) {
+      try {
+        final errorData = jsonDecode(response.body) as Map<String, dynamic>;
+        throw Exception(errorData['error'] ?? 'Failed to delete account');
+      } catch (e) {
+        if (e is Exception) rethrow;
+        throw Exception('Failed to delete account (${response.statusCode})');
+      }
+    }
+  }
 }

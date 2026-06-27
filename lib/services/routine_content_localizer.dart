@@ -5,6 +5,7 @@ import '../models/exercise.dart';
 import '../models/exercise_phase.dart';
 import '../models/profile_summary.dart';
 import '../models/routine.dart';
+import '../utils/content_language.dart';
 import 'content_settings.dart';
 import 'content_translation_service.dart';
 
@@ -28,8 +29,13 @@ class RoutineContentLocalizer {
     final target = _targetLanguage(systemLocale);
     final strings = <String>{};
     for (final summary in summaries) {
+      if (ContentLanguage.matchesTarget(summary.contentLanguage, target)) {
+        continue;
+      }
       _collectSummaryStrings(summary, strings);
     }
+
+    if (strings.isEmpty) return summaries;
 
     final map = await _translationService.translateMap(
       texts: strings,
@@ -60,8 +66,13 @@ class RoutineContentLocalizer {
     final target = _targetLanguage(systemLocale);
     final strings = <String>{};
     for (final routine in routines) {
+      if (ContentLanguage.matchesTarget(routine.contentLanguage, target)) {
+        continue;
+      }
       _collectRoutineStrings(routine, strings);
     }
+
+    if (strings.isEmpty) return routines;
 
     final map = await _translationService.translateMap(
       texts: strings,
@@ -120,6 +131,7 @@ class RoutineContentLocalizer {
       exerciseCount: summary.exerciseCount,
       ownerId: summary.ownerId,
       ownerName: summary.ownerName,
+      contentLanguage: summary.contentLanguage,
     );
   }
 

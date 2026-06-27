@@ -156,6 +156,60 @@ abstract class AppLocalizations {
   /// **'Sign out'**
   String get uploadLogout;
 
+  /// No description provided for @deleteAccountTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account'**
+  String get deleteAccountTitle;
+
+  /// No description provided for @deleteAccountMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account and uploaded routines, profile, and images on the server will be deleted. Local routines on this device are kept. This cannot be undone.'**
+  String get deleteAccountMessage;
+
+  /// No description provided for @deleteAccountConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account'**
+  String get deleteAccountConfirm;
+
+  /// No description provided for @deleteAccountSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account has been deleted.'**
+  String get deleteAccountSuccess;
+
+  /// No description provided for @deleteAccountFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not delete your account. Please try again later.'**
+  String get deleteAccountFailed;
+
+  /// No description provided for @deleteAccountRecentLoginRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'For security, sign in again and then delete your account.'**
+  String get deleteAccountRecentLoginRequired;
+
+  /// No description provided for @settingsAccountSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get settingsAccountSection;
+
+  /// No description provided for @settingsDeleteAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account'**
+  String get settingsDeleteAccount;
+
+  /// No description provided for @settingsSignOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get settingsSignOut;
+
   /// No description provided for @uploadSelectRoutine.
   ///
   /// In en, this message translates to:

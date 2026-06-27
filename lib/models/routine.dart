@@ -1,6 +1,7 @@
 import 'exercise.dart';
 import 'description_block.dart';
 import 'json_field.dart';
+import '../utils/content_language.dart';
 
 class Routine {
   const Routine({
@@ -10,6 +11,7 @@ class Routine {
     required this.exercises,
     this.descriptionBlocks = const [],
     this.schemaVersion = currentSchemaVersion,
+    this.contentLanguage,
   });
 
   static const int currentSchemaVersion = 1;
@@ -20,6 +22,7 @@ class Routine {
   final String description;
   final List<DescriptionBlock> descriptionBlocks;
   final List<Exercise> exercises;
+  final String? contentLanguage;
 
   List<DescriptionBlock> get effectiveDescriptionBlocks {
     if (descriptionBlocks.isNotEmpty) return descriptionBlocks;
@@ -40,6 +43,7 @@ class Routine {
         'id': id,
         'title': title,
         'description': descriptionPlainText,
+        if (contentLanguage != null) 'contentLanguage': contentLanguage,
         if (descriptionBlocks.isNotEmpty)
           'descriptionBlocks': DescriptionBlock.listToJson(descriptionBlocks),
         'exercises': exercises.map((e) => e.toJson()).toList(),
@@ -64,6 +68,9 @@ class Routine {
       title: JsonField.requiredString(json, 'title'),
       description: DescriptionBlock.plainText(effectiveBlocks),
       descriptionBlocks: blocks,
+      contentLanguage: ContentLanguage.resolve(
+        json['contentLanguage'] as String?,
+      ),
       exercises: exercisesJson
           .map((e) => Exercise.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -77,6 +84,7 @@ class Routine {
     String? description,
     List<DescriptionBlock>? descriptionBlocks,
     List<Exercise>? exercises,
+    String? contentLanguage,
   }) {
     return Routine(
       schemaVersion: schemaVersion ?? this.schemaVersion,
@@ -85,6 +93,7 @@ class Routine {
       description: description ?? this.description,
       descriptionBlocks: descriptionBlocks ?? this.descriptionBlocks,
       exercises: exercises ?? this.exercises,
+      contentLanguage: contentLanguage ?? this.contentLanguage,
     );
   }
 

@@ -8,6 +8,7 @@ import '../models/description_block.dart';
 import '../models/exercise.dart';
 import '../models/routine.dart';
 import '../services/routine_api_client.dart';
+import '../utils/content_language.dart';
 import '../utils/duration_calculator.dart';
 import '../utils/form_validation_scroll.dart';
 import '../widgets/description_blocks_editor.dart';
@@ -112,7 +113,11 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       final l10n = AppLocalizations.of(context);
       try {
         await apiClient.uploadUserProfile(
-          routine: draft,
+          routine: draft.copyWith(
+            contentLanguage: ContentLanguage.current(
+              systemLocale: Localizations.localeOf(context),
+            ),
+          ),
           userToken: userAuthToken,
         );
         return true;

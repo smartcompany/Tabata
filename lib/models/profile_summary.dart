@@ -1,3 +1,5 @@
+import '../utils/content_language.dart';
+
 class ProfileSummary {
   const ProfileSummary({
     required this.id,
@@ -6,6 +8,7 @@ class ProfileSummary {
     required this.exerciseCount,
     this.ownerId = officialCatalogOwner,
     this.ownerName,
+    this.contentLanguage,
   });
 
   static const officialCatalogOwner = 'admin';
@@ -16,6 +19,7 @@ class ProfileSummary {
   final int exerciseCount;
   final String ownerId;
   final String? ownerName;
+  final String? contentLanguage;
 
   bool get isOfficialCatalog => ownerId == officialCatalogOwner;
 
@@ -29,6 +33,9 @@ class ProfileSummary {
       exerciseCount: json['exerciseCount'] as int? ?? 0,
       ownerId: json['ownerId'] as String? ?? officialCatalogOwner,
       ownerName: json['ownerName'] as String?,
+      contentLanguage: ContentLanguage.resolve(
+        json['contentLanguage'] as String?,
+      ),
     );
   }
 }

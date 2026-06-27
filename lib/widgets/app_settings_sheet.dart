@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:tabata_timer/l10n/app_localizations.dart';
 
+import '../app_auth_provider.dart';
+import '../features/legal/privacy_processing_consent.dart';
 import '../screens/legal_webview_screen.dart';
 import '../services/content_settings.dart';
 import '../services/workout_settings.dart';
+import '../utils/account_deletion.dart';
 import '../utils/legal_urls.dart';
 
 Future<void> showAppSettingsSheet(BuildContext hostContext) async {
   final l10n = AppLocalizations.of(hostContext);
   final workoutSettings = await WorkoutSettings.load();
   final contentSettings = await ContentSettings.load();
+  await AppAuthProvider.shared.ensureInitialized();
+  final isLoggedIn = AppAuthProvider.shared.isLoggedIn();
 
   if (!hostContext.mounted) return;
 
@@ -69,6 +74,40 @@ Future<void> showAppSettingsSheet(BuildContext hostContext) async {
                   },
                 ),
                 const SizedBox(height: 20),
+                if (isLoggedIn) ...[
+                  Text(
+                    l10n.settingsAccountSection,
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(l10n.settingsSignOut),
+                    trailing: const Icon(Icons.logout),
+                    onTap: () async {
+                      Navigator.of(context).pop();
+                      await clearPrivacyProcessingConsent();
+                      await AppAuthProvider.shared.logout();
+                    },
+                  ),
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(
+                      l10n.settingsDeleteAccount,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                    ),
+                    trailing: Icon(
+                      Icons.person_remove_outlined,
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                    onTap: () async {
+                      Navigator.of(context).pop();
+                      await confirmAndDeleteAccount(hostContext);
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                ],
                 Text(
                   l10n.settingsLegalSection,
                   style: Theme.of(context).textTheme.titleSmall,

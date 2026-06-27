@@ -21,4 +21,8 @@ abstract final class LegalUrls {
   static Uri appDisclosures(Locale? locale) => Uri.parse(
         '${ApiConfig.profileApiBaseUrl}/legal/app-disclosures.html#${localeHash(locale)}',
       );
+
+  static Uri accountDeletion(Locale? locale) => Uri.parse(
+        '${ApiConfig.profileApiBaseUrl}/legal/account-deletion.html#${localeHash(locale)}',
+      );
 }

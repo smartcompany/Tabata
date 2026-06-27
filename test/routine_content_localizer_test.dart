@@ -96,6 +96,57 @@ void main() {
     expect(routine.exercises.first.phases.first.label, 'Work');
   });
 
+  test('localizer skips translation when contentLanguage matches app language',
+      () async {
+    final contentSettings = await ContentSettings.load();
+    final localizer = RoutineContentLocalizer(
+      contentSettings: contentSettings,
+      translationService: _FakeTranslationService({
+        '한국어 제목': 'Korean title',
+      }),
+    );
+
+    final summary = await localizer.localizeSummaries(
+      [
+        const ProfileSummary(
+          id: 'p1',
+          title: '한국어 제목',
+          description: '한국어 설명',
+          exerciseCount: 1,
+          contentLanguage: 'ko',
+        ),
+      ],
+      systemLocale: const Locale('ko'),
+    );
+
+    expect(summary.first.title, '한국어 제목');
+  });
+
+  test('localizer skips translation for legacy summaries without contentLanguage',
+      () async {
+    final contentSettings = await ContentSettings.load();
+    final localizer = RoutineContentLocalizer(
+      contentSettings: contentSettings,
+      translationService: _FakeTranslationService({
+        '한국어 제목': 'Korean title',
+      }),
+    );
+
+    final summary = await localizer.localizeSummaries(
+      [
+        const ProfileSummary(
+          id: 'p1',
+          title: '한국어 제목',
+          description: '한국어 설명',
+          exerciseCount: 1,
+        ),
+      ],
+      systemLocale: const Locale('ko'),
+    );
+
+    expect(summary.first.title, '한국어 제목');
+  });
+
   test('localizer skips translation when setting is off', () async {
     final contentSettings = await ContentSettings.load();
     await contentSettings.setAutoTranslateContent(false);
