@@ -335,6 +335,7 @@
   "workoutRemainingReps": "남은 횟수",
   "workoutRemainingSets": "남은 세트",
   "workoutNext": "다음",
+  "workoutPrevious": "이전",
   "nextPhaseFinish": "종료",
   "settingsTitle": "설정",
   "workoutSettingsSection": "운동",

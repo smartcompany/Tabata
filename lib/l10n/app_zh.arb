@@ -226,6 +226,7 @@
   "workoutRemainingReps": "剩余次数",
   "workoutRemainingSets": "剩余组数",
   "workoutNext": "下一个",
+  "workoutPrevious": "上一个",
   "nextPhaseFinish": "结束",
   "settingsTitle": "设置",
   "workoutSettingsSection": "训练",

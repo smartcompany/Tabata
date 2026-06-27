@@ -611,6 +611,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get workoutNext => '次';
 
   @override
+  String get workoutPrevious => '前';
+
+  @override
   String get nextPhaseFinish => '終了';
 
   @override

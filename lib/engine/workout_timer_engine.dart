@@ -93,10 +93,16 @@ class WorkoutTimerEngine extends ChangeNotifier {
   bool get isAnnounceHold => _announceHold;
 
   WorkoutPhase? get nextPhase {
-    final nextIndex = _phaseIndex + 1;
+    if (_snapshot.isCompleted) return null;
+    final nextIndex = _navigationUnitEnd(_phaseIndex) + 1;
     if (nextIndex >= _phases.length) return null;
     return _phases[nextIndex].phase;
   }
+
+  bool get canGoToPreviousPhase =>
+      !_snapshot.isCompleted && _navigationUnitStart(_phaseIndex) > 0;
+
+  bool get canGoToNextPhase => !_snapshot.isCompleted;
 
   List<Exercise> get _exercises => routine.orderedExercises;
 
@@ -134,6 +140,27 @@ class WorkoutTimerEngine extends ChangeNotifier {
   void skipPhase() {
     if (_snapshot.isCompleted) return;
     _advancePhase();
+  }
+
+  void goToPreviousPhase() {
+    if (!canGoToPreviousPhase) return;
+    final unitStart = _navigationUnitStart(_phaseIndex);
+    _phaseIndex = _navigationUnitStart(unitStart - 1);
+    _loadCurrentPhase();
+  }
+
+  void goToNextPhase() {
+    if (_snapshot.isCompleted) return;
+    final unitEnd = _navigationUnitEnd(_phaseIndex);
+    if (unitEnd + 1 >= _phases.length) {
+      _phaseIndex = _phases.length;
+      _timer?.cancel();
+      _remainingSec = 0;
+      _refreshSnapshot(completed: true);
+      return;
+    }
+    _phaseIndex = unitEnd + 1;
+    _loadCurrentPhase();
   }
 
   void skipExercise() {
@@ -324,6 +351,32 @@ class WorkoutTimerEngine extends ChangeNotifier {
   void _refreshSnapshot({bool completed = false}) {
     _snapshot = _createSnapshot(completed: completed);
     notifyListeners();
+  }
+
+  /// Count mode expands one work/relax step into many queue items; navigation
+  /// moves by whole step (phase group), not individual count ticks.
+  String _navigationUnitKey(int index) {
+    final groupKey = _phases[index].phase.phaseGroupKey;
+    if (groupKey.isNotEmpty) return 'g:$groupKey';
+    return 'i:$index';
+  }
+
+  int _navigationUnitStart(int index) {
+    final key = _navigationUnitKey(index);
+    var start = index;
+    while (start > 0 && _navigationUnitKey(start - 1) == key) {
+      start--;
+    }
+    return start;
+  }
+
+  int _navigationUnitEnd(int index) {
+    final key = _navigationUnitKey(index);
+    var end = index;
+    while (end + 1 < _phases.length && _navigationUnitKey(end + 1) == key) {
+      end++;
+    }
+    return end;
   }
 }
 

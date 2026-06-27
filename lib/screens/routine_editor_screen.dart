@@ -24,7 +24,9 @@ class RoutineEditorScreen extends StatefulWidget {
     this.isNew = false,
     this.apiClient,
     this.userAuthToken,
+    this.adminToken,
     this.persistToServer = false,
+    this.persistToDashboard = false,
   });
 
   final RoutineRepository repository;
@@ -32,7 +34,9 @@ class RoutineEditorScreen extends StatefulWidget {
   final bool isNew;
   final RoutineApiClient? apiClient;
   final String? userAuthToken;
+  final String? adminToken;
   final bool persistToServer;
+  final bool persistToDashboard;
 
   @override
   State<RoutineEditorScreen> createState() => _RoutineEditorScreenState();
@@ -102,6 +106,40 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
   Future<bool> _persistDraft() async {
     final draft = _draft;
+    if (widget.persistToDashboard) {
+      final apiClient = widget.apiClient;
+      final adminToken = widget.adminToken;
+      if (apiClient == null || adminToken == null || adminToken.isEmpty) {
+        return false;
+      }
+      if (draft.exercises.isEmpty) return false;
+
+      final l10n = AppLocalizations.of(context);
+      try {
+        await apiClient.uploadProfile(
+          routine: draft.copyWith(
+            contentLanguage: ContentLanguage.current(
+              systemLocale: Localizations.localeOf(context),
+            ),
+          ),
+          adminToken: adminToken,
+        );
+        return true;
+      } on RoutineApiException catch (error) {
+        if (!mounted) return false;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(error.message)),
+        );
+        return false;
+      } catch (_) {
+        if (!mounted) return false;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.uploadError)),
+        );
+        return false;
+      }
+    }
+
     if (widget.persistToServer) {
       final apiClient = widget.apiClient;
       final userAuthToken = widget.userAuthToken ?? _resolvedAuthToken;
@@ -163,7 +201,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       builder: (context) => AlertDialog(
         title: Text(l10n.deleteRoutineTitle),
         content: Text(
-          widget.persistToServer
+          widget.persistToDashboard || widget.persistToServer
               ? l10n.uploadDeleteServerRoutineMessage
               : l10n.deleteRoutineMessage,
         ),
@@ -181,7 +219,30 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     );
     if (confirmed != true || !mounted) return;
 
-    if (widget.persistToServer) {
+    if (widget.persistToDashboard) {
+      final apiClient = widget.apiClient;
+      final adminToken = widget.adminToken;
+      if (apiClient == null || adminToken == null) return;
+
+      try {
+        await apiClient.deleteDashboardProfile(
+          profileId: widget.routine.id,
+          adminToken: adminToken,
+        );
+      } on RoutineApiException catch (error) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(error.message)),
+        );
+        return;
+      } catch (_) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.uploadError)),
+        );
+        return;
+      }
+    } else if (widget.persistToServer) {
       final apiClient = widget.apiClient;
       final userAuthToken = widget.userAuthToken;
       if (apiClient == null || userAuthToken == null) return;

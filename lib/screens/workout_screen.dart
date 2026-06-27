@@ -189,6 +189,20 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     setState(() {});
   }
 
+  void _goToPreviousPhase() {
+    final engine = _engine!;
+    if (!engine.canGoToPreviousPhase) return;
+    engine.goToPreviousPhase();
+    _soundCoach?.syncClock(engine.snapshot);
+  }
+
+  void _goToNextPhase() {
+    final engine = _engine!;
+    if (!engine.canGoToNextPhase) return;
+    engine.goToNextPhase();
+    _soundCoach?.syncClock(engine.snapshot);
+  }
+
   @override
   Widget build(BuildContext context) {
     final engine = _engine;
@@ -290,6 +304,10 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                 nextPhase: nextPhase,
                 l10n: l10n,
                 completedAccent: _accent,
+                onPreviousPhase: _goToPreviousPhase,
+                onNextPhase: _goToNextPhase,
+                canGoToPreviousPhase: engine.canGoToPreviousPhase,
+                canGoToNextPhase: engine.canGoToNextPhase,
               ),
             ),
             Container(

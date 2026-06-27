@@ -10,6 +10,7 @@ import 'config/kakao_config.dart';
 import 'data/routine_repository.dart';
 import 'firebase_options.dart';
 import 'screens/home_screen.dart';
+import 'services/admin_session.dart';
 import 'services/ad_settings.dart';
 import 'services/content_settings.dart';
 import 'services/locale_settings.dart';
@@ -45,10 +46,12 @@ Future<void> main() async {
   );
   final apiClient = RoutineApiClient(contentLocalizer: contentLocalizer);
   final repository = await RoutineRepository.create(apiClient: apiClient);
+  final adminSession = await AdminSession.create();
   await AdSettings.initialize();
   runApp(TabataApp(
     repository: repository,
     apiClient: apiClient,
+    adminSession: adminSession,
   ));
 }
 
@@ -57,10 +60,12 @@ class TabataApp extends StatelessWidget {
     super.key,
     required this.repository,
     required this.apiClient,
+    required this.adminSession,
   });
 
   final RoutineRepository repository;
   final RoutineApiClient apiClient;
+  final AdminSession adminSession;
 
   @override
   Widget build(BuildContext context) {
@@ -101,6 +106,7 @@ class TabataApp extends StatelessWidget {
       home: HomeScreen(
         repository: repository,
         apiClient: apiClient,
+        adminSession: adminSession,
       ),
     );
   }

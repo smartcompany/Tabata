@@ -612,6 +612,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get workoutNext => '다음';
 
   @override
+  String get workoutPrevious => '이전';
+
+  @override
   String get nextPhaseFinish => '종료';
 
   @override

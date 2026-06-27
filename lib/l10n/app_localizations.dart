@@ -1188,6 +1188,12 @@ abstract class AppLocalizations {
   /// **'Next'**
   String get workoutNext;
 
+  /// No description provided for @workoutPrevious.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous'**
+  String get workoutPrevious;
+
   /// No description provided for @nextPhaseFinish.
   ///
   /// In en, this message translates to:

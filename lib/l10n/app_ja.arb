@@ -226,6 +226,7 @@
   "workoutRemainingReps": "残り回数",
   "workoutRemainingSets": "残りセット",
   "workoutNext": "次",
+  "workoutPrevious": "前",
   "nextPhaseFinish": "終了",
   "settingsTitle": "設定",
   "workoutSettingsSection": "ワークアウト",

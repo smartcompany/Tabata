@@ -335,6 +335,7 @@
   "workoutRemainingReps": "Reps left",
   "workoutRemainingSets": "Sets left",
   "workoutNext": "Next",
+  "workoutPrevious": "Previous",
   "nextPhaseFinish": "Finish",
   "settingsTitle": "Settings",
   "workoutSettingsSection": "Workout",

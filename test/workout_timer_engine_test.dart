@@ -86,6 +86,91 @@ void main() {
     expect(engine.snapshot.phase.countRepNumber, 1);
   });
 
+  test('navigation moves by work/relax unit in count mode', () {
+    final engine = WorkoutTimerEngine(
+      Routine(
+        id: 'r1',
+        title: '테스트',
+        description: '',
+        exercises: [
+          Exercise(
+            id: 'e1',
+            name: '스쿼트',
+            instruction: '',
+            prepare: const TimedPhase(durationSec: 0),
+            phases: [
+              ExercisePhase(
+                id: 'p1',
+                kind: ExercisePhaseKind.work,
+                label: '스쿼트',
+                durationSec: 20,
+                order: 0,
+                timingMode: PhaseTimingMode.count,
+                countReps: 3,
+                secondsPerRep: 2,
+              ),
+              ExercisePhase(
+                id: 'p2',
+                kind: ExercisePhaseKind.relax,
+                label: '휴식',
+                durationSec: 10,
+                order: 1,
+                timingMode: PhaseTimingMode.count,
+                countReps: 2,
+                secondsPerRep: 3,
+              ),
+            ],
+            reps: 1,
+            sets: 1,
+            order: 0,
+          ),
+        ],
+      ),
+      labels: const WorkoutTimerLabels(
+        prepare: '준비',
+        completedMessage: '완료',
+      ),
+    );
+
+    expect(engine.snapshot.phase.kind, WorkoutPhaseKind.work);
+    expect(engine.snapshot.phase.countRepNumber, 1);
+    expect(engine.nextPhase?.kind, WorkoutPhaseKind.relax);
+
+    engine.skipPhase();
+    expect(engine.snapshot.phase.countRepNumber, 2);
+
+    engine.goToNextPhase();
+    expect(engine.snapshot.phase.kind, WorkoutPhaseKind.relax);
+    expect(engine.snapshot.phase.countRepNumber, 1);
+
+    engine.goToPreviousPhase();
+    expect(engine.snapshot.phase.kind, WorkoutPhaseKind.work);
+    expect(engine.snapshot.phase.countRepNumber, 1);
+    expect(engine.snapshot.remainingSec, 2);
+
+    engine.goToNextPhase();
+    engine.goToNextPhase();
+    expect(engine.snapshot.isCompleted, isTrue);
+  });
+
+  test('goToPreviousPhase from mid-count rep only jumps to previous unit', () {
+    final engine = WorkoutTimerEngine(
+      _countRoutine(),
+      labels: const WorkoutTimerLabels(
+        prepare: '준비',
+        completedMessage: '완료',
+      ),
+    );
+
+    expect(engine.canGoToPreviousPhase, isFalse);
+    engine.skipPhase();
+    expect(engine.snapshot.phase.countRepNumber, 2);
+    expect(engine.canGoToPreviousPhase, isFalse);
+
+    engine.goToPreviousPhase();
+    expect(engine.snapshot.phase.countRepNumber, 2);
+  });
+
   test('announce hold prevents timer from starting until released', () {
     final engine = WorkoutTimerEngine(
       _countRoutine(),

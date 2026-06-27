@@ -5,10 +5,12 @@ import '../data/routine_factory.dart';
 import '../data/routine_repository.dart';
 import '../models/profile_summary.dart';
 import '../models/routine.dart';
+import '../services/admin_session.dart';
 import '../services/content_settings.dart';
 import '../services/routine_api_client.dart';
 import '../utils/auth_helper.dart';
 import '../utils/duration_calculator.dart';
+import 'admin_upload_routine_screen.dart';
 import 'routine_detail_screen.dart';
 import 'routine_editor_screen.dart';
 import 'upload_routine_screen.dart';
@@ -20,10 +22,12 @@ class HomeScreen extends StatefulWidget {
     super.key,
     required this.repository,
     required this.apiClient,
+    required this.adminSession,
   });
 
   final RoutineRepository repository;
   final RoutineApiClient apiClient;
+  final AdminSession adminSession;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -39,6 +43,11 @@ class _HomeScreenState extends State<HomeScreen>
   late final TextEditingController _catalogSearchController;
 
   static const _bottomBarHeight = 64.0;
+  static const _adminTapTarget = 7;
+  static const _adminTapWindow = Duration(seconds: 2);
+
+  int _titleTapCount = 0;
+  DateTime? _lastTitleTapAt;
 
   @override
   void initState() {
@@ -105,6 +114,35 @@ class _HomeScreenState extends State<HomeScreen>
         builder: (_) => UploadRoutineScreen(
           repository: widget.repository,
           apiClient: widget.apiClient,
+        ),
+      ),
+    );
+    if (!mounted) return;
+    await _refreshCatalog();
+  }
+
+  void _onTitleTap() {
+    final now = DateTime.now();
+    if (_lastTitleTapAt != null &&
+        now.difference(_lastTitleTapAt!) > _adminTapWindow) {
+      _titleTapCount = 0;
+    }
+    _lastTitleTapAt = now;
+    _titleTapCount++;
+    if (_titleTapCount < _adminTapTarget) return;
+
+    _titleTapCount = 0;
+    _lastTitleTapAt = null;
+    _openAdminUpload();
+  }
+
+  Future<void> _openAdminUpload() async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => AdminUploadRoutineScreen(
+          repository: widget.repository,
+          apiClient: widget.apiClient,
+          adminSession: widget.adminSession,
         ),
       ),
     );
@@ -237,7 +275,11 @@ class _HomeScreenState extends State<HomeScreen>
     final l10n = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.appTitle),
+        title: GestureDetector(
+          onTap: _onTitleTap,
+          behavior: HitTestBehavior.opaque,
+          child: Text(l10n.appTitle),
+        ),
         actions: [
           IconButton(
             onPressed: () => showAppSettingsSheet(context),

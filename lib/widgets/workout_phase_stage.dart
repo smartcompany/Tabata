@@ -84,12 +84,20 @@ class WorkoutPhaseStage extends StatefulWidget {
     required this.nextPhase,
     required this.l10n,
     required this.completedAccent,
+    this.onPreviousPhase,
+    this.onNextPhase,
+    this.canGoToPreviousPhase = false,
+    this.canGoToNextPhase = false,
   });
 
   final WorkoutTimerSnapshot snap;
   final WorkoutPhase? nextPhase;
   final AppLocalizations l10n;
   final Color completedAccent;
+  final VoidCallback? onPreviousPhase;
+  final VoidCallback? onNextPhase;
+  final bool canGoToPreviousPhase;
+  final bool canGoToNextPhase;
 
   @override
   State<WorkoutPhaseStage> createState() => _WorkoutPhaseStageState();
@@ -242,6 +250,10 @@ class _WorkoutPhaseStageState extends State<WorkoutPhaseStage>
                         incomingTheme: _incomingTheme!,
                         incomingRemainingSec: snap.remainingSec,
                         revealedNextPhase: _revealedNextPhase,
+                        onPreviousPhase: widget.onPreviousPhase,
+                        onNextPhase: widget.onNextPhase,
+                        canGoToPreviousPhase: widget.canGoToPreviousPhase,
+                        canGoToNextPhase: widget.canGoToNextPhase,
                       )
                     : _IdleCardContent(
                         l10n: widget.l10n,
@@ -249,6 +261,10 @@ class _WorkoutPhaseStageState extends State<WorkoutPhaseStage>
                         theme: theme,
                         remainingSec: snap.remainingSec,
                         nextPhase: widget.nextPhase,
+                        onPreviousPhase: widget.onPreviousPhase,
+                        onNextPhase: widget.onNextPhase,
+                        canGoToPreviousPhase: widget.canGoToPreviousPhase,
+                        canGoToNextPhase: widget.canGoToNextPhase,
                       ),
               );
             },
@@ -319,6 +335,10 @@ class _IdleCardContent extends StatelessWidget {
     required this.theme,
     required this.remainingSec,
     required this.nextPhase,
+    this.onPreviousPhase,
+    this.onNextPhase,
+    this.canGoToPreviousPhase = false,
+    this.canGoToNextPhase = false,
   });
 
   final AppLocalizations l10n;
@@ -326,6 +346,10 @@ class _IdleCardContent extends StatelessWidget {
   final WorkoutPhaseTheme theme;
   final int remainingSec;
   final WorkoutPhase? nextPhase;
+  final VoidCallback? onPreviousPhase;
+  final VoidCallback? onNextPhase;
+  final bool canGoToPreviousPhase;
+  final bool canGoToNextPhase;
 
   @override
   Widget build(BuildContext context) {
@@ -345,6 +369,10 @@ class _IdleCardContent extends StatelessWidget {
           child: _NextPhaseChip(
             phase: previewNextPhase(nextPhase, l10n),
             l10n: l10n,
+            onPreviousPhase: onPreviousPhase,
+            onNextPhase: onNextPhase,
+            canGoToPreviousPhase: canGoToPreviousPhase,
+            canGoToNextPhase: canGoToNextPhase,
           ),
         ),
       ],
@@ -363,6 +391,10 @@ class _TransitioningCardContent extends StatelessWidget {
     required this.incomingTheme,
     required this.incomingRemainingSec,
     required this.revealedNextPhase,
+    this.onPreviousPhase,
+    this.onNextPhase,
+    this.canGoToPreviousPhase = false,
+    this.canGoToNextPhase = false,
   });
 
   final AnimationController controller;
@@ -374,6 +406,10 @@ class _TransitioningCardContent extends StatelessWidget {
   final WorkoutPhaseTheme incomingTheme;
   final int incomingRemainingSec;
   final WorkoutPhase? revealedNextPhase;
+  final VoidCallback? onPreviousPhase;
+  final VoidCallback? onNextPhase;
+  final bool canGoToPreviousPhase;
+  final bool canGoToNextPhase;
 
   @override
   Widget build(BuildContext context) {
@@ -446,6 +482,10 @@ class _TransitioningCardContent extends StatelessWidget {
                       child: _NextPhaseChip(
                         phase: revealedNextPhase!,
                         l10n: l10n,
+                        onPreviousPhase: onPreviousPhase,
+                        onNextPhase: onNextPhase,
+                        canGoToPreviousPhase: canGoToPreviousPhase,
+                        canGoToNextPhase: canGoToNextPhase,
                       ),
                     ),
                   ),
@@ -682,10 +722,18 @@ class _NextPhaseChip extends StatelessWidget {
   const _NextPhaseChip({
     required this.phase,
     required this.l10n,
+    this.onPreviousPhase,
+    this.onNextPhase,
+    this.canGoToPreviousPhase = false,
+    this.canGoToNextPhase = false,
   });
 
   final WorkoutPhase phase;
   final AppLocalizations l10n;
+  final VoidCallback? onPreviousPhase;
+  final VoidCallback? onNextPhase;
+  final bool canGoToPreviousPhase;
+  final bool canGoToNextPhase;
 
   @override
   Widget build(BuildContext context) {
@@ -693,51 +741,107 @@ class _NextPhaseChip extends StatelessWidget {
     final phaseTitle = phaseDisplayTitle(phase, l10n);
     final showDuration =
         phase.kind != WorkoutPhaseKind.completed && phase.durationSec > 0;
+    final showNav = onPreviousPhase != null || onNextPhase != null;
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      padding: EdgeInsets.fromLTRB(showNav ? 4 : 20, 10, showNav ? 4 : 20, 12),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: Colors.white.withValues(alpha: 0.16)),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
+      child: Row(
         children: [
-          Text(
-            l10n.workoutNext,
-            style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.45),
-              fontSize: 12,
-              height: 1.2,
-              fontWeight: FontWeight.w500,
+          if (showNav)
+            _PhaseNavButton(
+              icon: Icons.skip_previous_rounded,
+              label: l10n.workoutPrevious,
+              enabled: canGoToPreviousPhase,
+              onPressed: onPreviousPhase,
+            ),
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  l10n.workoutNext,
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.45),
+                    fontSize: 12,
+                    height: 1.2,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  phaseTitle,
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    height: 1.2,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                if (showDuration) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    formatDurationClock(phase.durationSec),
+                    style: TextStyle(
+                      color: theme.glowColor.withValues(alpha: 0.85),
+                      fontSize: 15,
+                      height: 1.2,
+                      fontWeight: FontWeight.w400,
+                      fontFeatures: const [FontFeature.tabularFigures()],
+                    ),
+                  ),
+                ],
+              ],
             ),
           ),
-          const SizedBox(height: 2),
-          Text(
-            phaseTitle,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              height: 1.2,
-              fontWeight: FontWeight.w700,
+          if (showNav)
+            _PhaseNavButton(
+              icon: Icons.skip_next_rounded,
+              label: l10n.workoutNext,
+              enabled: canGoToNextPhase,
+              onPressed: onNextPhase,
             ),
-          ),
-          if (showDuration) ...[
-            const SizedBox(height: 2),
-            Text(
-              formatDurationClock(phase.durationSec),
-              style: TextStyle(
-                color: theme.glowColor.withValues(alpha: 0.85),
-                fontSize: 15,
-                height: 1.2,
-                fontWeight: FontWeight.w400,
-                fontFeatures: const [FontFeature.tabularFigures()],
-              ),
-            ),
-          ],
         ],
+      ),
+    );
+  }
+}
+
+class _PhaseNavButton extends StatelessWidget {
+  const _PhaseNavButton({
+    required this.icon,
+    required this.label,
+    required this.enabled,
+    this.onPressed,
+  });
+
+  final IconData icon;
+  final String label;
+  final bool enabled;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = enabled
+        ? Colors.white.withValues(alpha: 0.85)
+        : Colors.white.withValues(alpha: 0.22);
+
+    return SizedBox(
+      width: 44,
+      child: IconButton(
+        onPressed: enabled ? onPressed : null,
+        tooltip: label,
+        padding: EdgeInsets.zero,
+        constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
+        icon: Icon(icon, color: color, size: 28),
       ),
     );
   }

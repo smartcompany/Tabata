@@ -609,6 +609,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get workoutNext => '下一个';
 
   @override
+  String get workoutPrevious => '上一个';
+
+  @override
   String get nextPhaseFinish => '结束';
 
   @override
