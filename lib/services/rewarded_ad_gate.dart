@@ -15,6 +15,8 @@ class RewardedAdGate {
       return true;
     }
 
+    debugPrint('[RewardedAdGate] Loading rewarded ad: $adUnitId');
+
     final completer = Completer<bool>();
     var rewarded = false;
 

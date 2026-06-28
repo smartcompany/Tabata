@@ -1,5 +1,9 @@
+import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
@@ -29,6 +33,10 @@ Future<void> main() async {
     );
   } catch (e) {
     debugPrint('Firebase init error: $e');
+  }
+
+  if (!kIsWeb) {
+    unawaited(MobileAds.instance.initialize());
   }
 
   if (KakaoConfig.isConfigured) {
