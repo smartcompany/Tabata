@@ -15,10 +15,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get importRoutineTooltip => '루틴 가져오기';
 
   @override
-  String get uploadRoutineTooltip => '루틴 업로드';
+  String get uploadRoutineTooltip => '내 루틴 공유';
 
   @override
-  String get uploadRoutineTitle => '루틴 업로드';
+  String get uploadRoutineTitle => '내 루틴 공유';
 
   @override
   String get uploadAdminLoginHint => '관리자 계정으로 로그인하면 서버에 루틴을 올릴 수 있습니다.';
@@ -171,7 +171,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get homeCatalogOfficialSection => '기본 루틴';
 
   @override
-  String get homeCatalogSharedSection => '공유된 루틴';
+  String get homeCatalogSharedSection => '사용자 루틴';
 
   @override
   String get searchRoutinesTooltip => '루틴 검색';
@@ -206,6 +206,31 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get createRoutine => '루틴 만들기';
+
+  @override
+  String get aiRoutineCreateButton => 'AI로 루틴 생성하기';
+
+  @override
+  String get aiRoutineCreateTitle => '광고 보고 AI로 루틴 만들기';
+
+  @override
+  String get aiRoutineCreatePromptHint =>
+      '예) https://www.youtube.com/watch?v=9bZkp7q19f0\n이 영상 내용으로 운동 루틴을 만들어 줘';
+
+  @override
+  String get aiRoutineCreateSubmit => '광고 보고 루틴 생성하기';
+
+  @override
+  String get aiRoutineCreateLoading => 'AI가 루틴을 만들고 있어요...';
+
+  @override
+  String get aiRoutineCreatePromptRequired => '요청 내용을 입력해 주세요.';
+
+  @override
+  String get aiRoutineCreateAdRequired => '광고 시청 후 이용할 수 있습니다.';
+
+  @override
+  String get aiRoutineCreateError => '루틴 생성에 실패했습니다. 잠시 후 다시 시도해 주세요.';
 
   @override
   String routineCountDuration(int count, String duration) {

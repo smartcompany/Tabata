@@ -15,10 +15,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get importRoutineTooltip => 'ルーティンを取り込む';
 
   @override
-  String get uploadRoutineTooltip => 'ルーティンをアップロード';
+  String get uploadRoutineTooltip => 'マイルーティンを共有';
 
   @override
-  String get uploadRoutineTitle => 'ルーティンをアップロード';
+  String get uploadRoutineTitle => 'マイルーティンを共有';
 
   @override
   String get uploadAdminLoginHint => '管理者アカウントでログインすると、サーバーにルーティンを公開できます。';
@@ -171,7 +171,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get homeCatalogOfficialSection => '基本ルーティン';
 
   @override
-  String get homeCatalogSharedSection => '共有ルーティン';
+  String get homeCatalogSharedSection => 'ユーザールーティン';
 
   @override
   String get searchRoutinesTooltip => 'ルーティンを検索';
@@ -206,6 +206,31 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get createRoutine => 'ルーティンを作成';
+
+  @override
+  String get aiRoutineCreateButton => 'AIでルーティン作成';
+
+  @override
+  String get aiRoutineCreateTitle => '広告視聴後にAIでルーティン作成';
+
+  @override
+  String get aiRoutineCreatePromptHint =>
+      '例)\nhttps://www.youtube.com/watch?v=9bZkp7q19f0\nこの動画の内容で運動ルーティンを作ってください';
+
+  @override
+  String get aiRoutineCreateSubmit => '広告視聴後にルーティン生成';
+
+  @override
+  String get aiRoutineCreateLoading => 'AIがルーティンを作成しています...';
+
+  @override
+  String get aiRoutineCreatePromptRequired => 'リクエスト内容を入力してください。';
+
+  @override
+  String get aiRoutineCreateAdRequired => '広告視聴後にご利用いただけます。';
+
+  @override
+  String get aiRoutineCreateError => 'ルーティンの生成に失敗しました。しばらくしてから再度お試しください。';
 
   @override
   String routineCountDuration(int count, String duration) {

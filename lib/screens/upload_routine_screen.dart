@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tabata_timer/l10n/app_localizations.dart';
 
@@ -11,8 +12,6 @@ import '../utils/content_language.dart';
 import '../utils/duration_calculator.dart';
 import '../widgets/swipe_reveal_delete.dart';
 import 'routine_editor_screen.dart';
-
-enum _UploadAccountAction { signOut, deleteAccount }
 
 class UploadRoutineScreen extends StatefulWidget {
   const UploadRoutineScreen({
@@ -41,6 +40,55 @@ class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
   void initState() {
     super.initState();
     _loadRoutines();
+    AppAuthProvider.shared.refreshUserProfile();
+  }
+
+  String? _userDisplayName() {
+    final profileName = AppAuthProvider.shared.userProfile?.fullName.trim();
+    if (profileName != null && profileName.isNotEmpty) {
+      return profileName;
+    }
+    final firebaseName = FirebaseAuth.instance.currentUser?.displayName?.trim();
+    if (firebaseName != null && firebaseName.isNotEmpty) {
+      return firebaseName;
+    }
+    return null;
+  }
+
+  Widget _userNameHeader(BuildContext context) {
+    return ListenableBuilder(
+      listenable: AppAuthProvider.shared,
+      builder: (context, _) {
+        final name = _userDisplayName();
+        if (name == null) return const SizedBox.shrink();
+
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 20),
+          child: Row(
+            children: [
+              CircleAvatar(
+                radius: 22,
+                backgroundColor:
+                    Theme.of(context).colorScheme.primaryContainer,
+                child: Icon(
+                  Icons.person_outline,
+                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  name,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   Future<String?> _userToken() => AppAuthProvider.shared.getIdToken();
@@ -360,124 +408,134 @@ class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.uploadRoutineTitle),
-        actions: [
-          PopupMenuButton<_UploadAccountAction>(
-            enabled: !_uploading,
-            onSelected: (action) {
-              switch (action) {
-                case _UploadAccountAction.signOut:
-                  _signOut();
-                case _UploadAccountAction.deleteAccount:
-                  _deleteAccount();
-              }
-            },
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                value: _UploadAccountAction.signOut,
-                child: Text(l10n.settingsSignOut),
-              ),
-              PopupMenuItem(
-                value: _UploadAccountAction.deleteAccount,
-                child: Text(
-                  l10n.settingsDeleteAccount,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.error,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+      body: Column(
         children: [
-          if (_loading)
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 48),
-              child: Center(child: CircularProgressIndicator()),
-            )
-          else ...[
-            if (_loadError != null) ...[
-              Card(
-                color: Theme.of(context).colorScheme.errorContainer,
-                child: ListTile(
-                  title: Text(_loadError!),
-                  trailing: TextButton(
-                    onPressed: _loadRoutines,
-                    child: Text(l10n.retry),
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
+              children: [
+                _userNameHeader(context),
+                if (_loading)
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 48),
+                    child: Center(child: CircularProgressIndicator()),
+                  )
+                else ...[
+                  if (_loadError != null) ...[
+                    Card(
+                      color: Theme.of(context).colorScheme.errorContainer,
+                      child: ListTile(
+                        title: Text(_loadError!),
+                        trailing: TextButton(
+                          onPressed: _loadRoutines,
+                          child: Text(l10n.retry),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                  Text(
+                    l10n.uploadServerRoutineSection,
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
-                ),
+                  const SizedBox(height: 8),
+                  Text(
+                    l10n.uploadServerRoutineHint,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.outline,
+                        ),
+                  ),
+                  const SizedBox(height: 12),
+                  if (_serverRoutines.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 24),
+                      child: Center(child: Text(l10n.uploadNoAdminRoutines)),
+                    )
+                  else
+                    ..._serverRoutines.map(
+                      (routine) => _routineCard(
+                        swipeKey: 'server:${routine.id}',
+                        routine: routine,
+                        l10n: l10n,
+                        trailing: IconButton(
+                          icon: const Icon(Icons.edit_outlined),
+                          tooltip: l10n.editTooltip,
+                          onPressed: _uploading
+                              ? null
+                              : () => _editServerRoutine(routine),
+                        ),
+                        onDelete: () => _confirmDeleteServerRoutine(routine),
+                        onTap: _uploading
+                            ? null
+                            : () => _editServerRoutine(routine),
+                      ),
+                    ),
+                  const SizedBox(height: 8),
+                  Text(
+                    l10n.uploadLocalRoutineSection,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    l10n.uploadLocalRoutineHint,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.outline,
+                        ),
+                  ),
+                  const SizedBox(height: 12),
+                  if (_localRoutines.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 32),
+                      child: Center(child: Text(l10n.uploadNoLocalRoutines)),
+                    )
+                  else
+                    ..._localRoutines.map(
+                      (routine) => _routineCard(
+                        swipeKey: 'local:${routine.id}',
+                        routine: routine,
+                        l10n: l10n,
+                        trailing: FilledButton.tonal(
+                          onPressed: _uploading
+                              ? null
+                              : () => _uploadLocalRoutine(routine),
+                          child: Text(l10n.upload),
+                        ),
+                        onDelete: () => _confirmDeleteLocalRoutine(routine),
+                        onTap:
+                            _uploading ? null : () => _editLocalRoutine(routine),
+                      ),
+                    ),
+                ],
+              ],
+            ),
+          ),
+          SafeArea(
+            top: false,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  OutlinedButton(
+                    onPressed: _uploading ? null : _signOut,
+                    child: Text(l10n.settingsSignOut),
+                  ),
+                  const SizedBox(height: 8),
+                  OutlinedButton(
+                    onPressed: _uploading ? null : _deleteAccount,
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Theme.of(context).colorScheme.error,
+                      side: BorderSide(
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                    ),
+                    child: Text(l10n.settingsDeleteAccount),
+                  ),
+                ],
               ),
-              const SizedBox(height: 12),
-            ],
-            Text(
-              l10n.uploadServerRoutineSection,
-              style: Theme.of(context).textTheme.titleMedium,
             ),
-            const SizedBox(height: 8),
-            Text(
-              l10n.uploadServerRoutineHint,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.outline,
-                  ),
-            ),
-            const SizedBox(height: 12),
-            if (_serverRoutines.isEmpty)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 24),
-                child: Center(child: Text(l10n.uploadNoAdminRoutines)),
-              )
-            else
-              ..._serverRoutines.map(
-                (routine) => _routineCard(
-                  swipeKey: 'server:${routine.id}',
-                  routine: routine,
-                  l10n: l10n,
-                  trailing: IconButton(
-                    icon: const Icon(Icons.edit_outlined),
-                    tooltip: l10n.editTooltip,
-                    onPressed:
-                        _uploading ? null : () => _editServerRoutine(routine),
-                  ),
-                  onDelete: () => _confirmDeleteServerRoutine(routine),
-                  onTap: _uploading ? null : () => _editServerRoutine(routine),
-                ),
-              ),
-            const SizedBox(height: 8),
-            Text(
-              l10n.uploadLocalRoutineSection,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              l10n.uploadLocalRoutineHint,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.outline,
-                  ),
-            ),
-            const SizedBox(height: 12),
-            if (_localRoutines.isEmpty)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 32),
-                child: Center(child: Text(l10n.uploadNoLocalRoutines)),
-              )
-            else
-              ..._localRoutines.map(
-                (routine) => _routineCard(
-                  swipeKey: 'local:${routine.id}',
-                  routine: routine,
-                  l10n: l10n,
-                  trailing: FilledButton.tonal(
-                    onPressed:
-                        _uploading ? null : () => _uploadLocalRoutine(routine),
-                    child: Text(l10n.upload),
-                  ),
-                  onDelete: () => _confirmDeleteLocalRoutine(routine),
-                  onTap: _uploading ? null : () => _editLocalRoutine(routine),
-                ),
-              ),
-          ],
+          ),
         ],
       ),
     );

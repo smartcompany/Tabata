@@ -117,13 +117,13 @@ abstract class AppLocalizations {
   /// No description provided for @uploadRoutineTooltip.
   ///
   /// In en, this message translates to:
-  /// **'Upload routine'**
+  /// **'Share my routines'**
   String get uploadRoutineTooltip;
 
   /// No description provided for @uploadRoutineTitle.
   ///
   /// In en, this message translates to:
-  /// **'Upload routine'**
+  /// **'Share my routines'**
   String get uploadRoutineTitle;
 
   /// No description provided for @uploadAdminLoginHint.
@@ -399,7 +399,7 @@ abstract class AppLocalizations {
   /// No description provided for @homeCatalogSharedSection.
   ///
   /// In en, this message translates to:
-  /// **'Shared routines'**
+  /// **'User routines'**
   String get homeCatalogSharedSection;
 
   /// No description provided for @searchRoutinesTooltip.
@@ -461,6 +461,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Create routine'**
   String get createRoutine;
+
+  /// No description provided for @aiRoutineCreateButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Create routine with AI'**
+  String get aiRoutineCreateButton;
+
+  /// No description provided for @aiRoutineCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a routine with AI after watching an ad'**
+  String get aiRoutineCreateTitle;
+
+  /// No description provided for @aiRoutineCreatePromptHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Example:\nhttps://www.youtube.com/watch?v=9bZkp7q19f0\nCreate a workout routine based on this video.'**
+  String get aiRoutineCreatePromptHint;
+
+  /// No description provided for @aiRoutineCreateSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Create routine after watching ad'**
+  String get aiRoutineCreateSubmit;
+
+  /// No description provided for @aiRoutineCreateLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'AI is building your routine...'**
+  String get aiRoutineCreateLoading;
+
+  /// No description provided for @aiRoutineCreatePromptRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your request.'**
+  String get aiRoutineCreatePromptRequired;
+
+  /// No description provided for @aiRoutineCreateAdRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please watch the ad to continue.'**
+  String get aiRoutineCreateAdRequired;
+
+  /// No description provided for @aiRoutineCreateError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not generate the routine. Please try again.'**
+  String get aiRoutineCreateError;
 
   /// No description provided for @routineCountDuration.
   ///

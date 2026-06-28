@@ -15,10 +15,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get importRoutineTooltip => '导入训练';
 
   @override
-  String get uploadRoutineTooltip => '上传训练';
+  String get uploadRoutineTooltip => '分享我的训练';
 
   @override
-  String get uploadRoutineTitle => '上传训练';
+  String get uploadRoutineTitle => '分享我的训练';
 
   @override
   String get uploadAdminLoginHint => '使用管理员账号登录后，可将训练发布到服务器。';
@@ -169,7 +169,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get homeCatalogOfficialSection => '默认训练';
 
   @override
-  String get homeCatalogSharedSection => '共享训练';
+  String get homeCatalogSharedSection => '用户训练';
 
   @override
   String get searchRoutinesTooltip => '搜索训练';
@@ -204,6 +204,31 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get createRoutine => '创建训练';
+
+  @override
+  String get aiRoutineCreateButton => 'AI 创建训练';
+
+  @override
+  String get aiRoutineCreateTitle => '观看广告后用 AI 创建训练';
+
+  @override
+  String get aiRoutineCreatePromptHint =>
+      '示例)\nhttps://www.youtube.com/watch?v=9bZkp7q19f0\n请根据这个视频内容创建运动训练';
+
+  @override
+  String get aiRoutineCreateSubmit => '观看广告后生成训练';
+
+  @override
+  String get aiRoutineCreateLoading => 'AI 正在创建训练...';
+
+  @override
+  String get aiRoutineCreatePromptRequired => '请输入请求内容。';
+
+  @override
+  String get aiRoutineCreateAdRequired => '观看广告后可继续使用。';
+
+  @override
+  String get aiRoutineCreateError => '训练生成失败，请稍后重试。';
 
   @override
   String routineCountDuration(int count, String duration) {

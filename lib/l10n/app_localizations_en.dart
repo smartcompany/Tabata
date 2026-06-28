@@ -15,10 +15,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get importRoutineTooltip => 'Import routine';
 
   @override
-  String get uploadRoutineTooltip => 'Upload routine';
+  String get uploadRoutineTooltip => 'Share my routines';
 
   @override
-  String get uploadRoutineTitle => 'Upload routine';
+  String get uploadRoutineTitle => 'Share my routines';
 
   @override
   String get uploadAdminLoginHint =>
@@ -177,7 +177,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeCatalogOfficialSection => 'Default routines';
 
   @override
-  String get homeCatalogSharedSection => 'Shared routines';
+  String get homeCatalogSharedSection => 'User routines';
 
   @override
   String get searchRoutinesTooltip => 'Search routines';
@@ -212,6 +212,33 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get createRoutine => 'Create routine';
+
+  @override
+  String get aiRoutineCreateButton => 'Create routine with AI';
+
+  @override
+  String get aiRoutineCreateTitle =>
+      'Create a routine with AI after watching an ad';
+
+  @override
+  String get aiRoutineCreatePromptHint =>
+      'Example:\nhttps://www.youtube.com/watch?v=9bZkp7q19f0\nCreate a workout routine based on this video.';
+
+  @override
+  String get aiRoutineCreateSubmit => 'Create routine after watching ad';
+
+  @override
+  String get aiRoutineCreateLoading => 'AI is building your routine...';
+
+  @override
+  String get aiRoutineCreatePromptRequired => 'Please enter your request.';
+
+  @override
+  String get aiRoutineCreateAdRequired => 'Please watch the ad to continue.';
+
+  @override
+  String get aiRoutineCreateError =>
+      'Could not generate the routine. Please try again.';
 
   @override
   String routineCountDuration(int count, String duration) {

@@ -5,12 +5,14 @@ import '../data/routine_factory.dart';
 import '../data/routine_repository.dart';
 import '../models/profile_summary.dart';
 import '../models/routine.dart';
+import '../services/ai_routine_service.dart';
 import '../services/admin_session.dart';
 import '../services/content_settings.dart';
 import '../services/routine_api_client.dart';
 import '../utils/auth_helper.dart';
 import '../utils/duration_calculator.dart';
 import 'admin_upload_routine_screen.dart';
+import 'ai_routine_create_screen.dart';
 import 'routine_detail_screen.dart';
 import 'routine_editor_screen.dart';
 import 'upload_routine_screen.dart';
@@ -42,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen>
   String? _openSwipeItemKey;
   late final TextEditingController _catalogSearchController;
 
-  static const _bottomBarHeight = 64.0;
+  static const _bottomBarHeight = 120.0;
   static const _adminTapTarget = 7;
   static const _adminTapWindow = Duration(seconds: 2);
 
@@ -161,6 +163,19 @@ class _HomeScreenState extends State<HomeScreen>
               summary.description.toLowerCase().contains(query),
         )
         .toList();
+  }
+
+  Future<void> _openAiRoutineCreate() async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => AiRoutineCreateScreen(
+          repository: widget.repository,
+          aiRoutineService: AiRoutineService(),
+        ),
+      ),
+    );
+    if (!mounted) return;
+    setState(() {});
   }
 
   Future<void> _createRoutine() async {
@@ -304,8 +319,10 @@ class _HomeScreenState extends State<HomeScreen>
         ],
       ),
       bottomNavigationBar: _HomeBottomActions(
+        aiLabel: l10n.aiRoutineCreateButton,
         createLabel: l10n.createRoutine,
         uploadLabel: l10n.uploadRoutineTitle,
+        onAiCreate: _openAiRoutineCreate,
         onCreate: _createRoutine,
         onUpload: _openUpload,
       ),
@@ -514,14 +531,18 @@ class _HomeScreenState extends State<HomeScreen>
 
 class _HomeBottomActions extends StatelessWidget {
   const _HomeBottomActions({
+    required this.aiLabel,
     required this.createLabel,
     required this.uploadLabel,
+    required this.onAiCreate,
     required this.onCreate,
     required this.onUpload,
   });
 
+  final String aiLabel;
   final String createLabel;
   final String uploadLabel;
+  final VoidCallback onAiCreate;
   final VoidCallback onCreate;
   final VoidCallback onUpload;
 
@@ -535,48 +556,62 @@ class _HomeBottomActions extends StatelessWidget {
         top: false,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-          child: Row(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Expanded(
-                child: FilledButton(
-                  onPressed: onCreate,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.add, size: 20),
-                      const SizedBox(width: 8),
-                      Flexible(
-                        child: Text(
-                          createLabel,
-                          textAlign: TextAlign.center,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: onAiCreate,
+                  icon: const Icon(Icons.auto_awesome_outlined, size: 20),
+                  label: Text(aiLabel),
                 ),
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: onUpload,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.upload_outlined, size: 20),
-                      const SizedBox(width: 8),
-                      Flexible(
-                        child: Text(
-                          uploadLabel,
-                          textAlign: TextAlign.center,
-                          overflow: TextOverflow.ellipsis,
-                        ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Expanded(
+                    child: FilledButton(
+                      onPressed: onCreate,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.add, size: 20),
+                          const SizedBox(width: 8),
+                          Flexible(
+                            child: Text(
+                              createLabel,
+                              textAlign: TextAlign.center,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: onUpload,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.upload_outlined, size: 20),
+                          const SizedBox(width: 8),
+                          Flexible(
+                            child: Text(
+                              uploadLabel,
+                              textAlign: TextAlign.center,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
