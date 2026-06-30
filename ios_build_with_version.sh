@@ -43,18 +43,6 @@ cd "$PROJECT_DIR" || fail "프로젝트 경로 진입 실패: $PROJECT_DIR"
 [ -f pubspec.yaml ] || fail "pubspec.yaml 없음 (Flutter 프로젝트 루트인지 확인)"
 [ -d ios ] || fail "ios 폴더 없음"
 [ -f ios/fastlane/Fastfile ] || fail "ios/fastlane/Fastfile 없음"
-# shellcheck source=tool/share_lib_source.sh
-source "${PROJECT_DIR}/tool/share_lib_source.sh"
-
-restore_share_lib_local() {
-  share_lib_use_local "$PROJECT_DIR"
-  flutter pub get >/dev/null 2>&1 || true
-}
-trap restore_share_lib_local EXIT
-
-log "share_lib → GitHub (릴리즈 빌드)"
-share_lib_use_git "$PROJECT_DIR"
-flutter pub get
 
 if $BUMP; then
   CURRENT_VERSION=$(grep '^version:' pubspec.yaml | awk '{print $2}')
