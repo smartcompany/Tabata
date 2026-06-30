@@ -1,5 +1,5 @@
 #!/bin/sh
-# Xcode Cloud: Flutter SDK + 의존성 설치
+# Xcode Cloud: Flutter SDK + 의존성 설치 (share_lib = Git 릴리즈 모드)
 # https://developer.apple.com/documentation/xcode/writing-custom-build-scripts
 
 set -e
@@ -23,11 +23,16 @@ fi
 export PATH="${PATH}:${FLUTTER_HOME}/bin"
 flutter --version
 
+echo "=== share_lib release mode (git override) ==="
+# shellcheck source=/dev/null
+. "${CLIENT_DIR}/tool/share_lib_source.sh"
+share_lib_use_git "${CLIENT_DIR}"
+
 echo "=== flutter precache (iOS) ==="
 cd "${CLIENT_DIR}"
 flutter precache --ios
 
-echo "=== flutter pub get (share_lib from GitHub) ==="
+echo "=== flutter pub get ==="
 flutter pub get
 
 echo "=== CocoaPods ==="
