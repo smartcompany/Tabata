@@ -1,0 +1,9 @@
+# 로컬에서 형제 폴더 flutter_share_lib 를 쓰려면 이 파일을
+# pubspec_overrides.yaml 로 복사하세요 (gitignore 됨).
+#
+#   cp pubspec_overrides.yaml.example pubspec_overrides.yaml
+#   flutter pub get
+
+dependency_overrides:
+  share_lib:
+    path: ../../flutter_share_lib
