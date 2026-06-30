@@ -9,6 +9,8 @@ import '../services/ai_routine_service.dart';
 import '../services/admin_session.dart';
 import '../services/content_settings.dart';
 import '../services/routine_api_client.dart';
+import '../services/shared_routine_link_coordinator.dart';
+import '../services/share_link_log.dart';
 import '../utils/auth_helper.dart';
 import '../utils/duration_calculator.dart';
 import 'admin_upload_routine_screen.dart';
@@ -25,11 +27,13 @@ class HomeScreen extends StatefulWidget {
     required this.repository,
     required this.apiClient,
     required this.adminSession,
+    required this.linkCoordinator,
   });
 
   final RoutineRepository repository;
   final RoutineApiClient apiClient;
   final AdminSession adminSession;
+  final SharedRoutineLinkCoordinator linkCoordinator;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -56,6 +60,15 @@ class _HomeScreenState extends State<HomeScreen>
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     _catalogSearchController = TextEditingController();
+    widget.linkCoordinator.onRoutineImported = () {
+      if (!mounted) return;
+      _tabController.animateTo(0);
+      setState(() {});
+    };
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      shareLinkLog('HomeScreen first frame — onHomeReady');
+      widget.linkCoordinator.onHomeReady();
+    });
     ContentSettings.addListener(_onCatalogRefreshPreferencesChanged);
     _loadCatalogInitial();
   }

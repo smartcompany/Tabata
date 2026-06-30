@@ -20,6 +20,9 @@ import 'services/content_settings.dart';
 import 'services/locale_settings.dart';
 import 'services/routine_api_client.dart';
 import 'services/routine_content_localizer.dart';
+import 'services/routine_share_api.dart';
+import 'services/shared_routine_link_coordinator.dart';
+import 'services/share_link_log.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -56,28 +59,65 @@ Future<void> main() async {
   final repository = await RoutineRepository.create(apiClient: apiClient);
   final adminSession = await AdminSession.create();
   await AdSettings.initialize();
+
+  final navigatorKey = GlobalKey<NavigatorState>();
+  final linkCoordinator = SharedRoutineLinkCoordinator(
+    navigatorKey: navigatorKey,
+    repository: repository,
+    shareApi: RoutineShareApi(),
+  );
+
   runApp(TabataApp(
     repository: repository,
     apiClient: apiClient,
     adminSession: adminSession,
+    navigatorKey: navigatorKey,
+    linkCoordinator: linkCoordinator,
   ));
 }
 
-class TabataApp extends StatelessWidget {
+class TabataApp extends StatefulWidget {
   const TabataApp({
     super.key,
     required this.repository,
     required this.apiClient,
     required this.adminSession,
+    required this.navigatorKey,
+    required this.linkCoordinator,
   });
 
   final RoutineRepository repository;
   final RoutineApiClient apiClient;
   final AdminSession adminSession;
+  final GlobalKey<NavigatorState> navigatorKey;
+  final SharedRoutineLinkCoordinator linkCoordinator;
+
+  @override
+  State<TabataApp> createState() => _TabataAppState();
+}
+
+class _TabataAppState extends State<TabataApp> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      shareLinkLog('TabataApp first frame — starting link coordinator');
+      if (!kIsWeb) {
+        unawaited(widget.linkCoordinator.start());
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    widget.linkCoordinator.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: widget.navigatorKey,
       onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
       debugShowCheckedModeBanner: false,
       localizationsDelegates: const [
@@ -112,9 +152,10 @@ class TabataApp extends StatelessWidget {
         );
       },
       home: HomeScreen(
-        repository: repository,
-        apiClient: apiClient,
-        adminSession: adminSession,
+        repository: widget.repository,
+        apiClient: widget.apiClient,
+        adminSession: widget.adminSession,
+        linkCoordinator: widget.linkCoordinator,
       ),
     );
   }

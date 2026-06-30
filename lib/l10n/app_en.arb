@@ -118,6 +118,28 @@
   "routineNotFound": "Routine not found.",
   "editTooltip": "Edit",
   "shareTooltip": "Share",
+  "shareSheetKakaoTalk": "Share to KakaoTalk",
+  "shareSheetSystemShare": "System share",
+  "shareRoutineFooter": "Try this routine in {appTitle}",
+  "@shareRoutineFooter": {
+    "placeholders": {
+      "appTitle": {"type": "String"}
+    }
+  },
+  "shareKakaoLinkButton": "Open routine",
+  "shareFailed": "Could not share. Please try again.",
+  "sharedRoutineImportTitle": "Shared routine",
+  "sharedRoutineImportPrompt": "Download this shared routine?",
+  "sharedRoutineImportYes": "Yes",
+  "sharedRoutineImportMessage": "Add \"{title}\" to My routines?",
+  "@sharedRoutineImportMessage": {
+    "placeholders": {
+      "title": {"type": "String"}
+    }
+  },
+  "sharedRoutineImportAdd": "Add to My routines",
+  "sharedRoutineImportError": "Could not load the shared routine.",
+  "sharedRoutineNotFound": "This share link was not found or has expired.",
   "catalogAuthor": "By {author}",
   "@catalogAuthor": {
     "placeholders": {

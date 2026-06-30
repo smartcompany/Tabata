@@ -21,9 +21,32 @@
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
               />
+            <!-- app_links 전용: Flutter 기본 딥링크가 /share 경로를 중복 push 하지 않도록 -->
+            <meta-data
+                android:name="flutter_deeplinking_enabled"
+                android:value="false" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+            <!-- App Links: 공유 HTTPS 링크(/share/*)를 앱으로 열기 -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data
+                    android:scheme="https"
+                    android:host="tabata-server.vercel.app"
+                    android:pathPrefix="/share"/>
+            </intent-filter>
+            <!-- 카카오 인앱 웹 등: tabata://share?shareId=<id> (도파민 dopamineassets:// 와 동일) -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="tabata"
+                    android:host="share" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

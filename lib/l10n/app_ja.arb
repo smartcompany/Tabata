@@ -112,6 +112,28 @@
   "routineNotFound": "ルーティンが見つかりません。",
   "editTooltip": "編集",
   "shareTooltip": "共有",
+  "shareSheetKakaoTalk": "カカオトークで共有",
+  "shareSheetSystemShare": "共有",
+  "shareRoutineFooter": "{appTitle} アプリで試してみてください",
+  "@shareRoutineFooter": {
+    "placeholders": {
+      "appTitle": {"type": "String"}
+    }
+  },
+  "shareKakaoLinkButton": "ルーティンを開く",
+  "shareFailed": "共有に失敗しました。しばらくしてからもう一度お試しください。",
+  "sharedRoutineImportTitle": "共有ルーティン",
+  "sharedRoutineImportPrompt": "共有されたルーティンをダウンロードしますか？",
+  "sharedRoutineImportYes": "はい",
+  "sharedRoutineImportMessage": "「{title}」をマイルーティンに追加しますか？",
+  "@sharedRoutineImportMessage": {
+    "placeholders": {
+      "title": {"type": "String"}
+    }
+  },
+  "sharedRoutineImportAdd": "マイルーティンに追加",
+  "sharedRoutineImportError": "共有ルーティンを読み込めませんでした。",
+  "sharedRoutineNotFound": "共有リンクが見つからないか、期限切れです。",
   "catalogAuthor": "作成者: {author}",
   "@catalogAuthor": {
     "placeholders": {

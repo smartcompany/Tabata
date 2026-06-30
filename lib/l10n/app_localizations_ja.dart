@@ -247,6 +247,46 @@ class AppLocalizationsJa extends AppLocalizations {
   String get shareTooltip => '共有';
 
   @override
+  String get shareSheetKakaoTalk => 'カカオトークで共有';
+
+  @override
+  String get shareSheetSystemShare => '共有';
+
+  @override
+  String shareRoutineFooter(String appTitle) {
+    return '$appTitle アプリで試してみてください';
+  }
+
+  @override
+  String get shareKakaoLinkButton => 'ルーティンを開く';
+
+  @override
+  String get shareFailed => '共有に失敗しました。しばらくしてからもう一度お試しください。';
+
+  @override
+  String get sharedRoutineImportTitle => '共有ルーティン';
+
+  @override
+  String get sharedRoutineImportPrompt => '共有されたルーティンをダウンロードしますか？';
+
+  @override
+  String get sharedRoutineImportYes => 'はい';
+
+  @override
+  String sharedRoutineImportMessage(String title) {
+    return '「$title」をマイルーティンに追加しますか？';
+  }
+
+  @override
+  String get sharedRoutineImportAdd => 'マイルーティンに追加';
+
+  @override
+  String get sharedRoutineImportError => '共有ルーティンを読み込めませんでした。';
+
+  @override
+  String get sharedRoutineNotFound => '共有リンクが見つからないか、期限切れです。';
+
+  @override
   String catalogAuthor(String author) {
     return '作成者: $author';
   }

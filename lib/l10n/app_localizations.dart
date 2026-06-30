@@ -534,6 +534,78 @@ abstract class AppLocalizations {
   /// **'Share'**
   String get shareTooltip;
 
+  /// No description provided for @shareSheetKakaoTalk.
+  ///
+  /// In en, this message translates to:
+  /// **'Share to KakaoTalk'**
+  String get shareSheetKakaoTalk;
+
+  /// No description provided for @shareSheetSystemShare.
+  ///
+  /// In en, this message translates to:
+  /// **'System share'**
+  String get shareSheetSystemShare;
+
+  /// No description provided for @shareRoutineFooter.
+  ///
+  /// In en, this message translates to:
+  /// **'Try this routine in {appTitle}'**
+  String shareRoutineFooter(String appTitle);
+
+  /// No description provided for @shareKakaoLinkButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Open routine'**
+  String get shareKakaoLinkButton;
+
+  /// No description provided for @shareFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not share. Please try again.'**
+  String get shareFailed;
+
+  /// No description provided for @sharedRoutineImportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared routine'**
+  String get sharedRoutineImportTitle;
+
+  /// No description provided for @sharedRoutineImportPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Download this shared routine?'**
+  String get sharedRoutineImportPrompt;
+
+  /// No description provided for @sharedRoutineImportYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get sharedRoutineImportYes;
+
+  /// No description provided for @sharedRoutineImportMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Add \"{title}\" to My routines?'**
+  String sharedRoutineImportMessage(String title);
+
+  /// No description provided for @sharedRoutineImportAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to My routines'**
+  String get sharedRoutineImportAdd;
+
+  /// No description provided for @sharedRoutineImportError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load the shared routine.'**
+  String get sharedRoutineImportError;
+
+  /// No description provided for @sharedRoutineNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This share link was not found or has expired.'**
+  String get sharedRoutineNotFound;
+
   /// No description provided for @catalogAuthor.
   ///
   /// In en, this message translates to:

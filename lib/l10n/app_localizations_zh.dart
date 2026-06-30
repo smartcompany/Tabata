@@ -245,6 +245,46 @@ class AppLocalizationsZh extends AppLocalizations {
   String get shareTooltip => '分享';
 
   @override
+  String get shareSheetKakaoTalk => '分享到 KakaoTalk';
+
+  @override
+  String get shareSheetSystemShare => '系统分享';
+
+  @override
+  String shareRoutineFooter(String appTitle) {
+    return '在 $appTitle 应用中试试这个训练';
+  }
+
+  @override
+  String get shareKakaoLinkButton => '打开训练';
+
+  @override
+  String get shareFailed => '分享失败，请稍后再试。';
+
+  @override
+  String get sharedRoutineImportTitle => '共享训练';
+
+  @override
+  String get sharedRoutineImportPrompt => '要下载这条共享训练吗？';
+
+  @override
+  String get sharedRoutineImportYes => '是';
+
+  @override
+  String sharedRoutineImportMessage(String title) {
+    return '将「$title」添加到我的训练吗？';
+  }
+
+  @override
+  String get sharedRoutineImportAdd => '添加到我的训练';
+
+  @override
+  String get sharedRoutineImportError => '无法加载共享训练。';
+
+  @override
+  String get sharedRoutineNotFound => '找不到该分享链接或已失效。';
+
+  @override
   String catalogAuthor(String author) {
     return '作者：$author';
   }

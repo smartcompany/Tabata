@@ -255,6 +255,47 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shareTooltip => 'Share';
 
   @override
+  String get shareSheetKakaoTalk => 'Share to KakaoTalk';
+
+  @override
+  String get shareSheetSystemShare => 'System share';
+
+  @override
+  String shareRoutineFooter(String appTitle) {
+    return 'Try this routine in $appTitle';
+  }
+
+  @override
+  String get shareKakaoLinkButton => 'Open routine';
+
+  @override
+  String get shareFailed => 'Could not share. Please try again.';
+
+  @override
+  String get sharedRoutineImportTitle => 'Shared routine';
+
+  @override
+  String get sharedRoutineImportPrompt => 'Download this shared routine?';
+
+  @override
+  String get sharedRoutineImportYes => 'Yes';
+
+  @override
+  String sharedRoutineImportMessage(String title) {
+    return 'Add \"$title\" to My routines?';
+  }
+
+  @override
+  String get sharedRoutineImportAdd => 'Add to My routines';
+
+  @override
+  String get sharedRoutineImportError => 'Could not load the shared routine.';
+
+  @override
+  String get sharedRoutineNotFound =>
+      'This share link was not found or has expired.';
+
+  @override
   String catalogAuthor(String author) {
     return 'By $author';
   }

@@ -112,6 +112,28 @@
   "routineNotFound": "未找到训练。",
   "editTooltip": "编辑",
   "shareTooltip": "分享",
+  "shareSheetKakaoTalk": "分享到 KakaoTalk",
+  "shareSheetSystemShare": "系统分享",
+  "shareRoutineFooter": "在 {appTitle} 应用中试试这个训练",
+  "@shareRoutineFooter": {
+    "placeholders": {
+      "appTitle": {"type": "String"}
+    }
+  },
+  "shareKakaoLinkButton": "打开训练",
+  "shareFailed": "分享失败，请稍后再试。",
+  "sharedRoutineImportTitle": "共享训练",
+  "sharedRoutineImportPrompt": "要下载这条共享训练吗？",
+  "sharedRoutineImportYes": "是",
+  "sharedRoutineImportMessage": "将「{title}」添加到我的训练吗？",
+  "@sharedRoutineImportMessage": {
+    "placeholders": {
+      "title": {"type": "String"}
+    }
+  },
+  "sharedRoutineImportAdd": "添加到我的训练",
+  "sharedRoutineImportError": "无法加载共享训练。",
+  "sharedRoutineNotFound": "找不到该分享链接或已失效。",
   "catalogAuthor": "作者：{author}",
   "@catalogAuthor": {
     "placeholders": {

@@ -150,6 +150,16 @@ class RoutineRepository {
     return forked;
   }
 
+  /// 공유 링크로 받은 루틴을 새 id로 복제해 내 루틴에 저장합니다.
+  Future<Routine> importSharedRoutine(Routine remote) async {
+    var forked = forkRoutine(remote);
+    forked = await RoutineDescriptionMediaService().localizeDescriptionImages(
+      forked,
+    );
+    await _upsertRecord(LocalRoutineRecord(routine: forked));
+    return forked;
+  }
+
   String? summaryOwner(String catalogId) =>
       catalogSummaryFor(catalogId)?.ownerId;
 

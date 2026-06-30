@@ -247,6 +247,46 @@ class AppLocalizationsKo extends AppLocalizations {
   String get shareTooltip => '공유';
 
   @override
+  String get shareSheetKakaoTalk => '카카오톡 공유';
+
+  @override
+  String get shareSheetSystemShare => '기본 공유';
+
+  @override
+  String shareRoutineFooter(String appTitle) {
+    return '$appTitle 앱에서 운동해 보세요';
+  }
+
+  @override
+  String get shareKakaoLinkButton => '루틴 열기';
+
+  @override
+  String get shareFailed => '공유에 실패했습니다. 잠시 후 다시 시도해 주세요.';
+
+  @override
+  String get sharedRoutineImportTitle => '공유 루틴';
+
+  @override
+  String get sharedRoutineImportPrompt => '공유된 루틴을 다운로드 할까요?';
+
+  @override
+  String get sharedRoutineImportYes => '예';
+
+  @override
+  String sharedRoutineImportMessage(String title) {
+    return '「$title」 루틴을 내 루틴에 추가할까요?';
+  }
+
+  @override
+  String get sharedRoutineImportAdd => '내 루틴에 추가';
+
+  @override
+  String get sharedRoutineImportError => '공유 루틴을 불러오지 못했습니다.';
+
+  @override
+  String get sharedRoutineNotFound => '공유 링크를 찾을 수 없거나 만료되었습니다.';
+
+  @override
   String catalogAuthor(String author) {
     return '저작자: $author';
   }

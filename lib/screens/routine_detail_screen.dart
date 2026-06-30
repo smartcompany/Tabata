@@ -4,9 +4,12 @@ import 'package:tabata_timer/l10n/app_localizations.dart';
 import '../data/routine_repository.dart';
 import '../models/exercise.dart';
 import '../models/routine.dart';
+import '../services/routine_share_api.dart';
+import '../services/routine_share_service.dart';
 import '../utils/duration_calculator.dart';
 import '../widgets/description_blocks_view.dart';
 import '../widgets/exercise_summary.dart';
+import '../widgets/routine_share_sheet.dart';
 import 'routine_editor_screen.dart';
 import 'workout_screen.dart';
 
@@ -34,6 +37,8 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
   bool _loadingCatalog = false;
   String? _catalogLoadError;
   bool _downloading = false;
+  final _shareService = RoutineShareService();
+  final _shareApi = RoutineShareApi();
 
   bool get _isCatalogPreview => widget.catalogId != null;
 
@@ -89,6 +94,29 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
     setState(() {
       _routine = updated ?? widget.repository.findById(widget.routineId!);
     });
+  }
+
+  Future<void> _share() async {
+    final routine = _routine;
+    if (routine == null) return;
+    final l10n = AppLocalizations.of(context);
+
+    Uri linkUrl;
+    try {
+      linkUrl = await _shareApi.createShareLink(routine);
+    } on RoutineShareApiException {
+      if (!mounted) return;
+      linkUrl = RoutineShareService.storeLink;
+    }
+
+    if (!mounted) return;
+    await RoutineShareSheet.show(
+      context: context,
+      shareText: _shareService.buildShareMessage(routine, l10n),
+      kakaoShareText: _shareService.buildKakaoShareMessage(routine, l10n),
+      subject: routine.title,
+      linkUrl: linkUrl,
+    );
   }
 
   String _catalogAuthorLabel(AppLocalizations l10n) {
@@ -256,7 +284,12 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(routine.title),
+        toolbarHeight: 64,
+        title: Text(
+          routine.title,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
         actions: [
           if (_isCatalogPreview)
             IconButton(
@@ -274,12 +307,18 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
                           : Icons.download_done_outlined,
                     ),
             )
-          else
+          else ...[
             IconButton(
               onPressed: _edit,
               icon: const Icon(Icons.edit_outlined),
               tooltip: l10n.editTooltip,
             ),
+            IconButton(
+              onPressed: _share,
+              icon: const Icon(Icons.share_outlined),
+              tooltip: l10n.shareTooltip,
+            ),
+          ],
         ],
       ),
       body: ListView(

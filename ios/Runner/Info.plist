@@ -21,7 +21,7 @@
 		<key>CFBundleSignature</key>
 		<string>????</string>
 		<key>CFBundleVersion</key>
-		<string>17</string>
+		<string>18</string>
 		<key>LSRequiresIPhoneOS</key>
 		<true/>
 		<key>UILaunchStoryboardName</key>
@@ -36,6 +36,8 @@
 		<true/>
 		<key>UIApplicationSupportsIndirectInputEvents</key>
 		<true/>
+		<key>FlutterDeepLinkingEnabled</key>
+		<false/>
 		<key>NSPhotoLibraryUsageDescription</key>
 		<string>루틴 설명에 참고 사진을 추가하기 위해 사진 라이브러리 접근이 필요합니다.</string>
 		<key>UIStatusBarHidden</key>
@@ -80,6 +82,16 @@
 				<key>CFBundleURLSchemes</key>
 				<array>
 					<string>kakao03b6a4ae680153f2ef7077cd02b70d90</string>
+				</array>
+			</dict>
+			<dict>
+				<key>CFBundleURLName</key>
+				<string>TabataShare</string>
+				<key>CFBundleTypeRole</key>
+				<string>Editor</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>tabata</string>
 				</array>
 			</dict>
 		</array>
