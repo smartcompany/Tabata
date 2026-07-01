@@ -102,7 +102,7 @@
   "createRoutine": "Create routine",
   "aiRoutineCreateButton": "Create routine with AI",
   "aiRoutineCreateTitle": "Create a routine with AI after watching an ad",
-  "aiRoutineCreatePromptHint": "Example:\nhttps://www.youtube.com/watch?v=9bZkp7q19f0\nCreate a workout routine based on this video.",
+  "aiRoutineCreatePromptHint": "Example:\nhttps://www.youtube.com/watch?v=9bZkp7q19f0\nCreate a workout routine based on this video.\n\nOr\n\nMy neck has been really stiff lately—make a routine with stretches you recommend.",
   "aiRoutineCreateSubmit": "Create routine after watching ad",
   "aiRoutineCreateLoading": "AI is building your routine...",
   "aiRoutineCreatePromptRequired": "Please enter your request.",

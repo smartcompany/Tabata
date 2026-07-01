@@ -215,7 +215,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get aiRoutineCreatePromptHint =>
-      '例)\nhttps://www.youtube.com/watch?v=9bZkp7q19f0\nこの動画の内容で運動ルーティンを作ってください';
+      '例)\nhttps://www.youtube.com/watch?v=9bZkp7q19f0\nこの動画の内容で運動ルーティンを作ってください\n\nまたは\n\n最近首がとても凝っているので、おすすめのストレッチでルーティンを作ってください';
 
   @override
   String get aiRoutineCreateSubmit => '広告視聴後にルーティン生成';

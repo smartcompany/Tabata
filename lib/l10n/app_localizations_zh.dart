@@ -213,7 +213,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get aiRoutineCreatePromptHint =>
-      '示例)\nhttps://www.youtube.com/watch?v=9bZkp7q19f0\n请根据这个视频内容创建运动训练';
+      '示例)\nhttps://www.youtube.com/watch?v=9bZkp7q19f0\n请根据这个视频内容创建运动训练\n\n或者\n\n最近脖子特别酸，请用推荐的拉伸动作帮我制定一套训练';
 
   @override
   String get aiRoutineCreateSubmit => '观看广告后生成训练';

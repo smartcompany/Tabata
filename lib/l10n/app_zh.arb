@@ -102,7 +102,7 @@
   "createRoutine": "创建训练",
   "aiRoutineCreateButton": "AI 创建训练",
   "aiRoutineCreateTitle": "观看广告后用 AI 创建训练",
-  "aiRoutineCreatePromptHint": "示例)\nhttps://www.youtube.com/watch?v=9bZkp7q19f0\n请根据这个视频内容创建运动训练",
+  "aiRoutineCreatePromptHint": "示例)\nhttps://www.youtube.com/watch?v=9bZkp7q19f0\n请根据这个视频内容创建运动训练\n\n或者\n\n最近脖子特别酸，请用推荐的拉伸动作帮我制定一套训练",
   "aiRoutineCreateSubmit": "观看广告后生成训练",
   "aiRoutineCreateLoading": "AI 正在创建训练...",
   "aiRoutineCreatePromptRequired": "请输入请求内容。",

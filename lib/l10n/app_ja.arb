@@ -102,7 +102,7 @@
   "createRoutine": "ルーティンを作成",
   "aiRoutineCreateButton": "AIでルーティン作成",
   "aiRoutineCreateTitle": "広告視聴後にAIでルーティン作成",
-  "aiRoutineCreatePromptHint": "例)\nhttps://www.youtube.com/watch?v=9bZkp7q19f0\nこの動画の内容で運動ルーティンを作ってください",
+  "aiRoutineCreatePromptHint": "例)\nhttps://www.youtube.com/watch?v=9bZkp7q19f0\nこの動画の内容で運動ルーティンを作ってください\n\nまたは\n\n最近首がとても凝っているので、おすすめのストレッチでルーティンを作ってください",
   "aiRoutineCreateSubmit": "広告視聴後にルーティン生成",
   "aiRoutineCreateLoading": "AIがルーティンを作成しています...",
   "aiRoutineCreatePromptRequired": "リクエスト内容を入力してください。",

@@ -222,7 +222,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aiRoutineCreatePromptHint =>
-      'Example:\nhttps://www.youtube.com/watch?v=9bZkp7q19f0\nCreate a workout routine based on this video.';
+      'Example:\nhttps://www.youtube.com/watch?v=9bZkp7q19f0\nCreate a workout routine based on this video.\n\nOr\n\nMy neck has been really stiff lately—make a routine with stretches you recommend.';
 
   @override
   String get aiRoutineCreateSubmit => 'Create routine after watching ad';

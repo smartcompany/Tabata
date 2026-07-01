@@ -215,7 +215,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get aiRoutineCreatePromptHint =>
-      '예) https://www.youtube.com/watch?v=9bZkp7q19f0\n이 영상 내용으로 운동 루틴을 만들어 줘';
+      '예)\nhttps://www.youtube.com/watch?v=9bZkp7q19f0\n이 영상 내용으로 운동 루틴을 만들어 줘\n\n또는\n\n요즘 목이 너무 뻐근한데 추천 운동으로 루틴을 만들어 줘';
 
   @override
   String get aiRoutineCreateSubmit => '광고 보고 루틴 생성하기';

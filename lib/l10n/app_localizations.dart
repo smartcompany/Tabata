@@ -477,7 +477,7 @@ abstract class AppLocalizations {
   /// No description provided for @aiRoutineCreatePromptHint.
   ///
   /// In en, this message translates to:
-  /// **'Example:\nhttps://www.youtube.com/watch?v=9bZkp7q19f0\nCreate a workout routine based on this video.'**
+  /// **'Example:\nhttps://www.youtube.com/watch?v=9bZkp7q19f0\nCreate a workout routine based on this video.\n\nOr\n\nMy neck has been really stiff lately—make a routine with stretches you recommend.'**
   String get aiRoutineCreatePromptHint;
 
   /// No description provided for @aiRoutineCreateSubmit.

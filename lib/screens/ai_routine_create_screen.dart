@@ -115,8 +115,8 @@ class _AiRoutineCreateScreenState extends State<AiRoutineCreateScreen> {
             children: [
               TextField(
                 controller: _promptController,
-                minLines: 6,
-                maxLines: 10,
+                minLines: 8,
+                maxLines: 12,
                 textInputAction: TextInputAction.newline,
                 decoration: InputDecoration(
                   hintText: l10n.aiRoutineCreatePromptHint,

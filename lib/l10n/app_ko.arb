@@ -102,7 +102,7 @@
   "createRoutine": "루틴 만들기",
   "aiRoutineCreateButton": "AI로 루틴 생성하기",
   "aiRoutineCreateTitle": "광고 보고 AI로 루틴 만들기",
-  "aiRoutineCreatePromptHint": "예) https://www.youtube.com/watch?v=9bZkp7q19f0\n이 영상 내용으로 운동 루틴을 만들어 줘",
+  "aiRoutineCreatePromptHint": "예)\nhttps://www.youtube.com/watch?v=9bZkp7q19f0\n이 영상 내용으로 운동 루틴을 만들어 줘\n\n또는\n\n요즘 목이 너무 뻐근한데 추천 운동으로 루틴을 만들어 줘",
   "aiRoutineCreateSubmit": "광고 보고 루틴 생성하기",
   "aiRoutineCreateLoading": "AI가 루틴을 만들고 있어요...",
   "aiRoutineCreatePromptRequired": "요청 내용을 입력해 주세요.",
