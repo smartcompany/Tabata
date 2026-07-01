@@ -252,6 +252,25 @@
   "reorderExercisesHint": "길게 눌러 순서 변경",
   "addExercisesPrompt": "운동을 추가해 주세요",
   "addExercise": "운동 추가",
+  "importExercisesButton": "다른 루틴에서 가져오기",
+  "importExercisesTitle": "운동 가져오기",
+  "importExercisesChooseRoutine": "루틴을 선택하세요",
+  "importExercisesNoOtherRoutines": "가져올 수 있는 다른 루틴이 없습니다.",
+  "importExercisesNoExercisesInRoutine": "이 루틴에는 운동이 없습니다.",
+  "importExercisesAddCount": "{count}개 추가",
+  "@importExercisesAddCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "importExercisesAddedSnack": "{count}개 운동을 추가했습니다",
+  "@importExercisesAddedSnack": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "importExercisesSelectAll": "전체 선택",
+  "importExercisesClearSelection": "선택 해제",
   "requireAtLeastOneExercise": "운동을 1개 이상 추가하세요",
   "addExerciseTitle": "운동 추가",
   "editExerciseTitle": "운동 편집",

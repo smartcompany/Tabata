@@ -504,6 +504,39 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addExercise => 'Add exercise';
 
   @override
+  String get importExercisesButton => 'Import from another routine';
+
+  @override
+  String get importExercisesTitle => 'Import exercises';
+
+  @override
+  String get importExercisesChooseRoutine => 'Choose a routine';
+
+  @override
+  String get importExercisesNoOtherRoutines =>
+      'No other routines to import from.';
+
+  @override
+  String get importExercisesNoExercisesInRoutine =>
+      'This routine has no exercises.';
+
+  @override
+  String importExercisesAddCount(int count) {
+    return 'Add $count';
+  }
+
+  @override
+  String importExercisesAddedSnack(int count) {
+    return 'Added $count exercise(s)';
+  }
+
+  @override
+  String get importExercisesSelectAll => 'Select all';
+
+  @override
+  String get importExercisesClearSelection => 'Clear selection';
+
+  @override
   String get requireAtLeastOneExercise => 'Add at least one exercise';
 
   @override

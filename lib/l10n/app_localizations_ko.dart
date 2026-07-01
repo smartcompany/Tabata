@@ -495,6 +495,37 @@ class AppLocalizationsKo extends AppLocalizations {
   String get addExercise => '운동 추가';
 
   @override
+  String get importExercisesButton => '다른 루틴에서 가져오기';
+
+  @override
+  String get importExercisesTitle => '운동 가져오기';
+
+  @override
+  String get importExercisesChooseRoutine => '루틴을 선택하세요';
+
+  @override
+  String get importExercisesNoOtherRoutines => '가져올 수 있는 다른 루틴이 없습니다.';
+
+  @override
+  String get importExercisesNoExercisesInRoutine => '이 루틴에는 운동이 없습니다.';
+
+  @override
+  String importExercisesAddCount(int count) {
+    return '$count개 추가';
+  }
+
+  @override
+  String importExercisesAddedSnack(int count) {
+    return '$count개 운동을 추가했습니다';
+  }
+
+  @override
+  String get importExercisesSelectAll => '전체 선택';
+
+  @override
+  String get importExercisesClearSelection => '선택 해제';
+
+  @override
   String get requireAtLeastOneExercise => '운동을 1개 이상 추가하세요';
 
   @override

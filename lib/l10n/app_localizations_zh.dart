@@ -492,6 +492,37 @@ class AppLocalizationsZh extends AppLocalizations {
   String get addExercise => '添加动作';
 
   @override
+  String get importExercisesButton => '从其他套路导入';
+
+  @override
+  String get importExercisesTitle => '导入动作';
+
+  @override
+  String get importExercisesChooseRoutine => '选择套路';
+
+  @override
+  String get importExercisesNoOtherRoutines => '没有其他可导入的套路。';
+
+  @override
+  String get importExercisesNoExercisesInRoutine => '该套路没有动作。';
+
+  @override
+  String importExercisesAddCount(int count) {
+    return '添加 $count 个';
+  }
+
+  @override
+  String importExercisesAddedSnack(int count) {
+    return '已添加 $count 个动作';
+  }
+
+  @override
+  String get importExercisesSelectAll => '全选';
+
+  @override
+  String get importExercisesClearSelection => '取消选择';
+
+  @override
   String get requireAtLeastOneExercise => '请至少添加一个动作';
 
   @override

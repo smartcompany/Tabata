@@ -13,6 +13,7 @@ import '../utils/duration_calculator.dart';
 import '../utils/form_validation_scroll.dart';
 import '../widgets/description_blocks_editor.dart';
 import '../widgets/exercise_summary.dart';
+import '../widgets/import_exercises_sheet.dart';
 import '../widgets/keyboard_dismiss_scope.dart';
 import 'exercise_editor_screen.dart';
 
@@ -277,6 +278,27 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     await _persistDraft();
   }
 
+  Future<void> _importExercisesFromRoutine() async {
+    KeyboardDismissScope.dismiss(context);
+    final imported = await ImportExercisesSheet.show(
+      context: context,
+      repository: widget.repository,
+      excludeRoutineId: widget.routine.id,
+    );
+    if (imported == null || imported.isEmpty || !mounted) return;
+
+    setState(() {
+      _exercises = reindexExercises([..._exercises, ...imported]);
+    });
+    await _persistDraftIfNeeded();
+
+    if (!mounted) return;
+    final l10n = AppLocalizations.of(context);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(l10n.importExercisesAddedSnack(imported.length))),
+    );
+  }
+
   Future<void> _addExercise() async {
     KeyboardDismissScope.dismiss(context);
     final l10n = AppLocalizations.of(context);
@@ -327,14 +349,34 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     });
   }
 
-  Widget _buildAddExerciseButton(AppLocalizations l10n) {
-    return SizedBox(
-      width: double.infinity,
-      child: OutlinedButton.icon(
-        onPressed: _addExercise,
-        icon: const Icon(Icons.add),
-        label: Text(l10n.addExercisesPrompt),
-      ),
+  Widget _buildExerciseActions(AppLocalizations l10n) {
+    final otherRoutines = widget.repository.myRoutines
+        .where((routine) => routine.id != widget.routine.id)
+        .toList();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton.icon(
+            onPressed: _addExercise,
+            icon: const Icon(Icons.add),
+            label: Text(l10n.addExercisesPrompt),
+          ),
+        ),
+        if (otherRoutines.isNotEmpty) ...[
+          const SizedBox(height: 8),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: _importExercisesFromRoutine,
+              icon: const Icon(Icons.library_add_outlined),
+              label: Text(l10n.importExercisesButton),
+            ),
+          ),
+        ],
+      ],
     );
   }
 
@@ -431,7 +473,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
                 },
               ),
             if (_exercises.isNotEmpty) const SizedBox(height: 12),
-            _buildAddExerciseButton(l10n),
+            _buildExerciseActions(l10n),
             const SizedBox(height: 24),
             SizedBox(
               width: double.infinity,

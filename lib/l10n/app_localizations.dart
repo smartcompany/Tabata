@@ -984,6 +984,60 @@ abstract class AppLocalizations {
   /// **'Add exercise'**
   String get addExercise;
 
+  /// No description provided for @importExercisesButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Import from another routine'**
+  String get importExercisesButton;
+
+  /// No description provided for @importExercisesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Import exercises'**
+  String get importExercisesTitle;
+
+  /// No description provided for @importExercisesChooseRoutine.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a routine'**
+  String get importExercisesChooseRoutine;
+
+  /// No description provided for @importExercisesNoOtherRoutines.
+  ///
+  /// In en, this message translates to:
+  /// **'No other routines to import from.'**
+  String get importExercisesNoOtherRoutines;
+
+  /// No description provided for @importExercisesNoExercisesInRoutine.
+  ///
+  /// In en, this message translates to:
+  /// **'This routine has no exercises.'**
+  String get importExercisesNoExercisesInRoutine;
+
+  /// No description provided for @importExercisesAddCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Add {count}'**
+  String importExercisesAddCount(int count);
+
+  /// No description provided for @importExercisesAddedSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Added {count} exercise(s)'**
+  String importExercisesAddedSnack(int count);
+
+  /// No description provided for @importExercisesSelectAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Select all'**
+  String get importExercisesSelectAll;
+
+  /// No description provided for @importExercisesClearSelection.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear selection'**
+  String get importExercisesClearSelection;
+
   /// No description provided for @requireAtLeastOneExercise.
   ///
   /// In en, this message translates to:

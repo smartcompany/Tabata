@@ -252,6 +252,25 @@
   "reorderExercisesHint": "Long press to reorder",
   "addExercisesPrompt": "Add an exercise",
   "addExercise": "Add exercise",
+  "importExercisesButton": "Import from another routine",
+  "importExercisesTitle": "Import exercises",
+  "importExercisesChooseRoutine": "Choose a routine",
+  "importExercisesNoOtherRoutines": "No other routines to import from.",
+  "importExercisesNoExercisesInRoutine": "This routine has no exercises.",
+  "importExercisesAddCount": "Add {count}",
+  "@importExercisesAddCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "importExercisesAddedSnack": "Added {count} exercise(s)",
+  "@importExercisesAddedSnack": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "importExercisesSelectAll": "Select all",
+  "importExercisesClearSelection": "Clear selection",
   "requireAtLeastOneExercise": "Add at least one exercise",
   "addExerciseTitle": "Add exercise",
   "editExerciseTitle": "Edit exercise",

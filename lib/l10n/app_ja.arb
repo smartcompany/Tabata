@@ -202,6 +202,25 @@
   "reorderExercisesHint": "長押しで並べ替え",
   "addExercisesPrompt": "種目を追加してください",
   "addExercise": "種目を追加",
+  "importExercisesButton": "他のルーティンから取り込む",
+  "importExercisesTitle": "種目を取り込む",
+  "importExercisesChooseRoutine": "ルーティンを選択",
+  "importExercisesNoOtherRoutines": "取り込める他のルーティンがありません。",
+  "importExercisesNoExercisesInRoutine": "このルーティンには種目がありません。",
+  "importExercisesAddCount": "{count}件を追加",
+  "@importExercisesAddCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "importExercisesAddedSnack": "{count}件の種目を追加しました",
+  "@importExercisesAddedSnack": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "importExercisesSelectAll": "すべて選択",
+  "importExercisesClearSelection": "選択を解除",
   "requireAtLeastOneExercise": "種目を 1 つ以上追加してください",
   "addExerciseTitle": "種目を追加",
   "editExerciseTitle": "種目を編集",

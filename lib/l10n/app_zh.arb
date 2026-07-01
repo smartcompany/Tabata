@@ -202,6 +202,25 @@
   "reorderExercisesHint": "长按可调整顺序",
   "addExercisesPrompt": "请添加动作",
   "addExercise": "添加动作",
+  "importExercisesButton": "从其他套路导入",
+  "importExercisesTitle": "导入动作",
+  "importExercisesChooseRoutine": "选择套路",
+  "importExercisesNoOtherRoutines": "没有其他可导入的套路。",
+  "importExercisesNoExercisesInRoutine": "该套路没有动作。",
+  "importExercisesAddCount": "添加 {count} 个",
+  "@importExercisesAddCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "importExercisesAddedSnack": "已添加 {count} 个动作",
+  "@importExercisesAddedSnack": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "importExercisesSelectAll": "全选",
+  "importExercisesClearSelection": "取消选择",
   "requireAtLeastOneExercise": "请至少添加一个动作",
   "addExerciseTitle": "添加动作",
   "editExerciseTitle": "编辑动作",

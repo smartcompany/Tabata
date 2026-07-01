@@ -494,6 +494,37 @@ class AppLocalizationsJa extends AppLocalizations {
   String get addExercise => '種目を追加';
 
   @override
+  String get importExercisesButton => '他のルーティンから取り込む';
+
+  @override
+  String get importExercisesTitle => '種目を取り込む';
+
+  @override
+  String get importExercisesChooseRoutine => 'ルーティンを選択';
+
+  @override
+  String get importExercisesNoOtherRoutines => '取り込める他のルーティンがありません。';
+
+  @override
+  String get importExercisesNoExercisesInRoutine => 'このルーティンには種目がありません。';
+
+  @override
+  String importExercisesAddCount(int count) {
+    return '$count件を追加';
+  }
+
+  @override
+  String importExercisesAddedSnack(int count) {
+    return '$count件の種目を追加しました';
+  }
+
+  @override
+  String get importExercisesSelectAll => 'すべて選択';
+
+  @override
+  String get importExercisesClearSelection => '選択を解除';
+
+  @override
   String get requireAtLeastOneExercise => '種目を 1 つ以上追加してください';
 
   @override
