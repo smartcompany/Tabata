@@ -203,6 +203,20 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     _soundCoach?.syncClock(engine.snapshot);
   }
 
+  void _goToPreviousExercise() {
+    final engine = _engine!;
+    if (!engine.canGoToPreviousExercise) return;
+    engine.goToPreviousExercise();
+    _soundCoach?.syncClock(engine.snapshot);
+  }
+
+  void _goToNextExercise() {
+    final engine = _engine!;
+    if (!engine.canGoToNextExercise) return;
+    engine.goToNextExercise();
+    _soundCoach?.syncClock(engine.snapshot);
+  }
+
   @override
   Widget build(BuildContext context) {
     final engine = _engine;
@@ -273,26 +287,48 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                       ),
                     ),
                     const SizedBox(height: 6),
-                    Text(
-                      snap.exerciseName,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      l10n.workoutProgress(
-                        snap.exerciseIndex,
-                        snap.totalExercises,
-                      ),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.38),
-                        fontSize: 12,
-                      ),
+                    Row(
+                      children: [
+                        _WorkoutNavButton(
+                          icon: Icons.skip_previous_rounded,
+                          label: l10n.workoutPrevious,
+                          enabled: engine.canGoToPreviousExercise,
+                          onPressed: _goToPreviousExercise,
+                        ),
+                        Expanded(
+                          child: Column(
+                            children: [
+                              Text(
+                                snap.exerciseName,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                l10n.workoutProgress(
+                                  snap.exerciseIndex,
+                                  snap.totalExercises,
+                                ),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.white.withValues(alpha: 0.38),
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        _WorkoutNavButton(
+                          icon: Icons.skip_next_rounded,
+                          label: l10n.workoutNext,
+                          enabled: engine.canGoToNextExercise,
+                          onPressed: _goToNextExercise,
+                        ),
+                      ],
                     ),
                   ],
                 ],
@@ -384,6 +420,38 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _WorkoutNavButton extends StatelessWidget {
+  const _WorkoutNavButton({
+    required this.icon,
+    required this.label,
+    required this.enabled,
+    required this.onPressed,
+  });
+
+  final IconData icon;
+  final String label;
+  final bool enabled;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = enabled
+        ? Colors.white.withValues(alpha: 0.85)
+        : Colors.white.withValues(alpha: 0.22);
+
+    return SizedBox(
+      width: 44,
+      child: IconButton(
+        onPressed: enabled ? onPressed : null,
+        tooltip: label,
+        padding: EdgeInsets.zero,
+        constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
+        icon: Icon(icon, color: color, size: 28),
       ),
     );
   }

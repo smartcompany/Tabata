@@ -171,6 +171,76 @@ void main() {
     expect(engine.snapshot.phase.countRepNumber, 2);
   });
 
+  test('exercise navigation jumps to first phase of adjacent exercise', () {
+    final engine = WorkoutTimerEngine(
+      Routine(
+        id: 'r1',
+        title: '테스트',
+        description: '',
+        exercises: [
+          Exercise(
+            id: 'e1',
+            name: '목 좌우 기울이기',
+            instruction: '',
+            prepare: const TimedPhase(durationSec: 5),
+            phases: [
+              ExercisePhase(
+                id: 'p1',
+                kind: ExercisePhaseKind.work,
+                label: '기울이기',
+                durationSec: 30,
+                order: 0,
+              ),
+            ],
+            reps: 1,
+            sets: 1,
+            order: 0,
+          ),
+          Exercise(
+            id: 'e2',
+            name: '어깨 돌리기',
+            instruction: '',
+            prepare: const TimedPhase(durationSec: 0),
+            phases: [
+              ExercisePhase(
+                id: 'p2',
+                kind: ExercisePhaseKind.work,
+                label: '돌리기',
+                durationSec: 20,
+                order: 0,
+              ),
+            ],
+            reps: 1,
+            sets: 1,
+            order: 1,
+          ),
+        ],
+      ),
+      labels: const WorkoutTimerLabels(
+        prepare: '준비',
+        completedMessage: '완료',
+      ),
+    );
+
+    expect(engine.snapshot.exerciseName, '목 좌우 기울이기');
+    expect(engine.snapshot.exerciseIndex, 1);
+    expect(engine.canGoToPreviousExercise, isFalse);
+    expect(engine.canGoToNextExercise, isTrue);
+
+    engine.goToNextExercise();
+    expect(engine.snapshot.exerciseName, '어깨 돌리기');
+    expect(engine.snapshot.exerciseIndex, 2);
+    expect(engine.snapshot.phase.label, '돌리기');
+    expect(engine.canGoToPreviousExercise, isTrue);
+    expect(engine.canGoToNextExercise, isFalse);
+
+    engine.goToPreviousExercise();
+    expect(engine.snapshot.exerciseName, '목 좌우 기울이기');
+    expect(engine.snapshot.exerciseIndex, 1);
+    expect(engine.snapshot.phase.kind, WorkoutPhaseKind.prepare);
+    expect(engine.snapshot.remainingSec, 5);
+  });
+
   test('announce hold prevents timer from starting until released', () {
     final engine = WorkoutTimerEngine(
       _countRoutine(),

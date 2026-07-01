@@ -104,7 +104,19 @@ class WorkoutTimerEngine extends ChangeNotifier {
 
   bool get canGoToNextPhase => !_snapshot.isCompleted;
 
+  bool get canGoToPreviousExercise =>
+      !_snapshot.isCompleted && _currentExerciseIndex > 0;
+
+  bool get canGoToNextExercise =>
+      !_snapshot.isCompleted &&
+      _currentExerciseIndex < _exercises.length - 1;
+
   List<Exercise> get _exercises => routine.orderedExercises;
+
+  int get _currentExerciseIndex {
+    if (_snapshot.isCompleted || _phases.isEmpty) return 0;
+    return _phases[_phaseIndex].exerciseIndex;
+  }
 
   void start() {
     if (_snapshot.isCompleted || _isPaused || _announceHold) return;
@@ -160,6 +172,18 @@ class WorkoutTimerEngine extends ChangeNotifier {
       return;
     }
     _phaseIndex = unitEnd + 1;
+    _loadCurrentPhase();
+  }
+
+  void goToPreviousExercise() {
+    if (!canGoToPreviousExercise) return;
+    _phaseIndex = _firstPhaseIndexForExercise(_currentExerciseIndex - 1);
+    _loadCurrentPhase();
+  }
+
+  void goToNextExercise() {
+    if (!canGoToNextExercise) return;
+    _phaseIndex = _firstPhaseIndexForExercise(_currentExerciseIndex + 1);
     _loadCurrentPhase();
   }
 
@@ -377,6 +401,13 @@ class WorkoutTimerEngine extends ChangeNotifier {
       end++;
     }
     return end;
+  }
+
+  int _firstPhaseIndexForExercise(int exerciseIndex) {
+    for (var i = 0; i < _phases.length; i++) {
+      if (_phases[i].exerciseIndex == exerciseIndex) return i;
+    }
+    return _phases.length;
   }
 }
 
