@@ -24,6 +24,7 @@ class SharedRoutineLinkCoordinator {
 
   final AppLinks _appLinks = AppLinks();
   StreamSubscription<Uri>? _linkSubscription;
+  Timer? _delayedPresentRetryTimer;
   String? _pendingShareId;
   String? _presentingShareId;
   String? _lastHandledUri;
@@ -31,7 +32,8 @@ class SharedRoutineLinkCoordinator {
   bool _started = false;
   int _presentRetryCount = 0;
 
-  static const _maxPresentRetries = 20;
+  static const _maxPresentRetries = 60;
+  static const _delayedPresentRetry = Duration(milliseconds: 500);
 
   VoidCallback? onRoutineImported;
 
@@ -70,9 +72,34 @@ class SharedRoutineLinkCoordinator {
 
   void dispose() {
     shareLinkLog('dispose()');
+    _delayedPresentRetryTimer?.cancel();
+    _delayedPresentRetryTimer = null;
     unawaited(_linkSubscription?.cancel());
     _linkSubscription = null;
     _started = false;
+  }
+
+  /// 백그라운드에서 공유 링크로 복귀할 때 `uriLinkStream`이 누락되거나
+  /// 네비게이터가 준비되기 전에 재시도가 소진되는 경우를 복구한다.
+  Future<void> onAppResumed() async {
+    shareLinkLog(
+      'onAppResumed() pending=$_pendingShareId presenting=$_presentingShareId',
+    );
+    _presentRetryCount = 0;
+
+    try {
+      final latest = await _appLinks.getLatestLink();
+      shareLinkLog('onAppResumed getLatestLink => $latest');
+      if (latest != null) {
+        _handleUri(latest, source: 'resume');
+      }
+    } catch (error, stack) {
+      shareLinkLog('onAppResumed getLatestLink error=$error\n$stack');
+    }
+
+    if (_pendingShareId != null) {
+      unawaited(_presentPending());
+    }
   }
 
   void onHomeReady() {
@@ -98,7 +125,15 @@ class SharedRoutineLinkCoordinator {
 
     final uriKey = uri.toString();
     if (uriKey == _lastHandledUri) {
-      shareLinkLog('handleUri ignored — duplicate uri');
+      if (_pendingShareId != null) {
+        shareLinkLog(
+          'handleUri duplicate uri — retry present pending=$_pendingShareId',
+        );
+        _presentRetryCount = 0;
+        unawaited(_presentPending());
+      } else {
+        shareLinkLog('handleUri ignored — duplicate uri');
+      }
       return;
     }
 
@@ -132,7 +167,10 @@ class SharedRoutineLinkCoordinator {
   void _schedulePresentRetry(String reason) {
     if (_pendingShareId == null) return;
     if (_presentRetryCount >= _maxPresentRetries) {
-      shareLinkLog('present retry exhausted ($reason)');
+      shareLinkLog(
+        'present frame retries exhausted ($reason) — scheduling delayed retry',
+      );
+      _scheduleDelayedPresentRetry();
       return;
     }
     _presentRetryCount++;
@@ -140,6 +178,18 @@ class SharedRoutineLinkCoordinator {
       'present retry #$_presentRetryCount in next frame ($reason)',
     );
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      unawaited(_presentPending());
+    });
+  }
+
+  void _scheduleDelayedPresentRetry() {
+    if (_pendingShareId == null) return;
+    _delayedPresentRetryTimer?.cancel();
+    _delayedPresentRetryTimer = Timer(_delayedPresentRetry, () {
+      _delayedPresentRetryTimer = null;
+      if (_pendingShareId == null) return;
+      shareLinkLog('present delayed retry pending=$_pendingShareId');
+      _presentRetryCount = 0;
       unawaited(_presentPending());
     });
   }
