@@ -155,6 +155,8 @@
   },
   "exerciseListTitle": "운동 목록",
   "start": "시작",
+  "seeMore": "더보기",
+  "collapse": "접기",
   "startAll": "전체 시작",
   "labelPrepare": "준비",
   "labelWork": "운동",

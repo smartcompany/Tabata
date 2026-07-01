@@ -155,6 +155,8 @@
   },
   "exerciseListTitle": "Exercises",
   "start": "Start",
+  "seeMore": "Show details",
+  "collapse": "Hide details",
   "startAll": "Start all",
   "labelPrepare": "Prepare",
   "labelWork": "Work",

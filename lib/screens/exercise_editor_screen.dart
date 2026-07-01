@@ -153,6 +153,12 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
         title: Text(
           widget.isNew ? l10n.addExerciseTitle : l10n.editExerciseTitle,
         ),
+        actions: [
+          TextButton(
+            onPressed: _save,
+            child: Text(l10n.save),
+          ),
+        ],
       ),
       body: KeyboardDismissScope(
         child: Form(
@@ -303,14 +309,6 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                       ),
                     ],
                   ),
-                ),
-              ),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton(
-                  onPressed: _save,
-                  child: Text(l10n.save),
                 ),
               ),
               SizedBox(height: MediaQuery.paddingOf(context).bottom + 8),

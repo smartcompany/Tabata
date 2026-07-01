@@ -304,6 +304,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get start => '开始';
 
   @override
+  String get seeMore => '查看更多';
+
+  @override
+  String get collapse => '收起';
+
+  @override
   String get startAll => '全部开始';
 
   @override

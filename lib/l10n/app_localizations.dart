@@ -636,6 +636,18 @@ abstract class AppLocalizations {
   /// **'Start'**
   String get start;
 
+  /// No description provided for @seeMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Show details'**
+  String get seeMore;
+
+  /// No description provided for @collapse.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide details'**
+  String get collapse;
+
   /// No description provided for @startAll.
   ///
   /// In en, this message translates to:

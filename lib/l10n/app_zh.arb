@@ -144,6 +144,8 @@
   "estimatedDuration": "预计 {duration}",
   "exerciseListTitle": "动作列表",
   "start": "开始",
+  "seeMore": "查看更多",
+  "collapse": "收起",
   "startAll": "全部开始",
   "labelPrepare": "准备",
   "labelWork": "运动",

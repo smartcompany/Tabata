@@ -6,23 +6,36 @@ import '../utils/duration_calculator.dart';
 import '../utils/exercise_formatter.dart';
 import 'description_blocks_view.dart';
 
-class ExerciseDetailCard extends StatelessWidget {
+class ExerciseDetailCard extends StatefulWidget {
   const ExerciseDetailCard({
     super.key,
     required this.exercise,
-    this.onTap,
+    this.onEdit,
     this.onStart,
   });
 
   final Exercise exercise;
-  final VoidCallback? onTap;
+  final VoidCallback? onEdit;
   final VoidCallback? onStart;
+
+  @override
+  State<ExerciseDetailCard> createState() => _ExerciseDetailCardState();
+}
+
+class _ExerciseDetailCardState extends State<ExerciseDetailCard> {
+  bool _detailsExpanded = false;
+
+  void _toggleDetails() {
+    setState(() => _detailsExpanded = !_detailsExpanded);
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
-    final details = Column(
+    final exercise = widget.exercise;
+
+    final header = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
@@ -36,76 +49,100 @@ class ExerciseDetailCard extends StatelessWidget {
           const SizedBox(height: 6),
           DescriptionBlocksView(blocks: exercise.effectiveInstructionBlocks),
         ],
-        const SizedBox(height: 12),
-        _infoRow(
-          context,
-          l10n.labelPrepare,
-          l10n.durationSeconds(exercise.prepare.durationSec),
-        ),
-        ...exercise.orderedPhases.map(
-          (phase) => _infoRow(
-            context,
-            ExerciseFormatter.phaseKindLabel(phase.kind, l10n),
-            ExerciseFormatter.phaseWithDuration(
-              phase.label,
-              phase.durationSec,
-              l10n,
-            ),
-          ),
-        ),
-        _infoRow(
-          context,
-          l10n.labelReps,
-          l10n.countReps(exercise.reps),
-        ),
-        _infoRow(
-          context,
-          l10n.labelSets,
-          l10n.countSets(exercise.sets),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          ExerciseFormatter.oneSetDuration(exercise, l10n),
-          style: TextStyle(color: theme.colorScheme.primary),
-        ),
       ],
     );
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (onTap == null)
-              details
-            else
-              InkWell(
-                onTap: onTap,
-                borderRadius: BorderRadius.circular(8),
-                child: details,
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: _toggleDetails,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(child: header),
+                  Icon(
+                    _detailsExpanded ? Icons.expand_less : Icons.expand_more,
+                  ),
+                ],
               ),
-            if (onStart != null) ...[
-              const SizedBox(height: 12),
-              Align(
-                alignment: Alignment.centerRight,
-                child: FilledButton.icon(
-                  onPressed: onStart,
-                  style: FilledButton.styleFrom(
-                    backgroundColor: theme.colorScheme.primaryContainer,
-                    foregroundColor: theme.colorScheme.onPrimaryContainer,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 10,
+              if (_detailsExpanded) ...[
+                const SizedBox(height: 12),
+                _infoRow(
+                  context,
+                  l10n.labelPrepare,
+                  l10n.durationSeconds(exercise.prepare.durationSec),
+                ),
+                ...exercise.orderedPhases.map(
+                  (phase) => _infoRow(
+                    context,
+                    ExerciseFormatter.phaseKindLabel(phase.kind, l10n),
+                    ExerciseFormatter.phaseWithDuration(
+                      phase.label,
+                      phase.durationSec,
+                      l10n,
                     ),
                   ),
-                  icon: const Icon(Icons.play_arrow_rounded, size: 20),
-                  label: Text(l10n.start),
                 ),
-              ),
+                _infoRow(
+                  context,
+                  l10n.labelReps,
+                  l10n.countReps(exercise.reps),
+                ),
+                _infoRow(
+                  context,
+                  l10n.labelSets,
+                  l10n.countSets(exercise.sets),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  ExerciseFormatter.oneSetDuration(exercise, l10n),
+                  style: TextStyle(color: theme.colorScheme.primary),
+                ),
+              ],
+              if (widget.onEdit != null || widget.onStart != null) ...[
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    const Spacer(),
+                    if (widget.onEdit != null)
+                      OutlinedButton.icon(
+                        onPressed: widget.onEdit,
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 10,
+                          ),
+                        ),
+                        icon: const Icon(Icons.edit_outlined, size: 18),
+                        label: Text(l10n.editTooltip),
+                      ),
+                    if (widget.onEdit != null && widget.onStart != null)
+                      const SizedBox(width: 8),
+                    if (widget.onStart != null)
+                      FilledButton.icon(
+                        onPressed: widget.onStart,
+                        style: FilledButton.styleFrom(
+                          backgroundColor: theme.colorScheme.primaryContainer,
+                          foregroundColor: theme.colorScheme.onPrimaryContainer,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 10,
+                          ),
+                        ),
+                        icon: const Icon(Icons.play_arrow_rounded, size: 20),
+                        label: Text(l10n.start),
+                      ),
+                  ],
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );

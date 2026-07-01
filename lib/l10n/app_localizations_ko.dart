@@ -306,6 +306,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String get start => '시작';
 
   @override
+  String get seeMore => '더보기';
+
+  @override
+  String get collapse => '접기';
+
+  @override
   String get startAll => '전체 시작';
 
   @override

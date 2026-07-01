@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tabata_timer/l10n/app_localizations.dart';
 
 import '../data/routine_repository.dart';
+import '../data/routine_factory.dart';
 import '../models/exercise.dart';
 import '../models/routine.dart';
 import '../services/routine_share_api.dart';
@@ -10,6 +11,7 @@ import '../utils/duration_calculator.dart';
 import '../widgets/description_blocks_view.dart';
 import '../widgets/exercise_summary.dart';
 import '../widgets/routine_share_sheet.dart';
+import 'exercise_editor_screen.dart';
 import 'routine_editor_screen.dart';
 import 'workout_screen.dart';
 
@@ -222,6 +224,38 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
     _openWorkout(routine.forSingleExercise(exercise));
   }
 
+  Future<void> _editExercise(Exercise exercise) async {
+    final routine = _routine;
+    final routineId = widget.routineId;
+    if (routine == null || routineId == null || _isCatalogPreview) return;
+
+    final exercises = routine.orderedExercises;
+    final index = exercises.indexWhere((item) => item.id == exercise.id);
+    if (index < 0) return;
+
+    final updated = await Navigator.of(context).push<Exercise>(
+      MaterialPageRoute(
+        builder: (_) => ExerciseEditorScreen(exercise: exercise),
+      ),
+    );
+    if (updated == null || !mounted) return;
+
+    final nextExercises = List<Exercise>.from(exercises);
+    nextExercises[index] = updated;
+    final nextRoutine = routine.copyWith(
+      exercises: reindexExercises(nextExercises),
+    );
+    await widget.repository.upsert(nextRoutine);
+    if (!mounted) return;
+    if (widget.repository.findById(routineId) == null) {
+      Navigator.of(context).pop();
+      return;
+    }
+    setState(() {
+      _routine = widget.repository.findById(routineId);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -395,7 +429,7 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
           ...exercises.map(
             (exercise) => ExerciseDetailCard(
               exercise: exercise,
-              onTap: _isCatalogPreview ? null : _edit,
+              onEdit: _isCatalogPreview ? null : () => _editExercise(exercise),
               onStart: () => _startExercise(exercise),
             ),
           ),

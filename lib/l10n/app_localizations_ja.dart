@@ -306,6 +306,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get start => '開始';
 
   @override
+  String get seeMore => '詳細を表示';
+
+  @override
+  String get collapse => '閉じる';
+
+  @override
   String get startAll => '全体開始';
 
   @override

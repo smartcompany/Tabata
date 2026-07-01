@@ -144,6 +144,8 @@
   "estimatedDuration": "目安 {duration}",
   "exerciseListTitle": "種目一覧",
   "start": "開始",
+  "seeMore": "詳細を表示",
+  "collapse": "閉じる",
   "startAll": "全体開始",
   "labelPrepare": "準備",
   "labelWork": "運動",

@@ -315,6 +315,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get start => 'Start';
 
   @override
+  String get seeMore => 'Show details';
+
+  @override
+  String get collapse => 'Hide details';
+
+  @override
   String get startAll => 'Start all';
 
   @override
