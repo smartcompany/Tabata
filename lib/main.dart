@@ -96,10 +96,11 @@ class TabataApp extends StatefulWidget {
   State<TabataApp> createState() => _TabataAppState();
 }
 
-class _TabataAppState extends State<TabataApp> {
+class _TabataAppState extends State<TabataApp> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       shareLinkLog('TabataApp first frame — starting link coordinator');
       if (!kIsWeb) {
@@ -110,8 +111,17 @@ class _TabataAppState extends State<TabataApp> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     widget.linkCoordinator.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && !kIsWeb) {
+      shareLinkLog('TabataApp resumed — checking pending share link');
+      unawaited(widget.linkCoordinator.onAppResumed());
+    }
   }
 
   @override
