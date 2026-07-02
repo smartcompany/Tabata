@@ -492,6 +492,12 @@ abstract class AppLocalizations {
   /// **'AI is building your routine...'**
   String get aiRoutineCreateLoading;
 
+  /// No description provided for @aiRoutineCreateAdLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading ad...'**
+  String get aiRoutineCreateAdLoading;
+
   /// No description provided for @aiRoutineCreatePromptRequired.
   ///
   /// In en, this message translates to:
@@ -953,6 +959,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sign in to add photos.'**
   String get descriptionImageLoginRequired;
+
+  /// No description provided for @photoLibraryPermissionRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo library access is required to add images.'**
+  String get photoLibraryPermissionRequired;
 
   /// No description provided for @descriptionImageUploadError.
   ///

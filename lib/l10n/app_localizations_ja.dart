@@ -224,6 +224,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get aiRoutineCreateLoading => 'AIがルーティンを作成しています...';
 
   @override
+  String get aiRoutineCreateAdLoading => '広告を読み込んでいます...';
+
+  @override
   String get aiRoutineCreatePromptRequired => 'リクエスト内容を入力してください。';
 
   @override
@@ -477,6 +480,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get descriptionImageLoginRequired => '写真を追加するにはログインが必要です。';
+
+  @override
+  String get photoLibraryPermissionRequired => '写真を追加するにはフォトライブラリへのアクセスが必要です。';
 
   @override
   String get descriptionImageUploadError => '写真のアップロードに失敗しました。';

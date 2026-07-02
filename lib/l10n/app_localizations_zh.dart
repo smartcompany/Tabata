@@ -222,6 +222,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aiRoutineCreateLoading => 'AI 正在创建训练...';
 
   @override
+  String get aiRoutineCreateAdLoading => '正在加载广告...';
+
+  @override
   String get aiRoutineCreatePromptRequired => '请输入请求内容。';
 
   @override
@@ -475,6 +478,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get descriptionImageLoginRequired => '添加图片需要先登录。';
+
+  @override
+  String get photoLibraryPermissionRequired => '添加图片需要照片图库访问权限。';
 
   @override
   String get descriptionImageUploadError => '图片上传失败。';

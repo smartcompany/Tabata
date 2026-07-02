@@ -224,6 +224,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get aiRoutineCreateLoading => 'AI가 루틴을 만들고 있어요...';
 
   @override
+  String get aiRoutineCreateAdLoading => '광고를 불러오는 중...';
+
+  @override
   String get aiRoutineCreatePromptRequired => '요청 내용을 입력해 주세요.';
 
   @override
@@ -478,6 +481,10 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get descriptionImageLoginRequired => '사진을 추가하려면 로그인이 필요합니다.';
+
+  @override
+  String get photoLibraryPermissionRequired =>
+      '사진을 추가하려면 사진 라이브러리 접근 권한이 필요합니다.';
 
   @override
   String get descriptionImageUploadError => '사진 업로드에 실패했습니다.';

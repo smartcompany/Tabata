@@ -39,7 +39,7 @@ Future<void> main() async {
   }
 
   if (!kIsWeb) {
-    unawaited(MobileAds.instance.initialize());
+    await MobileAds.instance.initialize();
   }
 
   if (KakaoConfig.isConfigured) {

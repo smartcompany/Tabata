@@ -48,7 +48,12 @@ class _DescriptionBlocksEditorState extends State<DescriptionBlocksEditor> {
     _dismissKeyboard();
     setState(() => _pickingImage = true);
     try {
-      final files = await MediaPickerService.pickImages(context, maxCount: 1);
+      final files = await MediaPickerService.pickImages(
+        context,
+        maxCount: 1,
+        permissionDeniedMessage: l10n.photoLibraryPermissionRequired,
+        compressFailureMessage: l10n.descriptionImageUploadError,
+      );
       if (!mounted || files == null || files.isEmpty) return;
 
       final imageBlocks = await _mediaService.blocksFromPickedImages(

@@ -3,9 +3,9 @@
 <plist version="1.0">
 	<dict>
 		<key>CFBundleDevelopmentRegion</key>
-		<string>$(DEVELOPMENT_LANGUAGE)</string>
+		<string>en</string>
 		<key>CFBundleDisplayName</key>
-		<string>모두의 타바타</string>
+		<string>Everyone's Tabata</string>
 		<key>CFBundleExecutable</key>
 		<string>$(EXECUTABLE_NAME)</string>
 		<key>CFBundleIdentifier</key>
@@ -39,7 +39,9 @@
 		<key>FlutterDeepLinkingEnabled</key>
 		<false/>
 		<key>NSPhotoLibraryUsageDescription</key>
-		<string>루틴 설명에 참고 사진을 추가하기 위해 사진 라이브러리 접근이 필요합니다.</string>
+		<string>Photo library access is needed to add reference images to routine descriptions.</string>
+		<key>NSCameraUsageDescription</key>
+		<string>Camera access is needed to take a photo for routine descriptions.</string>
 		<key>UIStatusBarHidden</key>
 		<false/>
 		<key>ITSAppUsesNonExemptEncryption</key>

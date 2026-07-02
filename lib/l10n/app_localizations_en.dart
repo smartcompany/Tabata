@@ -231,6 +231,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aiRoutineCreateLoading => 'AI is building your routine...';
 
   @override
+  String get aiRoutineCreateAdLoading => 'Loading ad...';
+
+  @override
   String get aiRoutineCreatePromptRequired => 'Please enter your request.';
 
   @override
@@ -487,6 +490,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get descriptionImageLoginRequired => 'Sign in to add photos.';
+
+  @override
+  String get photoLibraryPermissionRequired =>
+      'Photo library access is required to add images.';
 
   @override
   String get descriptionImageUploadError => 'Failed to upload photo.';

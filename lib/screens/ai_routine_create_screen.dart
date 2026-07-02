@@ -26,11 +26,13 @@ class AiRoutineCreateScreen extends StatefulWidget {
 class _AiRoutineCreateScreenState extends State<AiRoutineCreateScreen> {
   late final TextEditingController _promptController;
   bool _loading = false;
+  bool _loadingAd = false;
 
   @override
   void initState() {
     super.initState();
     _promptController = TextEditingController();
+    RewardedAdGate.preload();
   }
 
   @override
@@ -50,17 +52,18 @@ class _AiRoutineCreateScreenState extends State<AiRoutineCreateScreen> {
       return;
     }
 
-    setState(() => _loading = true);
+    setState(() => _loadingAd = true);
     final rewarded = await RewardedAdGate.show();
     if (!mounted) return;
+    setState(() => _loadingAd = false);
     if (!rewarded) {
-      setState(() => _loading = false);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.aiRoutineCreateAdRequired)),
       );
       return;
     }
 
+    setState(() => _loading = true);
     try {
       final contentLanguage = ContentLanguage.current(
         systemLocale: Localizations.localeOf(context),
@@ -126,11 +129,30 @@ class _AiRoutineCreateScreenState extends State<AiRoutineCreateScreen> {
               ),
               const SizedBox(height: 20),
               FilledButton(
-                onPressed: _loading ? null : _submit,
+                onPressed: (_loading || _loadingAd) ? null : _submit,
                 child: Text(l10n.aiRoutineCreateSubmit),
               ),
             ],
           ),
+          if (_loadingAd)
+            ColoredBox(
+              color: Colors.black.withValues(alpha: 0.25),
+              child: Center(
+                child: Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const CircularProgressIndicator(),
+                        const SizedBox(height: 16),
+                        Text(l10n.aiRoutineCreateAdLoading),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
           if (_loading)
             ColoredBox(
               color: Colors.black.withValues(alpha: 0.25),

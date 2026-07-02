@@ -1,1 +1,3 @@
 CFBundleDisplayName = "Everyone's Tabata";
+NSPhotoLibraryUsageDescription = "Photo library access is needed to add reference images to routine descriptions.";
+NSCameraUsageDescription = "Camera access is needed to take a photo for routine descriptions.";
