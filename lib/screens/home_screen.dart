@@ -193,8 +193,9 @@ class _HomeScreenState extends State<HomeScreen>
 
   Future<void> _createRoutine() async {
     final l10n = AppLocalizations.of(context);
-    final routine =
-        createEmptyRoutine().copyWith(title: l10n.defaultRoutineName);
+    final routine = createEmptyRoutine().copyWith(
+      title: l10n.defaultRoutineName,
+    );
     final saved = await Navigator.of(context).push<Routine>(
       MaterialPageRoute(
         builder: (_) => RoutineEditorScreen(
@@ -232,9 +233,9 @@ class _HomeScreenState extends State<HomeScreen>
     } catch (_) {
       if (!mounted) return;
       setState(() => _downloadingCatalogId = null);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.routineDownloadError)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.routineDownloadError)));
     }
   }
 
@@ -326,10 +327,7 @@ class _HomeScreenState extends State<HomeScreen>
       body: TabBarView(
         controller: _tabController,
         physics: const NeverScrollableScrollPhysics(),
-        children: [
-          _buildMyRoutinesTab(l10n),
-          _buildDownloadCatalogTab(l10n),
-        ],
+        children: [_buildMyRoutinesTab(l10n), _buildDownloadCatalogTab(l10n)],
       ),
       bottomNavigationBar: _HomeBottomActions(
         aiLabel: l10n.aiRoutineCreateButton,
@@ -359,28 +357,28 @@ class _HomeScreenState extends State<HomeScreen>
           )
         else
           ReorderableListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              buildDefaultDragHandles: false,
-              itemCount: routines.length,
-              onReorder: _onReorderMyRoutines,
-              itemBuilder: (context, index) {
-                final routine = routines[index];
-                return Padding(
-                  key: ValueKey(routine.id),
-                  padding: EdgeInsets.only(
-                    bottom: index == routines.length - 1 ? 0 : 12,
-                  ),
-                  child: SwipeRevealDelete(
-                    itemKey: routine.id,
-                    openItemKey: _openSwipeItemKey,
-                    onOpenChanged: (key) =>
-                        setState(() => _openSwipeItemKey = key),
-                    deleteLabel: l10n.delete,
-                    onDelete: () => _confirmDeleteMyRoutine(routine),
-                    child: Card(
-                      margin: EdgeInsets.zero,
-                      child: ListTile(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            buildDefaultDragHandles: false,
+            itemCount: routines.length,
+            onReorder: _onReorderMyRoutines,
+            itemBuilder: (context, index) {
+              final routine = routines[index];
+              return Padding(
+                key: ValueKey(routine.id),
+                padding: EdgeInsets.only(
+                  bottom: index == routines.length - 1 ? 0 : 12,
+                ),
+                child: SwipeRevealDelete(
+                  itemKey: routine.id,
+                  openItemKey: _openSwipeItemKey,
+                  onOpenChanged: (key) =>
+                      setState(() => _openSwipeItemKey = key),
+                  deleteLabel: l10n.delete,
+                  onDelete: () => _confirmDeleteMyRoutine(routine),
+                  child: Card(
+                    margin: EdgeInsets.zero,
+                    child: ListTile(
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16,
                         vertical: 12,
@@ -389,10 +387,9 @@ class _HomeScreenState extends State<HomeScreen>
                         index: index,
                         child: Icon(
                           Icons.drag_handle,
-                          color: Theme.of(context)
-                              .colorScheme
-                              .outline
-                              .withValues(alpha: 0.7),
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.outline.withValues(alpha: 0.7),
                         ),
                       ),
                       title: Text(
@@ -412,16 +409,19 @@ class _HomeScreenState extends State<HomeScreen>
                   ),
                 ),
               );
-              },
-            ),
+            },
+          ),
       ],
     );
   }
 
   Widget _buildDownloadCatalogTab(AppLocalizations l10n) {
-    final official = _filterSummaries(widget.repository.officialCatalogSummaries);
+    final official = _filterSummaries(
+      widget.repository.officialCatalogSummaries,
+    );
     final shared = _filterSummaries(widget.repository.sharedCatalogSummaries);
-    final hasAnyCatalog = widget.repository.officialCatalogSummaries.isNotEmpty ||
+    final hasAnyCatalog =
+        widget.repository.officialCatalogSummaries.isNotEmpty ||
         widget.repository.sharedCatalogSummaries.isNotEmpty;
     final isEmpty = official.isEmpty && shared.isEmpty;
     final hasSearchQuery = _catalogSearchController.text.trim().isNotEmpty;
@@ -470,72 +470,72 @@ class _HomeScreenState extends State<HomeScreen>
               : RefreshIndicator(
                   onRefresh: _refreshCatalog,
                   child: ListView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              padding: EdgeInsets.fromLTRB(16, 0, 16, _listBottomPadding),
-              children: [
-                if (_loadError != null) ...[
-                  _ErrorBanner(
-                    message: _loadError!,
-                    onRetry: _loadCatalogInitial,
-                    retryLabel: l10n.retry,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: EdgeInsets.fromLTRB(16, 0, 16, _listBottomPadding),
+                    children: [
+                      if (_loadError != null) ...[
+                        _ErrorBanner(
+                          message: _loadError!,
+                          onRetry: _loadCatalogInitial,
+                          retryLabel: l10n.retry,
+                        ),
+                        const SizedBox(height: 12),
+                      ],
+                      Text(
+                        l10n.homeDownloadCatalogHint,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.outline,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      if (!hasAnyCatalog)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 48),
+                          child: Center(child: Text(l10n.noSharedRoutines)),
+                        )
+                      else if (isEmpty)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 48),
+                          child: Center(child: Text(l10n.noSearchResults)),
+                        )
+                      else ...[
+                        if (official.isNotEmpty) ...[
+                          _SectionTitle(l10n.homeCatalogOfficialSection),
+                          const SizedBox(height: 8),
+                          ...official.map(
+                            (summary) => _CatalogCard(
+                              summary: summary,
+                              l10n: l10n,
+                              isDownloading:
+                                  _downloadingCatalogId == summary.id,
+                              isDownloaded: widget.repository
+                                  .hasDownloadedCatalog(summary.id),
+                              onOpen: () => _openCatalogRoutine(summary.id),
+                              onDownload: () => _forkCatalogProfile(summary),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                        ],
+                        if (shared.isNotEmpty) ...[
+                          _SectionTitle(l10n.homeCatalogSharedSection),
+                          const SizedBox(height: 8),
+                          ...shared.map(
+                            (summary) => _CatalogCard(
+                              summary: summary,
+                              l10n: l10n,
+                              isDownloading:
+                                  _downloadingCatalogId == summary.id,
+                              isDownloaded: widget.repository
+                                  .hasDownloadedCatalog(summary.id),
+                              onOpen: () => _openCatalogRoutine(summary.id),
+                              onDownload: () => _forkCatalogProfile(summary),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ],
                   ),
-                  const SizedBox(height: 12),
-                ],
-                Text(
-                  l10n.homeDownloadCatalogHint,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.outline,
-                      ),
                 ),
-                const SizedBox(height: 16),
-                if (!hasAnyCatalog)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 48),
-                    child: Center(child: Text(l10n.noSharedRoutines)),
-                  )
-                else if (isEmpty)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 48),
-                    child: Center(child: Text(l10n.noSearchResults)),
-                  )
-                else ...[
-                  if (official.isNotEmpty) ...[
-                    _SectionTitle(l10n.homeCatalogOfficialSection),
-                    const SizedBox(height: 8),
-                    ...official.map(
-                      (summary) => _CatalogCard(
-                        summary: summary,
-                        l10n: l10n,
-                        isDownloading: _downloadingCatalogId == summary.id,
-                        isDownloaded: widget.repository.hasDownloadedCatalog(
-                          summary.id,
-                        ),
-                        onOpen: () => _openCatalogRoutine(summary.id),
-                        onDownload: () => _forkCatalogProfile(summary),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                  ],
-                  if (shared.isNotEmpty) ...[
-                    _SectionTitle(l10n.homeCatalogSharedSection),
-                    const SizedBox(height: 8),
-                    ...shared.map(
-                      (summary) => _CatalogCard(
-                        summary: summary,
-                        l10n: l10n,
-                        isDownloading: _downloadingCatalogId == summary.id,
-                        isDownloaded: widget.repository.hasDownloadedCatalog(
-                          summary.id,
-                        ),
-                        onOpen: () => _openCatalogRoutine(summary.id),
-                        onDownload: () => _forkCatalogProfile(summary),
-                      ),
-                    ),
-                  ],
-                ],
-              ],
-            ),
-          ),
         ),
       ],
     );
@@ -586,9 +586,16 @@ class _HomeBottomActions extends StatelessWidget {
                   Expanded(
                     child: FilledButton(
                       onPressed: onCreate,
+                      style: FilledButton.styleFrom(
+                        minimumSize: const Size.fromHeight(56),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 10,
+                        ),
+                      ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
+                        mainAxisSize: MainAxisSize.max,
                         children: [
                           const Icon(Icons.add, size: 20),
                           const SizedBox(width: 8),
@@ -596,6 +603,7 @@ class _HomeBottomActions extends StatelessWidget {
                             child: Text(
                               createLabel,
                               textAlign: TextAlign.center,
+                              maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
@@ -607,9 +615,16 @@ class _HomeBottomActions extends StatelessWidget {
                   Expanded(
                     child: OutlinedButton(
                       onPressed: onUpload,
+                      style: OutlinedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(56),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 10,
+                        ),
+                      ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
+                        mainAxisSize: MainAxisSize.max,
                         children: [
                           const Icon(Icons.upload_outlined, size: 20),
                           const SizedBox(width: 8),
@@ -617,6 +632,7 @@ class _HomeBottomActions extends StatelessWidget {
                             child: Text(
                               uploadLabel,
                               textAlign: TextAlign.center,
+                              maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
@@ -643,9 +659,9 @@ class _SectionTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       title,
-      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
+      style: Theme.of(
+        context,
+      ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
     );
   }
 }
@@ -695,10 +711,7 @@ class _CatalogCard extends StatelessWidget {
           ),
           title: Text(
             summary.title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-            ),
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
           ),
           subtitle: Padding(
             padding: const EdgeInsets.only(top: 6),
@@ -729,10 +742,7 @@ class _ErrorBanner extends StatelessWidget {
       color: Theme.of(context).colorScheme.errorContainer,
       child: ListTile(
         title: Text(message),
-        trailing: TextButton(
-          onPressed: onRetry,
-          child: Text(retryLabel),
-        ),
+        trailing: TextButton(onPressed: onRetry, child: Text(retryLabel)),
       ),
     );
   }
