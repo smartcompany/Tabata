@@ -233,6 +233,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get aiRoutineCreateAdRequired => '広告視聴後にご利用いただけます。';
 
   @override
+  String get aiRoutineCreateAdLoadFailed =>
+      '広告を読み込めませんでした。接続を確認して、しばらくしてからもう一度お試しください。';
+
+  @override
   String get aiRoutineCreateError => 'ルーティンの生成に失敗しました。しばらくしてから再度お試しください。';
 
   @override
@@ -852,4 +856,70 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get privacyProcessingConsentDecline => '同意しない';
+
+  @override
+  String get healthActivityTypeSection => 'Appleヘルスケアのワークアウト種別';
+
+  @override
+  String get healthActivityTypeHint =>
+      '設定すると、このルーティン完了時にヘルスケアアプリへワークアウトを保存できます。保存しない場合は未設定のままにしてください。';
+
+  @override
+  String get healthActivityTypeHelper =>
+      'アプリ設定の「Appleヘルスケアにワークアウトを保存」をオンにする必要があります。';
+
+  @override
+  String get healthActivityTypeNone => 'ヘルスケアに保存しない';
+
+  @override
+  String get healthActivityTypeFunctionalStrength => 'ファンクショナル筋力トレーニング';
+
+  @override
+  String get healthActivityTypeFlexibility => '柔軟性';
+
+  @override
+  String get healthActivityTypeHiit => '高強度インターバルトレーニング (HIIT)';
+
+  @override
+  String get healthActivityTypeTraditionalStrength => '伝統的筋力トレーニング';
+
+  @override
+  String get healthActivityTypeOther => 'その他';
+
+  @override
+  String get healthSaveToAppleHealthTitle => 'Appleヘルスケアにワークアウトを保存';
+
+  @override
+  String get healthSaveToAppleHealthSubtitle =>
+      'ルーティンにヘルスケアのワークアウト種別が設定されている場合、完了時にヘルスケアアプリへ保存されます。';
+
+  @override
+  String get healthRoutineWillSaveTitle => 'Appleヘルスケア';
+
+  @override
+  String healthRoutineWillSaveBody(String type) {
+    return 'このルーティンを完了すると、設定が有効な場合、ヘルスケアアプリに$typeとして保存されます。';
+  }
+
+  @override
+  String healthWorkoutSavedSnack(String type) {
+    return 'ヘルスケアアプリに$typeとして保存しました。';
+  }
+
+  @override
+  String get healthPermissionRequiredSnack =>
+      'ヘルスケアの権限が必要です。設定 > ヘルスケア > データアクセスで許可してください。';
+
+  @override
+  String get healthFirstWorkoutPromptTitle => 'Appleヘルスケアにワークアウトを保存しますか？';
+
+  @override
+  String get healthFirstWorkoutPromptBody =>
+      'ルーティンにヘルスケアのワークアウト種別が設定されている場合、完了時にヘルスケアアプリへ保存できます。「有効にする」を選ぶとAppleのシステム権限画面が開きます。後からアプリ設定で変更できます。';
+
+  @override
+  String get healthFirstWorkoutPromptEnable => '有効にする';
+
+  @override
+  String get healthFirstWorkoutPromptNotNow => 'あとで';
 }

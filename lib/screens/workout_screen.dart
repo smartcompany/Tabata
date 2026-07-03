@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tabata_timer/l10n/app_localizations.dart';
@@ -5,7 +7,9 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 
 import '../engine/workout_timer_engine.dart';
 import '../engine/workout_timer_labels.dart';
+import '../models/health_activity_type.dart';
 import '../models/routine.dart';
+import '../services/health_workout_recorder.dart';
 import '../services/workout_announce_gap.dart';
 import '../services/workout_settings.dart';
 import '../services/workout_sound_coach.dart';
@@ -39,6 +43,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
   WorkoutTimerSnapshot? _lastSoundSnapshot;
   Future<void>? _announceQueue;
   bool _countSecondsWithTts = true;
+  bool _healthRecorded = false;
 
   @override
   void initState() {
@@ -110,7 +115,48 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     setState(() {});
     if (_engine!.snapshot.isCompleted) {
       HapticFeedback.mediumImpact();
+      _maybeRecordHealthWorkout();
     }
+  }
+
+  Future<void> _maybeRecordHealthWorkout() async {
+    if (_healthRecorded) return;
+    _healthRecorded = true;
+
+    final routine = widget.routine;
+    if (routine.healthActivityType == null) return;
+
+    final settings = await WorkoutSettings.load();
+    if (!settings.saveToAppleHealth) return;
+
+    final engine = _engine;
+    if (engine == null || !mounted) return;
+
+    final elapsedSec = engine.elapsedSec;
+    if (elapsedSec <= 0) return;
+
+    final end = DateTime.now();
+    final start = end.subtract(Duration(seconds: elapsedSec));
+    final saved = await HealthWorkoutRecorder.recordCompletedWorkout(
+      routine: routine,
+      start: start,
+      end: end,
+    );
+    if (!mounted || !saved) return;
+
+    final l10n = AppLocalizations.of(context);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          l10n.healthWorkoutSavedSnack(
+            RoutineHealthActivityType.labelFor(
+              l10n,
+              routine.healthActivityType!,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   void _scheduleAnnounce() {

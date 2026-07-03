@@ -1,10 +1,14 @@
+import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart';
 import 'package:tabata_timer/l10n/app_localizations.dart';
 
 import '../data/routine_repository.dart';
 import '../data/routine_factory.dart';
 import '../models/exercise.dart';
+import '../models/health_activity_type.dart';
 import '../models/routine.dart';
+import '../services/health_permission_flow.dart';
 import '../services/routine_share_api.dart';
 import '../services/routine_share_service.dart';
 import '../utils/duration_calculator.dart';
@@ -203,8 +207,13 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
     );
   }
 
-  void _openWorkout(Routine routine) {
-    Navigator.of(context).push(
+  Future<void> _openWorkout(Routine routine) async {
+    if (Platform.isIOS) {
+      await HealthPermissionFlow.maybePromptOnFirstWorkoutStart(context);
+      if (!mounted) return;
+    }
+
+    await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => WorkoutScreen(routine: routine),
         fullscreenDialog: true,
@@ -212,16 +221,16 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
     );
   }
 
-  void _start() {
+  Future<void> _start() async {
     final routine = _routine;
     if (routine == null) return;
-    _openWorkout(routine);
+    await _openWorkout(routine);
   }
 
-  void _startExercise(Exercise exercise) {
+  Future<void> _startExercise(Exercise exercise) async {
     final routine = _routine;
     if (routine == null) return;
-    _openWorkout(routine.forSingleExercise(exercise));
+    await _openWorkout(routine.forSingleExercise(exercise));
   }
 
   Future<void> _editExercise(Exercise exercise) async {
@@ -401,6 +410,45 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Theme.of(context).colorScheme.outline,
                   ),
+            ),
+            const SizedBox(height: 16),
+          ],
+          if (Platform.isIOS && routine.healthActivityType != null) ...[
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      Icons.favorite_outline,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            l10n.healthRoutineWillSaveTitle,
+                            style: Theme.of(context).textTheme.titleSmall,
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            l10n.healthRoutineWillSaveBody(
+                              RoutineHealthActivityType.labelFor(
+                                l10n,
+                                routine.healthActivityType!,
+                              ),
+                            ),
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
             const SizedBox(height: 16),
           ],

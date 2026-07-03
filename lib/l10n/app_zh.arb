@@ -108,6 +108,7 @@
   "aiRoutineCreateAdLoading": "正在加载广告...",
   "aiRoutineCreatePromptRequired": "请输入请求内容。",
   "aiRoutineCreateAdRequired": "观看广告后可继续使用。",
+  "aiRoutineCreateAdLoadFailed": "无法加载广告。请检查网络连接后稍后再试。",
   "aiRoutineCreateError": "训练生成失败，请稍后重试。",
   "routineCountDuration": "{count} 个动作 · {duration}",
   "routineNotFound": "未找到训练。",
@@ -320,5 +321,38 @@
   "privacyProcessingConsentCheckboxPrivacy": "我同意上述个人信息的收集与使用。",
   "privacyProcessingConsentCheckboxUgc": "我同意共享训练（UGC）规则及零容忍政策。",
   "privacyProcessingConsentAgree": "同意并继续",
-  "privacyProcessingConsentDecline": "不同意"
+  "privacyProcessingConsentDecline": "不同意",
+  "healthActivityTypeSection": "Apple 健康 workout 类型",
+  "healthActivityTypeHint": "设置后，完成此训练可将 workout 保存到“健康”App。不保存请保持未设置。",
+  "healthActivityTypeHelper": "需在应用设置中开启“保存 workout 到 Apple 健康”。",
+  "healthActivityTypeNone": "不保存到健康",
+  "healthActivityTypeFunctionalStrength": "功能性力量训练",
+  "healthActivityTypeFlexibility": "柔韧性训练",
+  "healthActivityTypeHiit": "高强度间歇训练 (HIIT)",
+  "healthActivityTypeTraditionalStrength": "传统力量训练",
+  "healthActivityTypeOther": "其他",
+  "healthSaveToAppleHealthTitle": "保存 workout 到 Apple 健康",
+  "healthSaveToAppleHealthSubtitle": "若训练已设置健康 workout 类型，完成时会保存到“健康”App。",
+  "healthRoutineWillSaveTitle": "Apple 健康",
+  "healthRoutineWillSaveBody": "完成此训练后，若设置已开启，将以{type}保存到“健康”App。",
+  "@healthRoutineWillSaveBody": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "healthWorkoutSavedSnack": "已以{type}保存到“健康”App。",
+  "@healthWorkoutSavedSnack": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "healthPermissionRequiredSnack": "需要健康权限。请在 设置 > 健康 > 数据访问 中允许。",
+  "healthFirstWorkoutPromptTitle": "保存 workout 到 Apple 健康？",
+  "healthFirstWorkoutPromptBody": "若训练已设置健康 workout 类型，完成后可保存到“健康”App。选择“启用”会打开 Apple 系统权限窗口。之后可在应用设置中更改。",
+  "healthFirstWorkoutPromptEnable": "启用",
+  "healthFirstWorkoutPromptNotNow": "稍后"
 }

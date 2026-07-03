@@ -233,6 +233,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get aiRoutineCreateAdRequired => '광고 시청 후 이용할 수 있습니다.';
 
   @override
+  String get aiRoutineCreateAdLoadFailed =>
+      '광고를 불러오지 못했습니다. 네트워크 연결을 확인하고 잠시 후 다시 시도해 주세요.';
+
+  @override
   String get aiRoutineCreateError => '루틴 생성에 실패했습니다. 잠시 후 다시 시도해 주세요.';
 
   @override
@@ -856,4 +860,70 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get privacyProcessingConsentDecline => '동의하지 않음';
+
+  @override
+  String get healthActivityTypeSection => 'Apple 건강 운동 유형';
+
+  @override
+  String get healthActivityTypeHint =>
+      '설정하면 이 루틴을 완료할 때 건강 앱에 운동 기록을 저장할 수 있습니다. 저장하지 않으려면 비워 두세요.';
+
+  @override
+  String get healthActivityTypeHelper =>
+      '앱 설정의 \"Apple 건강에 운동 저장\"이 켜져 있어야 합니다.';
+
+  @override
+  String get healthActivityTypeNone => '건강 앱에 저장 안 함';
+
+  @override
+  String get healthActivityTypeFunctionalStrength => '기능성 근력 운동';
+
+  @override
+  String get healthActivityTypeFlexibility => '유연성 운동';
+
+  @override
+  String get healthActivityTypeHiit => '고강도 인터벌 트레이닝 (HIIT)';
+
+  @override
+  String get healthActivityTypeTraditionalStrength => '전통적 근력 운동';
+
+  @override
+  String get healthActivityTypeOther => '기타';
+
+  @override
+  String get healthSaveToAppleHealthTitle => 'Apple 건강에 운동 저장';
+
+  @override
+  String get healthSaveToAppleHealthSubtitle =>
+      '루틴에 건강 운동 유형이 설정되어 있으면, 운동 완료 시 건강 앱에 기록됩니다.';
+
+  @override
+  String get healthRoutineWillSaveTitle => 'Apple 건강';
+
+  @override
+  String healthRoutineWillSaveBody(String type) {
+    return '이 루틴을 완료하면 건강 앱에 $type 운동으로 저장됩니다 (설정에서 켜져 있을 때).';
+  }
+
+  @override
+  String healthWorkoutSavedSnack(String type) {
+    return '건강 앱에 $type(으)로 저장했습니다.';
+  }
+
+  @override
+  String get healthPermissionRequiredSnack =>
+      '건강 앱 권한이 필요합니다. 설정 > 건강 > 데이터 접근에서 허용해 주세요.';
+
+  @override
+  String get healthFirstWorkoutPromptTitle => 'Apple 건강에 운동을 저장할까요?';
+
+  @override
+  String get healthFirstWorkoutPromptBody =>
+      '루틴에 건강 운동 유형이 설정되어 있으면, 운동 완료 시 건강 앱에 기록을 저장할 수 있습니다. \'사용하기\'를 선택하면 Apple 시스템 권한 창이 열립니다. 이후 앱 설정에서 언제든 바꿀 수 있습니다.';
+
+  @override
+  String get healthFirstWorkoutPromptEnable => '사용하기';
+
+  @override
+  String get healthFirstWorkoutPromptNotNow => '나중에';
 }

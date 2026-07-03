@@ -56,6 +56,31 @@ void main() {
     expect(decoded.description, 'plain');
   });
 
+  test('healthActivityType roundtrips in json', () {
+    final routine = Routine(
+      id: 'health',
+      title: 'HIIT',
+      description: '',
+      exercises: const [],
+      healthActivityType: 'high_intensity_interval_training',
+    );
+
+    final decoded = Routine.fromJson(routine.toJson());
+    expect(decoded.healthActivityType, 'high_intensity_interval_training');
+  });
+
+  test('missing healthActivityType deserializes as null', () {
+    final routine = Routine.fromJson({
+      'schemaVersion': 1,
+      'id': 'legacy',
+      'title': 'Legacy',
+      'description': '',
+      'exercises': [],
+    });
+
+    expect(routine.healthActivityType, isNull);
+  });
+
   test('legacy description migrates to text block', () {
     final routine = Routine.fromJson({
       'schemaVersion': 1,

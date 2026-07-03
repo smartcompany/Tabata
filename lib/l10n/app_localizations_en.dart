@@ -240,6 +240,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aiRoutineCreateAdRequired => 'Please watch the ad to continue.';
 
   @override
+  String get aiRoutineCreateAdLoadFailed =>
+      'Could not load the ad. Check your connection and try again shortly.';
+
+  @override
   String get aiRoutineCreateError =>
       'Could not generate the routine. Please try again.';
 
@@ -870,4 +874,73 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacyProcessingConsentDecline => 'Decline';
+
+  @override
+  String get healthActivityTypeSection => 'Apple Health workout type';
+
+  @override
+  String get healthActivityTypeHint =>
+      'When set, completing this routine can save a workout to the Health app. Leave unset to skip saving.';
+
+  @override
+  String get healthActivityTypeHelper =>
+      'Requires \"Save workouts to Apple Health\" in app settings.';
+
+  @override
+  String get healthActivityTypeNone => 'Do not save to Health';
+
+  @override
+  String get healthActivityTypeFunctionalStrength =>
+      'Functional strength training';
+
+  @override
+  String get healthActivityTypeFlexibility => 'Flexibility';
+
+  @override
+  String get healthActivityTypeHiit =>
+      'High intensity interval training (HIIT)';
+
+  @override
+  String get healthActivityTypeTraditionalStrength =>
+      'Traditional strength training';
+
+  @override
+  String get healthActivityTypeOther => 'Other';
+
+  @override
+  String get healthSaveToAppleHealthTitle => 'Save workouts to Apple Health';
+
+  @override
+  String get healthSaveToAppleHealthSubtitle =>
+      'When a routine has a Health workout type, finishing the workout saves it to the Health app.';
+
+  @override
+  String get healthRoutineWillSaveTitle => 'Apple Health';
+
+  @override
+  String healthRoutineWillSaveBody(String type) {
+    return 'Completing this routine saves a $type workout to the Health app (if enabled in settings).';
+  }
+
+  @override
+  String healthWorkoutSavedSnack(String type) {
+    return 'Saved as $type in the Health app.';
+  }
+
+  @override
+  String get healthPermissionRequiredSnack =>
+      'Health permission is required. Enable it in Settings > Health > Data Access.';
+
+  @override
+  String get healthFirstWorkoutPromptTitle => 'Save workouts to Apple Health?';
+
+  @override
+  String get healthFirstWorkoutPromptBody =>
+      'Completed workouts can be saved to the Health app when a routine has a Health workout type set. Choose Enable to turn this on — Apple will show a system permission sheet. You can change this later in app settings.';
+
+  @override
+  String get healthFirstWorkoutPromptEnable => 'Enable';
+
+  @override
+  String get healthFirstWorkoutPromptNotNow => 'Not now';
 }

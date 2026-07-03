@@ -510,6 +510,12 @@ abstract class AppLocalizations {
   /// **'Please watch the ad to continue.'**
   String get aiRoutineCreateAdRequired;
 
+  /// No description provided for @aiRoutineCreateAdLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load the ad. Check your connection and try again shortly.'**
+  String get aiRoutineCreateAdLoadFailed;
+
   /// No description provided for @aiRoutineCreateError.
   ///
   /// In en, this message translates to:
@@ -1637,6 +1643,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Decline'**
   String get privacyProcessingConsentDecline;
+
+  /// No description provided for @healthActivityTypeSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Apple Health workout type'**
+  String get healthActivityTypeSection;
+
+  /// No description provided for @healthActivityTypeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'When set, completing this routine can save a workout to the Health app. Leave unset to skip saving.'**
+  String get healthActivityTypeHint;
+
+  /// No description provided for @healthActivityTypeHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Requires \"Save workouts to Apple Health\" in app settings.'**
+  String get healthActivityTypeHelper;
+
+  /// No description provided for @healthActivityTypeNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Do not save to Health'**
+  String get healthActivityTypeNone;
+
+  /// No description provided for @healthActivityTypeFunctionalStrength.
+  ///
+  /// In en, this message translates to:
+  /// **'Functional strength training'**
+  String get healthActivityTypeFunctionalStrength;
+
+  /// No description provided for @healthActivityTypeFlexibility.
+  ///
+  /// In en, this message translates to:
+  /// **'Flexibility'**
+  String get healthActivityTypeFlexibility;
+
+  /// No description provided for @healthActivityTypeHiit.
+  ///
+  /// In en, this message translates to:
+  /// **'High intensity interval training (HIIT)'**
+  String get healthActivityTypeHiit;
+
+  /// No description provided for @healthActivityTypeTraditionalStrength.
+  ///
+  /// In en, this message translates to:
+  /// **'Traditional strength training'**
+  String get healthActivityTypeTraditionalStrength;
+
+  /// No description provided for @healthActivityTypeOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get healthActivityTypeOther;
+
+  /// No description provided for @healthSaveToAppleHealthTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Save workouts to Apple Health'**
+  String get healthSaveToAppleHealthTitle;
+
+  /// No description provided for @healthSaveToAppleHealthSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'When a routine has a Health workout type, finishing the workout saves it to the Health app.'**
+  String get healthSaveToAppleHealthSubtitle;
+
+  /// No description provided for @healthRoutineWillSaveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Apple Health'**
+  String get healthRoutineWillSaveTitle;
+
+  /// No description provided for @healthRoutineWillSaveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Completing this routine saves a {type} workout to the Health app (if enabled in settings).'**
+  String healthRoutineWillSaveBody(String type);
+
+  /// No description provided for @healthWorkoutSavedSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved as {type} in the Health app.'**
+  String healthWorkoutSavedSnack(String type);
+
+  /// No description provided for @healthPermissionRequiredSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Health permission is required. Enable it in Settings > Health > Data Access.'**
+  String get healthPermissionRequiredSnack;
+
+  /// No description provided for @healthFirstWorkoutPromptTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Save workouts to Apple Health?'**
+  String get healthFirstWorkoutPromptTitle;
+
+  /// No description provided for @healthFirstWorkoutPromptBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed workouts can be saved to the Health app when a routine has a Health workout type set. Choose Enable to turn this on — Apple will show a system permission sheet. You can change this later in app settings.'**
+  String get healthFirstWorkoutPromptBody;
+
+  /// No description provided for @healthFirstWorkoutPromptEnable.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable'**
+  String get healthFirstWorkoutPromptEnable;
+
+  /// No description provided for @healthFirstWorkoutPromptNotNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get healthFirstWorkoutPromptNotNow;
 }
 
 class _AppLocalizationsDelegate

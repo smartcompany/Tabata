@@ -108,6 +108,7 @@
   "aiRoutineCreateAdLoading": "広告を読み込んでいます...",
   "aiRoutineCreatePromptRequired": "リクエスト内容を入力してください。",
   "aiRoutineCreateAdRequired": "広告視聴後にご利用いただけます。",
+  "aiRoutineCreateAdLoadFailed": "広告を読み込めませんでした。接続を確認して、しばらくしてからもう一度お試しください。",
   "aiRoutineCreateError": "ルーティンの生成に失敗しました。しばらくしてから再度お試しください。",
   "routineCountDuration": "{count} 種目 · {duration}",
   "routineNotFound": "ルーティンが見つかりません。",
@@ -320,5 +321,38 @@
   "privacyProcessingConsentCheckboxPrivacy": "上記の個人情報の収集・利用に同意します。",
   "privacyProcessingConsentCheckboxUgc": "共有ルーティン（UGC）規則と無容認政策に同意します。",
   "privacyProcessingConsentAgree": "同意して続ける",
-  "privacyProcessingConsentDecline": "同意しない"
+  "privacyProcessingConsentDecline": "同意しない",
+  "healthActivityTypeSection": "Appleヘルスケアのワークアウト種別",
+  "healthActivityTypeHint": "設定すると、このルーティン完了時にヘルスケアアプリへワークアウトを保存できます。保存しない場合は未設定のままにしてください。",
+  "healthActivityTypeHelper": "アプリ設定の「Appleヘルスケアにワークアウトを保存」をオンにする必要があります。",
+  "healthActivityTypeNone": "ヘルスケアに保存しない",
+  "healthActivityTypeFunctionalStrength": "ファンクショナル筋力トレーニング",
+  "healthActivityTypeFlexibility": "柔軟性",
+  "healthActivityTypeHiit": "高強度インターバルトレーニング (HIIT)",
+  "healthActivityTypeTraditionalStrength": "伝統的筋力トレーニング",
+  "healthActivityTypeOther": "その他",
+  "healthSaveToAppleHealthTitle": "Appleヘルスケアにワークアウトを保存",
+  "healthSaveToAppleHealthSubtitle": "ルーティンにヘルスケアのワークアウト種別が設定されている場合、完了時にヘルスケアアプリへ保存されます。",
+  "healthRoutineWillSaveTitle": "Appleヘルスケア",
+  "healthRoutineWillSaveBody": "このルーティンを完了すると、設定が有効な場合、ヘルスケアアプリに{type}として保存されます。",
+  "@healthRoutineWillSaveBody": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "healthWorkoutSavedSnack": "ヘルスケアアプリに{type}として保存しました。",
+  "@healthWorkoutSavedSnack": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "healthPermissionRequiredSnack": "ヘルスケアの権限が必要です。設定 > ヘルスケア > データアクセスで許可してください。",
+  "healthFirstWorkoutPromptTitle": "Appleヘルスケアにワークアウトを保存しますか？",
+  "healthFirstWorkoutPromptBody": "ルーティンにヘルスケアのワークアウト種別が設定されている場合、完了時にヘルスケアアプリへ保存できます。「有効にする」を選ぶとAppleのシステム権限画面が開きます。後からアプリ設定で変更できます。",
+  "healthFirstWorkoutPromptEnable": "有効にする",
+  "healthFirstWorkoutPromptNotNow": "あとで"
 }

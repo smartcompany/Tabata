@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart';
 import 'package:tabata_timer/l10n/app_localizations.dart';
 
@@ -5,6 +7,7 @@ import '../app_auth_provider.dart';
 import '../features/legal/privacy_processing_consent.dart';
 import '../screens/legal_webview_screen.dart';
 import '../services/content_settings.dart';
+import '../services/health_workout_recorder.dart';
 import '../services/workout_settings.dart';
 import '../utils/account_deletion.dart';
 import '../utils/legal_urls.dart';
@@ -24,6 +27,7 @@ Future<void> showAppSettingsSheet(BuildContext hostContext) async {
     isScrollControlled: true,
     builder: (context) {
       var countSecondsWithTts = workoutSettings.countSecondsWithTts;
+      var saveToAppleHealth = workoutSettings.saveToAppleHealth;
       var autoTranslateContent = contentSettings.autoTranslateContent;
 
       return StatefulBuilder(
@@ -58,6 +62,31 @@ Future<void> showAppSettingsSheet(BuildContext hostContext) async {
                     setSheetState(() => countSecondsWithTts = value);
                   },
                 ),
+                if (Platform.isIOS) ...[
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(l10n.healthSaveToAppleHealthTitle),
+                    subtitle: Text(l10n.healthSaveToAppleHealthSubtitle),
+                    value: saveToAppleHealth,
+                    onChanged: (value) async {
+                      if (value) {
+                        final granted =
+                            await HealthWorkoutRecorder.requestWritePermission();
+                        if (!context.mounted) return;
+                        if (!granted) {
+                          ScaffoldMessenger.of(hostContext).showSnackBar(
+                            SnackBar(
+                              content: Text(l10n.healthPermissionRequiredSnack),
+                            ),
+                          );
+                          return;
+                        }
+                      }
+                      await workoutSettings.setSaveToAppleHealth(value);
+                      setSheetState(() => saveToAppleHealth = value);
+                    },
+                  ),
+                ],
                 const SizedBox(height: 20),
                 Text(
                   l10n.contentSettingsSection,

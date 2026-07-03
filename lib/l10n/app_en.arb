@@ -108,6 +108,7 @@
   "aiRoutineCreateAdLoading": "Loading ad...",
   "aiRoutineCreatePromptRequired": "Please enter your request.",
   "aiRoutineCreateAdRequired": "Please watch the ad to continue.",
+  "aiRoutineCreateAdLoadFailed": "Could not load the ad. Check your connection and try again shortly.",
   "aiRoutineCreateError": "Could not generate the routine. Please try again.",
   "routineCountDuration": "{count} exercises · {duration}",
   "@routineCountDuration": {
@@ -429,5 +430,38 @@
   "privacyProcessingConsentCheckboxPrivacy": "I agree to the collection and use of personal data described above.",
   "privacyProcessingConsentCheckboxUgc": "I agree to the shared routine (UGC) rules and zero-tolerance policy.",
   "privacyProcessingConsentAgree": "Agree and continue",
-  "privacyProcessingConsentDecline": "Decline"
+  "privacyProcessingConsentDecline": "Decline",
+  "healthActivityTypeSection": "Apple Health workout type",
+  "healthActivityTypeHint": "When set, completing this routine can save a workout to the Health app. Leave unset to skip saving.",
+  "healthActivityTypeHelper": "Requires \"Save workouts to Apple Health\" in app settings.",
+  "healthActivityTypeNone": "Do not save to Health",
+  "healthActivityTypeFunctionalStrength": "Functional strength training",
+  "healthActivityTypeFlexibility": "Flexibility",
+  "healthActivityTypeHiit": "High intensity interval training (HIIT)",
+  "healthActivityTypeTraditionalStrength": "Traditional strength training",
+  "healthActivityTypeOther": "Other",
+  "healthSaveToAppleHealthTitle": "Save workouts to Apple Health",
+  "healthSaveToAppleHealthSubtitle": "When a routine has a Health workout type, finishing the workout saves it to the Health app.",
+  "healthRoutineWillSaveTitle": "Apple Health",
+  "healthRoutineWillSaveBody": "Completing this routine saves a {type} workout to the Health app (if enabled in settings).",
+  "@healthRoutineWillSaveBody": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "healthWorkoutSavedSnack": "Saved as {type} in the Health app.",
+  "@healthWorkoutSavedSnack": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "healthPermissionRequiredSnack": "Health permission is required. Enable it in Settings > Health > Data Access.",
+  "healthFirstWorkoutPromptTitle": "Save workouts to Apple Health?",
+  "healthFirstWorkoutPromptBody": "Completed workouts can be saved to the Health app when a routine has a Health workout type set. Choose Enable to turn this on — Apple will show a system permission sheet. You can change this later in app settings.",
+  "healthFirstWorkoutPromptEnable": "Enable",
+  "healthFirstWorkoutPromptNotNow": "Not now"
 }

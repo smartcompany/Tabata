@@ -53,12 +53,18 @@ class _AiRoutineCreateScreenState extends State<AiRoutineCreateScreen> {
     }
 
     setState(() => _loadingAd = true);
-    final rewarded = await RewardedAdGate.show();
+    final outcome = await RewardedAdGate.show();
     if (!mounted) return;
     setState(() => _loadingAd = false);
-    if (!rewarded) {
+    if (outcome != RewardedAdOutcome.rewarded &&
+        outcome != RewardedAdOutcome.skipped) {
+      final message = switch (outcome) {
+        RewardedAdOutcome.loadFailed => l10n.aiRoutineCreateAdLoadFailed,
+        RewardedAdOutcome.dismissedEarly => l10n.aiRoutineCreateAdRequired,
+        RewardedAdOutcome.rewarded || RewardedAdOutcome.skipped => '',
+      };
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.aiRoutineCreateAdRequired)),
+        SnackBar(content: Text(message)),
       );
       return;
     }

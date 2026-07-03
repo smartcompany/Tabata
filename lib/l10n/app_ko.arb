@@ -108,6 +108,7 @@
   "aiRoutineCreateAdLoading": "광고를 불러오는 중...",
   "aiRoutineCreatePromptRequired": "요청 내용을 입력해 주세요.",
   "aiRoutineCreateAdRequired": "광고 시청 후 이용할 수 있습니다.",
+  "aiRoutineCreateAdLoadFailed": "광고를 불러오지 못했습니다. 네트워크 연결을 확인하고 잠시 후 다시 시도해 주세요.",
   "aiRoutineCreateError": "루틴 생성에 실패했습니다. 잠시 후 다시 시도해 주세요.",
   "routineCountDuration": "{count}개 운동 · {duration}",
   "@routineCountDuration": {
@@ -429,5 +430,38 @@
   "privacyProcessingConsentCheckboxPrivacy": "위 개인정보 수집·이용에 동의합니다.",
   "privacyProcessingConsentCheckboxUgc": "위 공유 루틴(UGC) 규칙 및 무관용 정책에 동의합니다.",
   "privacyProcessingConsentAgree": "동의하고 계속하기",
-  "privacyProcessingConsentDecline": "동의하지 않음"
+  "privacyProcessingConsentDecline": "동의하지 않음",
+  "healthActivityTypeSection": "Apple 건강 운동 유형",
+  "healthActivityTypeHint": "설정하면 이 루틴을 완료할 때 건강 앱에 운동 기록을 저장할 수 있습니다. 저장하지 않으려면 비워 두세요.",
+  "healthActivityTypeHelper": "앱 설정의 \"Apple 건강에 운동 저장\"이 켜져 있어야 합니다.",
+  "healthActivityTypeNone": "건강 앱에 저장 안 함",
+  "healthActivityTypeFunctionalStrength": "기능성 근력 운동",
+  "healthActivityTypeFlexibility": "유연성 운동",
+  "healthActivityTypeHiit": "고강도 인터벌 트레이닝 (HIIT)",
+  "healthActivityTypeTraditionalStrength": "전통적 근력 운동",
+  "healthActivityTypeOther": "기타",
+  "healthSaveToAppleHealthTitle": "Apple 건강에 운동 저장",
+  "healthSaveToAppleHealthSubtitle": "루틴에 건강 운동 유형이 설정되어 있으면, 운동 완료 시 건강 앱에 기록됩니다.",
+  "healthRoutineWillSaveTitle": "Apple 건강",
+  "healthRoutineWillSaveBody": "이 루틴을 완료하면 건강 앱에 {type} 운동으로 저장됩니다 (설정에서 켜져 있을 때).",
+  "@healthRoutineWillSaveBody": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "healthWorkoutSavedSnack": "건강 앱에 {type}(으)로 저장했습니다.",
+  "@healthWorkoutSavedSnack": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "healthPermissionRequiredSnack": "건강 앱 권한이 필요합니다. 설정 > 건강 > 데이터 접근에서 허용해 주세요.",
+  "healthFirstWorkoutPromptTitle": "Apple 건강에 운동을 저장할까요?",
+  "healthFirstWorkoutPromptBody": "루틴에 건강 운동 유형이 설정되어 있으면, 운동 완료 시 건강 앱에 기록을 저장할 수 있습니다. '사용하기'를 선택하면 Apple 시스템 권한 창이 열립니다. 이후 앱 설정에서 언제든 바꿀 수 있습니다.",
+  "healthFirstWorkoutPromptEnable": "사용하기",
+  "healthFirstWorkoutPromptNotNow": "나중에"
 }

@@ -18,6 +18,7 @@ import 'services/admin_session.dart';
 import 'services/ad_settings.dart';
 import 'services/content_settings.dart';
 import 'services/locale_settings.dart';
+import 'services/rewarded_ad_gate.dart';
 import 'services/routine_api_client.dart';
 import 'services/routine_content_localizer.dart';
 import 'services/routine_share_api.dart';
@@ -59,6 +60,9 @@ Future<void> main() async {
   final repository = await RoutineRepository.create(apiClient: apiClient);
   final adminSession = await AdminSession.create();
   await AdSettings.initialize();
+  if (!kIsWeb) {
+    unawaited(RewardedAdGate.preload());
+  }
 
   final navigatorKey = GlobalKey<NavigatorState>();
   final linkCoordinator = SharedRoutineLinkCoordinator(

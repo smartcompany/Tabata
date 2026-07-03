@@ -1,3 +1,5 @@
 CFBundleDisplayName = "みんなのタバタ";
 NSPhotoLibraryUsageDescription = "ルーティンの説明に参考写真を追加するため、フォトライブラリへのアクセスが必要です。";
 NSCameraUsageDescription = "ルーティンの説明用に写真を撮影するため、カメラへのアクセスが必要です。";
+NSHealthShareUsageDescription = "ワークアウト完了時にヘルスケアアプリへ保存するため、ヘルスケアデータへのアクセスが必要です。";
+NSHealthUpdateUsageDescription = "ワークアウト完了時にヘルスケアアプリへ保存するため、ヘルスケアデータへのアクセスが必要です。";

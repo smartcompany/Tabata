@@ -231,6 +231,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aiRoutineCreateAdRequired => '观看广告后可继续使用。';
 
   @override
+  String get aiRoutineCreateAdLoadFailed => '无法加载广告。请检查网络连接后稍后再试。';
+
+  @override
   String get aiRoutineCreateError => '训练生成失败，请稍后重试。';
 
   @override
@@ -844,4 +847,68 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get privacyProcessingConsentDecline => '不同意';
+
+  @override
+  String get healthActivityTypeSection => 'Apple 健康 workout 类型';
+
+  @override
+  String get healthActivityTypeHint =>
+      '设置后，完成此训练可将 workout 保存到“健康”App。不保存请保持未设置。';
+
+  @override
+  String get healthActivityTypeHelper => '需在应用设置中开启“保存 workout 到 Apple 健康”。';
+
+  @override
+  String get healthActivityTypeNone => '不保存到健康';
+
+  @override
+  String get healthActivityTypeFunctionalStrength => '功能性力量训练';
+
+  @override
+  String get healthActivityTypeFlexibility => '柔韧性训练';
+
+  @override
+  String get healthActivityTypeHiit => '高强度间歇训练 (HIIT)';
+
+  @override
+  String get healthActivityTypeTraditionalStrength => '传统力量训练';
+
+  @override
+  String get healthActivityTypeOther => '其他';
+
+  @override
+  String get healthSaveToAppleHealthTitle => '保存 workout 到 Apple 健康';
+
+  @override
+  String get healthSaveToAppleHealthSubtitle =>
+      '若训练已设置健康 workout 类型，完成时会保存到“健康”App。';
+
+  @override
+  String get healthRoutineWillSaveTitle => 'Apple 健康';
+
+  @override
+  String healthRoutineWillSaveBody(String type) {
+    return '完成此训练后，若设置已开启，将以$type保存到“健康”App。';
+  }
+
+  @override
+  String healthWorkoutSavedSnack(String type) {
+    return '已以$type保存到“健康”App。';
+  }
+
+  @override
+  String get healthPermissionRequiredSnack => '需要健康权限。请在 设置 > 健康 > 数据访问 中允许。';
+
+  @override
+  String get healthFirstWorkoutPromptTitle => '保存 workout 到 Apple 健康？';
+
+  @override
+  String get healthFirstWorkoutPromptBody =>
+      '若训练已设置健康 workout 类型，完成后可保存到“健康”App。选择“启用”会打开 Apple 系统权限窗口。之后可在应用设置中更改。';
+
+  @override
+  String get healthFirstWorkoutPromptEnable => '启用';
+
+  @override
+  String get healthFirstWorkoutPromptNotNow => '稍后';
 }
