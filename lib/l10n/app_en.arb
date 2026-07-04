@@ -108,6 +108,7 @@
   "aiRoutineCreateAdLoading": "Loading ad...",
   "aiRoutineCreatePromptRequired": "Please enter your request.",
   "aiRoutineCreateAdRequired": "Please watch the ad to continue.",
+  "aiRoutineCreateAdLoadFailed": "Could not load the ad. Check your connection and try again shortly.",
   "aiRoutineCreateError": "Could not generate the routine. Please try again.",
   "routineCountDuration": "{count} exercises · {duration}",
   "@routineCountDuration": {

@@ -233,6 +233,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get aiRoutineCreateAdRequired => '광고 시청 후 이용할 수 있습니다.';
 
   @override
+  String get aiRoutineCreateAdLoadFailed =>
+      '광고를 불러오지 못했습니다. 네트워크 연결을 확인하고 잠시 후 다시 시도해 주세요.';
+
+  @override
   String get aiRoutineCreateError => '루틴 생성에 실패했습니다. 잠시 후 다시 시도해 주세요.';
 
   @override

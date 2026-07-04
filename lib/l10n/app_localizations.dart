@@ -510,6 +510,12 @@ abstract class AppLocalizations {
   /// **'Please watch the ad to continue.'**
   String get aiRoutineCreateAdRequired;
 
+  /// No description provided for @aiRoutineCreateAdLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load the ad. Check your connection and try again shortly.'**
+  String get aiRoutineCreateAdLoadFailed;
+
   /// No description provided for @aiRoutineCreateError.
   ///
   /// In en, this message translates to:

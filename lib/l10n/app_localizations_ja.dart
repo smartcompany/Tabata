@@ -233,6 +233,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get aiRoutineCreateAdRequired => '広告視聴後にご利用いただけます。';
 
   @override
+  String get aiRoutineCreateAdLoadFailed =>
+      '広告を読み込めませんでした。接続を確認して、しばらくしてからもう一度お試しください。';
+
+  @override
   String get aiRoutineCreateError => 'ルーティンの生成に失敗しました。しばらくしてから再度お試しください。';
 
   @override

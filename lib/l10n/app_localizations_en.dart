@@ -240,6 +240,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aiRoutineCreateAdRequired => 'Please watch the ad to continue.';
 
   @override
+  String get aiRoutineCreateAdLoadFailed =>
+      'Could not load the ad. Check your connection and try again shortly.';
+
+  @override
   String get aiRoutineCreateError =>
       'Could not generate the routine. Please try again.';
 

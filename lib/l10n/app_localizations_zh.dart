@@ -231,6 +231,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aiRoutineCreateAdRequired => '观看广告后可继续使用。';
 
   @override
+  String get aiRoutineCreateAdLoadFailed => '无法加载广告。请检查网络连接后稍后再试。';
+
+  @override
   String get aiRoutineCreateError => '训练生成失败，请稍后重试。';
 
   @override

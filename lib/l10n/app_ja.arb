@@ -108,6 +108,7 @@
   "aiRoutineCreateAdLoading": "広告を読み込んでいます...",
   "aiRoutineCreatePromptRequired": "リクエスト内容を入力してください。",
   "aiRoutineCreateAdRequired": "広告視聴後にご利用いただけます。",
+  "aiRoutineCreateAdLoadFailed": "広告を読み込めませんでした。接続を確認して、しばらくしてからもう一度お試しください。",
   "aiRoutineCreateError": "ルーティンの生成に失敗しました。しばらくしてから再度お試しください。",
   "routineCountDuration": "{count} 種目 · {duration}",
   "routineNotFound": "ルーティンが見つかりません。",

@@ -1,20 +1,21 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:share_lib/share_lib.dart';
 
+enum RewardedAdOutcome {
+  rewarded,
+  dismissedEarly,
+  loadFailed,
+  skipped,
+}
+
 /// Shows a rewarded ad before AI routine generation.
 class RewardedAdGate {
   RewardedAdGate._();
 
-  static const _googleTestPublisher = '3940256099942544';
-  static const _iosProductionRewardedAd =
-      'ca-app-pub-5520596727761259/8278577702';
-  static const _androidProductionRewardedAd =
-      'ca-app-pub-5520596727761259/7135484056';
-  static const _loadTimeout = Duration(seconds: 20);
+  static const _loadTimeout = Duration(seconds: 25);
   static const _maxAttempts = 3;
 
   static RewardedAd? _preloadedAd;
@@ -57,13 +58,14 @@ class RewardedAdGate {
     );
   }
 
-  /// Returns true when the user earned the reward or ads are unavailable (dev).
-  static Future<bool> show() async {
+  static Future<RewardedAdOutcome> show() async {
     final adUnitId = _resolveAdUnitId();
     if (adUnitId == null) {
-      debugPrint('[RewardedAdGate] No ad unit id; skipping ad.');
-      return true;
+      debugPrint('[RewardedAdGate] No ad unit id from server; skipping ad.');
+      return RewardedAdOutcome.skipped;
     }
+
+    debugPrint('[RewardedAdGate] Using ad unit: $adUnitId');
 
     final preloaded = _takePreloadedAd(adUnitId);
     if (preloaded != null) {
@@ -73,16 +75,18 @@ class RewardedAdGate {
 
     for (var attempt = 1; attempt <= _maxAttempts; attempt++) {
       debugPrint(
-        '[RewardedAdGate] Loading rewarded ad (attempt $attempt/$_maxAttempts): $adUnitId',
+        '[RewardedAdGate] Loading rewarded ad (attempt $attempt/$_maxAttempts)',
       );
-      final rewarded = await _loadAndPresent(adUnitId);
-      if (rewarded) return true;
+      final outcome = await _loadAndPresent(adUnitId);
+      if (outcome != RewardedAdOutcome.loadFailed) {
+        return outcome;
+      }
       if (attempt < _maxAttempts) {
         await Future<void>.delayed(Duration(seconds: attempt));
       }
     }
 
-    return false;
+    return RewardedAdOutcome.loadFailed;
   }
 
   static RewardedAd? _takePreloadedAd(String adUnitId) {
@@ -99,27 +103,33 @@ class RewardedAdGate {
     _preloadedAdUnitId = null;
   }
 
-  static Future<bool> _loadAndPresent(String adUnitId) async {
-    final completer = Completer<bool>();
+  static Future<RewardedAdOutcome> _loadAndPresent(String adUnitId) async {
+    final completer = Completer<RewardedAdOutcome>();
     var rewarded = false;
+    var loaded = false;
 
     await RewardedAd.load(
       adUnitId: adUnitId,
       request: const AdRequest(),
       rewardedAdLoadCallback: RewardedAdLoadCallback(
         onAdLoaded: (ad) {
+          loaded = true;
           ad.fullScreenContentCallback = FullScreenContentCallback(
             onAdDismissedFullScreenContent: (ad) {
               ad.dispose();
               if (!completer.isCompleted) {
-                completer.complete(rewarded);
+                completer.complete(
+                  rewarded
+                      ? RewardedAdOutcome.rewarded
+                      : RewardedAdOutcome.dismissedEarly,
+                );
               }
             },
             onAdFailedToShowFullScreenContent: (ad, error) {
               debugPrint('[RewardedAdGate] Failed to show: $error');
               ad.dispose();
               if (!completer.isCompleted) {
-                completer.complete(false);
+                completer.complete(RewardedAdOutcome.loadFailed);
               }
             },
           );
@@ -132,7 +142,7 @@ class RewardedAdGate {
         onAdFailedToLoad: (error) {
           debugPrint('[RewardedAdGate] Failed to load: $error');
           if (!completer.isCompleted) {
-            completer.complete(kDebugMode);
+            completer.complete(RewardedAdOutcome.loadFailed);
           }
         },
       ),
@@ -141,28 +151,34 @@ class RewardedAdGate {
     return completer.future.timeout(
       _loadTimeout,
       onTimeout: () {
-        debugPrint('[RewardedAdGate] Load/show timed out');
-        return false;
+        debugPrint('[RewardedAdGate] Load/show timed out (loaded=$loaded)');
+        return loaded
+            ? RewardedAdOutcome.dismissedEarly
+            : RewardedAdOutcome.loadFailed;
       },
     );
   }
 
-  static Future<bool> _presentAd(RewardedAd ad) async {
-    final completer = Completer<bool>();
+  static Future<RewardedAdOutcome> _presentAd(RewardedAd ad) async {
+    final completer = Completer<RewardedAdOutcome>();
     var rewarded = false;
 
     ad.fullScreenContentCallback = FullScreenContentCallback(
       onAdDismissedFullScreenContent: (ad) {
         ad.dispose();
         if (!completer.isCompleted) {
-          completer.complete(rewarded);
+          completer.complete(
+            rewarded
+                ? RewardedAdOutcome.rewarded
+                : RewardedAdOutcome.dismissedEarly,
+          );
         }
       },
       onAdFailedToShowFullScreenContent: (ad, error) {
         debugPrint('[RewardedAdGate] Failed to show preloaded ad: $error');
         ad.dispose();
         if (!completer.isCompleted) {
-          completer.complete(false);
+          completer.complete(RewardedAdOutcome.loadFailed);
         }
       },
     );
@@ -177,33 +193,18 @@ class RewardedAdGate {
       _loadTimeout,
       onTimeout: () {
         debugPrint('[RewardedAdGate] Preloaded show timed out');
-        return false;
+        return rewarded
+            ? RewardedAdOutcome.rewarded
+            : RewardedAdOutcome.dismissedEarly;
       },
     );
   }
 
   static String? _resolveAdUnitId() {
     final configured = AdService.shared.rewardedAdId?.trim();
-    if (configured != null && configured.isNotEmpty) {
-      if (!kDebugMode && configured.contains(_googleTestPublisher)) {
-        debugPrint(
-          '[RewardedAdGate] Ignoring test ad unit in release; using production fallback.',
-        );
-        return _productionFallback();
-      }
-      return configured;
+    if (configured == null || configured.isEmpty) {
+      return null;
     }
-    if (kDebugMode) {
-      return Platform.isIOS
-          ? 'ca-app-pub-3940256099942544/1712485313'
-          : 'ca-app-pub-3940256099942544/5224354917';
-    }
-    return _productionFallback();
-  }
-
-  static String _productionFallback() {
-    return Platform.isIOS
-        ? _iosProductionRewardedAd
-        : _androidProductionRewardedAd;
+    return configured;
   }
 }
