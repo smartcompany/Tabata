@@ -418,6 +418,7 @@
       }
     }
   },
+  "healthWorkoutSaveFailedSnack": "未能保存到“健康”App。请确认应用设置中已开启“记录到 Apple 健康”，并已授予权限。",
   "healthPermissionRequiredSnack": "需要健康权限。请在 设置 > 健康 > 数据访问 中允许。",
   "healthFirstWorkoutPromptTitle": "保存 workout 到 Apple 健康？",
   "healthFirstWorkoutPromptBody": "若训练已设置健康 workout 类型，完成后可保存到“健康”App。选择“启用”会打开 Apple 系统权限窗口。之后可在应用设置中更改。",
@@ -426,7 +427,10 @@
   "healthConnectLabel": "保存到 Health Connect",
   "healthConnectInfoTitle": "Health Connect",
   "healthConnectSaveDetail": "若训练已设置运动类型，完成时会保存到 Google Health Connect。需安装 Health Connect 应用。可在此开关；首次开启会显示权限界面。",
-  "healthConnectActivityTypeDetail": "设置后，完成此训练会保存到 Health Connect。选择“不保存到健康”则跳过。需在应用设置中开启“保存到 Health Connect”。",
+  "healthConnectActivityTypeDetail": "设置后，完成此训练会保存到 Health Connect。选择“不保存到 Health Connect”则跳过。需在应用设置中开启“保存到 Health Connect”。",
+  "healthConnectActivityTypeNone": "不保存到 Health Connect",
+  "healthConnectReadyStatus": "可使用 Health Connect",
+  "healthConnectUnavailableStatus": "需要安装或更新 Health Connect 应用",
   "healthConnectRoutineWillSaveDetail": "完成此训练后将以{type}保存到 Health Connect。需在应用设置中开启“保存到 Health Connect”。",
   "@healthConnectRoutineWillSaveDetail": {
     "placeholders": {
@@ -443,9 +447,13 @@
       }
     }
   },
+  "healthConnectWorkoutSaveFailedSnack": "未能保存到 Health Connect。请确认应用设置中已开启“保存到 Health Connect”，并在 Health Connect 应用 > 应用权限中允许写入运动数据。",
   "healthConnectPermissionRequiredSnack": "需要 Health Connect 权限。请在 Health Connect 应用中允许本应用写入运动(EXERCISE)数据。",
   "healthConnectFirstWorkoutPromptTitle": "保存到 Health Connect？",
   "healthConnectFirstWorkoutPromptBody": "若训练已设置运动类型，完成后可保存到 Health Connect。选择“启用”会打开权限界面。可能需要先安装 Health Connect 应用。",
+  "healthConnectInstallPromptTitle": "需要安装 Health Connect",
+  "healthConnectInstallPromptBody": "此设备未安装 Health Connect。请从 Play Store 安装后重试。",
+  "healthConnectInstallPromptInstall": "安装",
   "workoutHistoryTitle": "训练记录",
   "workoutHistoryYearLabel": "年",
   "workoutHistoryMonthLabel": "月",

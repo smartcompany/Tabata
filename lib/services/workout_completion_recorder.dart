@@ -3,8 +3,8 @@ import 'package:tabata_timer/l10n/app_localizations.dart';
 import 'package:uuid/uuid.dart';
 
 import '../data/workout_history_repository.dart';
-import '../models/health_activity_type.dart';
 import '../models/routine.dart';
+import 'health_activity_catalog.dart';
 import '../models/workout_session_record.dart';
 import '../utils/health_platform_l10n.dart';
 import 'health_workout_recorder.dart';
@@ -55,19 +55,21 @@ class WorkoutCompletionRecorder {
       await _historyRepository.updateHealthSynced(sessionId, true);
     }
 
-    if (!context.mounted || !saved) return;
+    if (!context.mounted) return;
 
     final l10n = AppLocalizations.of(context);
     final platform = HealthPlatformL10n(l10n);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          platform.workoutSavedSnack(
-            RoutineHealthActivityType.labelFor(
-              l10n,
-              routine.healthActivityType!,
-            ),
-          ),
+          saved
+              ? platform.workoutSavedSnack(
+                  HealthActivityCatalog.labelFor(
+                    l10n,
+                    routine.healthActivityType!,
+                  ),
+                )
+              : platform.workoutSaveFailedSnack,
         ),
       ),
     );

@@ -1013,6 +1013,10 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
+  String get healthWorkoutSaveFailedSnack =>
+      'ヘルスケアアプリに保存できませんでした。アプリ設定で「Appleヘルスケアに記録」がオンか、権限が許可されているか確認してください。';
+
+  @override
   String get healthPermissionRequiredSnack =>
       'ヘルスケアの権限が必要です。設定 > ヘルスケア > データアクセスで許可してください。';
 
@@ -1041,7 +1045,17 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get healthConnectActivityTypeDetail =>
-      '種別を設定すると、このルーティン完了時にHealth Connectへワークアウトを保存します。「ヘルスケアに保存しない」で保存をスキップできます。アプリ設定の「Health Connectに記録」をオンにしてください。';
+      '種別を設定すると、このルーティン完了時にHealth Connectへワークアウトを保存します。「Health Connectに保存しない」を選べば保存しません。アプリ設定の「Health Connectに記録」をオンにしてください。';
+
+  @override
+  String get healthConnectActivityTypeNone => 'Health Connectに保存しない';
+
+  @override
+  String get healthConnectReadyStatus => 'Health Connectを利用できます';
+
+  @override
+  String get healthConnectUnavailableStatus =>
+      'Health Connectアプリのインストールまたは更新が必要です';
 
   @override
   String healthConnectRoutineWillSaveDetail(String type) {
@@ -1054,6 +1068,10 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
+  String get healthConnectWorkoutSaveFailedSnack =>
+      'Health Connectに保存できませんでした。アプリ設定で「Health Connectに記録」がオンか、Health Connectアプリ > アプリ権限で運動の書き込みが許可されているか確認してください。';
+
+  @override
   String get healthConnectPermissionRequiredSnack =>
       'Health Connectの権限が必要です。Health Connectアプリでこのアプリの運動(EXERCISE)書き込みを許可してください。';
 
@@ -1064,6 +1082,16 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get healthConnectFirstWorkoutPromptBody =>
       'ルーティンにワークアウト種別が設定されている場合、完了時にHealth Connectへ保存できます。「有効にする」で権限画面が開きます。Health Connectアプリのインストールが必要な場合があります。';
+
+  @override
+  String get healthConnectInstallPromptTitle => 'Health Connectのインストール';
+
+  @override
+  String get healthConnectInstallPromptBody =>
+      'この端末にHealth Connectがインストールされていません。Play Storeからインストールして再度お試しください。';
+
+  @override
+  String get healthConnectInstallPromptInstall => 'インストール';
 
   @override
   String get workoutHistoryTitle => 'ワークアウト履歴';

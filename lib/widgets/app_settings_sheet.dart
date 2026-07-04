@@ -6,6 +6,7 @@ import '../features/legal/privacy_processing_consent.dart';
 import '../screens/legal_webview_screen.dart';
 import '../services/content_settings.dart';
 import '../services/health_workout_recorder.dart';
+import '../services/health_permission_flow.dart';
 import '../services/workout_settings.dart';
 import '../utils/account_deletion.dart';
 import '../utils/health_platform_l10n.dart';
@@ -72,6 +73,10 @@ Future<void> showAppSettingsSheet(BuildContext hostContext) async {
                     value: saveToAppleHealth,
                     onChanged: (value) async {
                       if (value) {
+                        if (!await HealthPermissionFlow
+                            .ensureHealthAppReadyForPermission(context)) {
+                          return;
+                        }
                         final granted =
                             await HealthWorkoutRecorder.requestWritePermission();
                         if (!context.mounted) return;

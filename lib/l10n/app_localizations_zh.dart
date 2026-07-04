@@ -1004,6 +1004,10 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String get healthWorkoutSaveFailedSnack =>
+      '未能保存到“健康”App。请确认应用设置中已开启“记录到 Apple 健康”，并已授予权限。';
+
+  @override
   String get healthPermissionRequiredSnack => '需要健康权限。请在 设置 > 健康 > 数据访问 中允许。';
 
   @override
@@ -1031,7 +1035,16 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get healthConnectActivityTypeDetail =>
-      '设置后，完成此训练会保存到 Health Connect。选择“不保存到健康”则跳过。需在应用设置中开启“保存到 Health Connect”。';
+      '设置后，完成此训练会保存到 Health Connect。选择“不保存到 Health Connect”则跳过。需在应用设置中开启“保存到 Health Connect”。';
+
+  @override
+  String get healthConnectActivityTypeNone => '不保存到 Health Connect';
+
+  @override
+  String get healthConnectReadyStatus => '可使用 Health Connect';
+
+  @override
+  String get healthConnectUnavailableStatus => '需要安装或更新 Health Connect 应用';
 
   @override
   String healthConnectRoutineWillSaveDetail(String type) {
@@ -1044,6 +1057,10 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String get healthConnectWorkoutSaveFailedSnack =>
+      '未能保存到 Health Connect。请确认应用设置中已开启“保存到 Health Connect”，并在 Health Connect 应用 > 应用权限中允许写入运动数据。';
+
+  @override
   String get healthConnectPermissionRequiredSnack =>
       '需要 Health Connect 权限。请在 Health Connect 应用中允许本应用写入运动(EXERCISE)数据。';
 
@@ -1053,6 +1070,16 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get healthConnectFirstWorkoutPromptBody =>
       '若训练已设置运动类型，完成后可保存到 Health Connect。选择“启用”会打开权限界面。可能需要先安装 Health Connect 应用。';
+
+  @override
+  String get healthConnectInstallPromptTitle => '需要安装 Health Connect';
+
+  @override
+  String get healthConnectInstallPromptBody =>
+      '此设备未安装 Health Connect。请从 Play Store 安装后重试。';
+
+  @override
+  String get healthConnectInstallPromptInstall => '安装';
 
   @override
   String get workoutHistoryTitle => '训练记录';

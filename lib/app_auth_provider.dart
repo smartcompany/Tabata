@@ -23,15 +23,47 @@ class AppAuthProvider extends AuthProvider<User> {
         ) {
     SchedulerBinding.instance.addPostFrameCallback((_) {
       initialize();
-      final fbUser = FirebaseAuth.instance.currentUser;
-      if (fbUser != null) {
-        fbUser.getIdToken().then((token) {
-          if (token != null) {
-            TabataAuthApiService.shared.setToken(token);
-          }
-        });
-      }
     });
+  }
+
+  static bool isInvalidFirebaseUser(FirebaseAuthException error) {
+    if (error.code == 'user-not-found' ||
+        error.code == 'user-disabled' ||
+        error.code == 'invalid-user-token') {
+      return true;
+    }
+    final message = (error.message ?? '').toLowerCase();
+    return message.contains('no user record') ||
+        message.contains('may have been deleted');
+  }
+
+  /// 서버에서 삭제된 Firebase 계정 등 로컬 캐시만 남은 세션 정리.
+  Future<void> clearStaleFirebaseSession() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+    } catch (_) {}
+    setUserProfile(null);
+    TabataAuthApiService.shared.setToken('');
+    notifyListeners();
+  }
+
+  @override
+  Future<String?> getIdToken([bool forceRefresh = false]) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return null;
+    try {
+      final token = await user.getIdToken(forceRefresh);
+      if (token != null && token.isNotEmpty) {
+        TabataAuthApiService.shared.setToken(token);
+      }
+      return token;
+    } on FirebaseAuthException catch (error) {
+      if (isInvalidFirebaseUser(error)) {
+        await clearStaleFirebaseSession();
+        return null;
+      }
+      rethrow;
+    }
   }
 
   Future<void> ensureInitialized() async {
@@ -40,6 +72,9 @@ class AppAuthProvider extends AuthProvider<User> {
     }
     while (isInitializing) {
       await Future<void>.delayed(const Duration(milliseconds: 20));
+    }
+    if (FirebaseAuth.instance.currentUser != null) {
+      await getIdToken();
     }
   }
 
@@ -57,6 +92,12 @@ class AppAuthProvider extends AuthProvider<User> {
       final profile = await TabataAuthApiService.shared.getCurrentUser();
       setUserProfile(profile);
       return profile;
+    } on FirebaseAuthException catch (error) {
+      if (isInvalidFirebaseUser(error)) {
+        await clearStaleFirebaseSession();
+        return null;
+      }
+      rethrow;
     } on Exception catch (error) {
       if (error.toString().contains('PROFILE_NOT_SETUP')) {
         setUserProfile(null);

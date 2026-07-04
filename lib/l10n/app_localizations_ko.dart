@@ -1018,6 +1018,10 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
+  String get healthWorkoutSaveFailedSnack =>
+      '건강 앱에 저장하지 못했습니다. 설정에서 \"Apple 건강앱에 기록\"이 켜져 있는지, 권한이 허용됐는지 확인해 주세요.';
+
+  @override
   String get healthPermissionRequiredSnack =>
       '건강 앱 권한이 필요합니다. 설정 > 건강 > 데이터 접근에서 허용해 주세요.';
 
@@ -1046,7 +1050,17 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get healthConnectActivityTypeDetail =>
-      '운동 유형을 설정하면 이 루틴 완료 시 Health Connect에 운동으로 저장됩니다. \"건강 앱에 저장 안 함\"을 선택하면 저장하지 않습니다. 앱 설정에서 \"Health Connect에 기록\"이 켜져 있어야 합니다.';
+      '운동 유형을 설정하면 이 루틴 완료 시 Health Connect에 운동으로 저장됩니다. \"Health Connect에 저장 안 함\"을 선택하면 저장하지 않습니다. 앱 설정에서 \"Health Connect에 기록\"이 켜져 있어야 합니다.';
+
+  @override
+  String get healthConnectActivityTypeNone => 'Health Connect에 저장 안 함';
+
+  @override
+  String get healthConnectReadyStatus => 'Health Connect 사용 가능';
+
+  @override
+  String get healthConnectUnavailableStatus =>
+      'Health Connect 앱 설치 또는 업데이트가 필요합니다';
 
   @override
   String healthConnectRoutineWillSaveDetail(String type) {
@@ -1059,6 +1073,10 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
+  String get healthConnectWorkoutSaveFailedSnack =>
+      'Health Connect에 저장하지 못했습니다. 앱 설정에서 \"Health Connect에 기록\"이 켜져 있는지, Health Connect 앱 > 앱 권한에서 운동 쓰기 권한을 허용했는지 확인해 주세요.';
+
+  @override
   String get healthConnectPermissionRequiredSnack =>
       'Health Connect 권한이 필요합니다. Health Connect 앱에서 이 앱의 운동(EXERCISE) 쓰기 권한을 허용해 주세요.';
 
@@ -1069,6 +1087,16 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get healthConnectFirstWorkoutPromptBody =>
       '루틴에 운동 유형이 설정되어 있으면, 운동 완료 시 Health Connect에 기록을 저장할 수 있습니다. \'사용하기\'를 선택하면 권한 화면이 열립니다. Health Connect 앱 설치가 필요할 수 있습니다.';
+
+  @override
+  String get healthConnectInstallPromptTitle => 'Health Connect 설치 필요';
+
+  @override
+  String get healthConnectInstallPromptBody =>
+      '이 기기에 Health Connect가 설치되어 있지 않습니다. Play Store에서 설치한 뒤 다시 시도해 주세요.';
+
+  @override
+  String get healthConnectInstallPromptInstall => '설치하기';
 
   @override
   String get workoutHistoryTitle => '운동 기록';

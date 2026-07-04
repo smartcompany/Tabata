@@ -1039,6 +1039,10 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get healthWorkoutSaveFailedSnack =>
+      'Could not save to the Health app. Check that \"Save to Apple Health\" is on in app settings and that permission was granted.';
+
+  @override
   String get healthPermissionRequiredSnack =>
       'Health permission is required. Enable it in Settings > Health > Data Access.';
 
@@ -1067,7 +1071,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get healthConnectActivityTypeDetail =>
-      'When set, completing this routine saves a workout to Health Connect. Choose \"Do not save to Health\" to skip. Turn on \"Save to Health Connect\" in app settings.';
+      'When set, completing this routine saves a workout to Health Connect. Choose \"Do not save to Health Connect\" to skip. Turn on \"Save to Health Connect\" in app settings.';
+
+  @override
+  String get healthConnectActivityTypeNone => 'Do not save to Health Connect';
+
+  @override
+  String get healthConnectReadyStatus => 'Health Connect is available';
+
+  @override
+  String get healthConnectUnavailableStatus =>
+      'Install or update the Health Connect app';
 
   @override
   String healthConnectRoutineWillSaveDetail(String type) {
@@ -1080,6 +1094,10 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get healthConnectWorkoutSaveFailedSnack =>
+      'Could not save to Health Connect. Check that \"Save to Health Connect\" is on in app settings and that exercise write access is allowed for this app in the Health Connect app.';
+
+  @override
   String get healthConnectPermissionRequiredSnack =>
       'Health Connect permission is required. Allow exercise write access for this app in the Health Connect app.';
 
@@ -1090,6 +1108,16 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get healthConnectFirstWorkoutPromptBody =>
       'Completed workouts can be saved to Health Connect when a routine has a workout type set. Choose Enable to open the permission screen. You may need to install the Health Connect app.';
+
+  @override
+  String get healthConnectInstallPromptTitle => 'Install Health Connect';
+
+  @override
+  String get healthConnectInstallPromptBody =>
+      'Health Connect is not installed on this device. Install it from the Play Store and try again.';
+
+  @override
+  String get healthConnectInstallPromptInstall => 'Install';
 
   @override
   String get workoutHistoryTitle => 'Workout history';

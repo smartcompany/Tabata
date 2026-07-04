@@ -1914,6 +1914,12 @@ abstract class AppLocalizations {
   /// **'Saved as {type} in the Health app.'**
   String healthWorkoutSavedSnack(String type);
 
+  /// No description provided for @healthWorkoutSaveFailedSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save to the Health app. Check that \"Save to Apple Health\" is on in app settings and that permission was granted.'**
+  String get healthWorkoutSaveFailedSnack;
+
   /// No description provided for @healthPermissionRequiredSnack.
   ///
   /// In en, this message translates to:
@@ -1965,8 +1971,26 @@ abstract class AppLocalizations {
   /// No description provided for @healthConnectActivityTypeDetail.
   ///
   /// In en, this message translates to:
-  /// **'When set, completing this routine saves a workout to Health Connect. Choose \"Do not save to Health\" to skip. Turn on \"Save to Health Connect\" in app settings.'**
+  /// **'When set, completing this routine saves a workout to Health Connect. Choose \"Do not save to Health Connect\" to skip. Turn on \"Save to Health Connect\" in app settings.'**
   String get healthConnectActivityTypeDetail;
+
+  /// No description provided for @healthConnectActivityTypeNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Do not save to Health Connect'**
+  String get healthConnectActivityTypeNone;
+
+  /// No description provided for @healthConnectReadyStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Health Connect is available'**
+  String get healthConnectReadyStatus;
+
+  /// No description provided for @healthConnectUnavailableStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Install or update the Health Connect app'**
+  String get healthConnectUnavailableStatus;
 
   /// No description provided for @healthConnectRoutineWillSaveDetail.
   ///
@@ -1979,6 +2003,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Saved as {type} in Health Connect.'**
   String healthConnectWorkoutSavedSnack(String type);
+
+  /// No description provided for @healthConnectWorkoutSaveFailedSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save to Health Connect. Check that \"Save to Health Connect\" is on in app settings and that exercise write access is allowed for this app in the Health Connect app.'**
+  String get healthConnectWorkoutSaveFailedSnack;
 
   /// No description provided for @healthConnectPermissionRequiredSnack.
   ///
@@ -1997,6 +2027,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Completed workouts can be saved to Health Connect when a routine has a workout type set. Choose Enable to open the permission screen. You may need to install the Health Connect app.'**
   String get healthConnectFirstWorkoutPromptBody;
+
+  /// No description provided for @healthConnectInstallPromptTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Install Health Connect'**
+  String get healthConnectInstallPromptTitle;
+
+  /// No description provided for @healthConnectInstallPromptBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Health Connect is not installed on this device. Install it from the Play Store and try again.'**
+  String get healthConnectInstallPromptBody;
+
+  /// No description provided for @healthConnectInstallPromptInstall.
+  ///
+  /// In en, this message translates to:
+  /// **'Install'**
+  String get healthConnectInstallPromptInstall;
 
   /// No description provided for @workoutHistoryTitle.
   ///

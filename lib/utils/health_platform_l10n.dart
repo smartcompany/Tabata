@@ -26,6 +26,10 @@ class HealthPlatformL10n {
       ? l10n.healthConnectActivityTypeDetail
       : l10n.healthActivityTypeDetail;
 
+  String get activityTypeNone => isAndroid
+      ? l10n.healthConnectActivityTypeNone
+      : l10n.healthActivityTypeNone;
+
   String get activityTypeSection => isAndroid
       ? l10n.healthConnectInfoTitle
       : l10n.healthActivityTypeSection;
@@ -42,6 +46,10 @@ class HealthPlatformL10n {
       ? l10n.healthConnectPermissionRequiredSnack
       : l10n.healthPermissionRequiredSnack;
 
+  String get workoutSaveFailedSnack => isAndroid
+      ? l10n.healthConnectWorkoutSaveFailedSnack
+      : l10n.healthWorkoutSaveFailedSnack;
+
   String get firstWorkoutPromptTitle => isAndroid
       ? l10n.healthConnectFirstWorkoutPromptTitle
       : l10n.healthFirstWorkoutPromptTitle;
@@ -49,4 +57,9 @@ class HealthPlatformL10n {
   String get firstWorkoutPromptBody => isAndroid
       ? l10n.healthConnectFirstWorkoutPromptBody
       : l10n.healthFirstWorkoutPromptBody;
+
+  String get healthConnectReadyStatus => l10n.healthConnectReadyStatus;
+
+  String get healthConnectUnavailableStatus =>
+      l10n.healthConnectUnavailableStatus;
 }

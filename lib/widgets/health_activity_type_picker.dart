@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:tabata_timer/l10n/app_localizations.dart';
 
-import '../models/health_activity_type.dart';
+import '../services/health_activity_catalog.dart';
+import '../services/health_workout_recorder.dart';
 import '../utils/health_platform_l10n.dart';
 import 'health_app_info.dart';
 
-class HealthActivityTypePicker extends StatelessWidget {
+class HealthActivityTypePicker extends StatefulWidget {
   const HealthActivityTypePicker({
     super.key,
     required this.value,
@@ -19,12 +20,46 @@ class HealthActivityTypePicker extends StatelessWidget {
   /// When true, shows a filled/outline heart beside the header label.
   final bool showHeartStatus;
 
+  @override
+  State<HealthActivityTypePicker> createState() =>
+      _HealthActivityTypePickerState();
+}
+
+class _HealthActivityTypePickerState extends State<HealthActivityTypePicker> {
   static const _itemPadding = EdgeInsets.symmetric(horizontal: 16, vertical: 12);
 
+  bool? _healthAppReady;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadHealthAppReady();
+  }
+
+  Future<void> _loadHealthAppReady() async {
+    if (!HealthPlatformL10n.isAndroid) {
+      setState(() => _healthAppReady = true);
+      return;
+    }
+    final ready = await HealthWorkoutRecorder.isHealthAppReady();
+    if (!mounted) return;
+    setState(() => _healthAppReady = ready);
+  }
+
+  String? _selectedId() {
+    if (widget.value == null || widget.value!.isEmpty) return null;
+    if (HealthActivityCatalog.toWorkoutType(widget.value) != null) {
+      return widget.value;
+    }
+    return null;
+  }
+
   String _selectedLabel(AppLocalizations l10n) {
-    final type = RoutineHealthActivityType.fromId(value);
-    if (type == null) return l10n.healthActivityTypeNone;
-    return type.label(l10n);
+    final id = _selectedId();
+    if (id == null) {
+      return HealthPlatformL10n(l10n).activityTypeNone;
+    }
+    return HealthActivityCatalog.labelFor(l10n, id);
   }
 
   @override
@@ -33,8 +68,10 @@ class HealthActivityTypePicker extends StatelessWidget {
     final platform = HealthPlatformL10n(l10n);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final selectedValue = RoutineHealthActivityType.fromId(value)?.id;
+    final activityOptions = HealthActivityCatalog.options(l10n);
+    final selectedValue = _selectedId();
     final isSelected = selectedValue != null;
+    final healthAppReady = _healthAppReady;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -45,7 +82,7 @@ class HealthActivityTypePicker extends StatelessWidget {
           children: [
             Row(
               children: [
-                if (showHeartStatus) ...[
+                if (widget.showHeartStatus) ...[
                   Icon(
                     isSelected ? Icons.favorite : Icons.favorite_outline,
                     size: 22,
@@ -68,59 +105,84 @@ class HealthActivityTypePicker extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 10),
-            DropdownMenu<String?>(
-              key: ValueKey<String?>('health-type-$selectedValue'),
-              width: menuWidth,
-              initialSelection: selectedValue,
-              expandedInsets: EdgeInsets.zero,
-              requestFocusOnTap: false,
-              hintText: l10n.healthActivityTypeNone,
-              textStyle: theme.textTheme.bodyLarge,
-              menuStyle: MenuStyle(
-                alignment: AlignmentDirectional.bottomStart,
-                maximumSize: WidgetStatePropertyAll(Size(menuWidth, 360)),
+            if (HealthPlatformL10n.isAndroid && healthAppReady != null) ...[
+              const SizedBox(height: 6),
+              Text(
+                healthAppReady
+                    ? platform.healthConnectReadyStatus
+                    : platform.healthConnectUnavailableStatus,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: healthAppReady
+                      ? colorScheme.primary
+                      : colorScheme.error,
+                ),
               ),
-              inputDecorationTheme: InputDecorationTheme(
-                filled: true,
-                fillColor: colorScheme.surfaceContainerHighest.withValues(
-                  alpha: 0.35,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: colorScheme.outline),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: colorScheme.outline),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(
-                    color: colorScheme.primary,
-                    width: 2,
+            ],
+            const SizedBox(height: 10),
+            if (HealthPlatformL10n.isAndroid && healthAppReady == false)
+              OutlinedButton.icon(
+                onPressed: () async {
+                  await HealthWorkoutRecorder.promptInstallHealthConnect();
+                  await _loadHealthAppReady();
+                },
+                icon: const Icon(Icons.download_outlined, size: 18),
+                label: Text(l10n.healthConnectInstallPromptInstall),
+              )
+            else if (healthAppReady != false)
+              DropdownMenu<String?>(
+                key: ValueKey<String?>('health-type-$selectedValue'),
+                width: menuWidth,
+                initialSelection: selectedValue,
+                expandedInsets: EdgeInsets.zero,
+                requestFocusOnTap: false,
+                hintText: platform.activityTypeNone,
+                textStyle: theme.textTheme.bodyLarge,
+                menuStyle: MenuStyle(
+                  alignment: AlignmentDirectional.bottomStart,
+                  maximumSize: WidgetStatePropertyAll(
+                    Size(menuWidth, HealthActivityCatalog.usesHealthConnectList ? 420 : 360),
                   ),
                 ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 14,
+                inputDecorationTheme: InputDecorationTheme(
+                  filled: true,
+                  fillColor: colorScheme.surfaceContainerHighest.withValues(
+                    alpha: 0.35,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: colorScheme.outline),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: colorScheme.outline),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                      color: colorScheme.primary,
+                      width: 2,
+                    ),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 14,
+                  ),
                 ),
-              ),
-              dropdownMenuEntries: [
-                DropdownMenuEntry<String?>(
-                  value: null,
-                  label: l10n.healthActivityTypeNone,
-                  style: MenuItemButton.styleFrom(padding: _itemPadding),
-                ),
-                for (final type in RoutineHealthActivityType.values)
+                dropdownMenuEntries: [
                   DropdownMenuEntry<String?>(
-                    value: type.id,
-                    label: type.label(l10n),
+                    value: null,
+                    label: platform.activityTypeNone,
                     style: MenuItemButton.styleFrom(padding: _itemPadding),
                   ),
-              ],
-              onSelected: onChanged,
-            ),
+                  for (final option in activityOptions)
+                    DropdownMenuEntry<String?>(
+                      value: option.id,
+                      label: option.label,
+                      style: MenuItemButton.styleFrom(padding: _itemPadding),
+                    ),
+                ],
+                onSelected: widget.onChanged,
+              ),
           ],
         );
       },
