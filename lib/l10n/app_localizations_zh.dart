@@ -911,4 +911,46 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get healthFirstWorkoutPromptNotNow => '稍后';
+
+  @override
+  String get workoutHistoryTitle => '训练记录';
+
+  @override
+  String get workoutHistoryYearLabel => '年';
+
+  @override
+  String get workoutHistoryMonthLabel => '月';
+
+  @override
+  String workoutHistoryMonthWorkouts(int count) {
+    return '训练 $count 次';
+  }
+
+  @override
+  String workoutHistoryMonthDuration(String duration) {
+    return '共 $duration';
+  }
+
+  @override
+  String get workoutHistoryChartTitle => '每日训练时长（分钟）';
+
+  @override
+  String get workoutHistoryCalendarTitle => '日历';
+
+  @override
+  String workoutHistoryDayTitle(String date) {
+    return '$date 的训练';
+  }
+
+  @override
+  String get workoutHistoryEmptyDay => '这一天没有训练记录。';
+
+  @override
+  String workoutHistorySessionSubtitle(
+    String time,
+    String duration,
+    int count,
+  ) {
+    return '$time · $duration · $count 个动作';
+  }
 }

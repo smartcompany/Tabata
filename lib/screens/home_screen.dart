@@ -3,6 +3,7 @@ import 'package:tabata_timer/l10n/app_localizations.dart';
 
 import '../data/routine_factory.dart';
 import '../data/routine_repository.dart';
+import '../data/workout_history_repository.dart';
 import '../models/profile_summary.dart';
 import '../models/routine.dart';
 import '../services/ai_routine_service.dart';
@@ -11,6 +12,7 @@ import '../services/content_settings.dart';
 import '../services/routine_api_client.dart';
 import '../services/shared_routine_link_coordinator.dart';
 import '../services/share_link_log.dart';
+import '../services/workout_completion_recorder.dart';
 import '../utils/auth_helper.dart';
 import '../utils/duration_calculator.dart';
 import 'admin_upload_routine_screen.dart';
@@ -18,6 +20,7 @@ import 'ai_routine_create_screen.dart';
 import 'routine_detail_screen.dart';
 import 'routine_editor_screen.dart';
 import 'upload_routine_screen.dart';
+import 'workout_history_screen.dart';
 import '../widgets/app_settings_sheet.dart';
 import '../widgets/swipe_reveal_delete.dart';
 
@@ -25,12 +28,16 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({
     super.key,
     required this.repository,
+    required this.workoutHistoryRepository,
+    required this.workoutCompletionRecorder,
     required this.apiClient,
     required this.adminSession,
     required this.linkCoordinator,
   });
 
   final RoutineRepository repository;
+  final WorkoutHistoryRepository workoutHistoryRepository;
+  final WorkoutCompletionRecorder workoutCompletionRecorder;
   final RoutineApiClient apiClient;
   final AdminSession adminSession;
   final SharedRoutineLinkCoordinator linkCoordinator;
@@ -244,6 +251,7 @@ class _HomeScreenState extends State<HomeScreen>
       MaterialPageRoute(
         builder: (_) => RoutineDetailScreen(
           repository: widget.repository,
+          workoutCompletionRecorder: widget.workoutCompletionRecorder,
           catalogId: catalogId,
         ),
       ),
@@ -283,6 +291,7 @@ class _HomeScreenState extends State<HomeScreen>
       MaterialPageRoute(
         builder: (_) => RoutineDetailScreen(
           repository: widget.repository,
+          workoutCompletionRecorder: widget.workoutCompletionRecorder,
           routineId: routineId,
         ),
       ),
@@ -310,6 +319,19 @@ class _HomeScreenState extends State<HomeScreen>
           child: Text(l10n.appTitle),
         ),
         actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => WorkoutHistoryScreen(
+                    historyRepository: widget.workoutHistoryRepository,
+                  ),
+                ),
+              );
+            },
+            icon: const Icon(Icons.history),
+            tooltip: l10n.workoutHistoryTitle,
+          ),
           IconButton(
             onPressed: () => showAppSettingsSheet(context),
             icon: const Icon(Icons.settings_outlined),

@@ -922,4 +922,46 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get healthFirstWorkoutPromptNotNow => 'あとで';
+
+  @override
+  String get workoutHistoryTitle => 'ワークアウト履歴';
+
+  @override
+  String get workoutHistoryYearLabel => '年';
+
+  @override
+  String get workoutHistoryMonthLabel => '月';
+
+  @override
+  String workoutHistoryMonthWorkouts(int count) {
+    return 'ワークアウト $count回';
+  }
+
+  @override
+  String workoutHistoryMonthDuration(String duration) {
+    return '合計 $duration';
+  }
+
+  @override
+  String get workoutHistoryChartTitle => '日別ワークアウト時間（分）';
+
+  @override
+  String get workoutHistoryCalendarTitle => 'カレンダー';
+
+  @override
+  String workoutHistoryDayTitle(String date) {
+    return '$date のセッション';
+  }
+
+  @override
+  String get workoutHistoryEmptyDay => 'この日の記録はありません。';
+
+  @override
+  String workoutHistorySessionSubtitle(
+    String time,
+    String duration,
+    int count,
+  ) {
+    return '$time · $duration · 種目 $count';
+  }
 }

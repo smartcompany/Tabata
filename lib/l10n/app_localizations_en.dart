@@ -943,4 +943,46 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get healthFirstWorkoutPromptNotNow => 'Not now';
+
+  @override
+  String get workoutHistoryTitle => 'Workout history';
+
+  @override
+  String get workoutHistoryYearLabel => 'Year';
+
+  @override
+  String get workoutHistoryMonthLabel => 'Month';
+
+  @override
+  String workoutHistoryMonthWorkouts(int count) {
+    return '$count workouts';
+  }
+
+  @override
+  String workoutHistoryMonthDuration(String duration) {
+    return '$duration total';
+  }
+
+  @override
+  String get workoutHistoryChartTitle => 'Daily workout time (minutes)';
+
+  @override
+  String get workoutHistoryCalendarTitle => 'Calendar';
+
+  @override
+  String workoutHistoryDayTitle(String date) {
+    return 'Sessions on $date';
+  }
+
+  @override
+  String get workoutHistoryEmptyDay => 'No workouts on this day.';
+
+  @override
+  String workoutHistorySessionSubtitle(
+    String time,
+    String duration,
+    int count,
+  ) {
+    return '$time · $duration · $count exercises';
+  }
 }

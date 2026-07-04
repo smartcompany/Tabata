@@ -61,7 +61,7 @@ class RewardedAdGate {
   static Future<RewardedAdOutcome> show() async {
     final adUnitId = _resolveAdUnitId();
     if (adUnitId == null) {
-      debugPrint('[RewardedAdGate] No ad unit id; skipping ad.');
+      debugPrint('[RewardedAdGate] No ad unit id from server; skipping ad.');
       return RewardedAdOutcome.skipped;
     }
 

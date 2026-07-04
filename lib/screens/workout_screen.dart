@@ -7,10 +7,9 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 
 import '../engine/workout_timer_engine.dart';
 import '../engine/workout_timer_labels.dart';
-import '../models/health_activity_type.dart';
 import '../models/routine.dart';
-import '../services/health_workout_recorder.dart';
 import '../services/workout_announce_gap.dart';
+import '../services/workout_completion_recorder.dart';
 import '../services/workout_settings.dart';
 import '../services/workout_sound_coach.dart';
 import '../services/workout_voice_coach.dart';
@@ -21,9 +20,14 @@ import '../widgets/app_settings_sheet.dart';
 import '../widgets/workout_phase_stage.dart';
 
 class WorkoutScreen extends StatefulWidget {
-  const WorkoutScreen({super.key, required this.routine});
+  const WorkoutScreen({
+    super.key,
+    required this.routine,
+    required this.completionRecorder,
+  });
 
   final Routine routine;
+  final WorkoutCompletionRecorder completionRecorder;
 
   @override
   State<WorkoutScreen> createState() => _WorkoutScreenState();
@@ -43,7 +47,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
   WorkoutTimerSnapshot? _lastSoundSnapshot;
   Future<void>? _announceQueue;
   bool _countSecondsWithTts = true;
-  bool _healthRecorded = false;
+  bool _completionRecorded = false;
 
   @override
   void initState() {
@@ -115,47 +119,21 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     setState(() {});
     if (_engine!.snapshot.isCompleted) {
       HapticFeedback.mediumImpact();
-      _maybeRecordHealthWorkout();
+      _maybeRecordCompletion();
     }
   }
 
-  Future<void> _maybeRecordHealthWorkout() async {
-    if (_healthRecorded) return;
-    _healthRecorded = true;
-
-    final routine = widget.routine;
-    if (routine.healthActivityType == null) return;
-
-    final settings = await WorkoutSettings.load();
-    if (!settings.saveToAppleHealth) return;
+  Future<void> _maybeRecordCompletion() async {
+    if (_completionRecorded) return;
+    _completionRecorded = true;
 
     final engine = _engine;
     if (engine == null || !mounted) return;
 
-    final elapsedSec = engine.elapsedSec;
-    if (elapsedSec <= 0) return;
-
-    final end = DateTime.now();
-    final start = end.subtract(Duration(seconds: elapsedSec));
-    final saved = await HealthWorkoutRecorder.recordCompletedWorkout(
-      routine: routine,
-      start: start,
-      end: end,
-    );
-    if (!mounted || !saved) return;
-
-    final l10n = AppLocalizations.of(context);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          l10n.healthWorkoutSavedSnack(
-            RoutineHealthActivityType.labelFor(
-              l10n,
-              routine.healthActivityType!,
-            ),
-          ),
-        ),
-      ),
+    await widget.completionRecorder.recordCompletedWorkout(
+      context: context,
+      routine: widget.routine,
+      elapsedSec: engine.elapsedSec,
     );
   }
 

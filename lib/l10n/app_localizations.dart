@@ -1757,6 +1757,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Not now'**
   String get healthFirstWorkoutPromptNotNow;
+
+  /// No description provided for @workoutHistoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout history'**
+  String get workoutHistoryTitle;
+
+  /// No description provided for @workoutHistoryYearLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Year'**
+  String get workoutHistoryYearLabel;
+
+  /// No description provided for @workoutHistoryMonthLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Month'**
+  String get workoutHistoryMonthLabel;
+
+  /// No description provided for @workoutHistoryMonthWorkouts.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} workouts'**
+  String workoutHistoryMonthWorkouts(int count);
+
+  /// No description provided for @workoutHistoryMonthDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'{duration} total'**
+  String workoutHistoryMonthDuration(String duration);
+
+  /// No description provided for @workoutHistoryChartTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily workout time (minutes)'**
+  String get workoutHistoryChartTitle;
+
+  /// No description provided for @workoutHistoryCalendarTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar'**
+  String get workoutHistoryCalendarTitle;
+
+  /// No description provided for @workoutHistoryDayTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sessions on {date}'**
+  String workoutHistoryDayTitle(String date);
+
+  /// No description provided for @workoutHistoryEmptyDay.
+  ///
+  /// In en, this message translates to:
+  /// **'No workouts on this day.'**
+  String get workoutHistoryEmptyDay;
+
+  /// No description provided for @workoutHistorySessionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{time} · {duration} · {count} exercises'**
+  String workoutHistorySessionSubtitle(String time, String duration, int count);
 }
 
 class _AppLocalizationsDelegate

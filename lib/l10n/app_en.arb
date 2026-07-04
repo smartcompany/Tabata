@@ -463,5 +463,49 @@
   "healthFirstWorkoutPromptTitle": "Save workouts to Apple Health?",
   "healthFirstWorkoutPromptBody": "Completed workouts can be saved to the Health app when a routine has a Health workout type set. Choose Enable to turn this on — Apple will show a system permission sheet. You can change this later in app settings.",
   "healthFirstWorkoutPromptEnable": "Enable",
-  "healthFirstWorkoutPromptNotNow": "Not now"
+  "healthFirstWorkoutPromptNotNow": "Not now",
+  "workoutHistoryTitle": "Workout history",
+  "workoutHistoryYearLabel": "Year",
+  "workoutHistoryMonthLabel": "Month",
+  "workoutHistoryMonthWorkouts": "{count} workouts",
+  "@workoutHistoryMonthWorkouts": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutHistoryMonthDuration": "{duration} total",
+  "@workoutHistoryMonthDuration": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutHistoryChartTitle": "Daily workout time (minutes)",
+  "workoutHistoryCalendarTitle": "Calendar",
+  "workoutHistoryDayTitle": "Sessions on {date}",
+  "@workoutHistoryDayTitle": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutHistoryEmptyDay": "No workouts on this day.",
+  "workoutHistorySessionSubtitle": "{time} · {duration} · {count} exercises",
+  "@workoutHistorySessionSubtitle": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

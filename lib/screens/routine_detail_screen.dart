@@ -10,6 +10,7 @@ import '../models/health_activity_type.dart';
 import '../models/routine.dart';
 import '../services/health_permission_flow.dart';
 import '../services/routine_share_api.dart';
+import '../services/workout_completion_recorder.dart';
 import '../services/routine_share_service.dart';
 import '../utils/duration_calculator.dart';
 import '../widgets/description_blocks_view.dart';
@@ -23,6 +24,7 @@ class RoutineDetailScreen extends StatefulWidget {
   const RoutineDetailScreen({
     super.key,
     required this.repository,
+    required this.workoutCompletionRecorder,
     this.routineId,
     this.catalogId,
   }) : assert(
@@ -31,6 +33,7 @@ class RoutineDetailScreen extends StatefulWidget {
         );
 
   final RoutineRepository repository;
+  final WorkoutCompletionRecorder workoutCompletionRecorder;
   final String? routineId;
   final String? catalogId;
 
@@ -201,6 +204,7 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
       MaterialPageRoute(
         builder: (_) => RoutineDetailScreen(
           repository: widget.repository,
+          workoutCompletionRecorder: widget.workoutCompletionRecorder,
           routineId: saved.first.id,
         ),
       ),
@@ -215,7 +219,10 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
 
     await Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => WorkoutScreen(routine: routine),
+        builder: (_) => WorkoutScreen(
+          routine: routine,
+          completionRecorder: widget.workoutCompletionRecorder,
+        ),
         fullscreenDialog: true,
       ),
     );

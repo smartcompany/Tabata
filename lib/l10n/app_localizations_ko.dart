@@ -926,4 +926,46 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get healthFirstWorkoutPromptNotNow => '나중에';
+
+  @override
+  String get workoutHistoryTitle => '운동 기록';
+
+  @override
+  String get workoutHistoryYearLabel => '연도';
+
+  @override
+  String get workoutHistoryMonthLabel => '월';
+
+  @override
+  String workoutHistoryMonthWorkouts(int count) {
+    return '운동 $count회';
+  }
+
+  @override
+  String workoutHistoryMonthDuration(String duration) {
+    return '총 $duration';
+  }
+
+  @override
+  String get workoutHistoryChartTitle => '일별 운동 시간 (분)';
+
+  @override
+  String get workoutHistoryCalendarTitle => '달력';
+
+  @override
+  String workoutHistoryDayTitle(String date) {
+    return '$date 운동';
+  }
+
+  @override
+  String get workoutHistoryEmptyDay => '이 날 운동 기록이 없습니다.';
+
+  @override
+  String workoutHistorySessionSubtitle(
+    String time,
+    String duration,
+    int count,
+  ) {
+    return '$time · $duration · 운동 $count개';
+  }
 }

@@ -354,5 +354,49 @@
   "healthFirstWorkoutPromptTitle": "Appleヘルスケアにワークアウトを保存しますか？",
   "healthFirstWorkoutPromptBody": "ルーティンにヘルスケアのワークアウト種別が設定されている場合、完了時にヘルスケアアプリへ保存できます。「有効にする」を選ぶとAppleのシステム権限画面が開きます。後からアプリ設定で変更できます。",
   "healthFirstWorkoutPromptEnable": "有効にする",
-  "healthFirstWorkoutPromptNotNow": "あとで"
+  "healthFirstWorkoutPromptNotNow": "あとで",
+  "workoutHistoryTitle": "ワークアウト履歴",
+  "workoutHistoryYearLabel": "年",
+  "workoutHistoryMonthLabel": "月",
+  "workoutHistoryMonthWorkouts": "ワークアウト {count}回",
+  "@workoutHistoryMonthWorkouts": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutHistoryMonthDuration": "合計 {duration}",
+  "@workoutHistoryMonthDuration": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutHistoryChartTitle": "日別ワークアウト時間（分）",
+  "workoutHistoryCalendarTitle": "カレンダー",
+  "workoutHistoryDayTitle": "{date} のセッション",
+  "@workoutHistoryDayTitle": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutHistoryEmptyDay": "この日の記録はありません。",
+  "workoutHistorySessionSubtitle": "{time} · {duration} · 種目 {count}",
+  "@workoutHistorySessionSubtitle": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

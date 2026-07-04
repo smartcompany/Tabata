@@ -354,5 +354,49 @@
   "healthFirstWorkoutPromptTitle": "保存 workout 到 Apple 健康？",
   "healthFirstWorkoutPromptBody": "若训练已设置健康 workout 类型，完成后可保存到“健康”App。选择“启用”会打开 Apple 系统权限窗口。之后可在应用设置中更改。",
   "healthFirstWorkoutPromptEnable": "启用",
-  "healthFirstWorkoutPromptNotNow": "稍后"
+  "healthFirstWorkoutPromptNotNow": "稍后",
+  "workoutHistoryTitle": "训练记录",
+  "workoutHistoryYearLabel": "年",
+  "workoutHistoryMonthLabel": "月",
+  "workoutHistoryMonthWorkouts": "训练 {count} 次",
+  "@workoutHistoryMonthWorkouts": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutHistoryMonthDuration": "共 {duration}",
+  "@workoutHistoryMonthDuration": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutHistoryChartTitle": "每日训练时长（分钟）",
+  "workoutHistoryCalendarTitle": "日历",
+  "workoutHistoryDayTitle": "{date} 的训练",
+  "@workoutHistoryDayTitle": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutHistoryEmptyDay": "这一天没有训练记录。",
+  "workoutHistorySessionSubtitle": "{time} · {duration} · {count} 个动作",
+  "@workoutHistorySessionSubtitle": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

@@ -12,6 +12,7 @@ import 'package:tabata_timer/l10n/app_localizations.dart';
 
 import 'config/kakao_config.dart';
 import 'data/routine_repository.dart';
+import 'data/workout_history_repository.dart';
 import 'firebase_options.dart';
 import 'screens/home_screen.dart';
 import 'services/admin_session.dart';
@@ -19,6 +20,7 @@ import 'services/ad_settings.dart';
 import 'services/content_settings.dart';
 import 'services/locale_settings.dart';
 import 'services/rewarded_ad_gate.dart';
+import 'services/workout_completion_recorder.dart';
 import 'services/routine_api_client.dart';
 import 'services/routine_content_localizer.dart';
 import 'services/routine_share_api.dart';
@@ -58,6 +60,10 @@ Future<void> main() async {
   );
   final apiClient = RoutineApiClient(contentLocalizer: contentLocalizer);
   final repository = await RoutineRepository.create(apiClient: apiClient);
+  final workoutHistoryRepository = await WorkoutHistoryRepository.create();
+  final workoutCompletionRecorder = WorkoutCompletionRecorder(
+    workoutHistoryRepository,
+  );
   final adminSession = await AdminSession.create();
   await AdSettings.initialize();
   if (!kIsWeb) {
@@ -73,6 +79,8 @@ Future<void> main() async {
 
   runApp(TabataApp(
     repository: repository,
+    workoutHistoryRepository: workoutHistoryRepository,
+    workoutCompletionRecorder: workoutCompletionRecorder,
     apiClient: apiClient,
     adminSession: adminSession,
     navigatorKey: navigatorKey,
@@ -84,6 +92,8 @@ class TabataApp extends StatefulWidget {
   const TabataApp({
     super.key,
     required this.repository,
+    required this.workoutHistoryRepository,
+    required this.workoutCompletionRecorder,
     required this.apiClient,
     required this.adminSession,
     required this.navigatorKey,
@@ -91,6 +101,8 @@ class TabataApp extends StatefulWidget {
   });
 
   final RoutineRepository repository;
+  final WorkoutHistoryRepository workoutHistoryRepository;
+  final WorkoutCompletionRecorder workoutCompletionRecorder;
   final RoutineApiClient apiClient;
   final AdminSession adminSession;
   final GlobalKey<NavigatorState> navigatorKey;
@@ -167,6 +179,8 @@ class _TabataAppState extends State<TabataApp> with WidgetsBindingObserver {
       },
       home: HomeScreen(
         repository: widget.repository,
+        workoutHistoryRepository: widget.workoutHistoryRepository,
+        workoutCompletionRecorder: widget.workoutCompletionRecorder,
         apiClient: widget.apiClient,
         adminSession: widget.adminSession,
         linkCoordinator: widget.linkCoordinator,
