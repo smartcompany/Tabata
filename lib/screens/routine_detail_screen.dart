@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:tabata_timer/l10n/app_localizations.dart';
 
@@ -5,12 +7,15 @@ import '../data/routine_repository.dart';
 import '../data/routine_factory.dart';
 import '../models/exercise.dart';
 import '../models/routine.dart';
+import '../services/routine_schedule_service.dart';
 import '../services/routine_share_api.dart';
 import '../services/routine_share_service.dart';
 import '../utils/duration_calculator.dart';
 import '../widgets/description_blocks_view.dart';
 import '../widgets/exercise_summary.dart';
+import '../widgets/routine_schedule_sheet.dart';
 import '../widgets/routine_share_sheet.dart';
+import '../models/routine_schedule.dart';
 import 'exercise_editor_screen.dart';
 import 'routine_editor_screen.dart';
 import 'workout_screen.dart';
@@ -36,6 +41,7 @@ class RoutineDetailScreen extends StatefulWidget {
 
 class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
   Routine? _routine;
+  RoutineSchedule? _schedule;
   bool _loadingCatalog = false;
   String? _catalogLoadError;
   bool _downloading = false;
@@ -51,7 +57,21 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
       _loadCatalogRoutine();
     } else {
       _routine = widget.repository.findById(widget.routineId!);
+      _refreshSchedule();
     }
+  }
+
+  void _refreshSchedule() {
+    final routineId = widget.routineId;
+    if (routineId == null) return;
+    final schedule = RoutineScheduleService.shared.scheduleFor(routineId);
+    if (schedule != null && schedule.isExpired(DateTime.now())) {
+      unawaited(RoutineScheduleService.shared.cancelForRoutine(routineId));
+      _schedule = null;
+      return;
+    }
+    _schedule =
+        schedule != null && schedule.isActiveAt(DateTime.now()) ? schedule : null;
   }
 
   Future<void> _loadCatalogRoutine() async {
@@ -161,6 +181,7 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
     );
     if (confirmed != true || !mounted) return;
 
+    await RoutineScheduleService.shared.cancelForRoutine(widget.routineId!);
     await widget.repository.delete(widget.routineId!);
     if (!mounted) return;
     Navigator.of(context).pop();
@@ -222,6 +243,29 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
     final routine = _routine;
     if (routine == null) return;
     _openWorkout(routine.forSingleExercise(exercise));
+  }
+
+  Future<void> _openScheduleSheet() async {
+    final routine = _routine;
+    if (routine == null || _isCatalogPreview) return;
+
+    final changed = await RoutineScheduleSheet.show(
+      context,
+      routine: routine,
+      existing: _schedule,
+    );
+    if (!mounted) return;
+    if (changed == true) {
+      setState(_refreshSchedule);
+    }
+  }
+
+  String? _scheduleLabel(AppLocalizations l10n) {
+    final schedule = _schedule;
+    if (schedule == null || !schedule.isActiveAt(DateTime.now())) {
+      return null;
+    }
+    return schedule.summary(l10n, MaterialLocalizations.of(context));
   }
 
   Future<void> _editExercise(Exercise exercise) async {
@@ -405,6 +449,28 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
             const SizedBox(height: 16),
           ],
           EstimatedDurationCard(totalSec: totalSec),
+          if (!_isCatalogPreview && _scheduleLabel(l10n) != null) ...[
+            Card(
+              color: Theme.of(context).colorScheme.primaryContainer,
+              child: ListTile(
+                leading: Icon(
+                  Icons.notifications_active,
+                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                ),
+                title: Text(
+                  _scheduleLabel(l10n)!,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+                  ),
+                ),
+                trailing: TextButton(
+                  onPressed: _openScheduleSheet,
+                  child: Text(l10n.editTooltip),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
           const SizedBox(height: 20),
           Row(
             children: [
@@ -414,6 +480,29 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
               ),
+              if (!_isCatalogPreview &&
+                  RoutineScheduleService.shared.isSupported)
+                Tooltip(
+                  message: l10n.scheduleWorkoutTooltip,
+                  child: OutlinedButton.icon(
+                    onPressed: _openScheduleSheet,
+                    icon: Icon(
+                      _schedule != null &&
+                              _schedule!.isActiveAt(DateTime.now())
+                          ? Icons.notifications_active
+                          : Icons.notifications_outlined,
+                      size: 18,
+                    ),
+                    label: Text(l10n.scheduleWorkoutTooltip),
+                    style: OutlinedButton.styleFrom(
+                      visualDensity: VisualDensity.compact,
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                    ),
+                  ),
+                ),
+              if (!_isCatalogPreview &&
+                  RoutineScheduleService.shared.isSupported)
+                const SizedBox(width: 8),
               FilledButton.icon(
                 onPressed: _start,
                 icon: const Icon(Icons.play_arrow, size: 18),

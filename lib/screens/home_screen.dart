@@ -11,6 +11,7 @@ import '../services/content_settings.dart';
 import '../services/routine_api_client.dart';
 import '../services/shared_routine_link_coordinator.dart';
 import '../services/share_link_log.dart';
+import '../services/workout_launch_coordinator.dart';
 import '../utils/auth_helper.dart';
 import '../utils/duration_calculator.dart';
 import 'admin_upload_routine_screen.dart';
@@ -28,12 +29,14 @@ class HomeScreen extends StatefulWidget {
     required this.apiClient,
     required this.adminSession,
     required this.linkCoordinator,
+    required this.workoutLaunchCoordinator,
   });
 
   final RoutineRepository repository;
   final RoutineApiClient apiClient;
   final AdminSession adminSession;
   final SharedRoutineLinkCoordinator linkCoordinator;
+  final WorkoutLaunchCoordinator workoutLaunchCoordinator;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -68,6 +71,7 @@ class _HomeScreenState extends State<HomeScreen>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       shareLinkLog('HomeScreen first frame — onHomeReady');
       widget.linkCoordinator.onHomeReady();
+      widget.workoutLaunchCoordinator.onHomeReady();
     });
     ContentSettings.addListener(_onCatalogRefreshPreferencesChanged);
     _loadCatalogInitial();

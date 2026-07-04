@@ -321,5 +321,65 @@
   "privacyProcessingConsentCheckboxPrivacy": "上記の個人情報の収集・利用に同意します。",
   "privacyProcessingConsentCheckboxUgc": "共有ルーティン（UGC）規則と無容認政策に同意します。",
   "privacyProcessingConsentAgree": "同意して続ける",
-  "privacyProcessingConsentDecline": "同意しない"
+  "privacyProcessingConsentDecline": "同意しない",
+  "scheduleWorkoutTooltip": "予約",
+  "scheduleWorkoutTitle": "ワークアウト予約",
+  "scheduleWorkoutDate": "日付",
+  "scheduleWorkoutTime": "時間",
+  "scheduleWorkoutConfirm": "予約する",
+  "scheduleWorkoutCancelExisting": "予約をキャンセル",
+  "scheduleWorkoutSuccess": "{time}にリマインダーを送ります。",
+  "@scheduleWorkoutSuccess": {
+    "placeholders": {
+      "time": {"type": "String"}
+    }
+  },
+  "scheduleWorkoutCancelled": "予約をキャンセルしました。",
+  "scheduleWorkoutPastTime": "現在より後の時間を選んでください。",
+  "scheduleWorkoutPermissionRequired": "通知の許可が必要です。設定で通知を許可してください。",
+  "scheduleWorkoutNotificationTitle": "ワークアウトの時間です",
+  "scheduleWorkoutNotificationBody": "{title}ルーティンを始めましょう。",
+  "@scheduleWorkoutNotificationBody": {
+    "placeholders": {
+      "title": {"type": "String"}
+    }
+  },
+  "scheduleWorkoutActive": "{time}に予約",
+  "@scheduleWorkoutActive": {
+    "placeholders": {
+      "time": {"type": "String"}
+    }
+  },
+  "scheduleRecurrenceLabel": "繰り返し",
+  "scheduleRecurrenceOnce": "1回",
+  "scheduleRecurrenceDaily": "毎日",
+  "scheduleRecurrenceWeekly": "毎週",
+  "scheduleRecurrenceMonthly": "毎月",
+  "scheduleWorkoutStartDate": "開始日",
+  "scheduleRecurrenceEndDate": "繰り返し終了",
+  "scheduleRecurrenceEndDateNone": "なし（継続）",
+  "scheduleRecurrenceEndDateRequired": "繰り返し終了日を選んでください。",
+  "scheduleRecurrenceEndBeforeStart": "終了日は開始日以降にしてください。",
+  "scheduleRecurrenceWeeklyHint": "選択した日の曜日ごとに繰り返します。",
+  "scheduleRecurrenceMonthlyHint": "選択した日（日付）ごとに繰り返します。",
+  "scheduleRecurrenceDailySummary": "毎日 {time}",
+  "@scheduleRecurrenceDailySummary": {
+    "placeholders": {
+      "time": {"type": "String"}
+    }
+  },
+  "scheduleRecurrenceWeeklySummary": "毎週{weekday} {time}",
+  "@scheduleRecurrenceWeeklySummary": {
+    "placeholders": {
+      "weekday": {"type": "String"},
+      "time": {"type": "String"}
+    }
+  },
+  "scheduleRecurrenceMonthlySummary": "毎月{day}日 {time}",
+  "@scheduleRecurrenceMonthlySummary": {
+    "placeholders": {
+      "day": {"type": "int"},
+      "time": {"type": "String"}
+    }
+  }
 }

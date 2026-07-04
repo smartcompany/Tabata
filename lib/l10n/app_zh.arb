@@ -321,5 +321,65 @@
   "privacyProcessingConsentCheckboxPrivacy": "我同意上述个人信息的收集与使用。",
   "privacyProcessingConsentCheckboxUgc": "我同意共享训练（UGC）规则及零容忍政策。",
   "privacyProcessingConsentAgree": "同意并继续",
-  "privacyProcessingConsentDecline": "不同意"
+  "privacyProcessingConsentDecline": "不同意",
+  "scheduleWorkoutTooltip": "预约",
+  "scheduleWorkoutTitle": "预约锻炼",
+  "scheduleWorkoutDate": "日期",
+  "scheduleWorkoutTime": "时间",
+  "scheduleWorkoutConfirm": "预约",
+  "scheduleWorkoutCancelExisting": "取消预约",
+  "scheduleWorkoutSuccess": "将在 {time} 提醒您。",
+  "@scheduleWorkoutSuccess": {
+    "placeholders": {
+      "time": {"type": "String"}
+    }
+  },
+  "scheduleWorkoutCancelled": "已取消预约。",
+  "scheduleWorkoutPastTime": "请选择当前时间之后的时间。",
+  "scheduleWorkoutPermissionRequired": "需要通知权限。请在设置中允许通知。",
+  "scheduleWorkoutNotificationTitle": "锻炼时间到了",
+  "scheduleWorkoutNotificationBody": "开始 {title} 训练吧。",
+  "@scheduleWorkoutNotificationBody": {
+    "placeholders": {
+      "title": {"type": "String"}
+    }
+  },
+  "scheduleWorkoutActive": "已预约 {time}",
+  "@scheduleWorkoutActive": {
+    "placeholders": {
+      "time": {"type": "String"}
+    }
+  },
+  "scheduleRecurrenceLabel": "重复",
+  "scheduleRecurrenceOnce": "一次",
+  "scheduleRecurrenceDaily": "每天",
+  "scheduleRecurrenceWeekly": "每周",
+  "scheduleRecurrenceMonthly": "每月",
+  "scheduleWorkoutStartDate": "开始日期",
+  "scheduleRecurrenceEndDate": "结束重复",
+  "scheduleRecurrenceEndDateNone": "无（持续）",
+  "scheduleRecurrenceEndDateRequired": "请选择重复结束日期。",
+  "scheduleRecurrenceEndBeforeStart": "结束日期必须在开始日期之后。",
+  "scheduleRecurrenceWeeklyHint": "按所选日期的星期几重复。",
+  "scheduleRecurrenceMonthlyHint": "按每月相同日期重复。",
+  "scheduleRecurrenceDailySummary": "每天 {time}",
+  "@scheduleRecurrenceDailySummary": {
+    "placeholders": {
+      "time": {"type": "String"}
+    }
+  },
+  "scheduleRecurrenceWeeklySummary": "每周{weekday} {time}",
+  "@scheduleRecurrenceWeeklySummary": {
+    "placeholders": {
+      "weekday": {"type": "String"},
+      "time": {"type": "String"}
+    }
+  },
+  "scheduleRecurrenceMonthlySummary": "每月{day}日 {time}",
+  "@scheduleRecurrenceMonthlySummary": {
+    "placeholders": {
+      "day": {"type": "int"},
+      "time": {"type": "String"}
+    }
+  }
 }

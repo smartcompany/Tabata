@@ -430,5 +430,65 @@
   "privacyProcessingConsentCheckboxPrivacy": "I agree to the collection and use of personal data described above.",
   "privacyProcessingConsentCheckboxUgc": "I agree to the shared routine (UGC) rules and zero-tolerance policy.",
   "privacyProcessingConsentAgree": "Agree and continue",
-  "privacyProcessingConsentDecline": "Decline"
+  "privacyProcessingConsentDecline": "Decline",
+  "scheduleWorkoutTooltip": "Schedule",
+  "scheduleWorkoutTitle": "Schedule workout",
+  "scheduleWorkoutDate": "Date",
+  "scheduleWorkoutTime": "Time",
+  "scheduleWorkoutConfirm": "Schedule",
+  "scheduleWorkoutCancelExisting": "Cancel schedule",
+  "scheduleWorkoutSuccess": "Reminder set for {time}.",
+  "@scheduleWorkoutSuccess": {
+    "placeholders": {
+      "time": {"type": "String"}
+    }
+  },
+  "scheduleWorkoutCancelled": "Schedule cancelled.",
+  "scheduleWorkoutPastTime": "Choose a time in the future.",
+  "scheduleWorkoutPermissionRequired": "Notification permission is required. Allow notifications in Settings.",
+  "scheduleWorkoutNotificationTitle": "Time to work out",
+  "scheduleWorkoutNotificationBody": "Start your {title} routine.",
+  "@scheduleWorkoutNotificationBody": {
+    "placeholders": {
+      "title": {"type": "String"}
+    }
+  },
+  "scheduleWorkoutActive": "Scheduled for {time}",
+  "@scheduleWorkoutActive": {
+    "placeholders": {
+      "time": {"type": "String"}
+    }
+  },
+  "scheduleRecurrenceLabel": "Repeat",
+  "scheduleRecurrenceOnce": "Once",
+  "scheduleRecurrenceDaily": "Daily",
+  "scheduleRecurrenceWeekly": "Weekly",
+  "scheduleRecurrenceMonthly": "Monthly",
+  "scheduleWorkoutStartDate": "Start date",
+  "scheduleRecurrenceEndDate": "End repeat",
+  "scheduleRecurrenceEndDateNone": "None (ongoing)",
+  "scheduleRecurrenceEndDateRequired": "Choose an end date for the repeat.",
+  "scheduleRecurrenceEndBeforeStart": "End date must be on or after the start date.",
+  "scheduleRecurrenceWeeklyHint": "Repeats on the weekday of the selected date.",
+  "scheduleRecurrenceMonthlyHint": "Repeats on the same day of each month.",
+  "scheduleRecurrenceDailySummary": "Daily at {time}",
+  "@scheduleRecurrenceDailySummary": {
+    "placeholders": {
+      "time": {"type": "String"}
+    }
+  },
+  "scheduleRecurrenceWeeklySummary": "Weekly on {weekday} at {time}",
+  "@scheduleRecurrenceWeeklySummary": {
+    "placeholders": {
+      "weekday": {"type": "String"},
+      "time": {"type": "String"}
+    }
+  },
+  "scheduleRecurrenceMonthlySummary": "Monthly on day {day} at {time}",
+  "@scheduleRecurrenceMonthlySummary": {
+    "placeholders": {
+      "day": {"type": "int"},
+      "time": {"type": "String"}
+    }
+  }
 }

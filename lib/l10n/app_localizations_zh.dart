@@ -847,4 +847,100 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get privacyProcessingConsentDecline => '不同意';
+
+  @override
+  String get scheduleWorkoutTooltip => '预约';
+
+  @override
+  String get scheduleWorkoutTitle => '预约锻炼';
+
+  @override
+  String get scheduleWorkoutDate => '日期';
+
+  @override
+  String get scheduleWorkoutTime => '时间';
+
+  @override
+  String get scheduleWorkoutConfirm => '预约';
+
+  @override
+  String get scheduleWorkoutCancelExisting => '取消预约';
+
+  @override
+  String scheduleWorkoutSuccess(String time) {
+    return '将在 $time 提醒您。';
+  }
+
+  @override
+  String get scheduleWorkoutCancelled => '已取消预约。';
+
+  @override
+  String get scheduleWorkoutPastTime => '请选择当前时间之后的时间。';
+
+  @override
+  String get scheduleWorkoutPermissionRequired => '需要通知权限。请在设置中允许通知。';
+
+  @override
+  String get scheduleWorkoutNotificationTitle => '锻炼时间到了';
+
+  @override
+  String scheduleWorkoutNotificationBody(String title) {
+    return '开始 $title 训练吧。';
+  }
+
+  @override
+  String scheduleWorkoutActive(String time) {
+    return '已预约 $time';
+  }
+
+  @override
+  String get scheduleRecurrenceLabel => '重复';
+
+  @override
+  String get scheduleRecurrenceOnce => '一次';
+
+  @override
+  String get scheduleRecurrenceDaily => '每天';
+
+  @override
+  String get scheduleRecurrenceWeekly => '每周';
+
+  @override
+  String get scheduleRecurrenceMonthly => '每月';
+
+  @override
+  String get scheduleWorkoutStartDate => '开始日期';
+
+  @override
+  String get scheduleRecurrenceEndDate => '结束重复';
+
+  @override
+  String get scheduleRecurrenceEndDateNone => '无（持续）';
+
+  @override
+  String get scheduleRecurrenceEndDateRequired => '请选择重复结束日期。';
+
+  @override
+  String get scheduleRecurrenceEndBeforeStart => '结束日期必须在开始日期之后。';
+
+  @override
+  String get scheduleRecurrenceWeeklyHint => '按所选日期的星期几重复。';
+
+  @override
+  String get scheduleRecurrenceMonthlyHint => '按每月相同日期重复。';
+
+  @override
+  String scheduleRecurrenceDailySummary(String time) {
+    return '每天 $time';
+  }
+
+  @override
+  String scheduleRecurrenceWeeklySummary(String weekday, String time) {
+    return '每周$weekday $time';
+  }
+
+  @override
+  String scheduleRecurrenceMonthlySummary(int day, String time) {
+    return '每月$day日 $time';
+  }
 }

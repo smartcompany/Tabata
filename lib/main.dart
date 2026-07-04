@@ -12,6 +12,7 @@ import 'package:tabata_timer/l10n/app_localizations.dart';
 
 import 'config/kakao_config.dart';
 import 'data/routine_repository.dart';
+import 'data/routine_schedule_repository.dart';
 import 'firebase_options.dart';
 import 'screens/home_screen.dart';
 import 'services/admin_session.dart';
@@ -21,9 +22,11 @@ import 'services/locale_settings.dart';
 import 'services/rewarded_ad_gate.dart';
 import 'services/routine_api_client.dart';
 import 'services/routine_content_localizer.dart';
+import 'services/routine_schedule_service.dart';
 import 'services/routine_share_api.dart';
 import 'services/shared_routine_link_coordinator.dart';
 import 'services/share_link_log.dart';
+import 'services/workout_launch_coordinator.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -58,6 +61,7 @@ Future<void> main() async {
   );
   final apiClient = RoutineApiClient(contentLocalizer: contentLocalizer);
   final repository = await RoutineRepository.create(apiClient: apiClient);
+  final scheduleRepository = await RoutineScheduleRepository.create();
   final adminSession = await AdminSession.create();
   await AdSettings.initialize();
   if (!kIsWeb) {
@@ -70,6 +74,17 @@ Future<void> main() async {
     repository: repository,
     shareApi: RoutineShareApi(),
   );
+  final workoutLaunchCoordinator = WorkoutLaunchCoordinator(
+    navigatorKey: navigatorKey,
+    repository: repository,
+  );
+  if (!kIsWeb) {
+    await RoutineScheduleService.shared.configure(
+      scheduleRepository: scheduleRepository,
+      launchCoordinator: workoutLaunchCoordinator,
+      navigatorKey: navigatorKey,
+    );
+  }
 
   runApp(TabataApp(
     repository: repository,
@@ -77,6 +92,7 @@ Future<void> main() async {
     adminSession: adminSession,
     navigatorKey: navigatorKey,
     linkCoordinator: linkCoordinator,
+    workoutLaunchCoordinator: workoutLaunchCoordinator,
   ));
 }
 
@@ -88,6 +104,7 @@ class TabataApp extends StatefulWidget {
     required this.adminSession,
     required this.navigatorKey,
     required this.linkCoordinator,
+    required this.workoutLaunchCoordinator,
   });
 
   final RoutineRepository repository;
@@ -95,6 +112,7 @@ class TabataApp extends StatefulWidget {
   final AdminSession adminSession;
   final GlobalKey<NavigatorState> navigatorKey;
   final SharedRoutineLinkCoordinator linkCoordinator;
+  final WorkoutLaunchCoordinator workoutLaunchCoordinator;
 
   @override
   State<TabataApp> createState() => _TabataAppState();
@@ -122,9 +140,13 @@ class _TabataAppState extends State<TabataApp> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (!kIsWeb) {
+      RoutineScheduleService.shared.onAppLifecycleState(state);
+    }
     if (state == AppLifecycleState.resumed && !kIsWeb) {
       shareLinkLog('TabataApp resumed — checking pending share link');
       unawaited(widget.linkCoordinator.onAppResumed());
+      unawaited(RoutineScheduleService.shared.syncAllSchedules());
     }
   }
 
@@ -170,6 +192,7 @@ class _TabataAppState extends State<TabataApp> with WidgetsBindingObserver {
         apiClient: widget.apiClient,
         adminSession: widget.adminSession,
         linkCoordinator: widget.linkCoordinator,
+        workoutLaunchCoordinator: widget.workoutLaunchCoordinator,
       ),
     );
   }
