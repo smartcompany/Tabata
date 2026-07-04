@@ -254,6 +254,14 @@ class AppLocalizationsJa extends AppLocalizations {
   String get shareTooltip => '共有';
 
   @override
+  String get shareAppTooltip => 'アプリを共有';
+
+  @override
+  String shareAppMessage(String appTitle) {
+    return '$appTitle — ワークアウトルーティン用インターバルタイマーアプリを試してみてください。';
+  }
+
+  @override
   String get shareSheetKakaoTalk => 'カカオトークで共有';
 
   @override
@@ -266,6 +274,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get shareKakaoLinkButton => 'ルーティンを開く';
+
+  @override
+  String get shareKakaoAppLinkButton => 'アプリをインストール';
 
   @override
   String get shareFailed => '共有に失敗しました。しばらくしてからもう一度お試しください。';

@@ -546,6 +546,18 @@ abstract class AppLocalizations {
   /// **'Share'**
   String get shareTooltip;
 
+  /// No description provided for @shareAppTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Share app'**
+  String get shareAppTooltip;
+
+  /// No description provided for @shareAppMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Try {appTitle} — interval timer for workout routines.'**
+  String shareAppMessage(String appTitle);
+
   /// No description provided for @shareSheetKakaoTalk.
   ///
   /// In en, this message translates to:
@@ -569,6 +581,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open routine'**
   String get shareKakaoLinkButton;
+
+  /// No description provided for @shareKakaoAppLinkButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Get the app'**
+  String get shareKakaoAppLinkButton;
 
   /// No description provided for @shareFailed.
   ///

@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart' show defaultTargetPlatform, TargetPlatform;
 import 'package:tabata_timer/l10n/app_localizations.dart';
 
+import '../config/api_config.dart';
 import '../models/routine.dart';
 import '../utils/duration_calculator.dart';
 import 'routine_json_codec.dart';
@@ -16,9 +17,14 @@ class RoutineShareService {
     'https://apps.apple.com/app/id$appStoreId',
   );
 
-  /// 공유 링크용 스토어 URL (iOS → App Store, 그 외 → Play Store).
+  /// 루틴 공유 실패 등 플랫폼별 스토어 직링크 폴백.
   static Uri get storeLink =>
       defaultTargetPlatform == TargetPlatform.iOS ? appStoreLink : playStoreLink;
+
+  /// 앱 소개 공유용 (카카오 등록 도메인 → UA별 스토어 302).
+  static Uri get appShareLink => Uri.parse(
+        '${ApiConfig.profileApiBaseUrl}/applink',
+      );
 
   /// 카카오 TextTemplate 본문 최대 길이(여유 포함).
   static const kakaoTextMaxLength = 200;
@@ -53,6 +59,17 @@ class RoutineShareService {
 
   String buildKakaoShareMessage(Routine routine, AppLocalizations l10n) {
     final message = buildShareMessage(routine, l10n);
+    if (message.length <= kakaoTextMaxLength) {
+      return message;
+    }
+    return '${message.substring(0, kakaoTextMaxLength - 1)}…';
+  }
+
+  String buildAppShareMessage(AppLocalizations l10n) =>
+      l10n.shareAppMessage(l10n.appTitle);
+
+  String buildAppKakaoShareMessage(AppLocalizations l10n) {
+    final message = buildAppShareMessage(l10n);
     if (message.length <= kakaoTextMaxLength) {
       return message;
     }

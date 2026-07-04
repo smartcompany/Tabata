@@ -120,6 +120,13 @@
   "routineNotFound": "Routine not found.",
   "editTooltip": "Edit",
   "shareTooltip": "Share",
+  "shareAppTooltip": "Share app",
+  "shareAppMessage": "Try {appTitle} — interval timer for workout routines.",
+  "@shareAppMessage": {
+    "placeholders": {
+      "appTitle": {"type": "String"}
+    }
+  },
   "shareSheetKakaoTalk": "Share to KakaoTalk",
   "shareSheetSystemShare": "System share",
   "shareRoutineFooter": "Try this routine in {appTitle}",
@@ -129,6 +136,7 @@
     }
   },
   "shareKakaoLinkButton": "Open routine",
+  "shareKakaoAppLinkButton": "Get the app",
   "shareFailed": "Could not share. Please try again.",
   "sharedRoutineImportTitle": "Shared routine",
   "sharedRoutineImportPrompt": "Download this shared routine?",

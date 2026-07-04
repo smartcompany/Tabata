@@ -251,6 +251,14 @@ class AppLocalizationsZh extends AppLocalizations {
   String get shareTooltip => '分享';
 
   @override
+  String get shareAppTooltip => '分享应用';
+
+  @override
+  String shareAppMessage(String appTitle) {
+    return '试试 $appTitle — 运动 routine 间歇计时器应用。';
+  }
+
+  @override
   String get shareSheetKakaoTalk => '分享到 KakaoTalk';
 
   @override
@@ -263,6 +271,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get shareKakaoLinkButton => '打开训练';
+
+  @override
+  String get shareKakaoAppLinkButton => '安装应用';
 
   @override
   String get shareFailed => '分享失败，请稍后再试。';

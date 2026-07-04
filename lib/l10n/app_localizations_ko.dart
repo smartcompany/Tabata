@@ -254,6 +254,14 @@ class AppLocalizationsKo extends AppLocalizations {
   String get shareTooltip => '공유';
 
   @override
+  String get shareAppTooltip => '앱 공유';
+
+  @override
+  String shareAppMessage(String appTitle) {
+    return '$appTitle — 운동 루틴 인터벌 타이머 앱을 사용해 보세요.';
+  }
+
+  @override
   String get shareSheetKakaoTalk => '카카오톡 공유';
 
   @override
@@ -266,6 +274,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get shareKakaoLinkButton => '루틴 열기';
+
+  @override
+  String get shareKakaoAppLinkButton => '앱 설치하기';
 
   @override
   String get shareFailed => '공유에 실패했습니다. 잠시 후 다시 시도해 주세요.';

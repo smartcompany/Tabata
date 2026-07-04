@@ -9,6 +9,7 @@ import '../services/ai_routine_service.dart';
 import '../services/admin_session.dart';
 import '../services/content_settings.dart';
 import '../services/routine_api_client.dart';
+import '../services/routine_share_service.dart';
 import '../services/shared_routine_link_coordinator.dart';
 import '../services/share_link_log.dart';
 import '../services/workout_launch_coordinator.dart';
@@ -20,6 +21,7 @@ import 'routine_detail_screen.dart';
 import 'routine_editor_screen.dart';
 import 'upload_routine_screen.dart';
 import '../widgets/app_settings_sheet.dart';
+import '../widgets/routine_share_sheet.dart';
 import '../widgets/swipe_reveal_delete.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -57,6 +59,7 @@ class _HomeScreenState extends State<HomeScreen>
 
   int _titleTapCount = 0;
   DateTime? _lastTitleTapAt;
+  final _shareService = RoutineShareService();
 
   @override
   void initState() {
@@ -303,6 +306,18 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
+  Future<void> _shareApp() async {
+    final l10n = AppLocalizations.of(context);
+    await RoutineShareSheet.show(
+      context: context,
+      shareText: _shareService.buildAppShareMessage(l10n),
+      kakaoShareText: _shareService.buildAppKakaoShareMessage(l10n),
+      subject: l10n.appTitle,
+      linkUrl: RoutineShareService.appShareLink,
+      linkButtonTitle: l10n.shareKakaoAppLinkButton,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -314,6 +329,11 @@ class _HomeScreenState extends State<HomeScreen>
           child: Text(l10n.appTitle),
         ),
         actions: [
+          IconButton(
+            onPressed: _shareApp,
+            icon: const Icon(Icons.ios_share),
+            tooltip: l10n.shareAppTooltip,
+          ),
           IconButton(
             onPressed: () => showAppSettingsSheet(context),
             icon: const Icon(Icons.settings_outlined),

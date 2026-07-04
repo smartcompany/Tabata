@@ -114,6 +114,13 @@
   "routineNotFound": "ルーティンが見つかりません。",
   "editTooltip": "編集",
   "shareTooltip": "共有",
+  "shareAppTooltip": "アプリを共有",
+  "shareAppMessage": "{appTitle} — ワークアウトルーティン用インターバルタイマーアプリを試してみてください。",
+  "@shareAppMessage": {
+    "placeholders": {
+      "appTitle": {"type": "String"}
+    }
+  },
   "shareSheetKakaoTalk": "カカオトークで共有",
   "shareSheetSystemShare": "共有",
   "shareRoutineFooter": "{appTitle} アプリで試してみてください",
@@ -123,6 +130,7 @@
     }
   },
   "shareKakaoLinkButton": "ルーティンを開く",
+  "shareKakaoAppLinkButton": "アプリをインストール",
   "shareFailed": "共有に失敗しました。しばらくしてからもう一度お試しください。",
   "sharedRoutineImportTitle": "共有ルーティン",
   "sharedRoutineImportPrompt": "共有されたルーティンをダウンロードしますか？",

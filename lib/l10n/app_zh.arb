@@ -114,6 +114,13 @@
   "routineNotFound": "未找到训练。",
   "editTooltip": "编辑",
   "shareTooltip": "分享",
+  "shareAppTooltip": "分享应用",
+  "shareAppMessage": "试试 {appTitle} — 运动 routine 间歇计时器应用。",
+  "@shareAppMessage": {
+    "placeholders": {
+      "appTitle": {"type": "String"}
+    }
+  },
   "shareSheetKakaoTalk": "分享到 KakaoTalk",
   "shareSheetSystemShare": "系统分享",
   "shareRoutineFooter": "在 {appTitle} 应用中试试这个训练",
@@ -123,6 +130,7 @@
     }
   },
   "shareKakaoLinkButton": "打开训练",
+  "shareKakaoAppLinkButton": "安装应用",
   "shareFailed": "分享失败，请稍后再试。",
   "sharedRoutineImportTitle": "共享训练",
   "sharedRoutineImportPrompt": "要下载这条共享训练吗？",

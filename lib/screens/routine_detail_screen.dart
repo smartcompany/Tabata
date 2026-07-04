@@ -391,11 +391,6 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
               icon: const Icon(Icons.edit_outlined),
               tooltip: l10n.editTooltip,
             ),
-            IconButton(
-              onPressed: _share,
-              icon: const Icon(Icons.share_outlined),
-              tooltip: l10n.shareTooltip,
-            ),
           ],
         ],
       ),
@@ -524,16 +519,27 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
           ),
           if (!_isCatalogPreview) ...[
             const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed: _deleteLocally,
-                icon: const Icon(Icons.delete_outline),
-                label: Text(l10n.deleteRoutineTitle),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Theme.of(context).colorScheme.error,
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: _share,
+                    icon: const Icon(Icons.ios_share),
+                    label: Text(l10n.shareTooltip),
+                  ),
                 ),
-              ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: _deleteLocally,
+                    icon: const Icon(Icons.delete_outline),
+                    label: Text(l10n.deleteRoutineTitle),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Theme.of(context).colorScheme.error,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ],

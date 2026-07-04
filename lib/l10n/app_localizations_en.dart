@@ -262,6 +262,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shareTooltip => 'Share';
 
   @override
+  String get shareAppTooltip => 'Share app';
+
+  @override
+  String shareAppMessage(String appTitle) {
+    return 'Try $appTitle — interval timer for workout routines.';
+  }
+
+  @override
   String get shareSheetKakaoTalk => 'Share to KakaoTalk';
 
   @override
@@ -274,6 +282,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shareKakaoLinkButton => 'Open routine';
+
+  @override
+  String get shareKakaoAppLinkButton => 'Get the app';
 
   @override
   String get shareFailed => 'Could not share. Please try again.';
