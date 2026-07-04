@@ -254,6 +254,14 @@ class AppLocalizationsJa extends AppLocalizations {
   String get shareTooltip => '共有';
 
   @override
+  String get shareAppTooltip => 'アプリを共有';
+
+  @override
+  String shareAppMessage(String appTitle) {
+    return '$appTitle — ワークアウトルーティン用インターバルタイマーアプリを試してみてください。';
+  }
+
+  @override
   String get shareSheetKakaoTalk => 'カカオトークで共有';
 
   @override
@@ -266,6 +274,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get shareKakaoLinkButton => 'ルーティンを開く';
+
+  @override
+  String get shareKakaoAppLinkButton => 'アプリをインストール';
 
   @override
   String get shareFailed => '共有に失敗しました。しばらくしてからもう一度お試しください。';
@@ -856,6 +867,102 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get privacyProcessingConsentDecline => '同意しない';
+
+  @override
+  String get scheduleWorkoutTooltip => '予約';
+
+  @override
+  String get scheduleWorkoutTitle => 'ワークアウト予約';
+
+  @override
+  String get scheduleWorkoutDate => '日付';
+
+  @override
+  String get scheduleWorkoutTime => '時間';
+
+  @override
+  String get scheduleWorkoutConfirm => '予約する';
+
+  @override
+  String get scheduleWorkoutCancelExisting => '予約をキャンセル';
+
+  @override
+  String scheduleWorkoutSuccess(String time) {
+    return '$timeにリマインダーを送ります。';
+  }
+
+  @override
+  String get scheduleWorkoutCancelled => '予約をキャンセルしました。';
+
+  @override
+  String get scheduleWorkoutPastTime => '現在より後の時間を選んでください。';
+
+  @override
+  String get scheduleWorkoutPermissionRequired => '通知の許可が必要です。設定で通知を許可してください。';
+
+  @override
+  String get scheduleWorkoutNotificationTitle => 'ワークアウトの時間です';
+
+  @override
+  String scheduleWorkoutNotificationBody(String title) {
+    return '$titleルーティンを始めましょう。';
+  }
+
+  @override
+  String scheduleWorkoutActive(String time) {
+    return '$timeに予約';
+  }
+
+  @override
+  String get scheduleRecurrenceLabel => '繰り返し';
+
+  @override
+  String get scheduleRecurrenceOnce => '1回';
+
+  @override
+  String get scheduleRecurrenceDaily => '毎日';
+
+  @override
+  String get scheduleRecurrenceWeekly => '毎週';
+
+  @override
+  String get scheduleRecurrenceMonthly => '毎月';
+
+  @override
+  String get scheduleWorkoutStartDate => '開始日';
+
+  @override
+  String get scheduleRecurrenceEndDate => '繰り返し終了';
+
+  @override
+  String get scheduleRecurrenceEndDateNone => 'なし（継続）';
+
+  @override
+  String get scheduleRecurrenceEndDateRequired => '繰り返し終了日を選んでください。';
+
+  @override
+  String get scheduleRecurrenceEndBeforeStart => '終了日は開始日以降にしてください。';
+
+  @override
+  String get scheduleRecurrenceWeeklyHint => '選択した日の曜日ごとに繰り返します。';
+
+  @override
+  String get scheduleRecurrenceMonthlyHint => '選択した日（日付）ごとに繰り返します。';
+
+  @override
+  String scheduleRecurrenceDailySummary(String time) {
+    return '毎日 $time';
+  }
+
+  @override
+  String scheduleRecurrenceWeeklySummary(String weekday, String time) {
+    return '毎週$weekday $time';
+  }
+
+  @override
+  String scheduleRecurrenceMonthlySummary(int day, String time) {
+    return '毎月$day日 $time';
+  }
 
   @override
   String get healthAppleHealthLabel => 'Appleヘルスケアに記録';

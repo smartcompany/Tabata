@@ -19,6 +19,7 @@ abstract final class RoutineShareSheet {
     required String kakaoShareText,
     String? subject,
     Uri? linkUrl,
+    String? linkButtonTitle,
   }) async {
     final shareOrigin = _shareOriginFromContext(context);
     final kakaoAvailable = await ShareService.isKakaoTalkAvailable();
@@ -35,6 +36,8 @@ abstract final class RoutineShareSheet {
         final textTheme = Theme.of(ctx).textTheme;
         final mergedText = _mergeTextAndUrl(shareText, linkUrl);
         final resolvedLink = linkUrl ?? RoutineShareService.storeLink;
+        final resolvedButtonTitle =
+            linkButtonTitle ?? l10n.shareKakaoLinkButton;
 
         return SafeArea(
           child: Padding(
@@ -67,7 +70,7 @@ abstract final class RoutineShareSheet {
                       await _shareToKakaoCompat(
                         kakaoShareText,
                         linkUrl: resolvedLink,
-                        linkButtonTitle: l10n.shareKakaoLinkButton,
+                        linkButtonTitle: resolvedButtonTitle,
                         onError: (_) => _showShareFailed(context, l10n),
                       );
                     },

@@ -546,6 +546,18 @@ abstract class AppLocalizations {
   /// **'Share'**
   String get shareTooltip;
 
+  /// No description provided for @shareAppTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Share app'**
+  String get shareAppTooltip;
+
+  /// No description provided for @shareAppMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Try {appTitle} — interval timer for workout routines.'**
+  String shareAppMessage(String appTitle);
+
   /// No description provided for @shareSheetKakaoTalk.
   ///
   /// In en, this message translates to:
@@ -569,6 +581,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open routine'**
   String get shareKakaoLinkButton;
+
+  /// No description provided for @shareKakaoAppLinkButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Get the app'**
+  String get shareKakaoAppLinkButton;
 
   /// No description provided for @shareFailed.
   ///
@@ -1643,6 +1661,174 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Decline'**
   String get privacyProcessingConsentDecline;
+
+  /// No description provided for @scheduleWorkoutTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule'**
+  String get scheduleWorkoutTooltip;
+
+  /// No description provided for @scheduleWorkoutTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule workout'**
+  String get scheduleWorkoutTitle;
+
+  /// No description provided for @scheduleWorkoutDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get scheduleWorkoutDate;
+
+  /// No description provided for @scheduleWorkoutTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Time'**
+  String get scheduleWorkoutTime;
+
+  /// No description provided for @scheduleWorkoutConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule'**
+  String get scheduleWorkoutConfirm;
+
+  /// No description provided for @scheduleWorkoutCancelExisting.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel schedule'**
+  String get scheduleWorkoutCancelExisting;
+
+  /// No description provided for @scheduleWorkoutSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminder set for {time}.'**
+  String scheduleWorkoutSuccess(String time);
+
+  /// No description provided for @scheduleWorkoutCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule cancelled.'**
+  String get scheduleWorkoutCancelled;
+
+  /// No description provided for @scheduleWorkoutPastTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a time in the future.'**
+  String get scheduleWorkoutPastTime;
+
+  /// No description provided for @scheduleWorkoutPermissionRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification permission is required. Allow notifications in Settings.'**
+  String get scheduleWorkoutPermissionRequired;
+
+  /// No description provided for @scheduleWorkoutNotificationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Time to work out'**
+  String get scheduleWorkoutNotificationTitle;
+
+  /// No description provided for @scheduleWorkoutNotificationBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Start your {title} routine.'**
+  String scheduleWorkoutNotificationBody(String title);
+
+  /// No description provided for @scheduleWorkoutActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled for {time}'**
+  String scheduleWorkoutActive(String time);
+
+  /// No description provided for @scheduleRecurrenceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeat'**
+  String get scheduleRecurrenceLabel;
+
+  /// No description provided for @scheduleRecurrenceOnce.
+  ///
+  /// In en, this message translates to:
+  /// **'Once'**
+  String get scheduleRecurrenceOnce;
+
+  /// No description provided for @scheduleRecurrenceDaily.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily'**
+  String get scheduleRecurrenceDaily;
+
+  /// No description provided for @scheduleRecurrenceWeekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly'**
+  String get scheduleRecurrenceWeekly;
+
+  /// No description provided for @scheduleRecurrenceMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get scheduleRecurrenceMonthly;
+
+  /// No description provided for @scheduleWorkoutStartDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Start date'**
+  String get scheduleWorkoutStartDate;
+
+  /// No description provided for @scheduleRecurrenceEndDate.
+  ///
+  /// In en, this message translates to:
+  /// **'End repeat'**
+  String get scheduleRecurrenceEndDate;
+
+  /// No description provided for @scheduleRecurrenceEndDateNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None (ongoing)'**
+  String get scheduleRecurrenceEndDateNone;
+
+  /// No description provided for @scheduleRecurrenceEndDateRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose an end date for the repeat.'**
+  String get scheduleRecurrenceEndDateRequired;
+
+  /// No description provided for @scheduleRecurrenceEndBeforeStart.
+  ///
+  /// In en, this message translates to:
+  /// **'End date must be on or after the start date.'**
+  String get scheduleRecurrenceEndBeforeStart;
+
+  /// No description provided for @scheduleRecurrenceWeeklyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeats on the weekday of the selected date.'**
+  String get scheduleRecurrenceWeeklyHint;
+
+  /// No description provided for @scheduleRecurrenceMonthlyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeats on the same day of each month.'**
+  String get scheduleRecurrenceMonthlyHint;
+
+  /// No description provided for @scheduleRecurrenceDailySummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily at {time}'**
+  String scheduleRecurrenceDailySummary(String time);
+
+  /// No description provided for @scheduleRecurrenceWeeklySummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly on {weekday} at {time}'**
+  String scheduleRecurrenceWeeklySummary(String weekday, String time);
+
+  /// No description provided for @scheduleRecurrenceMonthlySummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly on day {day} at {time}'**
+  String scheduleRecurrenceMonthlySummary(int day, String time);
 
   /// No description provided for @healthAppleHealthLabel.
   ///

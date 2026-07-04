@@ -10,9 +10,11 @@ import '../services/ai_routine_service.dart';
 import '../services/admin_session.dart';
 import '../services/content_settings.dart';
 import '../services/routine_api_client.dart';
+import '../services/routine_share_service.dart';
 import '../services/shared_routine_link_coordinator.dart';
 import '../services/share_link_log.dart';
 import '../services/workout_completion_recorder.dart';
+import '../services/workout_launch_coordinator.dart';
 import '../utils/auth_helper.dart';
 import '../utils/duration_calculator.dart';
 import 'admin_upload_routine_screen.dart';
@@ -22,6 +24,7 @@ import 'routine_editor_screen.dart';
 import 'upload_routine_screen.dart';
 import 'workout_history_screen.dart';
 import '../widgets/app_settings_sheet.dart';
+import '../widgets/routine_share_sheet.dart';
 import '../widgets/swipe_reveal_delete.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -33,6 +36,7 @@ class HomeScreen extends StatefulWidget {
     required this.apiClient,
     required this.adminSession,
     required this.linkCoordinator,
+    required this.workoutLaunchCoordinator,
   });
 
   final RoutineRepository repository;
@@ -41,6 +45,7 @@ class HomeScreen extends StatefulWidget {
   final RoutineApiClient apiClient;
   final AdminSession adminSession;
   final SharedRoutineLinkCoordinator linkCoordinator;
+  final WorkoutLaunchCoordinator workoutLaunchCoordinator;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -61,6 +66,7 @@ class _HomeScreenState extends State<HomeScreen>
 
   int _titleTapCount = 0;
   DateTime? _lastTitleTapAt;
+  final _shareService = RoutineShareService();
 
   @override
   void initState() {
@@ -75,6 +81,7 @@ class _HomeScreenState extends State<HomeScreen>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       shareLinkLog('HomeScreen first frame — onHomeReady');
       widget.linkCoordinator.onHomeReady();
+      widget.workoutLaunchCoordinator.onHomeReady();
     });
     ContentSettings.addListener(_onCatalogRefreshPreferencesChanged);
     _loadCatalogInitial();
@@ -308,6 +315,18 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
+  Future<void> _shareApp() async {
+    final l10n = AppLocalizations.of(context);
+    await RoutineShareSheet.show(
+      context: context,
+      shareText: _shareService.buildAppShareMessage(l10n),
+      kakaoShareText: _shareService.buildAppKakaoShareMessage(l10n),
+      subject: l10n.appTitle,
+      linkUrl: RoutineShareService.appShareLink,
+      linkButtonTitle: l10n.shareKakaoAppLinkButton,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -319,6 +338,11 @@ class _HomeScreenState extends State<HomeScreen>
           child: Text(l10n.appTitle),
         ),
         actions: [
+          IconButton(
+            onPressed: _shareApp,
+            icon: const Icon(Icons.ios_share),
+            tooltip: l10n.shareAppTooltip,
+          ),
           IconButton(
             onPressed: () {
               Navigator.of(context).push(

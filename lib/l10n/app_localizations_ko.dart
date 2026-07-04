@@ -254,6 +254,14 @@ class AppLocalizationsKo extends AppLocalizations {
   String get shareTooltip => '공유';
 
   @override
+  String get shareAppTooltip => '앱 공유';
+
+  @override
+  String shareAppMessage(String appTitle) {
+    return '$appTitle — 운동 루틴 인터벌 타이머 앱을 사용해 보세요.';
+  }
+
+  @override
   String get shareSheetKakaoTalk => '카카오톡 공유';
 
   @override
@@ -266,6 +274,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get shareKakaoLinkButton => '루틴 열기';
+
+  @override
+  String get shareKakaoAppLinkButton => '앱 설치하기';
 
   @override
   String get shareFailed => '공유에 실패했습니다. 잠시 후 다시 시도해 주세요.';
@@ -860,6 +871,103 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get privacyProcessingConsentDecline => '동의하지 않음';
+
+  @override
+  String get scheduleWorkoutTooltip => '예약';
+
+  @override
+  String get scheduleWorkoutTitle => '운동 예약';
+
+  @override
+  String get scheduleWorkoutDate => '날짜';
+
+  @override
+  String get scheduleWorkoutTime => '시간';
+
+  @override
+  String get scheduleWorkoutConfirm => '예약하기';
+
+  @override
+  String get scheduleWorkoutCancelExisting => '예약 취소';
+
+  @override
+  String scheduleWorkoutSuccess(String time) {
+    return '$time에 알림을 보내드립니다.';
+  }
+
+  @override
+  String get scheduleWorkoutCancelled => '예약을 취소했습니다.';
+
+  @override
+  String get scheduleWorkoutPastTime => '현재 시간 이후로 선택해 주세요.';
+
+  @override
+  String get scheduleWorkoutPermissionRequired =>
+      '알림 권한이 필요합니다. 설정에서 알림을 허용해 주세요.';
+
+  @override
+  String get scheduleWorkoutNotificationTitle => '운동 시간입니다';
+
+  @override
+  String scheduleWorkoutNotificationBody(String title) {
+    return '$title 루틴을 시작해 보세요.';
+  }
+
+  @override
+  String scheduleWorkoutActive(String time) {
+    return '$time 예약됨';
+  }
+
+  @override
+  String get scheduleRecurrenceLabel => '반복';
+
+  @override
+  String get scheduleRecurrenceOnce => '한 번';
+
+  @override
+  String get scheduleRecurrenceDaily => '매일';
+
+  @override
+  String get scheduleRecurrenceWeekly => '매주';
+
+  @override
+  String get scheduleRecurrenceMonthly => '매월';
+
+  @override
+  String get scheduleWorkoutStartDate => '시작 날짜';
+
+  @override
+  String get scheduleRecurrenceEndDate => '반복 종료';
+
+  @override
+  String get scheduleRecurrenceEndDateNone => '없음 (계속)';
+
+  @override
+  String get scheduleRecurrenceEndDateRequired => '반복 종료 날짜를 선택해 주세요.';
+
+  @override
+  String get scheduleRecurrenceEndBeforeStart => '종료 날짜는 시작 날짜 이후여야 합니다.';
+
+  @override
+  String get scheduleRecurrenceWeeklyHint => '선택한 날짜의 요일마다 반복됩니다.';
+
+  @override
+  String get scheduleRecurrenceMonthlyHint => '선택한 날짜(일)마다 반복됩니다.';
+
+  @override
+  String scheduleRecurrenceDailySummary(String time) {
+    return '매일 $time';
+  }
+
+  @override
+  String scheduleRecurrenceWeeklySummary(String weekday, String time) {
+    return '매주 $weekday $time';
+  }
+
+  @override
+  String scheduleRecurrenceMonthlySummary(int day, String time) {
+    return '매월 $day일 $time';
+  }
 
   @override
   String get healthAppleHealthLabel => 'Apple 건강앱에 기록';

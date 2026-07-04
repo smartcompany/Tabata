@@ -262,6 +262,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shareTooltip => 'Share';
 
   @override
+  String get shareAppTooltip => 'Share app';
+
+  @override
+  String shareAppMessage(String appTitle) {
+    return 'Try $appTitle — interval timer for workout routines.';
+  }
+
+  @override
   String get shareSheetKakaoTalk => 'Share to KakaoTalk';
 
   @override
@@ -274,6 +282,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shareKakaoLinkButton => 'Open routine';
+
+  @override
+  String get shareKakaoAppLinkButton => 'Get the app';
 
   @override
   String get shareFailed => 'Could not share. Please try again.';
@@ -874,6 +885,107 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacyProcessingConsentDecline => 'Decline';
+
+  @override
+  String get scheduleWorkoutTooltip => 'Schedule';
+
+  @override
+  String get scheduleWorkoutTitle => 'Schedule workout';
+
+  @override
+  String get scheduleWorkoutDate => 'Date';
+
+  @override
+  String get scheduleWorkoutTime => 'Time';
+
+  @override
+  String get scheduleWorkoutConfirm => 'Schedule';
+
+  @override
+  String get scheduleWorkoutCancelExisting => 'Cancel schedule';
+
+  @override
+  String scheduleWorkoutSuccess(String time) {
+    return 'Reminder set for $time.';
+  }
+
+  @override
+  String get scheduleWorkoutCancelled => 'Schedule cancelled.';
+
+  @override
+  String get scheduleWorkoutPastTime => 'Choose a time in the future.';
+
+  @override
+  String get scheduleWorkoutPermissionRequired =>
+      'Notification permission is required. Allow notifications in Settings.';
+
+  @override
+  String get scheduleWorkoutNotificationTitle => 'Time to work out';
+
+  @override
+  String scheduleWorkoutNotificationBody(String title) {
+    return 'Start your $title routine.';
+  }
+
+  @override
+  String scheduleWorkoutActive(String time) {
+    return 'Scheduled for $time';
+  }
+
+  @override
+  String get scheduleRecurrenceLabel => 'Repeat';
+
+  @override
+  String get scheduleRecurrenceOnce => 'Once';
+
+  @override
+  String get scheduleRecurrenceDaily => 'Daily';
+
+  @override
+  String get scheduleRecurrenceWeekly => 'Weekly';
+
+  @override
+  String get scheduleRecurrenceMonthly => 'Monthly';
+
+  @override
+  String get scheduleWorkoutStartDate => 'Start date';
+
+  @override
+  String get scheduleRecurrenceEndDate => 'End repeat';
+
+  @override
+  String get scheduleRecurrenceEndDateNone => 'None (ongoing)';
+
+  @override
+  String get scheduleRecurrenceEndDateRequired =>
+      'Choose an end date for the repeat.';
+
+  @override
+  String get scheduleRecurrenceEndBeforeStart =>
+      'End date must be on or after the start date.';
+
+  @override
+  String get scheduleRecurrenceWeeklyHint =>
+      'Repeats on the weekday of the selected date.';
+
+  @override
+  String get scheduleRecurrenceMonthlyHint =>
+      'Repeats on the same day of each month.';
+
+  @override
+  String scheduleRecurrenceDailySummary(String time) {
+    return 'Daily at $time';
+  }
+
+  @override
+  String scheduleRecurrenceWeeklySummary(String weekday, String time) {
+    return 'Weekly on $weekday at $time';
+  }
+
+  @override
+  String scheduleRecurrenceMonthlySummary(int day, String time) {
+    return 'Monthly on day $day at $time';
+  }
 
   @override
   String get healthAppleHealthLabel => 'Save to Apple Health';
