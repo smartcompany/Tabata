@@ -862,15 +862,17 @@ class AppLocalizationsKo extends AppLocalizations {
   String get privacyProcessingConsentDecline => '동의하지 않음';
 
   @override
-  String get healthActivityTypeSection => 'Apple 건강 운동 유형';
+  String get healthAppleHealthLabel => 'Apple 건강앱에 기록';
 
   @override
-  String get healthActivityTypeHint =>
-      '설정하면 이 루틴을 완료할 때 건강 앱에 운동 기록을 저장할 수 있습니다. 저장하지 않으려면 비워 두세요.';
+  String get healthAppleHealthInfoTitle => 'Apple 건강';
 
   @override
-  String get healthActivityTypeHelper =>
-      '앱 설정의 \"Apple 건강에 운동 저장\"이 켜져 있어야 합니다.';
+  String get healthActivityTypeSection => 'Apple 건강';
+
+  @override
+  String get healthActivityTypeDetail =>
+      '운동 유형을 설정하면 이 루틴을 완료할 때 Apple 건강 앱에 운동으로 저장됩니다. 저장하지 않으려면 \"건강 앱에 저장 안 함\"을 선택하세요. 앱 설정에서 \"Apple 건강앱에 기록\"이 켜져 있어야 합니다.';
 
   @override
   String get healthActivityTypeNone => '건강 앱에 저장 안 함';
@@ -891,18 +893,15 @@ class AppLocalizationsKo extends AppLocalizations {
   String get healthActivityTypeOther => '기타';
 
   @override
-  String get healthSaveToAppleHealthTitle => 'Apple 건강에 운동 저장';
+  String get healthSaveToAppleHealthTitle => 'Apple 건강앱에 기록';
 
   @override
-  String get healthSaveToAppleHealthSubtitle =>
-      '루틴에 건강 운동 유형이 설정되어 있으면, 운동 완료 시 건강 앱에 기록됩니다.';
+  String get healthSaveToAppleHealthDetail =>
+      '루틴에 건강 운동 유형이 설정되어 있으면, 운동 완료 시 Apple 건강 앱에 기록됩니다. 여기서 켜거나 끌 수 있으며, 처음 켤 때 Apple 권한 창이 표시됩니다.';
 
   @override
-  String get healthRoutineWillSaveTitle => 'Apple 건강';
-
-  @override
-  String healthRoutineWillSaveBody(String type) {
-    return '이 루틴을 완료하면 건강 앱에 $type 운동으로 저장됩니다 (설정에서 켜져 있을 때).';
+  String healthRoutineWillSaveDetail(String type) {
+    return '이 루틴을 완료하면 Apple 건강 앱에 $type(으)로 저장됩니다. 앱 설정에서 \"Apple 건강앱에 기록\"이 켜져 있어야 합니다.';
   }
 
   @override
@@ -926,6 +925,42 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get healthFirstWorkoutPromptNotNow => '나중에';
+
+  @override
+  String get healthConnectLabel => 'Health Connect에 기록';
+
+  @override
+  String get healthConnectInfoTitle => 'Health Connect';
+
+  @override
+  String get healthConnectSaveDetail =>
+      '루틴에 운동 유형이 설정되어 있으면, 운동 완료 시 Google Health Connect에 기록됩니다. Health Connect 앱 설치가 필요합니다. 여기서 켜거나 끌 수 있으며, 처음 켤 때 권한 화면이 표시됩니다.';
+
+  @override
+  String get healthConnectActivityTypeDetail =>
+      '운동 유형을 설정하면 이 루틴 완료 시 Health Connect에 운동으로 저장됩니다. \"건강 앱에 저장 안 함\"을 선택하면 저장하지 않습니다. 앱 설정에서 \"Health Connect에 기록\"이 켜져 있어야 합니다.';
+
+  @override
+  String healthConnectRoutineWillSaveDetail(String type) {
+    return '이 루틴을 완료하면 Health Connect에 $type(으)로 저장됩니다. 앱 설정에서 \"Health Connect에 기록\"이 켜져 있어야 합니다.';
+  }
+
+  @override
+  String healthConnectWorkoutSavedSnack(String type) {
+    return 'Health Connect에 $type(으)로 저장했습니다.';
+  }
+
+  @override
+  String get healthConnectPermissionRequiredSnack =>
+      'Health Connect 권한이 필요합니다. Health Connect 앱에서 이 앱의 운동(EXERCISE) 쓰기 권한을 허용해 주세요.';
+
+  @override
+  String get healthConnectFirstWorkoutPromptTitle =>
+      'Health Connect에 운동을 저장할까요?';
+
+  @override
+  String get healthConnectFirstWorkoutPromptBody =>
+      '루틴에 운동 유형이 설정되어 있으면, 운동 완료 시 Health Connect에 기록을 저장할 수 있습니다. \'사용하기\'를 선택하면 권한 화면이 열립니다. Health Connect 앱 설치가 필요할 수 있습니다.';
 
   @override
   String get workoutHistoryTitle => '운동 기록';

@@ -1,5 +1,3 @@
-import 'dart:io' show Platform;
-
 import 'package:flutter/material.dart';
 import 'package:tabata_timer/l10n/app_localizations.dart';
 
@@ -8,7 +6,6 @@ import '../data/routine_factory.dart';
 import '../data/routine_repository.dart';
 import '../models/description_block.dart';
 import '../models/exercise.dart';
-import '../models/health_activity_type.dart';
 import '../models/routine.dart';
 import '../services/routine_api_client.dart';
 import '../utils/content_language.dart';
@@ -16,7 +13,6 @@ import '../utils/duration_calculator.dart';
 import '../utils/form_validation_scroll.dart';
 import '../widgets/description_blocks_editor.dart';
 import '../widgets/exercise_summary.dart';
-import '../widgets/health_activity_type_picker.dart';
 import '../widgets/import_exercises_sheet.dart';
 import '../widgets/keyboard_dismiss_scope.dart';
 import 'exercise_editor_screen.dart';
@@ -53,7 +49,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   late final TextEditingController _titleController;
   late List<DescriptionBlock> _descriptionBlocks;
   late List<Exercise> _exercises;
-  late String? _healthActivityType;
   String? _resolvedAuthToken;
 
   @override
@@ -62,8 +57,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     _titleController = TextEditingController(text: widget.routine.title);
     _descriptionBlocks = _initialDescriptionBlocks(widget.routine);
     _exercises = List<Exercise>.from(widget.routine.orderedExercises);
-    _healthActivityType =
-        RoutineHealthActivityType.fromId(widget.routine.healthActivityType)?.id;
     _resolvedAuthToken = widget.userAuthToken;
     if (_resolvedAuthToken == null) {
       AppAuthProvider.shared.getIdToken().then((token) {
@@ -109,7 +102,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       description: DescriptionBlock.plainText(blocks),
       descriptionBlocks: blocks,
       exercises: reindexExercises(_exercises),
-      healthActivityType: _healthActivityType,
     );
   }
 
@@ -443,14 +435,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
               blocks: _descriptionBlocks,
               onChanged: (blocks) => setState(() => _descriptionBlocks = blocks),
             ),
-            if (Platform.isIOS) ...[
-              const SizedBox(height: 16),
-              HealthActivityTypePicker(
-                value: _healthActivityType,
-                onChanged: (value) =>
-                    setState(() => _healthActivityType = value),
-              ),
-            ],
             const SizedBox(height: 16),
             if (_exercises.isNotEmpty) EstimatedDurationCard(totalSec: totalSec),
             const SizedBox(height: 20),

@@ -322,20 +322,20 @@
   "privacyProcessingConsentCheckboxUgc": "共有ルーティン（UGC）規則と無容認政策に同意します。",
   "privacyProcessingConsentAgree": "同意して続ける",
   "privacyProcessingConsentDecline": "同意しない",
-  "healthActivityTypeSection": "Appleヘルスケアのワークアウト種別",
-  "healthActivityTypeHint": "設定すると、このルーティン完了時にヘルスケアアプリへワークアウトを保存できます。保存しない場合は未設定のままにしてください。",
-  "healthActivityTypeHelper": "アプリ設定の「Appleヘルスケアにワークアウトを保存」をオンにする必要があります。",
+  "healthAppleHealthLabel": "Appleヘルスケアに記録",
+  "healthAppleHealthInfoTitle": "Appleヘルスケア",
+  "healthActivityTypeSection": "Appleヘルスケア",
+  "healthActivityTypeDetail": "種別を設定すると、このルーティン完了時にAppleヘルスケアアプリへワークアウトを保存します。「ヘルスケアに保存しない」を選べば保存しません。アプリ設定の「Appleヘルスケアに記録」をオンにしてください。",
   "healthActivityTypeNone": "ヘルスケアに保存しない",
   "healthActivityTypeFunctionalStrength": "ファンクショナル筋力トレーニング",
   "healthActivityTypeFlexibility": "柔軟性",
   "healthActivityTypeHiit": "高強度インターバルトレーニング (HIIT)",
   "healthActivityTypeTraditionalStrength": "伝統的筋力トレーニング",
   "healthActivityTypeOther": "その他",
-  "healthSaveToAppleHealthTitle": "Appleヘルスケアにワークアウトを保存",
-  "healthSaveToAppleHealthSubtitle": "ルーティンにヘルスケアのワークアウト種別が設定されている場合、完了時にヘルスケアアプリへ保存されます。",
-  "healthRoutineWillSaveTitle": "Appleヘルスケア",
-  "healthRoutineWillSaveBody": "このルーティンを完了すると、設定が有効な場合、ヘルスケアアプリに{type}として保存されます。",
-  "@healthRoutineWillSaveBody": {
+  "healthSaveToAppleHealthTitle": "Appleヘルスケアに記録",
+  "healthSaveToAppleHealthDetail": "ルーティンにヘルスケアのワークアウト種別が設定されている場合、完了時にAppleヘルスケアアプリへ保存されます。ここでオン/オフでき、初回はAppleの権限画面が表示されます。",
+  "healthRoutineWillSaveDetail": "このルーティン完了時、Appleヘルスケアアプリに{type}として保存されます。アプリ設定で「Appleヘルスケアに記録」がオンである必要があります。",
+  "@healthRoutineWillSaveDetail": {
     "placeholders": {
       "type": {
         "type": "String"
@@ -355,6 +355,29 @@
   "healthFirstWorkoutPromptBody": "ルーティンにヘルスケアのワークアウト種別が設定されている場合、完了時にヘルスケアアプリへ保存できます。「有効にする」を選ぶとAppleのシステム権限画面が開きます。後からアプリ設定で変更できます。",
   "healthFirstWorkoutPromptEnable": "有効にする",
   "healthFirstWorkoutPromptNotNow": "あとで",
+  "healthConnectLabel": "Health Connectに記録",
+  "healthConnectInfoTitle": "Health Connect",
+  "healthConnectSaveDetail": "ルーティンにワークアウト種別が設定されている場合、完了時にGoogle Health Connectへ保存されます。Health Connectアプリのインストールが必要です。ここでオン/オフでき、初回は権限画面が表示されます。",
+  "healthConnectActivityTypeDetail": "種別を設定すると、このルーティン完了時にHealth Connectへワークアウトを保存します。「ヘルスケアに保存しない」で保存をスキップできます。アプリ設定の「Health Connectに記録」をオンにしてください。",
+  "healthConnectRoutineWillSaveDetail": "このルーティン完了時、Health Connectに{type}として保存されます。アプリ設定で「Health Connectに記録」がオンである必要があります。",
+  "@healthConnectRoutineWillSaveDetail": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "healthConnectWorkoutSavedSnack": "Health Connectに{type}として保存しました。",
+  "@healthConnectWorkoutSavedSnack": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "healthConnectPermissionRequiredSnack": "Health Connectの権限が必要です。Health Connectアプリでこのアプリの運動(EXERCISE)書き込みを許可してください。",
+  "healthConnectFirstWorkoutPromptTitle": "Health Connectにワークアウトを保存しますか？",
+  "healthConnectFirstWorkoutPromptBody": "ルーティンにワークアウト種別が設定されている場合、完了時にHealth Connectへ保存できます。「有効にする」で権限画面が開きます。Health Connectアプリのインストールが必要な場合があります。",
   "workoutHistoryTitle": "ワークアウト履歴",
   "workoutHistoryYearLabel": "年",
   "workoutHistoryMonthLabel": "月",

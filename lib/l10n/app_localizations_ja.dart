@@ -858,15 +858,17 @@ class AppLocalizationsJa extends AppLocalizations {
   String get privacyProcessingConsentDecline => '同意しない';
 
   @override
-  String get healthActivityTypeSection => 'Appleヘルスケアのワークアウト種別';
+  String get healthAppleHealthLabel => 'Appleヘルスケアに記録';
 
   @override
-  String get healthActivityTypeHint =>
-      '設定すると、このルーティン完了時にヘルスケアアプリへワークアウトを保存できます。保存しない場合は未設定のままにしてください。';
+  String get healthAppleHealthInfoTitle => 'Appleヘルスケア';
 
   @override
-  String get healthActivityTypeHelper =>
-      'アプリ設定の「Appleヘルスケアにワークアウトを保存」をオンにする必要があります。';
+  String get healthActivityTypeSection => 'Appleヘルスケア';
+
+  @override
+  String get healthActivityTypeDetail =>
+      '種別を設定すると、このルーティン完了時にAppleヘルスケアアプリへワークアウトを保存します。「ヘルスケアに保存しない」を選べば保存しません。アプリ設定の「Appleヘルスケアに記録」をオンにしてください。';
 
   @override
   String get healthActivityTypeNone => 'ヘルスケアに保存しない';
@@ -887,18 +889,15 @@ class AppLocalizationsJa extends AppLocalizations {
   String get healthActivityTypeOther => 'その他';
 
   @override
-  String get healthSaveToAppleHealthTitle => 'Appleヘルスケアにワークアウトを保存';
+  String get healthSaveToAppleHealthTitle => 'Appleヘルスケアに記録';
 
   @override
-  String get healthSaveToAppleHealthSubtitle =>
-      'ルーティンにヘルスケアのワークアウト種別が設定されている場合、完了時にヘルスケアアプリへ保存されます。';
+  String get healthSaveToAppleHealthDetail =>
+      'ルーティンにヘルスケアのワークアウト種別が設定されている場合、完了時にAppleヘルスケアアプリへ保存されます。ここでオン/オフでき、初回はAppleの権限画面が表示されます。';
 
   @override
-  String get healthRoutineWillSaveTitle => 'Appleヘルスケア';
-
-  @override
-  String healthRoutineWillSaveBody(String type) {
-    return 'このルーティンを完了すると、設定が有効な場合、ヘルスケアアプリに$typeとして保存されます。';
+  String healthRoutineWillSaveDetail(String type) {
+    return 'このルーティン完了時、Appleヘルスケアアプリに$typeとして保存されます。アプリ設定で「Appleヘルスケアに記録」がオンである必要があります。';
   }
 
   @override
@@ -922,6 +921,42 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get healthFirstWorkoutPromptNotNow => 'あとで';
+
+  @override
+  String get healthConnectLabel => 'Health Connectに記録';
+
+  @override
+  String get healthConnectInfoTitle => 'Health Connect';
+
+  @override
+  String get healthConnectSaveDetail =>
+      'ルーティンにワークアウト種別が設定されている場合、完了時にGoogle Health Connectへ保存されます。Health Connectアプリのインストールが必要です。ここでオン/オフでき、初回は権限画面が表示されます。';
+
+  @override
+  String get healthConnectActivityTypeDetail =>
+      '種別を設定すると、このルーティン完了時にHealth Connectへワークアウトを保存します。「ヘルスケアに保存しない」で保存をスキップできます。アプリ設定の「Health Connectに記録」をオンにしてください。';
+
+  @override
+  String healthConnectRoutineWillSaveDetail(String type) {
+    return 'このルーティン完了時、Health Connectに$typeとして保存されます。アプリ設定で「Health Connectに記録」がオンである必要があります。';
+  }
+
+  @override
+  String healthConnectWorkoutSavedSnack(String type) {
+    return 'Health Connectに$typeとして保存しました。';
+  }
+
+  @override
+  String get healthConnectPermissionRequiredSnack =>
+      'Health Connectの権限が必要です。Health Connectアプリでこのアプリの運動(EXERCISE)書き込みを許可してください。';
+
+  @override
+  String get healthConnectFirstWorkoutPromptTitle =>
+      'Health Connectにワークアウトを保存しますか？';
+
+  @override
+  String get healthConnectFirstWorkoutPromptBody =>
+      'ルーティンにワークアウト種別が設定されている場合、完了時にHealth Connectへ保存できます。「有効にする」で権限画面が開きます。Health Connectアプリのインストールが必要な場合があります。';
 
   @override
   String get workoutHistoryTitle => 'ワークアウト履歴';

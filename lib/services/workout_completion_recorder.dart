@@ -6,6 +6,7 @@ import '../data/workout_history_repository.dart';
 import '../models/health_activity_type.dart';
 import '../models/routine.dart';
 import '../models/workout_session_record.dart';
+import '../utils/health_platform_l10n.dart';
 import 'health_workout_recorder.dart';
 import 'workout_settings.dart';
 
@@ -43,7 +44,7 @@ class WorkoutCompletionRecorder {
     if (routine.healthActivityType == null) return;
 
     final settings = await WorkoutSettings.load();
-    if (!settings.saveToAppleHealth) return;
+    if (!settings.saveToHealthApp) return;
 
     final saved = await HealthWorkoutRecorder.recordCompletedWorkout(
       routine: routine,
@@ -57,10 +58,11 @@ class WorkoutCompletionRecorder {
     if (!context.mounted || !saved) return;
 
     final l10n = AppLocalizations.of(context);
+    final platform = HealthPlatformL10n(l10n);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          l10n.healthWorkoutSavedSnack(
+          platform.workoutSavedSnack(
             RoutineHealthActivityType.labelFor(
               l10n,
               routine.healthActivityType!,

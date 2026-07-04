@@ -7,12 +7,13 @@ import '../models/health_activity_type.dart';
 import '../models/routine.dart';
 import 'workout_settings.dart';
 
-/// Saves completed Tabata workouts to Apple Health when enabled.
+/// Saves completed Tabata workouts to Apple Health (iOS) or Health Connect (Android).
 abstract final class HealthWorkoutRecorder {
   static final Health _health = Health();
   static var _configured = false;
 
-  static bool get isSupported => !kIsWeb && Platform.isIOS;
+  static bool get isSupported =>
+      !kIsWeb && (Platform.isIOS || Platform.isAndroid);
 
   static Future<void> _ensureConfigured() async {
     if (_configured) return;
@@ -37,7 +38,7 @@ abstract final class HealthWorkoutRecorder {
     if (!isSupported) return false;
 
     final settings = await WorkoutSettings.load();
-    if (!settings.saveToAppleHealth) return false;
+    if (!settings.saveToHealthApp) return false;
 
     final activity = RoutineHealthActivityType.fromId(routine.healthActivityType);
     if (activity == null) return false;

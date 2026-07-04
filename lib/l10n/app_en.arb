@@ -431,20 +431,20 @@
   "privacyProcessingConsentCheckboxUgc": "I agree to the shared routine (UGC) rules and zero-tolerance policy.",
   "privacyProcessingConsentAgree": "Agree and continue",
   "privacyProcessingConsentDecline": "Decline",
-  "healthActivityTypeSection": "Apple Health workout type",
-  "healthActivityTypeHint": "When set, completing this routine can save a workout to the Health app. Leave unset to skip saving.",
-  "healthActivityTypeHelper": "Requires \"Save workouts to Apple Health\" in app settings.",
+  "healthAppleHealthLabel": "Save to Apple Health",
+  "healthAppleHealthInfoTitle": "Apple Health",
+  "healthActivityTypeSection": "Apple Health",
+  "healthActivityTypeDetail": "When set, completing this routine saves a workout to the Apple Health app. Choose \"Do not save to Health\" to skip. Turn on \"Save to Apple Health\" in app settings.",
   "healthActivityTypeNone": "Do not save to Health",
   "healthActivityTypeFunctionalStrength": "Functional strength training",
   "healthActivityTypeFlexibility": "Flexibility",
   "healthActivityTypeHiit": "High intensity interval training (HIIT)",
   "healthActivityTypeTraditionalStrength": "Traditional strength training",
   "healthActivityTypeOther": "Other",
-  "healthSaveToAppleHealthTitle": "Save workouts to Apple Health",
-  "healthSaveToAppleHealthSubtitle": "When a routine has a Health workout type, finishing the workout saves it to the Health app.",
-  "healthRoutineWillSaveTitle": "Apple Health",
-  "healthRoutineWillSaveBody": "Completing this routine saves a {type} workout to the Health app (if enabled in settings).",
-  "@healthRoutineWillSaveBody": {
+  "healthSaveToAppleHealthTitle": "Save to Apple Health",
+  "healthSaveToAppleHealthDetail": "When a routine has a Health workout type, finishing the workout saves it to the Apple Health app. You can turn this on or off here. Apple shows a permission sheet the first time you enable it.",
+  "healthRoutineWillSaveDetail": "Completing this routine saves a {type} workout to Apple Health. \"Save to Apple Health\" must be enabled in app settings.",
+  "@healthRoutineWillSaveDetail": {
     "placeholders": {
       "type": {
         "type": "String"
@@ -464,6 +464,29 @@
   "healthFirstWorkoutPromptBody": "Completed workouts can be saved to the Health app when a routine has a Health workout type set. Choose Enable to turn this on — Apple will show a system permission sheet. You can change this later in app settings.",
   "healthFirstWorkoutPromptEnable": "Enable",
   "healthFirstWorkoutPromptNotNow": "Not now",
+  "healthConnectLabel": "Save to Health Connect",
+  "healthConnectInfoTitle": "Health Connect",
+  "healthConnectSaveDetail": "When a routine has a workout type, finishing saves it to Google Health Connect. The Health Connect app must be installed. You can turn this on or off here; the permission screen appears the first time you enable it.",
+  "healthConnectActivityTypeDetail": "When set, completing this routine saves a workout to Health Connect. Choose \"Do not save to Health\" to skip. Turn on \"Save to Health Connect\" in app settings.",
+  "healthConnectRoutineWillSaveDetail": "Completing this routine saves a {type} workout to Health Connect. \"Save to Health Connect\" must be enabled in app settings.",
+  "@healthConnectRoutineWillSaveDetail": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "healthConnectWorkoutSavedSnack": "Saved as {type} in Health Connect.",
+  "@healthConnectWorkoutSavedSnack": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "healthConnectPermissionRequiredSnack": "Health Connect permission is required. Allow exercise write access for this app in the Health Connect app.",
+  "healthConnectFirstWorkoutPromptTitle": "Save workouts to Health Connect?",
+  "healthConnectFirstWorkoutPromptBody": "Completed workouts can be saved to Health Connect when a routine has a workout type set. Choose Enable to open the permission screen. You may need to install the Health Connect app.",
   "workoutHistoryTitle": "Workout history",
   "workoutHistoryYearLabel": "Year",
   "workoutHistoryMonthLabel": "Month",

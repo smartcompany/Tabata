@@ -1644,23 +1644,29 @@ abstract class AppLocalizations {
   /// **'Decline'**
   String get privacyProcessingConsentDecline;
 
+  /// No description provided for @healthAppleHealthLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Save to Apple Health'**
+  String get healthAppleHealthLabel;
+
+  /// No description provided for @healthAppleHealthInfoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Apple Health'**
+  String get healthAppleHealthInfoTitle;
+
   /// No description provided for @healthActivityTypeSection.
   ///
   /// In en, this message translates to:
-  /// **'Apple Health workout type'**
+  /// **'Apple Health'**
   String get healthActivityTypeSection;
 
-  /// No description provided for @healthActivityTypeHint.
+  /// No description provided for @healthActivityTypeDetail.
   ///
   /// In en, this message translates to:
-  /// **'When set, completing this routine can save a workout to the Health app. Leave unset to skip saving.'**
-  String get healthActivityTypeHint;
-
-  /// No description provided for @healthActivityTypeHelper.
-  ///
-  /// In en, this message translates to:
-  /// **'Requires \"Save workouts to Apple Health\" in app settings.'**
-  String get healthActivityTypeHelper;
+  /// **'When set, completing this routine saves a workout to the Apple Health app. Choose \"Do not save to Health\" to skip. Turn on \"Save to Apple Health\" in app settings.'**
+  String get healthActivityTypeDetail;
 
   /// No description provided for @healthActivityTypeNone.
   ///
@@ -1701,26 +1707,20 @@ abstract class AppLocalizations {
   /// No description provided for @healthSaveToAppleHealthTitle.
   ///
   /// In en, this message translates to:
-  /// **'Save workouts to Apple Health'**
+  /// **'Save to Apple Health'**
   String get healthSaveToAppleHealthTitle;
 
-  /// No description provided for @healthSaveToAppleHealthSubtitle.
+  /// No description provided for @healthSaveToAppleHealthDetail.
   ///
   /// In en, this message translates to:
-  /// **'When a routine has a Health workout type, finishing the workout saves it to the Health app.'**
-  String get healthSaveToAppleHealthSubtitle;
+  /// **'When a routine has a Health workout type, finishing the workout saves it to the Apple Health app. You can turn this on or off here. Apple shows a permission sheet the first time you enable it.'**
+  String get healthSaveToAppleHealthDetail;
 
-  /// No description provided for @healthRoutineWillSaveTitle.
+  /// No description provided for @healthRoutineWillSaveDetail.
   ///
   /// In en, this message translates to:
-  /// **'Apple Health'**
-  String get healthRoutineWillSaveTitle;
-
-  /// No description provided for @healthRoutineWillSaveBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Completing this routine saves a {type} workout to the Health app (if enabled in settings).'**
-  String healthRoutineWillSaveBody(String type);
+  /// **'Completing this routine saves a {type} workout to Apple Health. \"Save to Apple Health\" must be enabled in app settings.'**
+  String healthRoutineWillSaveDetail(String type);
 
   /// No description provided for @healthWorkoutSavedSnack.
   ///
@@ -1757,6 +1757,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Not now'**
   String get healthFirstWorkoutPromptNotNow;
+
+  /// No description provided for @healthConnectLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Save to Health Connect'**
+  String get healthConnectLabel;
+
+  /// No description provided for @healthConnectInfoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Health Connect'**
+  String get healthConnectInfoTitle;
+
+  /// No description provided for @healthConnectSaveDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'When a routine has a workout type, finishing saves it to Google Health Connect. The Health Connect app must be installed. You can turn this on or off here; the permission screen appears the first time you enable it.'**
+  String get healthConnectSaveDetail;
+
+  /// No description provided for @healthConnectActivityTypeDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'When set, completing this routine saves a workout to Health Connect. Choose \"Do not save to Health\" to skip. Turn on \"Save to Health Connect\" in app settings.'**
+  String get healthConnectActivityTypeDetail;
+
+  /// No description provided for @healthConnectRoutineWillSaveDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Completing this routine saves a {type} workout to Health Connect. \"Save to Health Connect\" must be enabled in app settings.'**
+  String healthConnectRoutineWillSaveDetail(String type);
+
+  /// No description provided for @healthConnectWorkoutSavedSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved as {type} in Health Connect.'**
+  String healthConnectWorkoutSavedSnack(String type);
+
+  /// No description provided for @healthConnectPermissionRequiredSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Health Connect permission is required. Allow exercise write access for this app in the Health Connect app.'**
+  String get healthConnectPermissionRequiredSnack;
+
+  /// No description provided for @healthConnectFirstWorkoutPromptTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Save workouts to Health Connect?'**
+  String get healthConnectFirstWorkoutPromptTitle;
+
+  /// No description provided for @healthConnectFirstWorkoutPromptBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed workouts can be saved to Health Connect when a routine has a workout type set. Choose Enable to open the permission screen. You may need to install the Health Connect app.'**
+  String get healthConnectFirstWorkoutPromptBody;
 
   /// No description provided for @workoutHistoryTitle.
   ///

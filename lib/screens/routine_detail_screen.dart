@@ -1,19 +1,18 @@
-import 'dart:io' show Platform;
-
 import 'package:flutter/material.dart';
 import 'package:tabata_timer/l10n/app_localizations.dart';
 
 import '../data/routine_repository.dart';
 import '../data/routine_factory.dart';
 import '../models/exercise.dart';
-import '../models/health_activity_type.dart';
 import '../models/routine.dart';
 import '../services/health_permission_flow.dart';
+import '../services/health_workout_recorder.dart';
 import '../services/routine_share_api.dart';
 import '../services/workout_completion_recorder.dart';
 import '../services/routine_share_service.dart';
 import '../utils/duration_calculator.dart';
 import '../widgets/description_blocks_view.dart';
+import '../widgets/health_activity_type_picker.dart';
 import '../widgets/exercise_summary.dart';
 import '../widgets/routine_share_sheet.dart';
 import 'exercise_editor_screen.dart';
@@ -212,11 +211,6 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
   }
 
   Future<void> _openWorkout(Routine routine) async {
-    if (Platform.isIOS) {
-      await HealthPermissionFlow.maybePromptOnFirstWorkoutStart(context);
-      if (!mounted) return;
-    }
-
     await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => WorkoutScreen(
@@ -238,6 +232,30 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
     final routine = _routine;
     if (routine == null) return;
     await _openWorkout(routine.forSingleExercise(exercise));
+  }
+
+  Future<void> _setHealthActivityType(String? healthActivityType) async {
+    final routine = _routine;
+    final routineId = widget.routineId;
+    if (routine == null || routineId == null || _isCatalogPreview) return;
+
+    if (healthActivityType != null && HealthWorkoutRecorder.isSupported) {
+      await HealthPermissionFlow.maybePromptOnHealthActivityTypeSelected(
+        context,
+      );
+      if (!mounted) return;
+    }
+
+    final updated = routine.copyWith(healthActivityType: healthActivityType);
+    await widget.repository.upsert(updated);
+    if (!mounted) return;
+    if (widget.repository.findById(routineId) == null) {
+      Navigator.of(context).pop();
+      return;
+    }
+    setState(() {
+      _routine = widget.repository.findById(routineId);
+    });
   }
 
   Future<void> _editExercise(Exercise exercise) async {
@@ -420,40 +438,14 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
             ),
             const SizedBox(height: 16),
           ],
-          if (Platform.isIOS && routine.healthActivityType != null) ...[
+          if (HealthWorkoutRecorder.isSupported && !_isCatalogPreview) ...[
             Card(
               child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Icon(
-                      Icons.favorite_outline,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            l10n.healthRoutineWillSaveTitle,
-                            style: Theme.of(context).textTheme.titleSmall,
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            l10n.healthRoutineWillSaveBody(
-                              RoutineHealthActivityType.labelFor(
-                                l10n,
-                                routine.healthActivityType!,
-                              ),
-                            ),
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                padding: const EdgeInsets.fromLTRB(16, 14, 8, 16),
+                child: HealthActivityTypePicker(
+                  value: routine.healthActivityType,
+                  showHeartStatus: true,
+                  onChanged: _setHealthActivityType,
                 ),
               ),
             ),

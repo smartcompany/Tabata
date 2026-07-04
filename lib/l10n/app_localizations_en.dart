@@ -876,15 +876,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get privacyProcessingConsentDecline => 'Decline';
 
   @override
-  String get healthActivityTypeSection => 'Apple Health workout type';
+  String get healthAppleHealthLabel => 'Save to Apple Health';
 
   @override
-  String get healthActivityTypeHint =>
-      'When set, completing this routine can save a workout to the Health app. Leave unset to skip saving.';
+  String get healthAppleHealthInfoTitle => 'Apple Health';
 
   @override
-  String get healthActivityTypeHelper =>
-      'Requires \"Save workouts to Apple Health\" in app settings.';
+  String get healthActivityTypeSection => 'Apple Health';
+
+  @override
+  String get healthActivityTypeDetail =>
+      'When set, completing this routine saves a workout to the Apple Health app. Choose \"Do not save to Health\" to skip. Turn on \"Save to Apple Health\" in app settings.';
 
   @override
   String get healthActivityTypeNone => 'Do not save to Health';
@@ -908,18 +910,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get healthActivityTypeOther => 'Other';
 
   @override
-  String get healthSaveToAppleHealthTitle => 'Save workouts to Apple Health';
+  String get healthSaveToAppleHealthTitle => 'Save to Apple Health';
 
   @override
-  String get healthSaveToAppleHealthSubtitle =>
-      'When a routine has a Health workout type, finishing the workout saves it to the Health app.';
+  String get healthSaveToAppleHealthDetail =>
+      'When a routine has a Health workout type, finishing the workout saves it to the Apple Health app. You can turn this on or off here. Apple shows a permission sheet the first time you enable it.';
 
   @override
-  String get healthRoutineWillSaveTitle => 'Apple Health';
-
-  @override
-  String healthRoutineWillSaveBody(String type) {
-    return 'Completing this routine saves a $type workout to the Health app (if enabled in settings).';
+  String healthRoutineWillSaveDetail(String type) {
+    return 'Completing this routine saves a $type workout to Apple Health. \"Save to Apple Health\" must be enabled in app settings.';
   }
 
   @override
@@ -943,6 +942,42 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get healthFirstWorkoutPromptNotNow => 'Not now';
+
+  @override
+  String get healthConnectLabel => 'Save to Health Connect';
+
+  @override
+  String get healthConnectInfoTitle => 'Health Connect';
+
+  @override
+  String get healthConnectSaveDetail =>
+      'When a routine has a workout type, finishing saves it to Google Health Connect. The Health Connect app must be installed. You can turn this on or off here; the permission screen appears the first time you enable it.';
+
+  @override
+  String get healthConnectActivityTypeDetail =>
+      'When set, completing this routine saves a workout to Health Connect. Choose \"Do not save to Health\" to skip. Turn on \"Save to Health Connect\" in app settings.';
+
+  @override
+  String healthConnectRoutineWillSaveDetail(String type) {
+    return 'Completing this routine saves a $type workout to Health Connect. \"Save to Health Connect\" must be enabled in app settings.';
+  }
+
+  @override
+  String healthConnectWorkoutSavedSnack(String type) {
+    return 'Saved as $type in Health Connect.';
+  }
+
+  @override
+  String get healthConnectPermissionRequiredSnack =>
+      'Health Connect permission is required. Allow exercise write access for this app in the Health Connect app.';
+
+  @override
+  String get healthConnectFirstWorkoutPromptTitle =>
+      'Save workouts to Health Connect?';
+
+  @override
+  String get healthConnectFirstWorkoutPromptBody =>
+      'Completed workouts can be saved to Health Connect when a routine has a workout type set. Choose Enable to open the permission screen. You may need to install the Health Connect app.';
 
   @override
   String get workoutHistoryTitle => 'Workout history';

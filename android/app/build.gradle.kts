@@ -36,7 +36,7 @@ android {
 
     defaultConfig {
         applicationId = "com.smartcompany.tabata"
-        minSdk = flutter.minSdkVersion
+        minSdk = maxOf(flutter.minSdkVersion, 26)
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName

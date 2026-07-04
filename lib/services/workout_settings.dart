@@ -22,6 +22,9 @@ class WorkoutSettings {
   bool get saveToAppleHealth =>
       _prefs.getBool(_keySaveToAppleHealth) ?? false;
 
+  /// Apple Health (iOS) or Health Connect (Android).
+  bool get saveToHealthApp => saveToAppleHealth;
+
   Future<void> setSaveToAppleHealth(bool value) async {
     await _prefs.setBool(_keySaveToAppleHealth, value);
   }

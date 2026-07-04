@@ -1,5 +1,3 @@
-import 'dart:io' show Platform;
-
 import 'package:flutter/material.dart';
 import 'package:tabata_timer/l10n/app_localizations.dart';
 
@@ -10,7 +8,9 @@ import '../services/content_settings.dart';
 import '../services/health_workout_recorder.dart';
 import '../services/workout_settings.dart';
 import '../utils/account_deletion.dart';
+import '../utils/health_platform_l10n.dart';
 import '../utils/legal_urls.dart';
+import 'health_app_info.dart';
 
 Future<void> showAppSettingsSheet(BuildContext hostContext) async {
   final l10n = AppLocalizations.of(hostContext);
@@ -62,11 +62,13 @@ Future<void> showAppSettingsSheet(BuildContext hostContext) async {
                     setSheetState(() => countSecondsWithTts = value);
                   },
                 ),
-                if (Platform.isIOS) ...[
+                if (HealthWorkoutRecorder.isSupported) ...[
                   SwitchListTile(
                     contentPadding: EdgeInsets.zero,
-                    title: Text(l10n.healthSaveToAppleHealthTitle),
-                    subtitle: Text(l10n.healthSaveToAppleHealthSubtitle),
+                    title: HealthAppLabel(
+                      detailText: HealthPlatformL10n(l10n).saveDetail,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
                     value: saveToAppleHealth,
                     onChanged: (value) async {
                       if (value) {
@@ -76,7 +78,9 @@ Future<void> showAppSettingsSheet(BuildContext hostContext) async {
                         if (!granted) {
                           ScaffoldMessenger.of(hostContext).showSnackBar(
                             SnackBar(
-                              content: Text(l10n.healthPermissionRequiredSnack),
+                              content: Text(
+                                HealthPlatformL10n(l10n).permissionRequiredSnack,
+                              ),
                             ),
                           );
                           return;

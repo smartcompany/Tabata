@@ -849,14 +849,17 @@ class AppLocalizationsZh extends AppLocalizations {
   String get privacyProcessingConsentDecline => '不同意';
 
   @override
-  String get healthActivityTypeSection => 'Apple 健康 workout 类型';
+  String get healthAppleHealthLabel => '记录到 Apple 健康';
 
   @override
-  String get healthActivityTypeHint =>
-      '设置后，完成此训练可将 workout 保存到“健康”App。不保存请保持未设置。';
+  String get healthAppleHealthInfoTitle => 'Apple 健康';
 
   @override
-  String get healthActivityTypeHelper => '需在应用设置中开启“保存 workout 到 Apple 健康”。';
+  String get healthActivityTypeSection => 'Apple 健康';
+
+  @override
+  String get healthActivityTypeDetail =>
+      '设置后，完成此训练会将 workout 保存到 Apple“健康”App。选择“不保存到健康”则跳过。需在应用设置中开启“记录到 Apple 健康”。';
 
   @override
   String get healthActivityTypeNone => '不保存到健康';
@@ -877,18 +880,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get healthActivityTypeOther => '其他';
 
   @override
-  String get healthSaveToAppleHealthTitle => '保存 workout 到 Apple 健康';
+  String get healthSaveToAppleHealthTitle => '记录到 Apple 健康';
 
   @override
-  String get healthSaveToAppleHealthSubtitle =>
-      '若训练已设置健康 workout 类型，完成时会保存到“健康”App。';
+  String get healthSaveToAppleHealthDetail =>
+      '若训练已设置健康 workout 类型，完成时会保存到 Apple“健康”App。可在此开关；首次开启会显示 Apple 系统权限窗口。';
 
   @override
-  String get healthRoutineWillSaveTitle => 'Apple 健康';
-
-  @override
-  String healthRoutineWillSaveBody(String type) {
-    return '完成此训练后，若设置已开启，将以$type保存到“健康”App。';
+  String healthRoutineWillSaveDetail(String type) {
+    return '完成此训练后将以$type保存到 Apple“健康”App。需在应用设置中开启“记录到 Apple 健康”。';
   }
 
   @override
@@ -911,6 +911,41 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get healthFirstWorkoutPromptNotNow => '稍后';
+
+  @override
+  String get healthConnectLabel => '保存到 Health Connect';
+
+  @override
+  String get healthConnectInfoTitle => 'Health Connect';
+
+  @override
+  String get healthConnectSaveDetail =>
+      '若训练已设置运动类型，完成时会保存到 Google Health Connect。需安装 Health Connect 应用。可在此开关；首次开启会显示权限界面。';
+
+  @override
+  String get healthConnectActivityTypeDetail =>
+      '设置后，完成此训练会保存到 Health Connect。选择“不保存到健康”则跳过。需在应用设置中开启“保存到 Health Connect”。';
+
+  @override
+  String healthConnectRoutineWillSaveDetail(String type) {
+    return '完成此训练后将以$type保存到 Health Connect。需在应用设置中开启“保存到 Health Connect”。';
+  }
+
+  @override
+  String healthConnectWorkoutSavedSnack(String type) {
+    return '已以$type保存到 Health Connect。';
+  }
+
+  @override
+  String get healthConnectPermissionRequiredSnack =>
+      '需要 Health Connect 权限。请在 Health Connect 应用中允许本应用写入运动(EXERCISE)数据。';
+
+  @override
+  String get healthConnectFirstWorkoutPromptTitle => '保存到 Health Connect？';
+
+  @override
+  String get healthConnectFirstWorkoutPromptBody =>
+      '若训练已设置运动类型，完成后可保存到 Health Connect。选择“启用”会打开权限界面。可能需要先安装 Health Connect 应用。';
 
   @override
   String get workoutHistoryTitle => '训练记录';
