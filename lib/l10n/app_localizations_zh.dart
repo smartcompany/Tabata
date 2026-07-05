@@ -1080,4 +1080,172 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsShowOnboardingAgainSubtitle => '再次显示首次启动欢迎页。';
+
+  @override
+  String get healthAppleHealthLabel => '记录到 Apple 健康';
+
+  @override
+  String get healthAppleHealthInfoTitle => 'Apple 健康';
+
+  @override
+  String get healthActivityTypeSection => 'Apple 健康';
+
+  @override
+  String get healthActivityTypeDetail =>
+      '设置后，完成此训练会将 workout 保存到 Apple“健康”App。选择“不保存到健康”则跳过。需在应用设置中开启“记录到 Apple 健康”。';
+
+  @override
+  String get healthActivityTypeNone => '不保存到健康';
+
+  @override
+  String get healthActivityTypeFunctionalStrength => '功能性力量训练';
+
+  @override
+  String get healthActivityTypeFlexibility => '柔韧性训练';
+
+  @override
+  String get healthActivityTypeHiit => '高强度间歇训练 (HIIT)';
+
+  @override
+  String get healthActivityTypeTraditionalStrength => '传统力量训练';
+
+  @override
+  String get healthActivityTypeOther => '其他';
+
+  @override
+  String get healthSaveToAppleHealthTitle => '记录到 Apple 健康';
+
+  @override
+  String get healthSaveToAppleHealthDetail =>
+      '若训练已设置健康 workout 类型，完成时会保存到 Apple“健康”App。可在此开关；首次开启会显示 Apple 系统权限窗口。';
+
+  @override
+  String healthRoutineWillSaveDetail(String type) {
+    return '完成此训练后将以$type保存到 Apple“健康”App。需在应用设置中开启“记录到 Apple 健康”。';
+  }
+
+  @override
+  String healthWorkoutSavedSnack(String type) {
+    return '已以$type保存到“健康”App。';
+  }
+
+  @override
+  String get healthWorkoutSaveFailedSnack =>
+      '未能保存到“健康”App。请确认应用设置中已开启“记录到 Apple 健康”，并已授予权限。';
+
+  @override
+  String get healthPermissionRequiredSnack => '需要健康权限。请在 设置 > 健康 > 数据访问 中允许。';
+
+  @override
+  String get healthFirstWorkoutPromptTitle => '保存 workout 到 Apple 健康？';
+
+  @override
+  String get healthFirstWorkoutPromptBody =>
+      '若训练已设置健康 workout 类型，完成后可保存到“健康”App。选择“启用”会打开 Apple 系统权限窗口。之后可在应用设置中更改。';
+
+  @override
+  String get healthFirstWorkoutPromptEnable => '启用';
+
+  @override
+  String get healthFirstWorkoutPromptNotNow => '稍后';
+
+  @override
+  String get healthConnectLabel => '保存到 Health Connect';
+
+  @override
+  String get healthConnectInfoTitle => 'Health Connect';
+
+  @override
+  String get healthConnectSaveDetail =>
+      '若训练已设置运动类型，完成时会保存到 Google Health Connect。需安装 Health Connect 应用。可在此开关；首次开启会显示权限界面。';
+
+  @override
+  String get healthConnectActivityTypeDetail =>
+      '设置后，完成此训练会保存到 Health Connect。选择“不保存到 Health Connect”则跳过。需在应用设置中开启“保存到 Health Connect”。';
+
+  @override
+  String get healthConnectActivityTypeNone => '不保存到 Health Connect';
+
+  @override
+  String get healthConnectReadyStatus => '可使用 Health Connect';
+
+  @override
+  String get healthConnectUnavailableStatus => '需要安装或更新 Health Connect 应用';
+
+  @override
+  String healthConnectRoutineWillSaveDetail(String type) {
+    return '完成此训练后将以$type保存到 Health Connect。需在应用设置中开启“保存到 Health Connect”。';
+  }
+
+  @override
+  String healthConnectWorkoutSavedSnack(String type) {
+    return '已以$type保存到 Health Connect。';
+  }
+
+  @override
+  String get healthConnectWorkoutSaveFailedSnack =>
+      '未能保存到 Health Connect。请确认应用设置中已开启“保存到 Health Connect”，并在 Health Connect 应用 > 应用权限中允许写入运动数据。';
+
+  @override
+  String get healthConnectPermissionRequiredSnack =>
+      '需要 Health Connect 权限。请在 Health Connect 应用中允许本应用写入运动(EXERCISE)数据。';
+
+  @override
+  String get healthConnectFirstWorkoutPromptTitle => '保存到 Health Connect？';
+
+  @override
+  String get healthConnectFirstWorkoutPromptBody =>
+      '若训练已设置运动类型，完成后可保存到 Health Connect。选择“启用”会打开权限界面。可能需要先安装 Health Connect 应用。';
+
+  @override
+  String get healthConnectInstallPromptTitle => '需要安装 Health Connect';
+
+  @override
+  String get healthConnectInstallPromptBody =>
+      '此设备未安装 Health Connect。请从 Play Store 安装后重试。';
+
+  @override
+  String get healthConnectInstallPromptInstall => '安装';
+
+  @override
+  String get workoutHistoryTitle => '训练记录';
+
+  @override
+  String get workoutHistoryYearLabel => '年';
+
+  @override
+  String get workoutHistoryMonthLabel => '月';
+
+  @override
+  String workoutHistoryMonthWorkouts(int count) {
+    return '训练 $count 次';
+  }
+
+  @override
+  String workoutHistoryMonthDuration(String duration) {
+    return '共 $duration';
+  }
+
+  @override
+  String get workoutHistoryChartTitle => '每日训练时长（分钟）';
+
+  @override
+  String get workoutHistoryCalendarTitle => '日历';
+
+  @override
+  String workoutHistoryDayTitle(String date) {
+    return '$date 的训练';
+  }
+
+  @override
+  String get workoutHistoryEmptyDay => '这一天没有训练记录。';
+
+  @override
+  String workoutHistorySessionSubtitle(
+    String time,
+    String duration,
+    int count,
+  ) {
+    return '$time · $duration · $count 个动作';
+  }
 }

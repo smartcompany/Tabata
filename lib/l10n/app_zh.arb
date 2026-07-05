@@ -437,5 +437,113 @@
   },
   "settingsAppSection": "应用",
   "settingsShowOnboardingAgain": "再次查看引导",
-  "settingsShowOnboardingAgainSubtitle": "再次显示首次启动欢迎页。"
+  "settingsShowOnboardingAgainSubtitle": "再次显示首次启动欢迎页。",
+  "healthAppleHealthLabel": "记录到 Apple 健康",
+  "healthAppleHealthInfoTitle": "Apple 健康",
+  "healthActivityTypeSection": "Apple 健康",
+  "healthActivityTypeDetail": "设置后，完成此训练会将 workout 保存到 Apple“健康”App。选择“不保存到健康”则跳过。需在应用设置中开启“记录到 Apple 健康”。",
+  "healthActivityTypeNone": "不保存到健康",
+  "healthActivityTypeFunctionalStrength": "功能性力量训练",
+  "healthActivityTypeFlexibility": "柔韧性训练",
+  "healthActivityTypeHiit": "高强度间歇训练 (HIIT)",
+  "healthActivityTypeTraditionalStrength": "传统力量训练",
+  "healthActivityTypeOther": "其他",
+  "healthSaveToAppleHealthTitle": "记录到 Apple 健康",
+  "healthSaveToAppleHealthDetail": "若训练已设置健康 workout 类型，完成时会保存到 Apple“健康”App。可在此开关；首次开启会显示 Apple 系统权限窗口。",
+  "healthRoutineWillSaveDetail": "完成此训练后将以{type}保存到 Apple“健康”App。需在应用设置中开启“记录到 Apple 健康”。",
+  "@healthRoutineWillSaveDetail": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "healthWorkoutSavedSnack": "已以{type}保存到“健康”App。",
+  "@healthWorkoutSavedSnack": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "healthWorkoutSaveFailedSnack": "未能保存到“健康”App。请确认应用设置中已开启“记录到 Apple 健康”，并已授予权限。",
+  "healthPermissionRequiredSnack": "需要健康权限。请在 设置 > 健康 > 数据访问 中允许。",
+  "healthFirstWorkoutPromptTitle": "保存 workout 到 Apple 健康？",
+  "healthFirstWorkoutPromptBody": "若训练已设置健康 workout 类型，完成后可保存到“健康”App。选择“启用”会打开 Apple 系统权限窗口。之后可在应用设置中更改。",
+  "healthFirstWorkoutPromptEnable": "启用",
+  "healthFirstWorkoutPromptNotNow": "稍后",
+  "healthConnectLabel": "保存到 Health Connect",
+  "healthConnectInfoTitle": "Health Connect",
+  "healthConnectSaveDetail": "若训练已设置运动类型，完成时会保存到 Google Health Connect。需安装 Health Connect 应用。可在此开关；首次开启会显示权限界面。",
+  "healthConnectActivityTypeDetail": "设置后，完成此训练会保存到 Health Connect。选择“不保存到 Health Connect”则跳过。需在应用设置中开启“保存到 Health Connect”。",
+  "healthConnectActivityTypeNone": "不保存到 Health Connect",
+  "healthConnectReadyStatus": "可使用 Health Connect",
+  "healthConnectUnavailableStatus": "需要安装或更新 Health Connect 应用",
+  "healthConnectRoutineWillSaveDetail": "完成此训练后将以{type}保存到 Health Connect。需在应用设置中开启“保存到 Health Connect”。",
+  "@healthConnectRoutineWillSaveDetail": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "healthConnectWorkoutSavedSnack": "已以{type}保存到 Health Connect。",
+  "@healthConnectWorkoutSavedSnack": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "healthConnectWorkoutSaveFailedSnack": "未能保存到 Health Connect。请确认应用设置中已开启“保存到 Health Connect”，并在 Health Connect 应用 > 应用权限中允许写入运动数据。",
+  "healthConnectPermissionRequiredSnack": "需要 Health Connect 权限。请在 Health Connect 应用中允许本应用写入运动(EXERCISE)数据。",
+  "healthConnectFirstWorkoutPromptTitle": "保存到 Health Connect？",
+  "healthConnectFirstWorkoutPromptBody": "若训练已设置运动类型，完成后可保存到 Health Connect。选择“启用”会打开权限界面。可能需要先安装 Health Connect 应用。",
+  "healthConnectInstallPromptTitle": "需要安装 Health Connect",
+  "healthConnectInstallPromptBody": "此设备未安装 Health Connect。请从 Play Store 安装后重试。",
+  "healthConnectInstallPromptInstall": "安装",
+  "workoutHistoryTitle": "训练记录",
+  "workoutHistoryYearLabel": "年",
+  "workoutHistoryMonthLabel": "月",
+  "workoutHistoryMonthWorkouts": "训练 {count} 次",
+  "@workoutHistoryMonthWorkouts": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutHistoryMonthDuration": "共 {duration}",
+  "@workoutHistoryMonthDuration": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutHistoryChartTitle": "每日训练时长（分钟）",
+  "workoutHistoryCalendarTitle": "日历",
+  "workoutHistoryDayTitle": "{date} 的训练",
+  "@workoutHistoryDayTitle": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutHistoryEmptyDay": "这一天没有训练记录。",
+  "workoutHistorySessionSubtitle": "{time} · {duration} · {count} 个动作",
+  "@workoutHistorySessionSubtitle": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

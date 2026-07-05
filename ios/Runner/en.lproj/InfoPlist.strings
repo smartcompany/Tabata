@@ -1,3 +1,5 @@
 CFBundleDisplayName = "Everyone's Tabata";
 NSPhotoLibraryUsageDescription = "Photo library access is needed to add reference images to routine descriptions.";
 NSCameraUsageDescription = "Camera access is needed to take a photo for routine descriptions.";
+NSHealthShareUsageDescription = "Health data access is needed to save completed workouts to the Health app.";
+NSHealthUpdateUsageDescription = "Health data access is needed to save completed workouts to the Health app.";

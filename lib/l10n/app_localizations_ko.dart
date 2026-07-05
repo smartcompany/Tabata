@@ -1095,4 +1095,175 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get settingsShowOnboardingAgainSubtitle => '처음 시작 화면을 다시 표시합니다.';
+
+  @override
+  String get healthAppleHealthLabel => 'Apple 건강앱에 기록';
+
+  @override
+  String get healthAppleHealthInfoTitle => 'Apple 건강';
+
+  @override
+  String get healthActivityTypeSection => 'Apple 건강';
+
+  @override
+  String get healthActivityTypeDetail =>
+      '운동 유형을 설정하면 이 루틴을 완료할 때 Apple 건강 앱에 운동으로 저장됩니다. 저장하지 않으려면 \"건강 앱에 저장 안 함\"을 선택하세요. 앱 설정에서 \"Apple 건강앱에 기록\"이 켜져 있어야 합니다.';
+
+  @override
+  String get healthActivityTypeNone => '건강 앱에 저장 안 함';
+
+  @override
+  String get healthActivityTypeFunctionalStrength => '기능성 근력 운동';
+
+  @override
+  String get healthActivityTypeFlexibility => '유연성 운동';
+
+  @override
+  String get healthActivityTypeHiit => '고강도 인터벌 트레이닝 (HIIT)';
+
+  @override
+  String get healthActivityTypeTraditionalStrength => '전통적 근력 운동';
+
+  @override
+  String get healthActivityTypeOther => '기타';
+
+  @override
+  String get healthSaveToAppleHealthTitle => 'Apple 건강앱에 기록';
+
+  @override
+  String get healthSaveToAppleHealthDetail =>
+      '루틴에 건강 운동 유형이 설정되어 있으면, 운동 완료 시 Apple 건강 앱에 기록됩니다. 여기서 켜거나 끌 수 있으며, 처음 켤 때 Apple 권한 창이 표시됩니다.';
+
+  @override
+  String healthRoutineWillSaveDetail(String type) {
+    return '이 루틴을 완료하면 Apple 건강 앱에 $type(으)로 저장됩니다. 앱 설정에서 \"Apple 건강앱에 기록\"이 켜져 있어야 합니다.';
+  }
+
+  @override
+  String healthWorkoutSavedSnack(String type) {
+    return '건강 앱에 $type(으)로 저장했습니다.';
+  }
+
+  @override
+  String get healthWorkoutSaveFailedSnack =>
+      '건강 앱에 저장하지 못했습니다. 설정에서 \"Apple 건강앱에 기록\"이 켜져 있는지, 권한이 허용됐는지 확인해 주세요.';
+
+  @override
+  String get healthPermissionRequiredSnack =>
+      '건강 앱 권한이 필요합니다. 설정 > 건강 > 데이터 접근에서 허용해 주세요.';
+
+  @override
+  String get healthFirstWorkoutPromptTitle => 'Apple 건강에 운동을 저장할까요?';
+
+  @override
+  String get healthFirstWorkoutPromptBody =>
+      '루틴에 건강 운동 유형이 설정되어 있으면, 운동 완료 시 건강 앱에 기록을 저장할 수 있습니다. \'사용하기\'를 선택하면 Apple 시스템 권한 창이 열립니다. 이후 앱 설정에서 언제든 바꿀 수 있습니다.';
+
+  @override
+  String get healthFirstWorkoutPromptEnable => '사용하기';
+
+  @override
+  String get healthFirstWorkoutPromptNotNow => '나중에';
+
+  @override
+  String get healthConnectLabel => 'Health Connect에 기록';
+
+  @override
+  String get healthConnectInfoTitle => 'Health Connect';
+
+  @override
+  String get healthConnectSaveDetail =>
+      '루틴에 운동 유형이 설정되어 있으면, 운동 완료 시 Google Health Connect에 기록됩니다. Health Connect 앱 설치가 필요합니다. 여기서 켜거나 끌 수 있으며, 처음 켤 때 권한 화면이 표시됩니다.';
+
+  @override
+  String get healthConnectActivityTypeDetail =>
+      '운동 유형을 설정하면 이 루틴 완료 시 Health Connect에 운동으로 저장됩니다. \"Health Connect에 저장 안 함\"을 선택하면 저장하지 않습니다. 앱 설정에서 \"Health Connect에 기록\"이 켜져 있어야 합니다.';
+
+  @override
+  String get healthConnectActivityTypeNone => 'Health Connect에 저장 안 함';
+
+  @override
+  String get healthConnectReadyStatus => 'Health Connect 사용 가능';
+
+  @override
+  String get healthConnectUnavailableStatus =>
+      'Health Connect 앱 설치 또는 업데이트가 필요합니다';
+
+  @override
+  String healthConnectRoutineWillSaveDetail(String type) {
+    return '이 루틴을 완료하면 Health Connect에 $type(으)로 저장됩니다. 앱 설정에서 \"Health Connect에 기록\"이 켜져 있어야 합니다.';
+  }
+
+  @override
+  String healthConnectWorkoutSavedSnack(String type) {
+    return 'Health Connect에 $type(으)로 저장했습니다.';
+  }
+
+  @override
+  String get healthConnectWorkoutSaveFailedSnack =>
+      'Health Connect에 저장하지 못했습니다. 앱 설정에서 \"Health Connect에 기록\"이 켜져 있는지, Health Connect 앱 > 앱 권한에서 운동 쓰기 권한을 허용했는지 확인해 주세요.';
+
+  @override
+  String get healthConnectPermissionRequiredSnack =>
+      'Health Connect 권한이 필요합니다. Health Connect 앱에서 이 앱의 운동(EXERCISE) 쓰기 권한을 허용해 주세요.';
+
+  @override
+  String get healthConnectFirstWorkoutPromptTitle =>
+      'Health Connect에 운동을 저장할까요?';
+
+  @override
+  String get healthConnectFirstWorkoutPromptBody =>
+      '루틴에 운동 유형이 설정되어 있으면, 운동 완료 시 Health Connect에 기록을 저장할 수 있습니다. \'사용하기\'를 선택하면 권한 화면이 열립니다. Health Connect 앱 설치가 필요할 수 있습니다.';
+
+  @override
+  String get healthConnectInstallPromptTitle => 'Health Connect 설치 필요';
+
+  @override
+  String get healthConnectInstallPromptBody =>
+      '이 기기에 Health Connect가 설치되어 있지 않습니다. Play Store에서 설치한 뒤 다시 시도해 주세요.';
+
+  @override
+  String get healthConnectInstallPromptInstall => '설치하기';
+
+  @override
+  String get workoutHistoryTitle => '운동 기록';
+
+  @override
+  String get workoutHistoryYearLabel => '연도';
+
+  @override
+  String get workoutHistoryMonthLabel => '월';
+
+  @override
+  String workoutHistoryMonthWorkouts(int count) {
+    return '운동 $count회';
+  }
+
+  @override
+  String workoutHistoryMonthDuration(String duration) {
+    return '총 $duration';
+  }
+
+  @override
+  String get workoutHistoryChartTitle => '일별 운동 시간 (분)';
+
+  @override
+  String get workoutHistoryCalendarTitle => '달력';
+
+  @override
+  String workoutHistoryDayTitle(String date) {
+    return '$date 운동';
+  }
+
+  @override
+  String get workoutHistoryEmptyDay => '이 날 운동 기록이 없습니다.';
+
+  @override
+  String workoutHistorySessionSubtitle(
+    String time,
+    String duration,
+    int count,
+  ) {
+    return '$time · $duration · 운동 $count개';
+  }
 }

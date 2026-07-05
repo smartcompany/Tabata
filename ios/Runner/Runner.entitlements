@@ -10,5 +10,7 @@
 	<array>
 		<string>applinks:tabata-server.vercel.app</string>
 	</array>
+	<key>com.apple.developer.healthkit</key>
+	<true/>
 </dict>
 </plist>

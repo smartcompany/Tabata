@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
 import '../data/routine_repository.dart';
+import '../data/workout_history_repository.dart';
 import '../services/admin_session.dart';
 import '../services/onboarding_settings.dart';
 import '../services/routine_api_client.dart';
 import '../services/shared_routine_link_coordinator.dart';
+import '../services/workout_completion_recorder.dart';
 import '../services/workout_launch_coordinator.dart';
 import 'home_screen.dart';
 import 'onboarding/onboarding_screen.dart';
@@ -14,6 +16,8 @@ class AppShell extends StatefulWidget {
   const AppShell({
     super.key,
     required this.repository,
+    required this.workoutHistoryRepository,
+    required this.workoutCompletionRecorder,
     required this.apiClient,
     required this.adminSession,
     required this.linkCoordinator,
@@ -21,6 +25,8 @@ class AppShell extends StatefulWidget {
   });
 
   final RoutineRepository repository;
+  final WorkoutHistoryRepository workoutHistoryRepository;
+  final WorkoutCompletionRecorder workoutCompletionRecorder;
   final RoutineApiClient apiClient;
   final AdminSession adminSession;
   final SharedRoutineLinkCoordinator linkCoordinator;
@@ -86,6 +92,8 @@ class _AppShellState extends State<AppShell> {
 
     return HomeScreen(
       repository: widget.repository,
+      workoutHistoryRepository: widget.workoutHistoryRepository,
+      workoutCompletionRecorder: widget.workoutCompletionRecorder,
       apiClient: widget.apiClient,
       adminSession: widget.adminSession,
       linkCoordinator: widget.linkCoordinator,

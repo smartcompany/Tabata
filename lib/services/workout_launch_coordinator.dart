@@ -2,18 +2,21 @@ import 'package:flutter/material.dart';
 
 import '../data/routine_repository.dart';
 import '../screens/workout_screen.dart';
+import '../services/workout_completion_recorder.dart';
 
 /// Opens a workout when the user taps a scheduled local notification.
 class WorkoutLaunchCoordinator {
   WorkoutLaunchCoordinator({
     required this.navigatorKey,
     required this.repository,
+    required this.completionRecorder,
   });
 
   static const payloadPrefix = 'workout_start:';
 
   final GlobalKey<NavigatorState> navigatorKey;
   final RoutineRepository repository;
+  final WorkoutCompletionRecorder completionRecorder;
 
   String? _pendingRoutineId;
   bool _homeReady = false;
@@ -48,7 +51,10 @@ class WorkoutLaunchCoordinator {
 
     navigator.push(
       MaterialPageRoute(
-        builder: (_) => WorkoutScreen(routine: routine),
+        builder: (_) => WorkoutScreen(
+          routine: routine,
+          completionRecorder: completionRecorder,
+        ),
         fullscreenDialog: true,
       ),
     );

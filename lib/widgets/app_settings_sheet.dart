@@ -5,9 +5,13 @@ import '../app_auth_provider.dart';
 import '../features/legal/privacy_processing_consent.dart';
 import '../screens/legal_webview_screen.dart';
 import '../services/content_settings.dart';
+import '../services/health_workout_recorder.dart';
+import '../services/health_permission_flow.dart';
 import '../services/workout_settings.dart';
 import '../utils/account_deletion.dart';
+import '../utils/health_platform_l10n.dart';
 import '../utils/legal_urls.dart';
+import 'health_app_info.dart';
 
 Future<void> showAppSettingsSheet(
   BuildContext hostContext, {
@@ -27,6 +31,7 @@ Future<void> showAppSettingsSheet(
     isScrollControlled: true,
     builder: (context) {
       var countSecondsWithTts = workoutSettings.countSecondsWithTts;
+      var saveToAppleHealth = workoutSettings.saveToAppleHealth;
       var autoTranslateContent = contentSettings.autoTranslateContent;
 
       return StatefulBuilder(
@@ -61,6 +66,39 @@ Future<void> showAppSettingsSheet(
                     setSheetState(() => countSecondsWithTts = value);
                   },
                 ),
+                if (HealthWorkoutRecorder.isSupported) ...[
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: HealthAppLabel(
+                      detailText: HealthPlatformL10n(l10n).saveDetail,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    value: saveToAppleHealth,
+                    onChanged: (value) async {
+                      if (value) {
+                        if (!await HealthPermissionFlow
+                            .ensureHealthAppReadyForPermission(context)) {
+                          return;
+                        }
+                        final granted =
+                            await HealthWorkoutRecorder.requestWritePermission();
+                        if (!context.mounted) return;
+                        if (!granted) {
+                          ScaffoldMessenger.of(hostContext).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                HealthPlatformL10n(l10n).permissionRequiredSnack,
+                              ),
+                            ),
+                          );
+                          return;
+                        }
+                      }
+                      await workoutSettings.setSaveToAppleHealth(value);
+                      setSheetState(() => saveToAppleHealth = value);
+                    },
+                  ),
+                ],
                 const SizedBox(height: 20),
                 Text(
                   l10n.contentSettingsSection,

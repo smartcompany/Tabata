@@ -3,6 +3,8 @@ import 'description_block.dart';
 import 'json_field.dart';
 import '../utils/content_language.dart';
 
+const _copyWithSentinel = Object();
+
 class Routine {
   const Routine({
     required this.id,
@@ -12,6 +14,7 @@ class Routine {
     this.descriptionBlocks = const [],
     this.schemaVersion = currentSchemaVersion,
     this.contentLanguage,
+    this.healthActivityType,
   });
 
   static const int currentSchemaVersion = 1;
@@ -23,6 +26,8 @@ class Routine {
   final List<DescriptionBlock> descriptionBlocks;
   final List<Exercise> exercises;
   final String? contentLanguage;
+  /// Apple Health workout type id. Null means do not save to Health.
+  final String? healthActivityType;
 
   List<DescriptionBlock> get effectiveDescriptionBlocks {
     if (descriptionBlocks.isNotEmpty) return descriptionBlocks;
@@ -46,6 +51,7 @@ class Routine {
         if (contentLanguage != null) 'contentLanguage': contentLanguage,
         if (descriptionBlocks.isNotEmpty)
           'descriptionBlocks': DescriptionBlock.listToJson(descriptionBlocks),
+        if (healthActivityType != null) 'healthActivityType': healthActivityType,
         'exercises': exercises.map((e) => e.toJson()).toList(),
       };
 
@@ -71,6 +77,7 @@ class Routine {
       contentLanguage: ContentLanguage.resolve(
         json['contentLanguage'] as String?,
       ),
+      healthActivityType: JsonField.optionalNullableString(json, 'healthActivityType'),
       exercises: exercisesJson
           .map((e) => Exercise.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -85,6 +92,7 @@ class Routine {
     List<DescriptionBlock>? descriptionBlocks,
     List<Exercise>? exercises,
     String? contentLanguage,
+    Object? healthActivityType = _copyWithSentinel,
   }) {
     return Routine(
       schemaVersion: schemaVersion ?? this.schemaVersion,
@@ -94,6 +102,9 @@ class Routine {
       descriptionBlocks: descriptionBlocks ?? this.descriptionBlocks,
       exercises: exercises ?? this.exercises,
       contentLanguage: contentLanguage ?? this.contentLanguage,
+      healthActivityType: identical(healthActivityType, _copyWithSentinel)
+          ? this.healthActivityType
+          : healthActivityType as String?,
     );
   }
 

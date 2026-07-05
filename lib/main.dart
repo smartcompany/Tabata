@@ -13,6 +13,7 @@ import 'package:tabata_timer/l10n/app_localizations.dart';
 import 'config/kakao_config.dart';
 import 'data/routine_repository.dart';
 import 'data/routine_schedule_repository.dart';
+import 'data/workout_history_repository.dart';
 import 'firebase_options.dart';
 import 'screens/app_shell.dart';
 import 'services/admin_session.dart';
@@ -26,6 +27,7 @@ import 'services/routine_schedule_service.dart';
 import 'services/routine_share_api.dart';
 import 'services/shared_routine_link_coordinator.dart';
 import 'services/share_link_log.dart';
+import 'services/workout_completion_recorder.dart';
 import 'services/workout_launch_coordinator.dart';
 
 Future<void> main() async {
@@ -62,6 +64,10 @@ Future<void> main() async {
   final apiClient = RoutineApiClient(contentLocalizer: contentLocalizer);
   final repository = await RoutineRepository.create(apiClient: apiClient);
   final scheduleRepository = await RoutineScheduleRepository.create();
+  final workoutHistoryRepository = await WorkoutHistoryRepository.create();
+  final workoutCompletionRecorder = WorkoutCompletionRecorder(
+    workoutHistoryRepository,
+  );
   final adminSession = await AdminSession.create();
   await AdSettings.initialize();
   if (!kIsWeb) {
@@ -77,6 +83,7 @@ Future<void> main() async {
   final workoutLaunchCoordinator = WorkoutLaunchCoordinator(
     navigatorKey: navigatorKey,
     repository: repository,
+    completionRecorder: workoutCompletionRecorder,
   );
   if (!kIsWeb) {
     await RoutineScheduleService.shared.configure(
@@ -88,6 +95,8 @@ Future<void> main() async {
 
   runApp(TabataApp(
     repository: repository,
+    workoutHistoryRepository: workoutHistoryRepository,
+    workoutCompletionRecorder: workoutCompletionRecorder,
     apiClient: apiClient,
     adminSession: adminSession,
     navigatorKey: navigatorKey,
@@ -100,6 +109,8 @@ class TabataApp extends StatefulWidget {
   const TabataApp({
     super.key,
     required this.repository,
+    required this.workoutHistoryRepository,
+    required this.workoutCompletionRecorder,
     required this.apiClient,
     required this.adminSession,
     required this.navigatorKey,
@@ -108,6 +119,8 @@ class TabataApp extends StatefulWidget {
   });
 
   final RoutineRepository repository;
+  final WorkoutHistoryRepository workoutHistoryRepository;
+  final WorkoutCompletionRecorder workoutCompletionRecorder;
   final RoutineApiClient apiClient;
   final AdminSession adminSession;
   final GlobalKey<NavigatorState> navigatorKey;
@@ -189,6 +202,8 @@ class _TabataAppState extends State<TabataApp> with WidgetsBindingObserver {
       },
       home: AppShell(
         repository: widget.repository,
+        workoutHistoryRepository: widget.workoutHistoryRepository,
+        workoutCompletionRecorder: widget.workoutCompletionRecorder,
         apiClient: widget.apiClient,
         adminSession: widget.adminSession,
         linkCoordinator: widget.linkCoordinator,

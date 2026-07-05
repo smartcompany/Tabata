@@ -546,5 +546,113 @@
   },
   "settingsAppSection": "앱",
   "settingsShowOnboardingAgain": "온보딩 다시 보기",
-  "settingsShowOnboardingAgainSubtitle": "처음 시작 화면을 다시 표시합니다."
+  "settingsShowOnboardingAgainSubtitle": "처음 시작 화면을 다시 표시합니다.",
+  "healthAppleHealthLabel": "Apple 건강앱에 기록",
+  "healthAppleHealthInfoTitle": "Apple 건강",
+  "healthActivityTypeSection": "Apple 건강",
+  "healthActivityTypeDetail": "운동 유형을 설정하면 이 루틴을 완료할 때 Apple 건강 앱에 운동으로 저장됩니다. 저장하지 않으려면 \"건강 앱에 저장 안 함\"을 선택하세요. 앱 설정에서 \"Apple 건강앱에 기록\"이 켜져 있어야 합니다.",
+  "healthActivityTypeNone": "건강 앱에 저장 안 함",
+  "healthActivityTypeFunctionalStrength": "기능성 근력 운동",
+  "healthActivityTypeFlexibility": "유연성 운동",
+  "healthActivityTypeHiit": "고강도 인터벌 트레이닝 (HIIT)",
+  "healthActivityTypeTraditionalStrength": "전통적 근력 운동",
+  "healthActivityTypeOther": "기타",
+  "healthSaveToAppleHealthTitle": "Apple 건강앱에 기록",
+  "healthSaveToAppleHealthDetail": "루틴에 건강 운동 유형이 설정되어 있으면, 운동 완료 시 Apple 건강 앱에 기록됩니다. 여기서 켜거나 끌 수 있으며, 처음 켤 때 Apple 권한 창이 표시됩니다.",
+  "healthRoutineWillSaveDetail": "이 루틴을 완료하면 Apple 건강 앱에 {type}(으)로 저장됩니다. 앱 설정에서 \"Apple 건강앱에 기록\"이 켜져 있어야 합니다.",
+  "@healthRoutineWillSaveDetail": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "healthWorkoutSavedSnack": "건강 앱에 {type}(으)로 저장했습니다.",
+  "@healthWorkoutSavedSnack": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "healthWorkoutSaveFailedSnack": "건강 앱에 저장하지 못했습니다. 설정에서 \"Apple 건강앱에 기록\"이 켜져 있는지, 권한이 허용됐는지 확인해 주세요.",
+  "healthPermissionRequiredSnack": "건강 앱 권한이 필요합니다. 설정 > 건강 > 데이터 접근에서 허용해 주세요.",
+  "healthFirstWorkoutPromptTitle": "Apple 건강에 운동을 저장할까요?",
+  "healthFirstWorkoutPromptBody": "루틴에 건강 운동 유형이 설정되어 있으면, 운동 완료 시 건강 앱에 기록을 저장할 수 있습니다. '사용하기'를 선택하면 Apple 시스템 권한 창이 열립니다. 이후 앱 설정에서 언제든 바꿀 수 있습니다.",
+  "healthFirstWorkoutPromptEnable": "사용하기",
+  "healthFirstWorkoutPromptNotNow": "나중에",
+  "healthConnectLabel": "Health Connect에 기록",
+  "healthConnectInfoTitle": "Health Connect",
+  "healthConnectSaveDetail": "루틴에 운동 유형이 설정되어 있으면, 운동 완료 시 Google Health Connect에 기록됩니다. Health Connect 앱 설치가 필요합니다. 여기서 켜거나 끌 수 있으며, 처음 켤 때 권한 화면이 표시됩니다.",
+  "healthConnectActivityTypeDetail": "운동 유형을 설정하면 이 루틴 완료 시 Health Connect에 운동으로 저장됩니다. \"Health Connect에 저장 안 함\"을 선택하면 저장하지 않습니다. 앱 설정에서 \"Health Connect에 기록\"이 켜져 있어야 합니다.",
+  "healthConnectActivityTypeNone": "Health Connect에 저장 안 함",
+  "healthConnectReadyStatus": "Health Connect 사용 가능",
+  "healthConnectUnavailableStatus": "Health Connect 앱 설치 또는 업데이트가 필요합니다",
+  "healthConnectRoutineWillSaveDetail": "이 루틴을 완료하면 Health Connect에 {type}(으)로 저장됩니다. 앱 설정에서 \"Health Connect에 기록\"이 켜져 있어야 합니다.",
+  "@healthConnectRoutineWillSaveDetail": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "healthConnectWorkoutSavedSnack": "Health Connect에 {type}(으)로 저장했습니다.",
+  "@healthConnectWorkoutSavedSnack": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "healthConnectWorkoutSaveFailedSnack": "Health Connect에 저장하지 못했습니다. 앱 설정에서 \"Health Connect에 기록\"이 켜져 있는지, Health Connect 앱 > 앱 권한에서 운동 쓰기 권한을 허용했는지 확인해 주세요.",
+  "healthConnectPermissionRequiredSnack": "Health Connect 권한이 필요합니다. Health Connect 앱에서 이 앱의 운동(EXERCISE) 쓰기 권한을 허용해 주세요.",
+  "healthConnectFirstWorkoutPromptTitle": "Health Connect에 운동을 저장할까요?",
+  "healthConnectFirstWorkoutPromptBody": "루틴에 운동 유형이 설정되어 있으면, 운동 완료 시 Health Connect에 기록을 저장할 수 있습니다. '사용하기'를 선택하면 권한 화면이 열립니다. Health Connect 앱 설치가 필요할 수 있습니다.",
+  "healthConnectInstallPromptTitle": "Health Connect 설치 필요",
+  "healthConnectInstallPromptBody": "이 기기에 Health Connect가 설치되어 있지 않습니다. Play Store에서 설치한 뒤 다시 시도해 주세요.",
+  "healthConnectInstallPromptInstall": "설치하기",
+  "workoutHistoryTitle": "운동 기록",
+  "workoutHistoryYearLabel": "연도",
+  "workoutHistoryMonthLabel": "월",
+  "workoutHistoryMonthWorkouts": "운동 {count}회",
+  "@workoutHistoryMonthWorkouts": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutHistoryMonthDuration": "총 {duration}",
+  "@workoutHistoryMonthDuration": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutHistoryChartTitle": "일별 운동 시간 (분)",
+  "workoutHistoryCalendarTitle": "달력",
+  "workoutHistoryDayTitle": "{date} 운동",
+  "@workoutHistoryDayTitle": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutHistoryEmptyDay": "이 날 운동 기록이 없습니다.",
+  "workoutHistorySessionSubtitle": "{time} · {duration} · 운동 {count}개",
+  "@workoutHistorySessionSubtitle": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

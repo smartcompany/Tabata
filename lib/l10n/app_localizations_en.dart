@@ -1121,4 +1121,178 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get settingsShowOnboardingAgainSubtitle =>
       'Show the first-run welcome screen again.';
+
+  @override
+  String get healthAppleHealthLabel => 'Save to Apple Health';
+
+  @override
+  String get healthAppleHealthInfoTitle => 'Apple Health';
+
+  @override
+  String get healthActivityTypeSection => 'Apple Health';
+
+  @override
+  String get healthActivityTypeDetail =>
+      'When set, completing this routine saves a workout to the Apple Health app. Choose \"Do not save to Health\" to skip. Turn on \"Save to Apple Health\" in app settings.';
+
+  @override
+  String get healthActivityTypeNone => 'Do not save to Health';
+
+  @override
+  String get healthActivityTypeFunctionalStrength =>
+      'Functional strength training';
+
+  @override
+  String get healthActivityTypeFlexibility => 'Flexibility';
+
+  @override
+  String get healthActivityTypeHiit =>
+      'High intensity interval training (HIIT)';
+
+  @override
+  String get healthActivityTypeTraditionalStrength =>
+      'Traditional strength training';
+
+  @override
+  String get healthActivityTypeOther => 'Other';
+
+  @override
+  String get healthSaveToAppleHealthTitle => 'Save to Apple Health';
+
+  @override
+  String get healthSaveToAppleHealthDetail =>
+      'When a routine has a Health workout type, finishing the workout saves it to the Apple Health app. You can turn this on or off here. Apple shows a permission sheet the first time you enable it.';
+
+  @override
+  String healthRoutineWillSaveDetail(String type) {
+    return 'Completing this routine saves a $type workout to Apple Health. \"Save to Apple Health\" must be enabled in app settings.';
+  }
+
+  @override
+  String healthWorkoutSavedSnack(String type) {
+    return 'Saved as $type in the Health app.';
+  }
+
+  @override
+  String get healthWorkoutSaveFailedSnack =>
+      'Could not save to the Health app. Check that \"Save to Apple Health\" is on in app settings and that permission was granted.';
+
+  @override
+  String get healthPermissionRequiredSnack =>
+      'Health permission is required. Enable it in Settings > Health > Data Access.';
+
+  @override
+  String get healthFirstWorkoutPromptTitle => 'Save workouts to Apple Health?';
+
+  @override
+  String get healthFirstWorkoutPromptBody =>
+      'Completed workouts can be saved to the Health app when a routine has a Health workout type set. Choose Enable to turn this on — Apple will show a system permission sheet. You can change this later in app settings.';
+
+  @override
+  String get healthFirstWorkoutPromptEnable => 'Enable';
+
+  @override
+  String get healthFirstWorkoutPromptNotNow => 'Not now';
+
+  @override
+  String get healthConnectLabel => 'Save to Health Connect';
+
+  @override
+  String get healthConnectInfoTitle => 'Health Connect';
+
+  @override
+  String get healthConnectSaveDetail =>
+      'When a routine has a workout type, finishing saves it to Google Health Connect. The Health Connect app must be installed. You can turn this on or off here; the permission screen appears the first time you enable it.';
+
+  @override
+  String get healthConnectActivityTypeDetail =>
+      'When set, completing this routine saves a workout to Health Connect. Choose \"Do not save to Health Connect\" to skip. Turn on \"Save to Health Connect\" in app settings.';
+
+  @override
+  String get healthConnectActivityTypeNone => 'Do not save to Health Connect';
+
+  @override
+  String get healthConnectReadyStatus => 'Health Connect is available';
+
+  @override
+  String get healthConnectUnavailableStatus =>
+      'Install or update the Health Connect app';
+
+  @override
+  String healthConnectRoutineWillSaveDetail(String type) {
+    return 'Completing this routine saves a $type workout to Health Connect. \"Save to Health Connect\" must be enabled in app settings.';
+  }
+
+  @override
+  String healthConnectWorkoutSavedSnack(String type) {
+    return 'Saved as $type in Health Connect.';
+  }
+
+  @override
+  String get healthConnectWorkoutSaveFailedSnack =>
+      'Could not save to Health Connect. Check that \"Save to Health Connect\" is on in app settings and that exercise write access is allowed for this app in the Health Connect app.';
+
+  @override
+  String get healthConnectPermissionRequiredSnack =>
+      'Health Connect permission is required. Allow exercise write access for this app in the Health Connect app.';
+
+  @override
+  String get healthConnectFirstWorkoutPromptTitle =>
+      'Save workouts to Health Connect?';
+
+  @override
+  String get healthConnectFirstWorkoutPromptBody =>
+      'Completed workouts can be saved to Health Connect when a routine has a workout type set. Choose Enable to open the permission screen. You may need to install the Health Connect app.';
+
+  @override
+  String get healthConnectInstallPromptTitle => 'Install Health Connect';
+
+  @override
+  String get healthConnectInstallPromptBody =>
+      'Health Connect is not installed on this device. Install it from the Play Store and try again.';
+
+  @override
+  String get healthConnectInstallPromptInstall => 'Install';
+
+  @override
+  String get workoutHistoryTitle => 'Workout history';
+
+  @override
+  String get workoutHistoryYearLabel => 'Year';
+
+  @override
+  String get workoutHistoryMonthLabel => 'Month';
+
+  @override
+  String workoutHistoryMonthWorkouts(int count) {
+    return '$count workouts';
+  }
+
+  @override
+  String workoutHistoryMonthDuration(String duration) {
+    return '$duration total';
+  }
+
+  @override
+  String get workoutHistoryChartTitle => 'Daily workout time (minutes)';
+
+  @override
+  String get workoutHistoryCalendarTitle => 'Calendar';
+
+  @override
+  String workoutHistoryDayTitle(String date) {
+    return 'Sessions on $date';
+  }
+
+  @override
+  String get workoutHistoryEmptyDay => 'No workouts on this day.';
+
+  @override
+  String workoutHistorySessionSubtitle(
+    String time,
+    String duration,
+    int count,
+  ) {
+    return '$time · $duration · $count exercises';
+  }
 }

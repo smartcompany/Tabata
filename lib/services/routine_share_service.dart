@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart' show defaultTargetPlatform, TargetPlatform;
+import 'package:share_lib/share_lib.dart';
 import 'package:tabata_timer/l10n/app_localizations.dart';
 
 import '../config/api_config.dart';
@@ -21,10 +22,14 @@ class RoutineShareService {
   static Uri get storeLink =>
       defaultTargetPlatform == TargetPlatform.iOS ? appStoreLink : playStoreLink;
 
-  /// 앱 소개 공유용 (카카오 등록 도메인 → UA별 스토어 302).
-  static Uri get appShareLink => Uri.parse(
-        '${ApiConfig.profileApiBaseUrl}/applink',
-      );
+  /// 앱 소개 공유용 — 서버 settings `down_load_url` (UA별 스토어 302).
+  static Uri get appShareLink {
+    final url = AdService.shared.downloadUrl?.trim();
+    if (url != null && url.isNotEmpty) {
+      return Uri.parse(url);
+    }
+    return Uri.parse('${ApiConfig.profileApiBaseUrl}/applink');
+  }
 
   /// 카카오 TextTemplate 본문 최대 길이(여유 포함).
   static const kakaoTextMaxLength = 200;

@@ -1,3 +1,5 @@
 CFBundleDisplayName = "大家的塔巴塔";
 NSPhotoLibraryUsageDescription = "需要访问照片图库，以便在训练说明中添加参考图片。";
 NSCameraUsageDescription = "需要访问相机，以便拍摄训练说明用的照片。";
+NSHealthShareUsageDescription = "需要访问健康数据，以便将完成的训练保存到“健康”App。";
+NSHealthUpdateUsageDescription = "需要访问健康数据，以便将完成的训练保存到“健康”App。";

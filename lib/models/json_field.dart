@@ -14,6 +14,13 @@ abstract final class JsonField {
     return requiredString(json, key);
   }
 
+  static String? optionalNullableString(Map<String, dynamic> json, String key) {
+    if (!json.containsKey(key) || json[key] == null) return null;
+    final value = json[key];
+    if (value is! String || value.isEmpty) return null;
+    return value;
+  }
+
   static int requiredInt(
     Map<String, dynamic> json,
     String key, {

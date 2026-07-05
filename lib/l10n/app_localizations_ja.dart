@@ -1091,4 +1091,175 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get settingsShowOnboardingAgainSubtitle => '初回のようこそ画面を再度表示します。';
+
+  @override
+  String get healthAppleHealthLabel => 'Appleヘルスケアに記録';
+
+  @override
+  String get healthAppleHealthInfoTitle => 'Appleヘルスケア';
+
+  @override
+  String get healthActivityTypeSection => 'Appleヘルスケア';
+
+  @override
+  String get healthActivityTypeDetail =>
+      '種別を設定すると、このルーティン完了時にAppleヘルスケアアプリへワークアウトを保存します。「ヘルスケアに保存しない」を選べば保存しません。アプリ設定の「Appleヘルスケアに記録」をオンにしてください。';
+
+  @override
+  String get healthActivityTypeNone => 'ヘルスケアに保存しない';
+
+  @override
+  String get healthActivityTypeFunctionalStrength => 'ファンクショナル筋力トレーニング';
+
+  @override
+  String get healthActivityTypeFlexibility => '柔軟性';
+
+  @override
+  String get healthActivityTypeHiit => '高強度インターバルトレーニング (HIIT)';
+
+  @override
+  String get healthActivityTypeTraditionalStrength => '伝統的筋力トレーニング';
+
+  @override
+  String get healthActivityTypeOther => 'その他';
+
+  @override
+  String get healthSaveToAppleHealthTitle => 'Appleヘルスケアに記録';
+
+  @override
+  String get healthSaveToAppleHealthDetail =>
+      'ルーティンにヘルスケアのワークアウト種別が設定されている場合、完了時にAppleヘルスケアアプリへ保存されます。ここでオン/オフでき、初回はAppleの権限画面が表示されます。';
+
+  @override
+  String healthRoutineWillSaveDetail(String type) {
+    return 'このルーティン完了時、Appleヘルスケアアプリに$typeとして保存されます。アプリ設定で「Appleヘルスケアに記録」がオンである必要があります。';
+  }
+
+  @override
+  String healthWorkoutSavedSnack(String type) {
+    return 'ヘルスケアアプリに$typeとして保存しました。';
+  }
+
+  @override
+  String get healthWorkoutSaveFailedSnack =>
+      'ヘルスケアアプリに保存できませんでした。アプリ設定で「Appleヘルスケアに記録」がオンか、権限が許可されているか確認してください。';
+
+  @override
+  String get healthPermissionRequiredSnack =>
+      'ヘルスケアの権限が必要です。設定 > ヘルスケア > データアクセスで許可してください。';
+
+  @override
+  String get healthFirstWorkoutPromptTitle => 'Appleヘルスケアにワークアウトを保存しますか？';
+
+  @override
+  String get healthFirstWorkoutPromptBody =>
+      'ルーティンにヘルスケアのワークアウト種別が設定されている場合、完了時にヘルスケアアプリへ保存できます。「有効にする」を選ぶとAppleのシステム権限画面が開きます。後からアプリ設定で変更できます。';
+
+  @override
+  String get healthFirstWorkoutPromptEnable => '有効にする';
+
+  @override
+  String get healthFirstWorkoutPromptNotNow => 'あとで';
+
+  @override
+  String get healthConnectLabel => 'Health Connectに記録';
+
+  @override
+  String get healthConnectInfoTitle => 'Health Connect';
+
+  @override
+  String get healthConnectSaveDetail =>
+      'ルーティンにワークアウト種別が設定されている場合、完了時にGoogle Health Connectへ保存されます。Health Connectアプリのインストールが必要です。ここでオン/オフでき、初回は権限画面が表示されます。';
+
+  @override
+  String get healthConnectActivityTypeDetail =>
+      '種別を設定すると、このルーティン完了時にHealth Connectへワークアウトを保存します。「Health Connectに保存しない」を選べば保存しません。アプリ設定の「Health Connectに記録」をオンにしてください。';
+
+  @override
+  String get healthConnectActivityTypeNone => 'Health Connectに保存しない';
+
+  @override
+  String get healthConnectReadyStatus => 'Health Connectを利用できます';
+
+  @override
+  String get healthConnectUnavailableStatus =>
+      'Health Connectアプリのインストールまたは更新が必要です';
+
+  @override
+  String healthConnectRoutineWillSaveDetail(String type) {
+    return 'このルーティン完了時、Health Connectに$typeとして保存されます。アプリ設定で「Health Connectに記録」がオンである必要があります。';
+  }
+
+  @override
+  String healthConnectWorkoutSavedSnack(String type) {
+    return 'Health Connectに$typeとして保存しました。';
+  }
+
+  @override
+  String get healthConnectWorkoutSaveFailedSnack =>
+      'Health Connectに保存できませんでした。アプリ設定で「Health Connectに記録」がオンか、Health Connectアプリ > アプリ権限で運動の書き込みが許可されているか確認してください。';
+
+  @override
+  String get healthConnectPermissionRequiredSnack =>
+      'Health Connectの権限が必要です。Health Connectアプリでこのアプリの運動(EXERCISE)書き込みを許可してください。';
+
+  @override
+  String get healthConnectFirstWorkoutPromptTitle =>
+      'Health Connectにワークアウトを保存しますか？';
+
+  @override
+  String get healthConnectFirstWorkoutPromptBody =>
+      'ルーティンにワークアウト種別が設定されている場合、完了時にHealth Connectへ保存できます。「有効にする」で権限画面が開きます。Health Connectアプリのインストールが必要な場合があります。';
+
+  @override
+  String get healthConnectInstallPromptTitle => 'Health Connectのインストール';
+
+  @override
+  String get healthConnectInstallPromptBody =>
+      'この端末にHealth Connectがインストールされていません。Play Storeからインストールして再度お試しください。';
+
+  @override
+  String get healthConnectInstallPromptInstall => 'インストール';
+
+  @override
+  String get workoutHistoryTitle => 'ワークアウト履歴';
+
+  @override
+  String get workoutHistoryYearLabel => '年';
+
+  @override
+  String get workoutHistoryMonthLabel => '月';
+
+  @override
+  String workoutHistoryMonthWorkouts(int count) {
+    return 'ワークアウト $count回';
+  }
+
+  @override
+  String workoutHistoryMonthDuration(String duration) {
+    return '合計 $duration';
+  }
+
+  @override
+  String get workoutHistoryChartTitle => '日別ワークアウト時間（分）';
+
+  @override
+  String get workoutHistoryCalendarTitle => 'カレンダー';
+
+  @override
+  String workoutHistoryDayTitle(String date) {
+    return '$date のセッション';
+  }
+
+  @override
+  String get workoutHistoryEmptyDay => 'この日の記録はありません。';
+
+  @override
+  String workoutHistorySessionSubtitle(
+    String time,
+    String duration,
+    int count,
+  ) {
+    return '$time · $duration · 種目 $count';
+  }
 }

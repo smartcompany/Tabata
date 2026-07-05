@@ -437,5 +437,113 @@
   },
   "settingsAppSection": "アプリ",
   "settingsShowOnboardingAgain": "オンボーディングをもう一度",
-  "settingsShowOnboardingAgainSubtitle": "初回のようこそ画面を再度表示します。"
+  "settingsShowOnboardingAgainSubtitle": "初回のようこそ画面を再度表示します。",
+  "healthAppleHealthLabel": "Appleヘルスケアに記録",
+  "healthAppleHealthInfoTitle": "Appleヘルスケア",
+  "healthActivityTypeSection": "Appleヘルスケア",
+  "healthActivityTypeDetail": "種別を設定すると、このルーティン完了時にAppleヘルスケアアプリへワークアウトを保存します。「ヘルスケアに保存しない」を選べば保存しません。アプリ設定の「Appleヘルスケアに記録」をオンにしてください。",
+  "healthActivityTypeNone": "ヘルスケアに保存しない",
+  "healthActivityTypeFunctionalStrength": "ファンクショナル筋力トレーニング",
+  "healthActivityTypeFlexibility": "柔軟性",
+  "healthActivityTypeHiit": "高強度インターバルトレーニング (HIIT)",
+  "healthActivityTypeTraditionalStrength": "伝統的筋力トレーニング",
+  "healthActivityTypeOther": "その他",
+  "healthSaveToAppleHealthTitle": "Appleヘルスケアに記録",
+  "healthSaveToAppleHealthDetail": "ルーティンにヘルスケアのワークアウト種別が設定されている場合、完了時にAppleヘルスケアアプリへ保存されます。ここでオン/オフでき、初回はAppleの権限画面が表示されます。",
+  "healthRoutineWillSaveDetail": "このルーティン完了時、Appleヘルスケアアプリに{type}として保存されます。アプリ設定で「Appleヘルスケアに記録」がオンである必要があります。",
+  "@healthRoutineWillSaveDetail": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "healthWorkoutSavedSnack": "ヘルスケアアプリに{type}として保存しました。",
+  "@healthWorkoutSavedSnack": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "healthWorkoutSaveFailedSnack": "ヘルスケアアプリに保存できませんでした。アプリ設定で「Appleヘルスケアに記録」がオンか、権限が許可されているか確認してください。",
+  "healthPermissionRequiredSnack": "ヘルスケアの権限が必要です。設定 > ヘルスケア > データアクセスで許可してください。",
+  "healthFirstWorkoutPromptTitle": "Appleヘルスケアにワークアウトを保存しますか？",
+  "healthFirstWorkoutPromptBody": "ルーティンにヘルスケアのワークアウト種別が設定されている場合、完了時にヘルスケアアプリへ保存できます。「有効にする」を選ぶとAppleのシステム権限画面が開きます。後からアプリ設定で変更できます。",
+  "healthFirstWorkoutPromptEnable": "有効にする",
+  "healthFirstWorkoutPromptNotNow": "あとで",
+  "healthConnectLabel": "Health Connectに記録",
+  "healthConnectInfoTitle": "Health Connect",
+  "healthConnectSaveDetail": "ルーティンにワークアウト種別が設定されている場合、完了時にGoogle Health Connectへ保存されます。Health Connectアプリのインストールが必要です。ここでオン/オフでき、初回は権限画面が表示されます。",
+  "healthConnectActivityTypeDetail": "種別を設定すると、このルーティン完了時にHealth Connectへワークアウトを保存します。「Health Connectに保存しない」を選べば保存しません。アプリ設定の「Health Connectに記録」をオンにしてください。",
+  "healthConnectActivityTypeNone": "Health Connectに保存しない",
+  "healthConnectReadyStatus": "Health Connectを利用できます",
+  "healthConnectUnavailableStatus": "Health Connectアプリのインストールまたは更新が必要です",
+  "healthConnectRoutineWillSaveDetail": "このルーティン完了時、Health Connectに{type}として保存されます。アプリ設定で「Health Connectに記録」がオンである必要があります。",
+  "@healthConnectRoutineWillSaveDetail": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "healthConnectWorkoutSavedSnack": "Health Connectに{type}として保存しました。",
+  "@healthConnectWorkoutSavedSnack": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "healthConnectWorkoutSaveFailedSnack": "Health Connectに保存できませんでした。アプリ設定で「Health Connectに記録」がオンか、Health Connectアプリ > アプリ権限で運動の書き込みが許可されているか確認してください。",
+  "healthConnectPermissionRequiredSnack": "Health Connectの権限が必要です。Health Connectアプリでこのアプリの運動(EXERCISE)書き込みを許可してください。",
+  "healthConnectFirstWorkoutPromptTitle": "Health Connectにワークアウトを保存しますか？",
+  "healthConnectFirstWorkoutPromptBody": "ルーティンにワークアウト種別が設定されている場合、完了時にHealth Connectへ保存できます。「有効にする」で権限画面が開きます。Health Connectアプリのインストールが必要な場合があります。",
+  "healthConnectInstallPromptTitle": "Health Connectのインストール",
+  "healthConnectInstallPromptBody": "この端末にHealth Connectがインストールされていません。Play Storeからインストールして再度お試しください。",
+  "healthConnectInstallPromptInstall": "インストール",
+  "workoutHistoryTitle": "ワークアウト履歴",
+  "workoutHistoryYearLabel": "年",
+  "workoutHistoryMonthLabel": "月",
+  "workoutHistoryMonthWorkouts": "ワークアウト {count}回",
+  "@workoutHistoryMonthWorkouts": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutHistoryMonthDuration": "合計 {duration}",
+  "@workoutHistoryMonthDuration": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutHistoryChartTitle": "日別ワークアウト時間（分）",
+  "workoutHistoryCalendarTitle": "カレンダー",
+  "workoutHistoryDayTitle": "{date} のセッション",
+  "@workoutHistoryDayTitle": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutHistoryEmptyDay": "この日の記録はありません。",
+  "workoutHistorySessionSubtitle": "{time} · {duration} · 種目 {count}",
+  "@workoutHistorySessionSubtitle": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

@@ -7,12 +7,16 @@ import '../data/routine_repository.dart';
 import '../data/routine_factory.dart';
 import '../models/exercise.dart';
 import '../models/routine.dart';
+import '../services/health_permission_flow.dart';
+import '../services/health_workout_recorder.dart';
 import '../services/routine_schedule_service.dart';
 import '../services/routine_share_api.dart';
 import '../services/routine_share_service.dart';
+import '../services/workout_completion_recorder.dart';
 import '../utils/duration_calculator.dart';
 import '../widgets/description_blocks_view.dart';
 import '../widgets/exercise_summary.dart';
+import '../widgets/health_activity_type_picker.dart';
 import '../widgets/routine_schedule_sheet.dart';
 import '../widgets/routine_share_sheet.dart';
 import '../models/routine_schedule.dart';
@@ -24,6 +28,7 @@ class RoutineDetailScreen extends StatefulWidget {
   const RoutineDetailScreen({
     super.key,
     required this.repository,
+    required this.workoutCompletionRecorder,
     this.routineId,
     this.catalogId,
   }) : assert(
@@ -32,6 +37,7 @@ class RoutineDetailScreen extends StatefulWidget {
         );
 
   final RoutineRepository repository;
+  final WorkoutCompletionRecorder workoutCompletionRecorder;
   final String? routineId;
   final String? catalogId;
 
@@ -218,31 +224,59 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
       MaterialPageRoute(
         builder: (_) => RoutineDetailScreen(
           repository: widget.repository,
+          workoutCompletionRecorder: widget.workoutCompletionRecorder,
           routineId: saved.first.id,
         ),
       ),
     );
   }
 
-  void _openWorkout(Routine routine) {
-    Navigator.of(context).push(
+  Future<void> _openWorkout(Routine routine) async {
+    await Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => WorkoutScreen(routine: routine),
+        builder: (_) => WorkoutScreen(
+          routine: routine,
+          completionRecorder: widget.workoutCompletionRecorder,
+        ),
         fullscreenDialog: true,
       ),
     );
   }
 
-  void _start() {
+  Future<void> _start() async {
     final routine = _routine;
     if (routine == null) return;
-    _openWorkout(routine);
+    await _openWorkout(routine);
   }
 
-  void _startExercise(Exercise exercise) {
+  Future<void> _startExercise(Exercise exercise) async {
     final routine = _routine;
     if (routine == null) return;
-    _openWorkout(routine.forSingleExercise(exercise));
+    await _openWorkout(routine.forSingleExercise(exercise));
+  }
+
+  Future<void> _setHealthActivityType(String? healthActivityType) async {
+    final routine = _routine;
+    final routineId = widget.routineId;
+    if (routine == null || routineId == null || _isCatalogPreview) return;
+
+    if (healthActivityType != null && HealthWorkoutRecorder.isSupported) {
+      await HealthPermissionFlow.maybePromptOnHealthActivityTypeSelected(
+        context,
+      );
+      if (!mounted) return;
+    }
+
+    final updated = routine.copyWith(healthActivityType: healthActivityType);
+    await widget.repository.upsert(updated);
+    if (!mounted) return;
+    if (widget.repository.findById(routineId) == null) {
+      Navigator.of(context).pop();
+      return;
+    }
+    setState(() {
+      _routine = widget.repository.findById(routineId);
+    });
   }
 
   Future<void> _openScheduleSheet() async {
@@ -440,6 +474,19 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Theme.of(context).colorScheme.outline,
                   ),
+            ),
+            const SizedBox(height: 16),
+          ],
+          if (HealthWorkoutRecorder.isSupported && !_isCatalogPreview) ...[
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 14, 8, 16),
+                child: HealthActivityTypePicker(
+                  value: routine.healthActivityType,
+                  showHeartStatus: true,
+                  onChanged: _setHealthActivityType,
+                ),
+              ),
             ),
             const SizedBox(height: 16),
           ],
