@@ -954,4 +954,130 @@ class AppLocalizationsZh extends AppLocalizations {
   String scheduleRecurrenceMonthlySummary(int day, String time) {
     return '每月$day日 $time';
   }
+
+  @override
+  String get onboardingWelcomeTitle => '欢迎使用「大家的 Tabata」';
+
+  @override
+  String get onboardingWelcomeSubtitle => '你想怎么开始？';
+
+  @override
+  String get onboardingOptionQuickStartTitle => '马上开始运动';
+
+  @override
+  String get onboardingOptionQuickStartSubtitle => '选择推荐训练并添加到「我的训练」';
+
+  @override
+  String get onboardingOptionYoutubeTitle => '跟着 YouTube/运动做';
+
+  @override
+  String get onboardingOptionYoutubeSubtitle => 'AI 根据视频或运动名称生成训练';
+
+  @override
+  String get onboardingOptionGoalTitle => '按目标/部位定制';
+
+  @override
+  String get onboardingOptionGoalSubtitle => '选择目标、时长和难度，AI 生成训练';
+
+  @override
+  String get onboardingOptionCreateTitle => '自己创建';
+
+  @override
+  String get onboardingOptionCreateSubtitle => '自行设置准备、运动和放松阶段';
+
+  @override
+  String get onboardingSkip => '稍后再说';
+
+  @override
+  String get onboardingRecommendedTitle => '推荐训练';
+
+  @override
+  String get onboardingRecommendedSubtitle => '选择要添加的训练，默认全选。';
+
+  @override
+  String get onboardingRecommendedSave => '添加到我的训练';
+
+  @override
+  String get onboardingRecommendedSelectAtLeastOne => '请至少选择一项训练。';
+
+  @override
+  String get onboardingRecommendedDownloadFailed => '无法下载训练，请检查网络后重试。';
+
+  @override
+  String get onboardingRecommendedLoadError => '无法加载推荐训练列表。';
+
+  @override
+  String get onboardingGoalTitle => '定制训练';
+
+  @override
+  String get onboardingGoalStepGoal => '你的目标是什么？';
+
+  @override
+  String get onboardingGoalStepDuration => '运动多长时间？';
+
+  @override
+  String get onboardingGoalStepLevel => '难度如何？';
+
+  @override
+  String get onboardingGoalNext => '下一步';
+
+  @override
+  String get onboardingGoalCreate => '用 AI 创建';
+
+  @override
+  String get onboardingGoalOptionWeightLoss => '减脂';
+
+  @override
+  String get onboardingGoalOptionStrength => '力量';
+
+  @override
+  String get onboardingGoalOptionFlexibility => '柔韧';
+
+  @override
+  String get onboardingGoalOptionFullBody => '全身';
+
+  @override
+  String get onboardingGoalOptionUpperBody => '上肢';
+
+  @override
+  String get onboardingGoalOptionLowerBody => '下肢';
+
+  @override
+  String get onboardingGoalOptionCore => '核心';
+
+  @override
+  String get onboardingGoalDuration5 => '5 分钟';
+
+  @override
+  String get onboardingGoalDuration10 => '10 分钟';
+
+  @override
+  String get onboardingGoalDuration15 => '15 分钟';
+
+  @override
+  String get onboardingGoalDuration20 => '20 分钟';
+
+  @override
+  String get onboardingGoalLevelBeginner => '初级';
+
+  @override
+  String get onboardingGoalLevelIntermediate => '中级';
+
+  @override
+  String get onboardingAiYoutubeInitialPrompt =>
+      '请输入 YouTube 链接或运动名称。\n\n示例：\nhttps://www.youtube.com/watch?v=example\n请根据此视频内容创建 Tabata 间歇训练，分为准备、运动和休息阶段。';
+
+  @override
+  String onboardingAiGoalPrompt(String goal, String duration, String level) {
+    return '请创建 Tabata 间歇训练：目标 $goal，时长 $duration 分钟，难度 $level。分为准备、运动和休息阶段。';
+  }
+
+  @override
+  String get settingsAppSection => '应用';
+
+  @override
+  String get settingsShowOnboardingAgain => '再次查看引导';
+
+  @override
+  String get settingsShowOnboardingAgainSubtitle => '再次显示首次启动欢迎页。';
 }

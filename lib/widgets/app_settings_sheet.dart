@@ -9,7 +9,10 @@ import '../services/workout_settings.dart';
 import '../utils/account_deletion.dart';
 import '../utils/legal_urls.dart';
 
-Future<void> showAppSettingsSheet(BuildContext hostContext) async {
+Future<void> showAppSettingsSheet(
+  BuildContext hostContext, {
+  Future<void> Function()? onShowOnboardingAgain,
+}) async {
   final l10n = AppLocalizations.of(hostContext);
   final workoutSettings = await WorkoutSettings.load();
   final contentSettings = await ContentSettings.load();
@@ -73,6 +76,23 @@ Future<void> showAppSettingsSheet(BuildContext hostContext) async {
                     setSheetState(() => autoTranslateContent = value);
                   },
                 ),
+                if (onShowOnboardingAgain != null) ...[
+                  const SizedBox(height: 20),
+                  Text(
+                    l10n.settingsAppSection,
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(l10n.settingsShowOnboardingAgain),
+                    subtitle: Text(l10n.settingsShowOnboardingAgainSubtitle),
+                    trailing: const Icon(Icons.restart_alt_outlined),
+                    onTap: () async {
+                      Navigator.of(context).pop();
+                      await onShowOnboardingAgain();
+                    },
+                  ),
+                ],
                 const SizedBox(height: 20),
                 if (isLoggedIn) ...[
                   Text(

@@ -32,6 +32,7 @@ class HomeScreen extends StatefulWidget {
     required this.adminSession,
     required this.linkCoordinator,
     required this.workoutLaunchCoordinator,
+    this.onShowOnboardingAgain,
   });
 
   final RoutineRepository repository;
@@ -39,6 +40,7 @@ class HomeScreen extends StatefulWidget {
   final AdminSession adminSession;
   final SharedRoutineLinkCoordinator linkCoordinator;
   final WorkoutLaunchCoordinator workoutLaunchCoordinator;
+  final Future<void> Function()? onShowOnboardingAgain;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -335,7 +337,10 @@ class _HomeScreenState extends State<HomeScreen>
             tooltip: l10n.shareAppTooltip,
           ),
           IconButton(
-            onPressed: () => showAppSettingsSheet(context),
+            onPressed: () => showAppSettingsSheet(
+              context,
+              onShowOnboardingAgain: widget.onShowOnboardingAgain,
+            ),
             icon: const Icon(Icons.settings_outlined),
             tooltip: l10n.settingsTitle,
           ),

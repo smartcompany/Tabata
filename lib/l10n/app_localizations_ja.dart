@@ -963,4 +963,132 @@ class AppLocalizationsJa extends AppLocalizations {
   String scheduleRecurrenceMonthlySummary(int day, String time) {
     return '毎月$day日 $time';
   }
+
+  @override
+  String get onboardingWelcomeTitle => 'みんなのタバタへようこそ';
+
+  @override
+  String get onboardingWelcomeSubtitle => 'どのように始めますか？';
+
+  @override
+  String get onboardingOptionQuickStartTitle => 'すぐに運動を始める';
+
+  @override
+  String get onboardingOptionQuickStartSubtitle => 'おすすめルーティンを選んでマイルーティンに追加';
+
+  @override
+  String get onboardingOptionYoutubeTitle => 'YouTube・動画の運動に合わせる';
+
+  @override
+  String get onboardingOptionYoutubeSubtitle => '動画や運動名からAIがルーティンを作成';
+
+  @override
+  String get onboardingOptionGoalTitle => '目標・部位に合わせる';
+
+  @override
+  String get onboardingOptionGoalSubtitle => '目標・時間・難易度を選ぶとAIがルーティンを作成';
+
+  @override
+  String get onboardingOptionCreateTitle => '自分で作る';
+
+  @override
+  String get onboardingOptionCreateSubtitle => '準備・運動・休息を自分で設定';
+
+  @override
+  String get onboardingSkip => 'あとで';
+
+  @override
+  String get onboardingRecommendedTitle => 'おすすめルーティン';
+
+  @override
+  String get onboardingRecommendedSubtitle =>
+      '追加するルーティンを選んでください。初期状態ですべて選択されています。';
+
+  @override
+  String get onboardingRecommendedSave => 'マイルーティンに追加';
+
+  @override
+  String get onboardingRecommendedSelectAtLeastOne => '1つ以上選んでください。';
+
+  @override
+  String get onboardingRecommendedDownloadFailed =>
+      'ルーティンの取得に失敗しました。接続を確認して再度お試しください。';
+
+  @override
+  String get onboardingRecommendedLoadError => 'おすすめルーティンを読み込めませんでした。';
+
+  @override
+  String get onboardingGoalTitle => 'カスタムルーティン';
+
+  @override
+  String get onboardingGoalStepGoal => '目標は？';
+
+  @override
+  String get onboardingGoalStepDuration => '運動時間は？';
+
+  @override
+  String get onboardingGoalStepLevel => '難易度は？';
+
+  @override
+  String get onboardingGoalNext => '次へ';
+
+  @override
+  String get onboardingGoalCreate => 'AIで作成';
+
+  @override
+  String get onboardingGoalOptionWeightLoss => 'ダイエット';
+
+  @override
+  String get onboardingGoalOptionStrength => '筋力';
+
+  @override
+  String get onboardingGoalOptionFlexibility => '柔軟性';
+
+  @override
+  String get onboardingGoalOptionFullBody => '全身';
+
+  @override
+  String get onboardingGoalOptionUpperBody => '上半身';
+
+  @override
+  String get onboardingGoalOptionLowerBody => '下半身';
+
+  @override
+  String get onboardingGoalOptionCore => 'コア';
+
+  @override
+  String get onboardingGoalDuration5 => '5分';
+
+  @override
+  String get onboardingGoalDuration10 => '10分';
+
+  @override
+  String get onboardingGoalDuration15 => '15分';
+
+  @override
+  String get onboardingGoalDuration20 => '20分';
+
+  @override
+  String get onboardingGoalLevelBeginner => '初級';
+
+  @override
+  String get onboardingGoalLevelIntermediate => '中級';
+
+  @override
+  String get onboardingAiYoutubeInitialPrompt =>
+      'YouTubeのURLまたは運動名を入力してください。\n\n例)\nhttps://www.youtube.com/watch?v=example\nこの動画の内容でタバタ・インターバルルーティンを作成してください。準備・運動・休息に分けてください。';
+
+  @override
+  String onboardingAiGoalPrompt(String goal, String duration, String level) {
+    return '目標: $goal、時間: $duration分、難易度: $levelに合うタバタ・インターバルルーティンを作成してください。準備・運動・休息に分けてください。';
+  }
+
+  @override
+  String get settingsAppSection => 'アプリ';
+
+  @override
+  String get settingsShowOnboardingAgain => 'オンボーディングをもう一度';
+
+  @override
+  String get settingsShowOnboardingAgainSubtitle => '初回のようこそ画面を再度表示します。';
 }

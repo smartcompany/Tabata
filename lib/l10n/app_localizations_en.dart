@@ -986,4 +986,139 @@ class AppLocalizationsEn extends AppLocalizations {
   String scheduleRecurrenceMonthlySummary(int day, String time) {
     return 'Monthly on day $day at $time';
   }
+
+  @override
+  String get onboardingWelcomeTitle => 'Welcome to Everyone\'s Tabata';
+
+  @override
+  String get onboardingWelcomeSubtitle => 'How would you like to get started?';
+
+  @override
+  String get onboardingOptionQuickStartTitle => 'Start working out now';
+
+  @override
+  String get onboardingOptionQuickStartSubtitle =>
+      'Pick recommended routines to add to My Routines';
+
+  @override
+  String get onboardingOptionYoutubeTitle => 'Follow YouTube or a workout';
+
+  @override
+  String get onboardingOptionYoutubeSubtitle =>
+      'AI builds a routine from a video or workout name';
+
+  @override
+  String get onboardingOptionGoalTitle => 'Match your goal or focus';
+
+  @override
+  String get onboardingOptionGoalSubtitle =>
+      'Choose goal, time, and level—AI creates your routine';
+
+  @override
+  String get onboardingOptionCreateTitle => 'Create from scratch';
+
+  @override
+  String get onboardingOptionCreateSubtitle =>
+      'Set prep, work, and rest intervals yourself';
+
+  @override
+  String get onboardingSkip => 'Not now';
+
+  @override
+  String get onboardingRecommendedTitle => 'Recommended routines';
+
+  @override
+  String get onboardingRecommendedSubtitle =>
+      'Select routines to add. All are selected by default.';
+
+  @override
+  String get onboardingRecommendedSave => 'Add to My Routines';
+
+  @override
+  String get onboardingRecommendedSelectAtLeastOne =>
+      'Select at least one routine.';
+
+  @override
+  String get onboardingRecommendedDownloadFailed =>
+      'Could not download routines. Check your connection and try again.';
+
+  @override
+  String get onboardingRecommendedLoadError =>
+      'Could not load recommended routines.';
+
+  @override
+  String get onboardingGoalTitle => 'Custom routine';
+
+  @override
+  String get onboardingGoalStepGoal => 'What\'s your goal?';
+
+  @override
+  String get onboardingGoalStepDuration => 'How long should it be?';
+
+  @override
+  String get onboardingGoalStepLevel => 'What\'s your level?';
+
+  @override
+  String get onboardingGoalNext => 'Next';
+
+  @override
+  String get onboardingGoalCreate => 'Create with AI';
+
+  @override
+  String get onboardingGoalOptionWeightLoss => 'Weight loss';
+
+  @override
+  String get onboardingGoalOptionStrength => 'Strength';
+
+  @override
+  String get onboardingGoalOptionFlexibility => 'Flexibility';
+
+  @override
+  String get onboardingGoalOptionFullBody => 'Full body';
+
+  @override
+  String get onboardingGoalOptionUpperBody => 'Upper body';
+
+  @override
+  String get onboardingGoalOptionLowerBody => 'Lower body';
+
+  @override
+  String get onboardingGoalOptionCore => 'Core';
+
+  @override
+  String get onboardingGoalDuration5 => '5 min';
+
+  @override
+  String get onboardingGoalDuration10 => '10 min';
+
+  @override
+  String get onboardingGoalDuration15 => '15 min';
+
+  @override
+  String get onboardingGoalDuration20 => '20 min';
+
+  @override
+  String get onboardingGoalLevelBeginner => 'Beginner';
+
+  @override
+  String get onboardingGoalLevelIntermediate => 'Intermediate';
+
+  @override
+  String get onboardingAiYoutubeInitialPrompt =>
+      'Enter a YouTube URL or workout name.\n\nExample:\nhttps://www.youtube.com/watch?v=example\nCreate a Tabata interval routine from this video with prep, work, and rest phases.';
+
+  @override
+  String onboardingAiGoalPrompt(String goal, String duration, String level) {
+    return 'Create a Tabata interval routine for goal: $goal, duration: $duration minutes, level: $level. Split into prep, work, and rest phases.';
+  }
+
+  @override
+  String get settingsAppSection => 'App';
+
+  @override
+  String get settingsShowOnboardingAgain => 'Show onboarding again';
+
+  @override
+  String get settingsShowOnboardingAgainSubtitle =>
+      'Show the first-run welcome screen again.';
 }

@@ -1829,6 +1829,252 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Monthly on day {day} at {time}'**
   String scheduleRecurrenceMonthlySummary(int day, String time);
+
+  /// No description provided for @onboardingWelcomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to Everyone\'s Tabata'**
+  String get onboardingWelcomeTitle;
+
+  /// No description provided for @onboardingWelcomeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How would you like to get started?'**
+  String get onboardingWelcomeSubtitle;
+
+  /// No description provided for @onboardingOptionQuickStartTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Start working out now'**
+  String get onboardingOptionQuickStartTitle;
+
+  /// No description provided for @onboardingOptionQuickStartSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick recommended routines to add to My Routines'**
+  String get onboardingOptionQuickStartSubtitle;
+
+  /// No description provided for @onboardingOptionYoutubeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow YouTube or a workout'**
+  String get onboardingOptionYoutubeTitle;
+
+  /// No description provided for @onboardingOptionYoutubeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'AI builds a routine from a video or workout name'**
+  String get onboardingOptionYoutubeSubtitle;
+
+  /// No description provided for @onboardingOptionGoalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Match your goal or focus'**
+  String get onboardingOptionGoalTitle;
+
+  /// No description provided for @onboardingOptionGoalSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose goal, time, and level—AI creates your routine'**
+  String get onboardingOptionGoalSubtitle;
+
+  /// No description provided for @onboardingOptionCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create from scratch'**
+  String get onboardingOptionCreateTitle;
+
+  /// No description provided for @onboardingOptionCreateSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set prep, work, and rest intervals yourself'**
+  String get onboardingOptionCreateSubtitle;
+
+  /// No description provided for @onboardingSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get onboardingSkip;
+
+  /// No description provided for @onboardingRecommendedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended routines'**
+  String get onboardingRecommendedTitle;
+
+  /// No description provided for @onboardingRecommendedSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Select routines to add. All are selected by default.'**
+  String get onboardingRecommendedSubtitle;
+
+  /// No description provided for @onboardingRecommendedSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to My Routines'**
+  String get onboardingRecommendedSave;
+
+  /// No description provided for @onboardingRecommendedSelectAtLeastOne.
+  ///
+  /// In en, this message translates to:
+  /// **'Select at least one routine.'**
+  String get onboardingRecommendedSelectAtLeastOne;
+
+  /// No description provided for @onboardingRecommendedDownloadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not download routines. Check your connection and try again.'**
+  String get onboardingRecommendedDownloadFailed;
+
+  /// No description provided for @onboardingRecommendedLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load recommended routines.'**
+  String get onboardingRecommendedLoadError;
+
+  /// No description provided for @onboardingGoalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom routine'**
+  String get onboardingGoalTitle;
+
+  /// No description provided for @onboardingGoalStepGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s your goal?'**
+  String get onboardingGoalStepGoal;
+
+  /// No description provided for @onboardingGoalStepDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'How long should it be?'**
+  String get onboardingGoalStepDuration;
+
+  /// No description provided for @onboardingGoalStepLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s your level?'**
+  String get onboardingGoalStepLevel;
+
+  /// No description provided for @onboardingGoalNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get onboardingGoalNext;
+
+  /// No description provided for @onboardingGoalCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create with AI'**
+  String get onboardingGoalCreate;
+
+  /// No description provided for @onboardingGoalOptionWeightLoss.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight loss'**
+  String get onboardingGoalOptionWeightLoss;
+
+  /// No description provided for @onboardingGoalOptionStrength.
+  ///
+  /// In en, this message translates to:
+  /// **'Strength'**
+  String get onboardingGoalOptionStrength;
+
+  /// No description provided for @onboardingGoalOptionFlexibility.
+  ///
+  /// In en, this message translates to:
+  /// **'Flexibility'**
+  String get onboardingGoalOptionFlexibility;
+
+  /// No description provided for @onboardingGoalOptionFullBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Full body'**
+  String get onboardingGoalOptionFullBody;
+
+  /// No description provided for @onboardingGoalOptionUpperBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Upper body'**
+  String get onboardingGoalOptionUpperBody;
+
+  /// No description provided for @onboardingGoalOptionLowerBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Lower body'**
+  String get onboardingGoalOptionLowerBody;
+
+  /// No description provided for @onboardingGoalOptionCore.
+  ///
+  /// In en, this message translates to:
+  /// **'Core'**
+  String get onboardingGoalOptionCore;
+
+  /// No description provided for @onboardingGoalDuration5.
+  ///
+  /// In en, this message translates to:
+  /// **'5 min'**
+  String get onboardingGoalDuration5;
+
+  /// No description provided for @onboardingGoalDuration10.
+  ///
+  /// In en, this message translates to:
+  /// **'10 min'**
+  String get onboardingGoalDuration10;
+
+  /// No description provided for @onboardingGoalDuration15.
+  ///
+  /// In en, this message translates to:
+  /// **'15 min'**
+  String get onboardingGoalDuration15;
+
+  /// No description provided for @onboardingGoalDuration20.
+  ///
+  /// In en, this message translates to:
+  /// **'20 min'**
+  String get onboardingGoalDuration20;
+
+  /// No description provided for @onboardingGoalLevelBeginner.
+  ///
+  /// In en, this message translates to:
+  /// **'Beginner'**
+  String get onboardingGoalLevelBeginner;
+
+  /// No description provided for @onboardingGoalLevelIntermediate.
+  ///
+  /// In en, this message translates to:
+  /// **'Intermediate'**
+  String get onboardingGoalLevelIntermediate;
+
+  /// No description provided for @onboardingAiYoutubeInitialPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a YouTube URL or workout name.\n\nExample:\nhttps://www.youtube.com/watch?v=example\nCreate a Tabata interval routine from this video with prep, work, and rest phases.'**
+  String get onboardingAiYoutubeInitialPrompt;
+
+  /// No description provided for @onboardingAiGoalPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a Tabata interval routine for goal: {goal}, duration: {duration} minutes, level: {level}. Split into prep, work, and rest phases.'**
+  String onboardingAiGoalPrompt(String goal, String duration, String level);
+
+  /// No description provided for @settingsAppSection.
+  ///
+  /// In en, this message translates to:
+  /// **'App'**
+  String get settingsAppSection;
+
+  /// No description provided for @settingsShowOnboardingAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Show onboarding again'**
+  String get settingsShowOnboardingAgain;
+
+  /// No description provided for @settingsShowOnboardingAgainSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the first-run welcome screen again.'**
+  String get settingsShowOnboardingAgainSubtitle;
 }
 
 class _AppLocalizationsDelegate

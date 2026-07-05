@@ -14,10 +14,12 @@ class AiRoutineCreateScreen extends StatefulWidget {
     super.key,
     required this.repository,
     required this.aiRoutineService,
+    this.initialPrompt,
   });
 
   final RoutineRepository repository;
   final AiRoutineService aiRoutineService;
+  final String? initialPrompt;
 
   @override
   State<AiRoutineCreateScreen> createState() => _AiRoutineCreateScreenState();
@@ -31,7 +33,7 @@ class _AiRoutineCreateScreenState extends State<AiRoutineCreateScreen> {
   @override
   void initState() {
     super.initState();
-    _promptController = TextEditingController();
+    _promptController = TextEditingController(text: widget.initialPrompt ?? '');
     RewardedAdGate.preload();
   }
 

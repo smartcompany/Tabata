@@ -1,0 +1,96 @@
+import 'package:flutter/material.dart';
+
+import '../data/routine_repository.dart';
+import '../services/admin_session.dart';
+import '../services/onboarding_settings.dart';
+import '../services/routine_api_client.dart';
+import '../services/shared_routine_link_coordinator.dart';
+import '../services/workout_launch_coordinator.dart';
+import 'home_screen.dart';
+import 'onboarding/onboarding_screen.dart';
+
+/// Shows onboarding on first launch, then the home screen.
+class AppShell extends StatefulWidget {
+  const AppShell({
+    super.key,
+    required this.repository,
+    required this.apiClient,
+    required this.adminSession,
+    required this.linkCoordinator,
+    required this.workoutLaunchCoordinator,
+  });
+
+  final RoutineRepository repository;
+  final RoutineApiClient apiClient;
+  final AdminSession adminSession;
+  final SharedRoutineLinkCoordinator linkCoordinator;
+  final WorkoutLaunchCoordinator workoutLaunchCoordinator;
+
+  @override
+  State<AppShell> createState() => _AppShellState();
+}
+
+class _AppShellState extends State<AppShell> {
+  bool _ready = false;
+  bool _showOnboarding = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _bootstrap();
+  }
+
+  Future<void> _bootstrap() async {
+    final completed = await OnboardingSettings.isCompleted();
+    if (!completed) {
+      try {
+        await widget.repository.refreshRemoteProfiles();
+      } catch (_) {}
+    }
+    if (!mounted) return;
+    setState(() {
+      _ready = true;
+      _showOnboarding = !completed;
+    });
+  }
+
+  Future<void> _completeOnboarding() async {
+    await OnboardingSettings.markCompleted();
+    if (!mounted) return;
+    setState(() => _showOnboarding = false);
+  }
+
+  Future<void> showOnboardingAgain() async {
+    await OnboardingSettings.resetCompleted();
+    try {
+      await widget.repository.refreshRemoteProfiles();
+    } catch (_) {}
+    if (!mounted) return;
+    setState(() => _showOnboarding = true);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_ready) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (_showOnboarding) {
+      return OnboardingScreen(
+        repository: widget.repository,
+        onComplete: _completeOnboarding,
+      );
+    }
+
+    return HomeScreen(
+      repository: widget.repository,
+      apiClient: widget.apiClient,
+      adminSession: widget.adminSession,
+      linkCoordinator: widget.linkCoordinator,
+      workoutLaunchCoordinator: widget.workoutLaunchCoordinator,
+      onShowOnboardingAgain: showOnboardingAgain,
+    );
+  }
+}

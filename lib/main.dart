@@ -14,7 +14,7 @@ import 'config/kakao_config.dart';
 import 'data/routine_repository.dart';
 import 'data/routine_schedule_repository.dart';
 import 'firebase_options.dart';
-import 'screens/home_screen.dart';
+import 'screens/app_shell.dart';
 import 'services/admin_session.dart';
 import 'services/ad_settings.dart';
 import 'services/content_settings.dart';
@@ -187,7 +187,7 @@ class _TabataAppState extends State<TabataApp> with WidgetsBindingObserver {
           child: child,
         );
       },
-      home: HomeScreen(
+      home: AppShell(
         repository: widget.repository,
         apiClient: widget.apiClient,
         adminSession: widget.adminSession,

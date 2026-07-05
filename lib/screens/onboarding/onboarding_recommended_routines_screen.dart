@@ -1,0 +1,216 @@
+import 'package:flutter/material.dart';
+import 'package:tabata_timer/l10n/app_localizations.dart';
+
+import '../../data/routine_repository.dart';
+import '../../models/profile_summary.dart';
+import '../../services/app_settings_service.dart';
+
+typedef OnboardingCompleteCallback = Future<void> Function();
+
+class OnboardingRecommendedRoutinesScreen extends StatefulWidget {
+  const OnboardingRecommendedRoutinesScreen({
+    super.key,
+    required this.repository,
+    required this.onComplete,
+  });
+
+  final RoutineRepository repository;
+  final OnboardingCompleteCallback onComplete;
+
+  @override
+  State<OnboardingRecommendedRoutinesScreen> createState() =>
+      _OnboardingRecommendedRoutinesScreenState();
+}
+
+class _OnboardingRecommendedRoutinesScreenState
+    extends State<OnboardingRecommendedRoutinesScreen> {
+  bool _loading = true;
+  String? _error;
+  List<ProfileSummary> _summaries = [];
+  final Set<String> _selectedIds = {};
+  bool _saving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+
+    try {
+      if (widget.repository.officialCatalogSummaries.isEmpty) {
+        await widget.repository.refreshRemoteProfiles();
+      }
+
+      final ids = await AppSettingsService.onboardingRecommendedRoutineIds();
+      final summaries = <ProfileSummary>[];
+      for (final id in ids) {
+        final summary = widget.repository.catalogSummaryFor(id);
+        if (summary != null) {
+          summaries.add(summary);
+        }
+      }
+
+      if (!mounted) return;
+      setState(() {
+        _loading = false;
+        _summaries = summaries;
+        _selectedIds
+          ..clear()
+          ..addAll(summaries.map((summary) => summary.id));
+        if (summaries.isEmpty) {
+          _error = AppLocalizations.of(context).onboardingRecommendedLoadError;
+        }
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _loading = false;
+        _error = AppLocalizations.of(context).onboardingRecommendedLoadError;
+      });
+    }
+  }
+
+  Future<void> _saveSelected() async {
+    final l10n = AppLocalizations.of(context);
+    if (_selectedIds.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.onboardingRecommendedSelectAtLeastOne)),
+      );
+      return;
+    }
+
+    setState(() => _saving = true);
+    var failed = false;
+    for (final id in _selectedIds) {
+      if (widget.repository.hasDownloadedCatalog(id)) continue;
+      try {
+        await widget.repository.forkCatalogProfile(id);
+      } catch (_) {
+        failed = true;
+      }
+    }
+
+    if (!mounted) return;
+    setState(() => _saving = false);
+
+    if (failed) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.onboardingRecommendedDownloadFailed)),
+      );
+      return;
+    }
+
+    await widget.onComplete();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(l10n.onboardingRecommendedTitle),
+      ),
+      body: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (_error != null)
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Card(
+                      color: theme.colorScheme.errorContainer,
+                      child: ListTile(
+                        title: Text(_error!),
+                        trailing: TextButton(
+                          onPressed: _load,
+                          child: Text(l10n.retry),
+                        ),
+                      ),
+                    ),
+                  ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
+                  child: Text(
+                    l10n.onboardingRecommendedSubtitle,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.outline,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+                    itemCount: _summaries.length,
+                    itemBuilder: (context, index) {
+                      final summary = _summaries[index];
+                      final selected = _selectedIds.contains(summary.id);
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Card(
+                          child: CheckboxListTile(
+                            value: selected,
+                            onChanged: _saving
+                                ? null
+                                : (value) {
+                                    setState(() {
+                                      if (value == true) {
+                                        _selectedIds.add(summary.id);
+                                      } else {
+                                        _selectedIds.remove(summary.id);
+                                      }
+                                    });
+                                  },
+                            title: Text(
+                              summary.title,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            subtitle: Text(
+                              l10n.routineCountOnly(summary.exerciseCount),
+                            ),
+                            secondary: Icon(
+                              Icons.fitness_center_outlined,
+                              color: theme.colorScheme.primary,
+                            ),
+                            controlAffinity: ListTileControlAffinity.leading,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    16,
+                    0,
+                    16,
+                    16 + MediaQuery.paddingOf(context).bottom,
+                  ),
+                  child: FilledButton(
+                    onPressed: _saving || _summaries.isEmpty
+                        ? null
+                        : _saveSelected,
+                    child: _saving
+                        ? const SizedBox(
+                            width: 22,
+                            height: 22,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : Text(l10n.onboardingRecommendedSave),
+                  ),
+                ),
+              ],
+            ),
+    );
+  }
+}

@@ -968,4 +968,131 @@ class AppLocalizationsKo extends AppLocalizations {
   String scheduleRecurrenceMonthlySummary(int day, String time) {
     return '매월 $day일 $time';
   }
+
+  @override
+  String get onboardingWelcomeTitle => '모두의 타바타에 오신 걸 환영해요';
+
+  @override
+  String get onboardingWelcomeSubtitle => '어떻게 시작할까요? 원하는 방법을 골라 주세요.';
+
+  @override
+  String get onboardingOptionQuickStartTitle => '바로 운동 시작';
+
+  @override
+  String get onboardingOptionQuickStartSubtitle => '추천 루틴을 골라 내 루틴에 추가해요';
+
+  @override
+  String get onboardingOptionYoutubeTitle => '유튜브·운동 따라하기';
+
+  @override
+  String get onboardingOptionYoutubeSubtitle => '영상이나 운동 이름으로 AI가 루틴을 만들어요';
+
+  @override
+  String get onboardingOptionGoalTitle => '목표·부위 맞춤';
+
+  @override
+  String get onboardingOptionGoalSubtitle => '목표, 시간, 난이도를 고르면 AI가 루틴을 만들어요';
+
+  @override
+  String get onboardingOptionCreateTitle => '직접 만들기';
+
+  @override
+  String get onboardingOptionCreateSubtitle => '준비·운동·휴식 구간을 직접 설정해요';
+
+  @override
+  String get onboardingSkip => '나중에 할게요';
+
+  @override
+  String get onboardingRecommendedTitle => '추천 루틴';
+
+  @override
+  String get onboardingRecommendedSubtitle => '추가할 루틴을 선택하세요. 모두 기본 선택되어 있어요.';
+
+  @override
+  String get onboardingRecommendedSave => '내 루틴에 추가';
+
+  @override
+  String get onboardingRecommendedSelectAtLeastOne => '루틴을 하나 이상 선택해 주세요.';
+
+  @override
+  String get onboardingRecommendedDownloadFailed =>
+      '루틴을 불러오지 못했습니다. 네트워크를 확인하고 다시 시도해 주세요.';
+
+  @override
+  String get onboardingRecommendedLoadError => '추천 루틴 목록을 불러오지 못했습니다.';
+
+  @override
+  String get onboardingGoalTitle => '맞춤 루틴';
+
+  @override
+  String get onboardingGoalStepGoal => '어떤 목표인가요?';
+
+  @override
+  String get onboardingGoalStepDuration => '얼마나 운동할까요?';
+
+  @override
+  String get onboardingGoalStepLevel => '난이도는 어느 정도인가요?';
+
+  @override
+  String get onboardingGoalNext => '다음';
+
+  @override
+  String get onboardingGoalCreate => 'AI로 만들기';
+
+  @override
+  String get onboardingGoalOptionWeightLoss => '다이어트';
+
+  @override
+  String get onboardingGoalOptionStrength => '근력';
+
+  @override
+  String get onboardingGoalOptionFlexibility => '유연성';
+
+  @override
+  String get onboardingGoalOptionFullBody => '전신';
+
+  @override
+  String get onboardingGoalOptionUpperBody => '상체';
+
+  @override
+  String get onboardingGoalOptionLowerBody => '하체';
+
+  @override
+  String get onboardingGoalOptionCore => '코어';
+
+  @override
+  String get onboardingGoalDuration5 => '5분';
+
+  @override
+  String get onboardingGoalDuration10 => '10분';
+
+  @override
+  String get onboardingGoalDuration15 => '15분';
+
+  @override
+  String get onboardingGoalDuration20 => '20분';
+
+  @override
+  String get onboardingGoalLevelBeginner => '초급';
+
+  @override
+  String get onboardingGoalLevelIntermediate => '중급';
+
+  @override
+  String get onboardingAiYoutubeInitialPrompt =>
+      '유튜브 영상 URL이나 운동 이름을 입력해 주세요.\n\n예)\nhttps://www.youtube.com/watch?v=예시\n이 영상 내용으로 타바타 인터벌 운동 루틴을 만들어 줘. 준비·운동·휴식 구간을 나눠서.';
+
+  @override
+  String onboardingAiGoalPrompt(String goal, String duration, String level) {
+    return '목표: $goal, 시간: $duration분, 난이도: $level에 맞는 타바타 인터벌 운동 루틴을 만들어 줘. 준비·운동·휴식 구간을 나눠서.';
+  }
+
+  @override
+  String get settingsAppSection => '앱';
+
+  @override
+  String get settingsShowOnboardingAgain => '온보딩 다시 보기';
+
+  @override
+  String get settingsShowOnboardingAgainSubtitle => '처음 시작 화면을 다시 표시합니다.';
 }
