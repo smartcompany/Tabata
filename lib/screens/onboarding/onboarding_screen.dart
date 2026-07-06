@@ -10,7 +10,7 @@ import '../routine_editor_screen.dart';
 import 'onboarding_goal_screen.dart';
 import 'onboarding_recommended_routines_screen.dart';
 
-typedef OnboardingCompleteCallback = Future<void> Function();
+typedef OnboardingCompleteCallback = Future<void> Function({required String path});
 
 class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({
@@ -22,8 +22,8 @@ class OnboardingScreen extends StatelessWidget {
   final RoutineRepository repository;
   final OnboardingCompleteCallback onComplete;
 
-  Future<void> _finish(BuildContext context) async {
-    await onComplete();
+  Future<void> _finish(BuildContext context, {required String path}) async {
+    await onComplete(path: path);
   }
 
   Future<void> _openQuickStart(BuildContext context) async {
@@ -38,7 +38,7 @@ class OnboardingScreen extends StatelessWidget {
       ),
     );
     if (finished == true && context.mounted) {
-      await onComplete();
+      await onComplete(path: 'quick_start');
     }
   }
 
@@ -54,7 +54,7 @@ class OnboardingScreen extends StatelessWidget {
       ),
     );
     if (!context.mounted) return;
-    await _finish(context);
+    await _finish(context, path: 'youtube_ai');
   }
 
   Future<void> _openGoalFlow(BuildContext context) async {
@@ -75,7 +75,7 @@ class OnboardingScreen extends StatelessWidget {
       ),
     );
     if (!context.mounted) return;
-    await _finish(context);
+    await _finish(context, path: 'goal_ai');
   }
 
   Future<void> _openCreateRoutine(BuildContext context) async {
@@ -93,7 +93,7 @@ class OnboardingScreen extends StatelessWidget {
       ),
     );
     if (!context.mounted) return;
-    await _finish(context);
+    await _finish(context, path: 'create');
   }
 
   @override
@@ -147,7 +147,7 @@ class OnboardingScreen extends StatelessWidget {
             const SizedBox(height: 16),
             Center(
               child: TextButton(
-                onPressed: () => _finish(context),
+                onPressed: () => _finish(context, path: 'skip'),
                 child: Text(l10n.onboardingSkip),
               ),
             ),

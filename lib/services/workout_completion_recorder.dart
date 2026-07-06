@@ -8,6 +8,7 @@ import 'health_activity_catalog.dart';
 import '../models/workout_session_record.dart';
 import '../utils/health_platform_l10n.dart';
 import 'health_workout_recorder.dart';
+import 'app_analytics_service.dart';
 import 'workout_settings.dart';
 
 const _uuid = Uuid();
@@ -40,6 +41,12 @@ class WorkoutCompletionRecorder {
       healthActivityType: routine.healthActivityType,
     );
     await _historyRepository.add(session);
+
+    await AppAnalyticsService.logWorkoutComplete(
+      durationSec: elapsedSec,
+      exerciseCount: routine.exercises.length,
+      routineId: routine.id,
+    );
 
     if (routine.healthActivityType == null) return;
 

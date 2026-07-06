@@ -8,6 +8,7 @@ import '../models/profile_summary.dart';
 import '../models/routine.dart';
 import '../services/ai_routine_service.dart';
 import '../services/admin_session.dart';
+import '../services/app_analytics_service.dart';
 import '../services/content_settings.dart';
 import '../services/routine_api_client.dart';
 import '../services/routine_share_service.dart';
@@ -244,6 +245,10 @@ class _HomeScreenState extends State<HomeScreen>
 
     try {
       await widget.repository.forkCatalogProfile(summary.id);
+      await AppAnalyticsService.logRoutineDownload(
+        source: 'catalog',
+        catalogId: summary.id,
+      );
       if (!mounted) return;
       setState(() => _downloadingCatalogId = null);
     } catch (_) {
@@ -326,6 +331,7 @@ class _HomeScreenState extends State<HomeScreen>
       subject: l10n.appTitle,
       linkUrl: RoutineShareService.appShareLink,
       linkButtonTitle: l10n.shareKakaoAppLinkButton,
+      shareType: 'app',
     );
   }
 

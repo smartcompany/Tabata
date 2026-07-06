@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../data/routine_repository.dart';
 import '../data/workout_history_repository.dart';
 import '../services/admin_session.dart';
+import '../services/app_analytics_service.dart';
 import '../services/onboarding_settings.dart';
 import '../services/routine_api_client.dart';
 import '../services/shared_routine_link_coordinator.dart';
@@ -60,7 +61,8 @@ class _AppShellState extends State<AppShell> {
     });
   }
 
-  Future<void> _completeOnboarding() async {
+  Future<void> _completeOnboarding({required String path}) async {
+    await AppAnalyticsService.logOnboardingComplete(path: path);
     await OnboardingSettings.markCompleted();
     if (!mounted) return;
     setState(() => _showOnboarding = false);

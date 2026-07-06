@@ -8,6 +8,7 @@ import '../data/routine_factory.dart';
 import '../models/exercise.dart';
 import '../models/routine.dart';
 import '../services/health_permission_flow.dart';
+import '../services/app_analytics_service.dart';
 import '../services/health_workout_recorder.dart';
 import '../services/routine_schedule_service.dart';
 import '../services/routine_share_api.dart';
@@ -203,6 +204,10 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
 
     try {
       await widget.repository.forkCatalogProfile(catalogId);
+      await AppAnalyticsService.logRoutineDownload(
+        source: 'catalog_detail',
+        catalogId: catalogId,
+      );
       if (!mounted) return;
       setState(() => _downloading = false);
     } catch (_) {

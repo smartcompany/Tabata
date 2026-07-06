@@ -17,6 +17,7 @@ import 'data/workout_history_repository.dart';
 import 'firebase_options.dart';
 import 'screens/app_shell.dart';
 import 'services/admin_session.dart';
+import 'services/app_analytics_service.dart';
 import 'services/ad_settings.dart';
 import 'services/content_settings.dart';
 import 'services/locale_settings.dart';
@@ -40,6 +41,7 @@ Future<void> main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+    await AppAnalyticsService.initialize();
   } catch (e) {
     debugPrint('Firebase init error: $e');
   }

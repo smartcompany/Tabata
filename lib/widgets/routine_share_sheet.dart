@@ -3,6 +3,7 @@ import 'package:share_lib/share_lib.dart';
 import 'package:tabata_timer/l10n/app_localizations.dart';
 
 import '../services/routine_share_service.dart';
+import '../services/app_analytics_service.dart';
 import '../services/share_link_log.dart';
 
 /// 루틴 등 앱 내 공유 바텀 시트. [ShareService]로 실제 공유를 수행합니다.
@@ -20,6 +21,7 @@ abstract final class RoutineShareSheet {
     String? subject,
     Uri? linkUrl,
     String? linkButtonTitle,
+    String shareType = 'routine',
   }) async {
     final shareOrigin = _shareOriginFromContext(context);
     final kakaoAvailable = await ShareService.isKakaoTalkAvailable();
@@ -73,6 +75,10 @@ abstract final class RoutineShareSheet {
                         linkButtonTitle: resolvedButtonTitle,
                         onError: (_) => _showShareFailed(context, l10n),
                       );
+                      await AppAnalyticsService.logRoutineShare(
+                        shareType: shareType,
+                        channel: 'kakao',
+                      );
                     },
                   ),
                 ListTile(
@@ -90,6 +96,10 @@ abstract final class RoutineShareSheet {
                       mergedText,
                       subject: subject,
                       sharePositionOrigin: shareOrigin,
+                    );
+                    await AppAnalyticsService.logRoutineShare(
+                      shareType: shareType,
+                      channel: 'system',
                     );
                   },
                 ),

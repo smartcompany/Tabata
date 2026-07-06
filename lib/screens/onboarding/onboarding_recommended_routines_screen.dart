@@ -3,6 +3,7 @@ import 'package:tabata_timer/l10n/app_localizations.dart';
 
 import '../../data/routine_repository.dart';
 import '../../models/profile_summary.dart';
+import '../../services/app_analytics_service.dart';
 import '../../services/app_settings_service.dart';
 
 typedef OnboardingCompleteCallback = Future<void> Function();
@@ -105,6 +106,11 @@ class _OnboardingRecommendedRoutinesScreenState
       );
       return;
     }
+
+    await AppAnalyticsService.logRoutineDownload(
+      source: 'onboarding',
+      count: _selectedIds.length,
+    );
 
     await widget.onComplete();
   }

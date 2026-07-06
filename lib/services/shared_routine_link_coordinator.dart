@@ -6,6 +6,7 @@ import 'package:tabata_timer/l10n/app_localizations.dart';
 
 import '../config/api_config.dart';
 import '../data/routine_repository.dart';
+import 'app_analytics_service.dart';
 import 'routine_share_api.dart';
 import 'share_link_log.dart';
 
@@ -290,6 +291,7 @@ class SharedRoutineLinkCoordinator {
 
       final saved = await repository.importSharedRoutine(routine);
       shareLinkLog('importSharedRoutine ok localId=${saved.id}');
+      await AppAnalyticsService.logRoutineDownload(source: 'shared_link');
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.routineAddedToMyRoutines(saved.title))),
