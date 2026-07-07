@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tabata_timer/l10n/app_localizations.dart';
 
 import '../screens/legal_webview_screen.dart';
+import '../services/app_review_service.dart';
 import '../services/content_settings.dart';
 import '../services/health_workout_recorder.dart';
 import '../services/health_permission_flow.dart';
@@ -109,12 +110,12 @@ Future<void> showAppSettingsSheet(
                     setSheetState(() => autoTranslateContent = value);
                   },
                 ),
-                if (onShowOnboardingAgain != null) ...[
-                  const SizedBox(height: 20),
-                  Text(
-                    l10n.settingsAppSection,
-                    style: Theme.of(context).textTheme.titleSmall,
-                  ),
+                const SizedBox(height: 20),
+                Text(
+                  l10n.settingsAppSection,
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+                if (onShowOnboardingAgain != null)
                   ListTile(
                     contentPadding: EdgeInsets.zero,
                     title: Text(l10n.settingsShowOnboardingAgain),
@@ -125,7 +126,16 @@ Future<void> showAppSettingsSheet(
                       await onShowOnboardingAgain();
                     },
                   ),
-                ],
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(l10n.settingsRateApp),
+                  trailing: const Icon(Icons.star_outline_rounded),
+                  onTap: () async {
+                    Navigator.of(context).pop();
+                    await Future<void>.delayed(const Duration(milliseconds: 350));
+                    await AppReviewService.promptFromSettings();
+                  },
+                ),
                 const SizedBox(height: 20),
                 Text(
                   l10n.settingsLegalSection,

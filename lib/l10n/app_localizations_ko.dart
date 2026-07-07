@@ -873,7 +873,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get privacyProcessingConsentDecline => '동의하지 않음';
 
   @override
-  String get scheduleWorkoutTooltip => '예약';
+  String get scheduleWorkoutTooltip => '운동 예약';
 
   @override
   String get scheduleWorkoutTitle => '운동 예약';
@@ -1095,6 +1095,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get settingsShowOnboardingAgainSubtitle => '처음 시작 화면을 다시 표시합니다.';
+
+  @override
+  String get settingsRateApp => '앱 평가하기';
 
   @override
   String get healthAppleHealthLabel => 'Apple 건강앱에 기록';

@@ -860,7 +860,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get privacyProcessingConsentDecline => '不同意';
 
   @override
-  String get scheduleWorkoutTooltip => '预约';
+  String get scheduleWorkoutTooltip => '预约锻炼';
 
   @override
   String get scheduleWorkoutTitle => '预约锻炼';
@@ -1080,6 +1080,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsShowOnboardingAgainSubtitle => '再次显示首次启动欢迎页。';
+
+  @override
+  String get settingsRateApp => '评价应用';
 
   @override
   String get healthAppleHealthLabel => '记录到 Apple 健康';

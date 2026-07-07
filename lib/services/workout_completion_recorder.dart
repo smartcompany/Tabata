@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:tabata_timer/l10n/app_localizations.dart';
 import 'package:uuid/uuid.dart';
@@ -9,6 +11,7 @@ import '../models/workout_session_record.dart';
 import '../utils/health_platform_l10n.dart';
 import 'health_workout_recorder.dart';
 import 'app_analytics_service.dart';
+import 'app_review_service.dart';
 import 'workout_settings.dart';
 
 const _uuid = Uuid();
@@ -47,6 +50,8 @@ class WorkoutCompletionRecorder {
       exerciseCount: routine.exercises.length,
       routineId: routine.id,
     );
+
+    unawaited(AppReviewService.onWorkoutCompleted());
 
     if (routine.healthActivityType == null) return;
 

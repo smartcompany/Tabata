@@ -887,7 +887,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get privacyProcessingConsentDecline => 'Decline';
 
   @override
-  String get scheduleWorkoutTooltip => 'Schedule';
+  String get scheduleWorkoutTooltip => 'Schedule workout';
 
   @override
   String get scheduleWorkoutTitle => 'Schedule workout';
@@ -1121,6 +1121,9 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get settingsShowOnboardingAgainSubtitle =>
       'Show the first-run welcome screen again.';
+
+  @override
+  String get settingsRateApp => 'Rate the app';
 
   @override
   String get healthAppleHealthLabel => 'Save to Apple Health';

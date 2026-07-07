@@ -18,6 +18,11 @@ class RoutineShareService {
     'https://apps.apple.com/app/id$appStoreId',
   );
 
+  /// iOS App Store 앱에서 리뷰 작성 화면으로 직접 연다.
+  static final appStoreReviewLink = Uri.parse(
+    'itms-apps://itunes.apple.com/app/id$appStoreId?action=write-review',
+  );
+
   /// 루틴 공유 실패 등 플랫폼별 스토어 직링크 폴백.
   static Uri get storeLink =>
       defaultTargetPlatform == TargetPlatform.iOS ? appStoreLink : playStoreLink;

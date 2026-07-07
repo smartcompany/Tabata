@@ -869,7 +869,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get privacyProcessingConsentDecline => '同意しない';
 
   @override
-  String get scheduleWorkoutTooltip => '予約';
+  String get scheduleWorkoutTooltip => 'ワークアウト予約';
 
   @override
   String get scheduleWorkoutTitle => 'ワークアウト予約';
@@ -1091,6 +1091,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get settingsShowOnboardingAgainSubtitle => '初回のようこそ画面を再度表示します。';
+
+  @override
+  String get settingsRateApp => 'アプリを評価';
 
   @override
   String get healthAppleHealthLabel => 'Appleヘルスケアに記録';

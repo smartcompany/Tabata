@@ -1665,7 +1665,7 @@ abstract class AppLocalizations {
   /// No description provided for @scheduleWorkoutTooltip.
   ///
   /// In en, this message translates to:
-  /// **'Schedule'**
+  /// **'Schedule workout'**
   String get scheduleWorkoutTooltip;
 
   /// No description provided for @scheduleWorkoutTitle.
@@ -2075,6 +2075,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Show the first-run welcome screen again.'**
   String get settingsShowOnboardingAgainSubtitle;
+
+  /// No description provided for @settingsRateApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Rate the app'**
+  String get settingsRateApp;
 
   /// No description provided for @healthAppleHealthLabel.
   ///
