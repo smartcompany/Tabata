@@ -25,6 +25,7 @@ import 'routine_editor_screen.dart';
 import 'upload_routine_screen.dart';
 import 'workout_history_screen.dart';
 import '../widgets/app_settings_sheet.dart';
+import '../widgets/home_app_bar_title.dart';
 import '../widgets/routine_share_sheet.dart';
 import '../widgets/swipe_reveal_delete.dart';
 
@@ -341,19 +342,12 @@ class _HomeScreenState extends State<HomeScreen>
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
-        titleSpacing: 16,
+        titleSpacing: 12,
+        toolbarHeight: 56,
         title: GestureDetector(
           onTap: _onTitleTap,
           behavior: HitTestBehavior.opaque,
-          child: Text(
-            l10n.appTitle,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontSize: 22,
-              fontWeight: FontWeight.w700,
-              letterSpacing: -0.6,
-              height: 1.1,
-            ),
-          ),
+          child: HomeAppBarTitle(title: l10n.appTitle),
         ),
         actions: [
           IconButton(
