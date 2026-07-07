@@ -342,7 +342,8 @@ class _HomeScreenState extends State<HomeScreen>
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
-        titleSpacing: 12,
+        titleSpacing: 16,
+        actionsPadding: const EdgeInsets.only(right: 4),
         toolbarHeight: 56,
         title: GestureDetector(
           onTap: _onTitleTap,
