@@ -113,7 +113,7 @@
   "routineCountDuration": "{count} 个动作 · {duration}",
   "routineNotFound": "未找到训练。",
   "editTooltip": "编辑",
-  "shareTooltip": "分享",
+  "shareTooltip": "分享训练",
   "shareAppTooltip": "分享应用",
   "shareAppMessage": "试试 {appTitle} — 运动 routine 间歇计时器应用。",
   "@shareAppMessage": {

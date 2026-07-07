@@ -514,23 +514,25 @@ class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
             top: false,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+              child: Row(
                 children: [
-                  OutlinedButton(
-                    onPressed: _uploading ? null : _signOut,
-                    child: Text(l10n.settingsSignOut),
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: _uploading ? null : _signOut,
+                      icon: const Icon(Icons.logout),
+                      label: Text(l10n.settingsSignOut),
+                    ),
                   ),
-                  const SizedBox(height: 8),
-                  OutlinedButton(
-                    onPressed: _uploading ? null : _deleteAccount,
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: Theme.of(context).colorScheme.error,
-                      side: BorderSide(
-                        color: Theme.of(context).colorScheme.error,
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: _uploading ? null : _deleteAccount,
+                      icon: const Icon(Icons.person_remove_outlined),
+                      label: Text(l10n.settingsDeleteAccount),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Theme.of(context).colorScheme.error,
                       ),
                     ),
-                    child: Text(l10n.settingsDeleteAccount),
                   ),
                 ],
               ),

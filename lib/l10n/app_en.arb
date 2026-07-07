@@ -119,7 +119,7 @@
   },
   "routineNotFound": "Routine not found.",
   "editTooltip": "Edit",
-  "shareTooltip": "Share",
+  "shareTooltip": "Share routine",
   "shareAppTooltip": "Share app",
   "shareAppMessage": "Try {appTitle} — interval timer for workout routines.",
   "@shareAppMessage": {

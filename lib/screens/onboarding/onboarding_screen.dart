@@ -44,7 +44,7 @@ class OnboardingScreen extends StatelessWidget {
 
   Future<void> _openYoutubeAi(BuildContext context) async {
     final l10n = AppLocalizations.of(context);
-    await Navigator.of(context).push<void>(
+    final saved = await Navigator.of(context).push<Routine>(
       MaterialPageRoute(
         builder: (_) => AiRoutineCreateScreen(
           repository: repository,
@@ -53,7 +53,7 @@ class OnboardingScreen extends StatelessWidget {
         ),
       ),
     );
-    if (!context.mounted) return;
+    if (!context.mounted || saved == null) return;
     await _finish(context, path: 'youtube_ai');
   }
 
@@ -65,7 +65,7 @@ class OnboardingScreen extends StatelessWidget {
     );
     if (!context.mounted || prompt == null) return;
 
-    await Navigator.of(context).push<void>(
+    final saved = await Navigator.of(context).push<Routine>(
       MaterialPageRoute(
         builder: (_) => AiRoutineCreateScreen(
           repository: repository,
@@ -74,7 +74,7 @@ class OnboardingScreen extends StatelessWidget {
         ),
       ),
     );
-    if (!context.mounted) return;
+    if (!context.mounted || saved == null) return;
     await _finish(context, path: 'goal_ai');
   }
 
@@ -83,7 +83,7 @@ class OnboardingScreen extends StatelessWidget {
     final routine = createEmptyRoutine().copyWith(
       title: l10n.defaultRoutineName,
     );
-    await Navigator.of(context).push<Routine>(
+    final saved = await Navigator.of(context).push<Routine>(
       MaterialPageRoute(
         builder: (_) => RoutineEditorScreen(
           repository: repository,
@@ -92,7 +92,7 @@ class OnboardingScreen extends StatelessWidget {
         ),
       ),
     );
-    if (!context.mounted) return;
+    if (!context.mounted || saved == null) return;
     await _finish(context, path: 'create');
   }
 

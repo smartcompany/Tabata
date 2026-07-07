@@ -251,7 +251,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get editTooltip => '編集';
 
   @override
-  String get shareTooltip => '共有';
+  String get shareTooltip => 'ルーティンを共有';
 
   @override
   String get shareAppTooltip => 'アプリを共有';

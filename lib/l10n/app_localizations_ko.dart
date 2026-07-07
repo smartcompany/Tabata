@@ -251,7 +251,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get editTooltip => '편집';
 
   @override
-  String get shareTooltip => '공유';
+  String get shareTooltip => '루틴 공유';
 
   @override
   String get shareAppTooltip => '앱 공유';

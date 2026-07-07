@@ -543,7 +543,7 @@ abstract class AppLocalizations {
   /// No description provided for @shareTooltip.
   ///
   /// In en, this message translates to:
-  /// **'Share'**
+  /// **'Share routine'**
   String get shareTooltip;
 
   /// No description provided for @shareAppTooltip.

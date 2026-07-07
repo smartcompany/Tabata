@@ -259,7 +259,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get editTooltip => 'Edit';
 
   @override
-  String get shareTooltip => 'Share';
+  String get shareTooltip => 'Share routine';
 
   @override
   String get shareAppTooltip => 'Share app';

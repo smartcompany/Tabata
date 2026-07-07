@@ -340,10 +340,20 @@ class _HomeScreenState extends State<HomeScreen>
     final l10n = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
+        centerTitle: false,
+        titleSpacing: 16,
         title: GestureDetector(
           onTap: _onTitleTap,
           behavior: HitTestBehavior.opaque,
-          child: Text(l10n.appTitle),
+          child: Text(
+            l10n.appTitle,
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              fontSize: 22,
+              fontWeight: FontWeight.w700,
+              letterSpacing: -0.6,
+              height: 1.1,
+            ),
+          ),
         ),
         actions: [
           IconButton(

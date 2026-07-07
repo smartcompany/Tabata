@@ -248,7 +248,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get editTooltip => '编辑';
 
   @override
-  String get shareTooltip => '分享';
+  String get shareTooltip => '分享训练';
 
   @override
   String get shareAppTooltip => '分享应用';

@@ -130,12 +130,36 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
     if (routine == null) return;
     final l10n = AppLocalizations.of(context);
 
+    if (!mounted) return;
+    unawaited(
+      showDialog<void>(
+        context: context,
+        useRootNavigator: true,
+        barrierDismissible: false,
+        builder: (ctx) => const PopScope(
+          canPop: false,
+          child: Center(child: CircularProgressIndicator()),
+        ),
+      ),
+    );
+    await Future<void>.delayed(Duration.zero);
+
     Uri linkUrl;
     try {
       linkUrl = await _shareApi.createShareLink(routine);
     } on RoutineShareApiException {
       if (!mounted) return;
       linkUrl = RoutineShareService.storeLink;
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.shareFailed)),
+      );
+      return;
+    } finally {
+      if (mounted) {
+        Navigator.of(context, rootNavigator: true).pop();
+      }
     }
 
     if (!mounted) return;

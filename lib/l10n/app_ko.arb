@@ -119,7 +119,7 @@
   },
   "routineNotFound": "루틴을 찾을 수 없습니다.",
   "editTooltip": "편집",
-  "shareTooltip": "공유",
+  "shareTooltip": "루틴 공유",
   "shareAppTooltip": "앱 공유",
   "shareAppMessage": "{appTitle} — 운동 루틴 인터벌 타이머 앱을 사용해 보세요.",
   "@shareAppMessage": {

@@ -113,7 +113,7 @@
   "routineCountDuration": "{count} 種目 · {duration}",
   "routineNotFound": "ルーティンが見つかりません。",
   "editTooltip": "編集",
-  "shareTooltip": "共有",
+  "shareTooltip": "ルーティンを共有",
   "shareAppTooltip": "アプリを共有",
   "shareAppMessage": "{appTitle} — ワークアウトルーティン用インターバルタイマーアプリを試してみてください。",
   "@shareAppMessage": {
