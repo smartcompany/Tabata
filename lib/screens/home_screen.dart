@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:tabata_timer/l10n/app_localizations.dart';
 
@@ -116,9 +118,9 @@ class _HomeScreenState extends State<HomeScreen>
 
     try {
       await widget.repository.refreshRemoteProfiles();
-      await _loadCatalogThumbnailImages();
       if (!mounted) return;
       setState(() => _loadingCatalog = false);
+      unawaited(_loadCatalogThumbnailImages());
     } catch (_) {
       if (!mounted) return;
       setState(() {
@@ -133,9 +135,9 @@ class _HomeScreenState extends State<HomeScreen>
 
     try {
       await widget.repository.refreshRemoteProfiles();
-      await _loadCatalogThumbnailImages();
       if (!mounted) return;
       setState(() {});
+      unawaited(_loadCatalogThumbnailImages());
     } catch (_) {
       if (!mounted) return;
       setState(() {
@@ -350,23 +352,22 @@ class _HomeScreenState extends State<HomeScreen>
     ];
     if (unresolvedIds.isEmpty) return;
 
-    final resolved = <String, String?>{};
     for (final id in unresolvedIds) {
+      String? thumbnailUrl;
       try {
         final routine = await widget.apiClient.fetchProfile(id);
-        String? thumbnailUrl;
         for (final block in routine.effectiveDescriptionBlocks) {
           if (block is ImageDescriptionBlock && block.hasRemoteUrl) {
             thumbnailUrl = block.url;
             break;
           }
         }
-        resolved[id] = thumbnailUrl;
       } catch (_) {
-        resolved[id] = null;
+        thumbnailUrl = null;
       }
+      if (!mounted) return;
+      setState(() => _catalogThumbnailImageUrls[id] = thumbnailUrl);
     }
-    _catalogThumbnailImageUrls.addAll(resolved);
   }
 
   Future<void> _shareApp() async {
@@ -641,6 +642,8 @@ class _HomeScreenState extends State<HomeScreen>
                                   .hasDownloadedCatalog(summary.id),
                               thumbnailImageUrl:
                                   _catalogThumbnailImageUrls[summary.id],
+                              thumbnailLoading: !_catalogThumbnailImageUrls
+                                  .containsKey(summary.id),
                               onOpen: () => _openCatalogRoutine(summary.id),
                               onDownload: () => _forkCatalogProfile(summary),
                             ),
@@ -660,6 +663,8 @@ class _HomeScreenState extends State<HomeScreen>
                                   .hasDownloadedCatalog(summary.id),
                               thumbnailImageUrl:
                                   _catalogThumbnailImageUrls[summary.id],
+                              thumbnailLoading: !_catalogThumbnailImageUrls
+                                  .containsKey(summary.id),
                               onOpen: () => _openCatalogRoutine(summary.id),
                               onDownload: () => _forkCatalogProfile(summary),
                             ),
@@ -892,6 +897,7 @@ class _CatalogCard extends StatelessWidget {
     required this.isDownloading,
     required this.isDownloaded,
     required this.thumbnailImageUrl,
+    required this.thumbnailLoading,
     required this.onOpen,
     required this.onDownload,
   });
@@ -901,6 +907,7 @@ class _CatalogCard extends StatelessWidget {
   final bool isDownloading;
   final bool isDownloaded;
   final String? thumbnailImageUrl;
+  final bool thumbnailLoading;
   final VoidCallback onOpen;
   final VoidCallback onDownload;
 
@@ -913,6 +920,10 @@ class _CatalogCard extends StatelessWidget {
     final ownerText = summary.ownerName?.trim().isNotEmpty == true
         ? summary.ownerName!
         : null;
+    final resolvedUrl = thumbnailImageUrl?.trim();
+    final hasImage = resolvedUrl != null && resolvedUrl.isNotEmpty;
+    final showThumbSlot = thumbnailLoading || hasImage;
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Card(
@@ -921,7 +932,7 @@ class _CatalogCard extends StatelessWidget {
             horizontal: 16,
             vertical: 12,
           ),
-          leading: thumbnailImageUrl != null
+          leading: showThumbSlot
               ? SizedBox(
                   width: 108,
                   child: Row(
@@ -933,7 +944,9 @@ class _CatalogCard extends StatelessWidget {
                             ? const SizedBox(
                                 width: 24,
                                 height: 24,
-                                child: CircularProgressIndicator(strokeWidth: 2),
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
                               )
                             : Icon(
                                 isDownloaded
@@ -943,8 +956,8 @@ class _CatalogCard extends StatelessWidget {
                               ),
                       ),
                       const SizedBox(width: 4),
-                      _RoutineListThumbnail(
-                        block: ImageDescriptionBlock(url: thumbnailImageUrl),
+                      _CatalogThumbnailSlot(
+                        imageUrl: hasImage ? resolvedUrl : null,
                       ),
                     ],
                   ),
@@ -965,7 +978,7 @@ class _CatalogCard extends StatelessWidget {
                           color: Theme.of(context).colorScheme.primary,
                         ),
                 ),
-          minLeadingWidth: thumbnailImageUrl != null ? 108 : 48,
+          minLeadingWidth: showThumbSlot ? 108 : 48,
           title: Text(
             summary.title,
             style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
@@ -984,6 +997,49 @@ class _CatalogCard extends StatelessWidget {
           trailing: const Icon(Icons.chevron_right),
           onTap: onOpen,
         ),
+      ),
+    );
+  }
+}
+
+class _CatalogThumbnailSlot extends StatelessWidget {
+  const _CatalogThumbnailSlot({
+    required this.imageUrl,
+  });
+
+  final String? imageUrl;
+
+  @override
+  Widget build(BuildContext context) {
+    final placeholderColor = Theme.of(context).colorScheme.surfaceContainer;
+
+    return SizedBox(
+      width: 56,
+      height: 56,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: imageUrl != null
+            ? DescriptionBlockImage(
+                block: ImageDescriptionBlock(url: imageUrl),
+                borderRadius: 10,
+                fit: BoxFit.cover,
+              )
+            : ColoredBox(
+                color: placeholderColor,
+                child: Center(
+                  child: SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurfaceVariant
+                          .withValues(alpha: 0.45),
+                    ),
+                  ),
+                ),
+              ),
       ),
     );
   }

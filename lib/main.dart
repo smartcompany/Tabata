@@ -23,6 +23,7 @@ import 'services/content_settings.dart';
 import 'services/locale_settings.dart';
 import 'services/routine_api_client.dart';
 import 'services/routine_content_localizer.dart';
+import 'services/routine_description_media_service.dart';
 import 'services/routine_schedule_service.dart';
 import 'services/routine_share_api.dart';
 import 'services/shared_routine_link_coordinator.dart';
@@ -57,6 +58,8 @@ Future<void> main() async {
   }
 
   final contentSettings = await ContentSettings.load();
+  // Warm documents root so local routine thumbnails skip FutureBuilder flicker.
+  await RoutineDescriptionMediaService().documentsRoot();
   final contentLocalizer = RoutineContentLocalizer(
     contentSettings: contentSettings,
   );

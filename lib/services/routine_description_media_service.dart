@@ -25,16 +25,33 @@ class RoutineDescriptionMediaService {
   final RoutineImageUploadService _uploadService;
   final http.Client _httpClient;
 
+  static Future<String>? _documentsRootFuture;
+  static String? _cachedDocumentsRoot;
+
+  /// Sync documents root after the first successful resolve.
+  static String? get cachedDocumentsRoot => _cachedDocumentsRoot;
+
   static String relativePath(String scopeId, String filename) =>
       '$_mediaDirName/$scopeId/$filename';
 
   Future<String> documentsRoot() async {
-    final dir = await getApplicationDocumentsDirectory();
-    return dir.path;
+    if (_cachedDocumentsRoot != null) return _cachedDocumentsRoot!;
+    _documentsRootFuture ??=
+        getApplicationDocumentsDirectory().then((dir) => dir.path);
+    final root = await _documentsRootFuture!;
+    _cachedDocumentsRoot = root;
+    return root;
   }
 
   Future<String> absolutePath(String relativePath) async {
     final root = await documentsRoot();
+    return p.join(root, relativePath);
+  }
+
+  /// Join [relativePath] to the cached documents root when available.
+  static String? cachedAbsolutePath(String relativePath) {
+    final root = _cachedDocumentsRoot;
+    if (root == null) return null;
     return p.join(root, relativePath);
   }
 

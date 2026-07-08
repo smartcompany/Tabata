@@ -6,7 +6,7 @@ import 'package:tabata_timer/l10n/app_localizations.dart';
 import '../models/description_block.dart';
 import '../services/routine_description_media_service.dart';
 
-class DescriptionBlockImage extends StatelessWidget {
+class DescriptionBlockImage extends StatefulWidget {
   const DescriptionBlockImage({
     super.key,
     required this.block,
@@ -21,15 +21,66 @@ class DescriptionBlockImage extends StatelessWidget {
   final BoxFit fit;
 
   @override
+  State<DescriptionBlockImage> createState() => _DescriptionBlockImageState();
+}
+
+class _DescriptionBlockImageState extends State<DescriptionBlockImage> {
+  String? _localAbsolutePath;
+  var _resolvingLocal = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _syncLocalPath();
+  }
+
+  @override
+  void didUpdateWidget(covariant DescriptionBlockImage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.block.localPath != widget.block.localPath ||
+        oldWidget.block.url != widget.block.url) {
+      _localAbsolutePath = null;
+      _resolvingLocal = false;
+      _syncLocalPath();
+    }
+  }
+
+  void _syncLocalPath() {
+    final relative = widget.block.localPath;
+    if (relative == null || relative.isEmpty) return;
+
+    final cached = RoutineDescriptionMediaService.cachedAbsolutePath(relative);
+    if (cached != null) {
+      _localAbsolutePath = cached;
+      return;
+    }
+
+    if (_resolvingLocal) return;
+    _resolvingLocal = true;
+    RoutineDescriptionMediaService().absolutePath(relative).then((path) {
+      if (!mounted) return;
+      setState(() {
+        _localAbsolutePath = path;
+        _resolvingLocal = false;
+      });
+    }).catchError((_) {
+      if (!mounted) return;
+      setState(() => _resolvingLocal = false);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final block = widget.block;
     if (block.hasRemoteUrl) {
       return ClipRRect(
-        borderRadius: BorderRadius.circular(borderRadius),
+        borderRadius: BorderRadius.circular(widget.borderRadius),
         child: Image.network(
           block.url!,
-          height: height,
+          height: widget.height,
           width: double.infinity,
-          fit: fit,
+          fit: widget.fit,
+          gaplessPlayback: true,
           loadingBuilder: (context, child, progress) {
             if (progress == null) return child;
             return _loadingPlaceholder(context, progress: progress);
@@ -40,28 +91,23 @@ class DescriptionBlockImage extends StatelessWidget {
     }
 
     if (block.hasLocalPath) {
-      return FutureBuilder<String>(
-        key: ValueKey(block.localPath),
-        future: RoutineDescriptionMediaService().absolutePath(block.localPath!),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) {
-            return _loadingPlaceholder(context);
-          }
-          final path = snapshot.data;
-          if (path == null || !File(path).existsSync()) {
-            return _errorCard(context);
-          }
-          return ClipRRect(
-            borderRadius: BorderRadius.circular(borderRadius),
-            child: Image.file(
-              File(path),
-              height: height,
-              width: double.infinity,
-              fit: fit,
-              errorBuilder: (context, error, stackTrace) => _errorCard(context),
-            ),
-          );
-        },
+      final path = _localAbsolutePath;
+      if (path == null) {
+        return _loadingPlaceholder(context);
+      }
+      if (!File(path).existsSync()) {
+        return _errorCard(context);
+      }
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(widget.borderRadius),
+        child: Image.file(
+          File(path),
+          height: widget.height,
+          width: double.infinity,
+          fit: widget.fit,
+          gaplessPlayback: true,
+          errorBuilder: (context, error, stackTrace) => _errorCard(context),
+        ),
       );
     }
 
@@ -73,13 +119,19 @@ class DescriptionBlockImage extends StatelessWidget {
     ImageChunkEvent? progress,
   }) {
     return SizedBox(
-      height: height ?? 160,
+      height: widget.height,
       width: double.infinity,
       child: Center(
-        child: CircularProgressIndicator(
-          value: progress?.expectedTotalBytes == null
-              ? null
-              : progress!.cumulativeBytesLoaded / progress.expectedTotalBytes!,
+        child: SizedBox(
+          width: 18,
+          height: 18,
+          child: CircularProgressIndicator(
+            strokeWidth: 2,
+            value: progress?.expectedTotalBytes == null
+                ? null
+                : progress!.cumulativeBytesLoaded /
+                    progress.expectedTotalBytes!,
+          ),
         ),
       ),
     );
