@@ -1,10 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:share_lib/share_lib.dart';
 import 'package:tabata_timer/l10n/app_localizations.dart';
 
 import '../data/routine_repository.dart';
 import '../models/routine.dart';
 import '../services/ai_routine_service.dart';
-import '../services/rewarded_ad_gate.dart';
 import '../services/routine_api_client.dart';
 import '../utils/content_language.dart';
 import 'routine_editor_screen.dart';
@@ -34,13 +36,34 @@ class _AiRoutineCreateScreenState extends State<AiRoutineCreateScreen> {
   void initState() {
     super.initState();
     _promptController = TextEditingController(text: widget.initialPrompt ?? '');
-    RewardedAdGate.preload();
   }
 
   @override
   void dispose() {
     _promptController.dispose();
     super.dispose();
+  }
+
+  Future<void> _showConfiguredAd() async {
+    final completer = Completer<void>();
+    try {
+      await AdService.shared.showAd(
+        onAdDismissed: () {
+          if (!completer.isCompleted) completer.complete();
+        },
+        onAdFailedToShow: () {
+          if (!completer.isCompleted) completer.complete();
+        },
+        onUserEarnedReward: (_) {
+          // Reward is optional for AI flow; dismiss still completes the gate.
+        },
+      );
+      await completer.future.timeout(const Duration(seconds: 90));
+    } catch (error) {
+      // Ad failures must not block routine generation.
+      debugPrint('[AiRoutineCreate] AdService.showAd error: $error');
+      if (!completer.isCompleted) completer.complete();
+    }
   }
 
   Future<void> _submit() async {
@@ -56,10 +79,7 @@ class _AiRoutineCreateScreenState extends State<AiRoutineCreateScreen> {
 
     setState(() => _loadingAd = true);
     try {
-      await RewardedAdGate.show();
-    } catch (error) {
-      // Ad failures must not block routine generation.
-      debugPrint('[AiRoutineCreate] Rewarded ad flow error: $error');
+      await _showConfiguredAd();
     } finally {
       if (mounted) {
         setState(() => _loadingAd = false);

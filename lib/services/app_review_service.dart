@@ -68,30 +68,54 @@ abstract final class AppReviewService {
     return (count - _firstThreshold) % _repeatEvery == 0;
   }
 
-  /// 설정의 "앱 평가하기" — 먼저 인앱 별점 팝업, 불가 시 스토어 리뷰 페이지.
+  /// 설정의 "앱 평가하기" — 인앱 리뷰를 먼저 시도하고,
+  /// 불가능/오류일 때만 스토어 리뷰 페이지로 폴백한다.
   static Future<void> promptFromSettings() async {
     try {
-      if (await _inAppReview.isAvailable()) {
-        await _inAppReview.requestReview();
+      final available = await _inAppReview.isAvailable();
+      if (!available) {
+        final opened = await _openStoreReviewPage();
+        if (!opened) debugPrint('AppReview promptFromSettings: could not open store');
         return;
       }
-      await _openStoreReviewPage();
+      await _inAppReview.requestReview();
     } catch (error) {
       debugPrint('AppReview promptFromSettings error: $error');
-      await _openStoreReviewPage();
     }
   }
 
-  static Future<void> _openStoreReviewPage() async {
-    final uri = defaultTargetPlatform == TargetPlatform.iOS
-        ? RoutineShareService.appStoreReviewLink
-        : RoutineShareService.playStoreLink;
-
-    if (!await canLaunchUrl(uri)) {
-      debugPrint('AppReview cannot launch store url: $uri');
-      return;
+  /// 플랫폼 스토어의 리뷰/앱 상세 화면을 연다. 성공 여부를 반환한다.
+  static Future<bool> _openStoreReviewPage() async {
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      if (await _launchExternal(
+        RoutineShareService.appStoreReviewLink,
+      )) {
+        return true;
+      }
+      return _launchExternal(RoutineShareService.appStoreLink);
     }
 
-    await launchUrl(uri, mode: LaunchMode.externalApplication);
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      if (await _inAppReview.isAvailable()) {
+        try {
+          await _inAppReview.openStoreListing();
+          return true;
+        } catch (error) {
+          debugPrint('AppReview openStoreListing error: $error');
+        }
+      }
+      return _launchExternal(RoutineShareService.playStoreLink);
+    }
+
+    return _launchExternal(RoutineShareService.storeLink);
+  }
+
+  static Future<bool> _launchExternal(Uri uri) async {
+    try {
+      return await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } catch (error) {
+      debugPrint('AppReview launch failed ($uri): $error');
+      return false;
+    }
   }
 }
