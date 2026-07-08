@@ -222,6 +222,24 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aiRoutineCreateLoading => 'AI 正在创建训练...';
 
   @override
+  String get aiRoutineCreateLoadingStage1 => '正在阅读你的请求...';
+
+  @override
+  String get aiRoutineCreateLoadingStage2 => '正在挑选合适的动作...';
+
+  @override
+  String get aiRoutineCreateLoadingStage3 => '正在调整时间与次数...';
+
+  @override
+  String get aiRoutineCreateLoadingStage4 => '正在整理组数与顺序...';
+
+  @override
+  String get aiRoutineCreateLoadingStage5 => '正在做最后润色...';
+
+  @override
+  String get aiRoutineCreateLoadingFooter => '即将完成，请稍候。';
+
+  @override
   String get aiRoutineCreateAdLoading => '正在加载广告...';
 
   @override

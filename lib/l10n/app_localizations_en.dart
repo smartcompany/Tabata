@@ -231,6 +231,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aiRoutineCreateLoading => 'AI is building your routine...';
 
   @override
+  String get aiRoutineCreateLoadingStage1 => 'Reading your request...';
+
+  @override
+  String get aiRoutineCreateLoadingStage2 => 'Picking the right exercises...';
+
+  @override
+  String get aiRoutineCreateLoadingStage3 => 'Tuning times and counts...';
+
+  @override
+  String get aiRoutineCreateLoadingStage4 => 'Arranging sets and order...';
+
+  @override
+  String get aiRoutineCreateLoadingStage5 =>
+      'Putting on the finishing touches...';
+
+  @override
+  String get aiRoutineCreateLoadingFooter => 'Almost there — hang tight.';
+
+  @override
   String get aiRoutineCreateAdLoading => 'Loading ad...';
 
   @override

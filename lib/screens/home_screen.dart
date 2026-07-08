@@ -26,7 +26,7 @@ import 'routine_detail_screen.dart';
 import 'routine_editor_screen.dart';
 import 'upload_routine_screen.dart';
 import 'workout_history_screen.dart';
-import '../widgets/app_settings_sheet.dart';
+import 'app_settings_screen.dart';
 import '../widgets/description_block_image.dart';
 import '../widgets/home_app_bar_title.dart';
 import '../widgets/routine_share_sheet.dart';
@@ -416,7 +416,7 @@ class _HomeScreenState extends State<HomeScreen>
             tooltip: l10n.workoutHistoryTitle,
           ),
           IconButton(
-            onPressed: () => showAppSettingsSheet(
+            onPressed: () => AppSettingsScreen.open(
               context,
               onShowOnboardingAgain: widget.onShowOnboardingAgain,
             ),

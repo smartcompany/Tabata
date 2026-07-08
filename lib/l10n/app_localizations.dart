@@ -492,6 +492,42 @@ abstract class AppLocalizations {
   /// **'AI is building your routine...'**
   String get aiRoutineCreateLoading;
 
+  /// No description provided for @aiRoutineCreateLoadingStage1.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading your request...'**
+  String get aiRoutineCreateLoadingStage1;
+
+  /// No description provided for @aiRoutineCreateLoadingStage2.
+  ///
+  /// In en, this message translates to:
+  /// **'Picking the right exercises...'**
+  String get aiRoutineCreateLoadingStage2;
+
+  /// No description provided for @aiRoutineCreateLoadingStage3.
+  ///
+  /// In en, this message translates to:
+  /// **'Tuning times and counts...'**
+  String get aiRoutineCreateLoadingStage3;
+
+  /// No description provided for @aiRoutineCreateLoadingStage4.
+  ///
+  /// In en, this message translates to:
+  /// **'Arranging sets and order...'**
+  String get aiRoutineCreateLoadingStage4;
+
+  /// No description provided for @aiRoutineCreateLoadingStage5.
+  ///
+  /// In en, this message translates to:
+  /// **'Putting on the finishing touches...'**
+  String get aiRoutineCreateLoadingStage5;
+
+  /// No description provided for @aiRoutineCreateLoadingFooter.
+  ///
+  /// In en, this message translates to:
+  /// **'Almost there — hang tight.'**
+  String get aiRoutineCreateLoadingFooter;
+
   /// No description provided for @aiRoutineCreateAdLoading.
   ///
   /// In en, this message translates to:

@@ -224,6 +224,24 @@ class AppLocalizationsJa extends AppLocalizations {
   String get aiRoutineCreateLoading => 'AIがルーティンを作成しています...';
 
   @override
+  String get aiRoutineCreateLoadingStage1 => 'リクエストを読み取っています...';
+
+  @override
+  String get aiRoutineCreateLoadingStage2 => '合う種目を選んでいます...';
+
+  @override
+  String get aiRoutineCreateLoadingStage3 => '時間と回数を合わせています...';
+
+  @override
+  String get aiRoutineCreateLoadingStage4 => 'セットと順番を整えています...';
+
+  @override
+  String get aiRoutineCreateLoadingStage5 => '最後の仕上げをしています...';
+
+  @override
+  String get aiRoutineCreateLoadingFooter => 'もうすぐ完了です。少々お待ちください。';
+
+  @override
   String get aiRoutineCreateAdLoading => '広告を読み込んでいます...';
 
   @override

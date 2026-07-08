@@ -16,7 +16,7 @@ import '../services/workout_voice_coach.dart';
 import '../services/workout_voice_phrases.dart';
 import '../services/workout_voice_planner.dart';
 import '../utils/duration_format.dart';
-import '../widgets/app_settings_sheet.dart';
+import 'app_settings_screen.dart';
 import '../widgets/workout_phase_stage.dart';
 
 class WorkoutScreen extends StatefulWidget {
@@ -192,7 +192,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
   }
 
   Future<void> _openSettings() async {
-    await showAppSettingsSheet(context);
+    await AppSettingsScreen.open(context);
     final settings = await WorkoutSettings.load();
     if (!mounted) return;
     setState(() {

@@ -224,6 +224,24 @@ class AppLocalizationsKo extends AppLocalizations {
   String get aiRoutineCreateLoading => 'AI가 루틴을 만들고 있어요...';
 
   @override
+  String get aiRoutineCreateLoadingStage1 => '요청을 읽고 있어요...';
+
+  @override
+  String get aiRoutineCreateLoadingStage2 => '운동 동작을 고르고 있어요...';
+
+  @override
+  String get aiRoutineCreateLoadingStage3 => '시간·횟수를 맞추고 있어요...';
+
+  @override
+  String get aiRoutineCreateLoadingStage4 => '세트와 순서를 정리하고 있어요...';
+
+  @override
+  String get aiRoutineCreateLoadingStage5 => '마지막으로 다듬는 중이에요...';
+
+  @override
+  String get aiRoutineCreateLoadingFooter => '거의 다 됐어요. 잠시만 기다려 주세요.';
+
+  @override
   String get aiRoutineCreateAdLoading => '광고를 불러오는 중...';
 
   @override

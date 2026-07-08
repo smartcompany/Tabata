@@ -9,6 +9,7 @@ import '../models/routine.dart';
 import '../services/ai_routine_service.dart';
 import '../services/routine_api_client.dart';
 import '../utils/content_language.dart';
+import '../widgets/ai_routine_generating_overlay.dart';
 import 'routine_editor_screen.dart';
 
 class AiRoutineCreateScreen extends StatefulWidget {
@@ -145,8 +146,12 @@ class _AiRoutineCreateScreenState extends State<AiRoutineCreateScreen> {
                 minLines: 8,
                 maxLines: 12,
                 textInputAction: TextInputAction.newline,
+                style: Theme.of(context).textTheme.bodyLarge,
                 decoration: InputDecoration(
                   hintText: l10n.aiRoutineCreatePromptHint,
+                  hintStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: const Color(0xFF9E9EA7),
+                  ),
                   alignLabelWithHint: true,
                   border: const OutlineInputBorder(),
                 ),
@@ -177,25 +182,7 @@ class _AiRoutineCreateScreenState extends State<AiRoutineCreateScreen> {
                 ),
               ),
             ),
-          if (_loading)
-            ColoredBox(
-              color: Colors.black.withValues(alpha: 0.25),
-              child: Center(
-                child: Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(24),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const CircularProgressIndicator(),
-                        const SizedBox(height: 16),
-                        Text(l10n.aiRoutineCreateLoading),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
+          if (_loading) const AiRoutineGeneratingOverlay(),
         ],
       ),
     );
