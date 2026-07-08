@@ -8,14 +8,17 @@ import 'package:path/path.dart' as p;
 import '../config/api_config.dart';
 import 'routine_api_client.dart';
 
+enum RoutineImageUploadTarget { user, dashboard }
+
 class RoutineImageUploadService {
   RoutineImageUploadService({http.Client? client})
       : _client = client ?? http.Client();
 
   final http.Client _client;
 
-  Uri get _uploadUri =>
-      Uri.parse('${ApiConfig.profileApiBaseUrl}/api/user/routine-images');
+  Uri _uploadUriFor(RoutineImageUploadTarget target) => Uri.parse(
+        '${ApiConfig.profileApiBaseUrl}/api/${target == RoutineImageUploadTarget.dashboard ? 'dashboard' : 'user'}/routine-images',
+      );
 
   MediaType _mediaTypeForPath(String path) {
     switch (p.extension(path).toLowerCase()) {
@@ -35,7 +38,8 @@ class RoutineImageUploadService {
   Future<String> uploadLocalFile({
     required String localFilePath,
     required String routineId,
-    required String userToken,
+    required String authToken,
+    RoutineImageUploadTarget target = RoutineImageUploadTarget.user,
   }) async {
     final file = File(localFilePath);
     if (!await file.exists()) {
@@ -48,8 +52,8 @@ class RoutineImageUploadService {
       filename = '$filename.jpg';
     }
 
-    final request = http.MultipartRequest('POST', _uploadUri)
-      ..headers['Authorization'] = 'Bearer $userToken'
+    final request = http.MultipartRequest('POST', _uploadUriFor(target))
+      ..headers['Authorization'] = 'Bearer $authToken'
       ..fields['routineId'] = routineId
       ..files.add(
         await http.MultipartFile.fromPath(

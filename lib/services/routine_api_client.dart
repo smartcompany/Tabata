@@ -237,7 +237,15 @@ class RoutineApiClient {
   Future<UploadProfileResult> uploadProfile({
     required Routine routine,
     required String adminToken,
+    RoutineDescriptionMediaService? mediaService,
   }) async {
+    final media = mediaService ?? RoutineDescriptionMediaService();
+    final prepared = await media.prepareForServerUpload(
+      routine,
+      adminToken,
+      dashboard: true,
+    );
+
     final uri = _baseUri.replace(path: '/api/dashboard/profiles/upsert');
     final response = await _client.post(
       uri,
@@ -245,7 +253,7 @@ class RoutineApiClient {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $adminToken',
       },
-      body: jsonEncode(routine.toJson()),
+      body: jsonEncode(prepared.toJson()),
     );
 
     if (response.statusCode != 200 && response.statusCode != 201) {

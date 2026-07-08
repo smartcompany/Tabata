@@ -33,9 +33,7 @@ import 'services/workout_launch_coordinator.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-  ]);
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
   try {
     await Firebase.initializeApp(
@@ -95,16 +93,18 @@ Future<void> main() async {
     );
   }
 
-  runApp(TabataApp(
-    repository: repository,
-    workoutHistoryRepository: workoutHistoryRepository,
-    workoutCompletionRecorder: workoutCompletionRecorder,
-    apiClient: apiClient,
-    adminSession: adminSession,
-    navigatorKey: navigatorKey,
-    linkCoordinator: linkCoordinator,
-    workoutLaunchCoordinator: workoutLaunchCoordinator,
-  ));
+  runApp(
+    TabataApp(
+      repository: repository,
+      workoutHistoryRepository: workoutHistoryRepository,
+      workoutCompletionRecorder: workoutCompletionRecorder,
+      apiClient: apiClient,
+      adminSession: adminSession,
+      navigatorKey: navigatorKey,
+      linkCoordinator: linkCoordinator,
+      workoutLaunchCoordinator: workoutLaunchCoordinator,
+    ),
+  );
 }
 
 class TabataApp extends StatefulWidget {
@@ -196,9 +196,9 @@ class _TabataAppState extends State<TabataApp> with WidgetsBindingObserver {
       builder: (context, child) {
         if (child == null) return const SizedBox.shrink();
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(
-            textScaler: const TextScaler.linear(1.0),
-          ),
+          data: MediaQuery.of(
+            context,
+          ).copyWith(textScaler: const TextScaler.linear(1.0)),
           child: child,
         );
       },

@@ -71,12 +71,18 @@ class RoutineDescriptionMediaService {
 
   Future<Routine> prepareForServerUpload(
     Routine routine,
-    String userToken,
-  ) async {
+    String authToken, {
+    bool dashboard = false,
+  }) async {
+    final uploadTarget = dashboard
+        ? RoutineImageUploadTarget.dashboard
+        : RoutineImageUploadTarget.user;
+
     final blocks = await _prepareBlocksForUpload(
       blocks: routine.effectiveDescriptionBlocks,
       uploadScopeId: routine.id,
-      userToken: userToken,
+      authToken: authToken,
+      uploadTarget: uploadTarget,
     );
 
     final exercises = <Exercise>[];
@@ -84,7 +90,8 @@ class RoutineDescriptionMediaService {
       final instructionBlocks = await _prepareBlocksForUpload(
         blocks: exercise.effectiveInstructionBlocks,
         uploadScopeId: routine.id,
-        userToken: userToken,
+        authToken: authToken,
+        uploadTarget: uploadTarget,
       );
       exercises.add(
         exercise.copyWith(
@@ -131,7 +138,8 @@ class RoutineDescriptionMediaService {
   Future<List<DescriptionBlock>> _prepareBlocksForUpload({
     required List<DescriptionBlock> blocks,
     required String uploadScopeId,
-    required String userToken,
+    required String authToken,
+    required RoutineImageUploadTarget uploadTarget,
   }) async {
     final prepared = <DescriptionBlock>[];
     for (final block in blocks) {
@@ -140,7 +148,8 @@ class RoutineDescriptionMediaService {
         final url = await _uploadService.uploadLocalFile(
           localFilePath: absolute,
           routineId: uploadScopeId,
-          userToken: userToken,
+          authToken: authToken,
+          target: uploadTarget,
         );
         prepared.add(ImageDescriptionBlock(url: url, alt: block.alt));
       } else {

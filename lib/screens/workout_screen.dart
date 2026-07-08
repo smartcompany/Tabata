@@ -149,9 +149,10 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
         current: capturedCurrent,
         countSecondsWithTts: _countSecondsWithTts,
       );
-      final blockingIntro =
-          WorkoutVoicePlanner.hasBlockingIntroCues(introCues);
-      if (blockingIntro && !capturedCurrent.isPaused && !engine.isAnnounceHold) {
+      final blockingIntro = WorkoutVoicePlanner.hasBlockingIntroCues(introCues);
+      if (blockingIntro &&
+          !capturedCurrent.isPaused &&
+          !engine.isAnnounceHold) {
         engine.holdForAnnounce();
       }
       if (needsWorkRelaxSessionGap(previous, capturedCurrent)) {
@@ -305,9 +306,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                       style: TextStyle(
                         color: Colors.white.withValues(alpha: 0.38),
                         fontSize: 14,
-                        fontFeatures: const [
-                          FontFeature.tabularFigures(),
-                        ],
+                        fontFeatures: const [FontFeature.tabularFigures()],
                       ),
                     ),
                     const SizedBox(height: 6),
@@ -589,9 +588,7 @@ class _PlayPauseButton extends StatelessWidget {
                     width: 62,
                     height: 62,
                     child: Icon(
-                      isPaused
-                          ? Icons.play_arrow_rounded
-                          : Icons.pause_rounded,
+                      isPaused ? Icons.play_arrow_rounded : Icons.pause_rounded,
                       size: 32,
                       color: Colors.black,
                     ),
