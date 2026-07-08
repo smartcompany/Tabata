@@ -217,8 +217,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aiRoutineCreateButton => 'Create routine with AI';
 
   @override
-  String get aiRoutineCreateTitle =>
-      'Create a routine with AI after watching an ad';
+  String get aiRoutineCreateTitle => 'Create routine with AI';
+
+  @override
+  String get aiRoutineCreatePromptLead =>
+      'Describe the workout you want, or paste a video link';
 
   @override
   String get aiRoutineCreatePromptHint =>

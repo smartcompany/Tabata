@@ -211,7 +211,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get aiRoutineCreateButton => 'AIでルーティン作成';
 
   @override
-  String get aiRoutineCreateTitle => '広告視聴後にAIでルーティン作成';
+  String get aiRoutineCreateTitle => 'AIでルーティンを作成';
+
+  @override
+  String get aiRoutineCreatePromptLead => 'やりたい運動や動画リンクを教えてください';
 
   @override
   String get aiRoutineCreatePromptHint =>

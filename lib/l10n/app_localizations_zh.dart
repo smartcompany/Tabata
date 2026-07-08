@@ -209,7 +209,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aiRoutineCreateButton => 'AI 创建训练';
 
   @override
-  String get aiRoutineCreateTitle => '观看广告后用 AI 创建训练';
+  String get aiRoutineCreateTitle => '用 AI 创建训练';
+
+  @override
+  String get aiRoutineCreatePromptLead => '告诉我你想做的运动，或粘贴视频链接';
 
   @override
   String get aiRoutineCreatePromptHint =>

@@ -211,7 +211,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get aiRoutineCreateButton => 'AI로 루틴 생성하기';
 
   @override
-  String get aiRoutineCreateTitle => '광고 보고 AI로 루틴 만들기';
+  String get aiRoutineCreateTitle => 'AI로 루틴 생성하기';
+
+  @override
+  String get aiRoutineCreatePromptLead => '원하는 운동이나 영상 링크를 알려 주세요';
 
   @override
   String get aiRoutineCreatePromptHint =>

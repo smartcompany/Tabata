@@ -134,13 +134,31 @@ class _AiRoutineCreateScreenState extends State<AiRoutineCreateScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.aiRoutineCreateTitle),
+        centerTitle: true,
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.auto_awesome,
+              size: 22,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              l10n.aiRoutineCreateTitle,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
       ),
       body: Stack(
         children: [
           ListView(
             padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
             children: [
+              const _AiPromptHero(),
+              const SizedBox(height: 20),
               TextField(
                 controller: _promptController,
                 minLines: 8,
@@ -184,6 +202,138 @@ class _AiRoutineCreateScreenState extends State<AiRoutineCreateScreen> {
             ),
           if (_loading) const AiRoutineGeneratingOverlay(),
         ],
+      ),
+    );
+  }
+}
+
+class _AiPromptHero extends StatelessWidget {
+  const _AiPromptHero();
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
+
+    return SizedBox(
+      width: double.infinity,
+      height: 148,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              scheme.primary.withValues(alpha: 0.16),
+              scheme.tertiary.withValues(alpha: 0.18),
+              scheme.primary.withValues(alpha: 0.08),
+            ],
+          ),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: Stack(
+            children: [
+              Positioned(
+                right: -28,
+                top: -36,
+                child: _HeroBlob(
+                  size: 120,
+                  color: scheme.primary.withValues(alpha: 0.10),
+                ),
+              ),
+              Positioned(
+                right: 36,
+                bottom: -40,
+                child: _HeroBlob(
+                  size: 100,
+                  color: scheme.tertiary.withValues(alpha: 0.12),
+                ),
+              ),
+              Positioned(
+                left: -20,
+                bottom: -24,
+                child: _HeroBlob(
+                  size: 88,
+                  color: scheme.primary.withValues(alpha: 0.08),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(22, 20, 22, 20),
+                child: Row(
+                  children: [
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: scheme.surface.withValues(alpha: 0.72),
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(14),
+                        child: Icon(
+                          Icons.smart_toy_rounded,
+                          size: 40,
+                          color: scheme.primary,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            l10n.aiRoutineCreateTitle,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(fontWeight: FontWeight.w700),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            l10n.aiRoutineCreatePromptLead,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                  color: scheme.onSurfaceVariant,
+                                  height: 1.35,
+                                ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Icon(
+                      Icons.chat_bubble_outline_rounded,
+                      size: 28,
+                      color: scheme.tertiary.withValues(alpha: 0.85),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _HeroBlob extends StatelessWidget {
+  const _HeroBlob({required this.size, required this.color});
+
+  final double size;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: color,
       ),
     );
   }

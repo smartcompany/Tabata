@@ -471,8 +471,14 @@ abstract class AppLocalizations {
   /// No description provided for @aiRoutineCreateTitle.
   ///
   /// In en, this message translates to:
-  /// **'Create a routine with AI after watching an ad'**
+  /// **'Create routine with AI'**
   String get aiRoutineCreateTitle;
+
+  /// No description provided for @aiRoutineCreatePromptLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Describe the workout you want, or paste a video link'**
+  String get aiRoutineCreatePromptLead;
 
   /// No description provided for @aiRoutineCreatePromptHint.
   ///
