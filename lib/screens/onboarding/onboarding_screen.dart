@@ -43,13 +43,11 @@ class OnboardingScreen extends StatelessWidget {
   }
 
   Future<void> _openYoutubeAi(BuildContext context) async {
-    final l10n = AppLocalizations.of(context);
     final saved = await Navigator.of(context).push<Routine>(
       MaterialPageRoute(
         builder: (_) => AiRoutineCreateScreen(
           repository: repository,
           aiRoutineService: AiRoutineService(),
-          initialPrompt: l10n.onboardingAiYoutubeInitialPrompt,
         ),
       ),
     );

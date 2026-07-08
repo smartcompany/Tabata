@@ -25,6 +25,10 @@ Future<void> showAppSettingsSheet(
     context: hostContext,
     showDragHandle: true,
     isScrollControlled: true,
+    backgroundColor: Theme.of(hostContext).scaffoldBackgroundColor,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+    ),
     builder: (context) {
       var countSecondsWithTts = workoutSettings.countSecondsWithTts;
       var saveToAppleHealth = workoutSettings.saveToAppleHealth;
@@ -32,144 +36,181 @@ Future<void> showAppSettingsSheet(
 
       return StatefulBuilder(
         builder: (context, setSheetState) {
-          return Padding(
-            padding: EdgeInsets.fromLTRB(
-              16,
-              0,
-              16,
-              24 + MediaQuery.viewPaddingOf(context).bottom,
+          final colorScheme = Theme.of(context).colorScheme;
+          final sectionTitleStyle = Theme.of(context).textTheme.titleSmall?.copyWith(
+            fontWeight: FontWeight.w700,
+            letterSpacing: 0.2,
+            color: colorScheme.onSurface.withValues(alpha: 0.86),
+          );
+          final sheetTheme = Theme.of(context).copyWith(
+            dividerColor: colorScheme.outlineVariant.withValues(alpha: 0.35),
+            switchTheme: SwitchThemeData(
+              thumbColor: WidgetStateProperty.resolveWith((states) {
+                if (states.contains(WidgetState.selected)) return Colors.white;
+                return colorScheme.outline;
+              }),
+              trackColor: WidgetStateProperty.resolveWith((states) {
+                if (states.contains(WidgetState.selected)) {
+                  return colorScheme.primary.withValues(alpha: 0.85);
+                }
+                return colorScheme.surfaceContainerHigh;
+              }),
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  l10n.settingsTitle,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  l10n.workoutSettingsSection,
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
-                SwitchListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(l10n.countSecondsWithTtsTitle),
-                  subtitle: Text(l10n.countSecondsWithTtsSubtitle),
-                  value: countSecondsWithTts,
-                  onChanged: (value) async {
-                    await workoutSettings.setCountSecondsWithTts(value);
-                    setSheetState(() => countSecondsWithTts = value);
-                  },
-                ),
-                if (HealthWorkoutRecorder.isSupported) ...[
+            listTileTheme: ListTileThemeData(
+              iconColor: colorScheme.onSurfaceVariant,
+              textColor: colorScheme.onSurface,
+            ),
+          );
+
+          return Theme(
+            data: sheetTheme,
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(
+                16,
+                0,
+                16,
+                24 + MediaQuery.viewPaddingOf(context).bottom,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    l10n.settingsTitle,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    l10n.workoutSettingsSection,
+                    style: sectionTitleStyle,
+                  ),
                   SwitchListTile(
                     contentPadding: EdgeInsets.zero,
-                    title: HealthAppLabel(
-                      detailText: HealthPlatformL10n(l10n).saveDetail,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    value: saveToAppleHealth,
+                    title: Text(l10n.countSecondsWithTtsTitle),
+                    subtitle: Text(l10n.countSecondsWithTtsSubtitle),
+                    value: countSecondsWithTts,
                     onChanged: (value) async {
-                      if (value) {
-                        if (!await HealthPermissionFlow
-                            .ensureHealthAppReadyForPermission(context)) {
-                          return;
-                        }
-                        final granted =
-                            await HealthWorkoutRecorder.requestWritePermission();
-                        if (!context.mounted) return;
-                        if (!granted) {
-                          ScaffoldMessenger.of(hostContext).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                HealthPlatformL10n(l10n).permissionRequiredSnack,
+                      await workoutSettings.setCountSecondsWithTts(value);
+                      setSheetState(() => countSecondsWithTts = value);
+                    },
+                  ),
+                  if (HealthWorkoutRecorder.isSupported) ...[
+                    SwitchListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: HealthAppLabel(
+                        detailText: HealthPlatformL10n(l10n).saveDetail,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      value: saveToAppleHealth,
+                      onChanged: (value) async {
+                        if (value) {
+                          if (!await HealthPermissionFlow
+                              .ensureHealthAppReadyForPermission(context)) {
+                            return;
+                          }
+                          final granted =
+                              await HealthWorkoutRecorder.requestWritePermission();
+                          if (!context.mounted) return;
+                          if (!granted) {
+                            ScaffoldMessenger.of(hostContext).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  HealthPlatformL10n(l10n).permissionRequiredSnack,
+                                ),
                               ),
-                            ),
-                          );
-                          return;
+                            );
+                            return;
+                          }
                         }
-                      }
-                      await workoutSettings.setSaveToAppleHealth(value);
-                      setSheetState(() => saveToAppleHealth = value);
+                        await workoutSettings.setSaveToAppleHealth(value);
+                        setSheetState(() => saveToAppleHealth = value);
+                      },
+                    ),
+                  ],
+                  const SizedBox(height: 8),
+                  Divider(height: 1),
+                  const SizedBox(height: 20),
+                  Text(
+                    l10n.contentSettingsSection,
+                    style: sectionTitleStyle,
+                  ),
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(l10n.autoTranslateContentTitle),
+                    subtitle: Text(l10n.autoTranslateContentSubtitle),
+                    value: autoTranslateContent,
+                    onChanged: (value) async {
+                      await contentSettings.setAutoTranslateContent(value);
+                      setSheetState(() => autoTranslateContent = value);
+                    },
+                  ),
+                  const SizedBox(height: 8),
+                  Divider(height: 1),
+                  const SizedBox(height: 20),
+                  Text(
+                    l10n.settingsAppSection,
+                    style: sectionTitleStyle,
+                  ),
+                  if (onShowOnboardingAgain != null)
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(l10n.settingsShowOnboardingAgain),
+                      subtitle: Text(l10n.settingsShowOnboardingAgainSubtitle),
+                      trailing: const Icon(Icons.restart_alt_outlined),
+                      onTap: () async {
+                        Navigator.of(context).pop();
+                        await onShowOnboardingAgain();
+                      },
+                    ),
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(l10n.settingsRateApp),
+                    trailing: const Icon(Icons.star_outline_rounded),
+                    onTap: () async {
+                      Navigator.of(context).pop();
+                      await Future<void>.delayed(const Duration(milliseconds: 350));
+                      await AppReviewService.promptFromSettings();
+                    },
+                  ),
+                  const SizedBox(height: 8),
+                  Divider(height: 1),
+                  const SizedBox(height: 20),
+                  Text(
+                    l10n.settingsLegalSection,
+                    style: sectionTitleStyle,
+                  ),
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(l10n.settingsPrivacyPolicy),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () {
+                      final locale = Localizations.localeOf(context);
+                      Navigator.of(context).pop();
+                      LegalWebViewScreen.open(
+                        hostContext,
+                        url: LegalUrls.privacyPolicy(locale),
+                        pageTitle: l10n.settingsPrivacyPolicy,
+                      );
+                    },
+                  ),
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(l10n.settingsAppDisclosures),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () {
+                      final locale = Localizations.localeOf(context);
+                      Navigator.of(context).pop();
+                      LegalWebViewScreen.open(
+                        hostContext,
+                        url: LegalUrls.appDisclosures(locale),
+                        pageTitle: l10n.settingsAppDisclosures,
+                      );
                     },
                   ),
                 ],
-                const SizedBox(height: 20),
-                Text(
-                  l10n.contentSettingsSection,
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
-                SwitchListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(l10n.autoTranslateContentTitle),
-                  subtitle: Text(l10n.autoTranslateContentSubtitle),
-                  value: autoTranslateContent,
-                  onChanged: (value) async {
-                    await contentSettings.setAutoTranslateContent(value);
-                    setSheetState(() => autoTranslateContent = value);
-                  },
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  l10n.settingsAppSection,
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
-                if (onShowOnboardingAgain != null)
-                  ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(l10n.settingsShowOnboardingAgain),
-                    subtitle: Text(l10n.settingsShowOnboardingAgainSubtitle),
-                    trailing: const Icon(Icons.restart_alt_outlined),
-                    onTap: () async {
-                      Navigator.of(context).pop();
-                      await onShowOnboardingAgain();
-                    },
-                  ),
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(l10n.settingsRateApp),
-                  trailing: const Icon(Icons.star_outline_rounded),
-                  onTap: () async {
-                    Navigator.of(context).pop();
-                    await Future<void>.delayed(const Duration(milliseconds: 350));
-                    await AppReviewService.promptFromSettings();
-                  },
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  l10n.settingsLegalSection,
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(l10n.settingsPrivacyPolicy),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () {
-                    final locale = Localizations.localeOf(context);
-                    Navigator.of(context).pop();
-                    LegalWebViewScreen.open(
-                      hostContext,
-                      url: LegalUrls.privacyPolicy(locale),
-                      pageTitle: l10n.settingsPrivacyPolicy,
-                    );
-                  },
-                ),
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(l10n.settingsAppDisclosures),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () {
-                    final locale = Localizations.localeOf(context);
-                    Navigator.of(context).pop();
-                    LegalWebViewScreen.open(
-                      hostContext,
-                      url: LegalUrls.appDisclosures(locale),
-                      pageTitle: l10n.settingsAppDisclosures,
-                    );
-                  },
-                ),
-              ],
+              ),
             ),
           );
         },

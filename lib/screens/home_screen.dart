@@ -517,13 +517,19 @@ class _HomeScreenState extends State<HomeScreen>
                       title: Text(
                         routine.title,
                         style: const TextStyle(
-                          fontSize: 18,
+                          fontSize: 17,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                       subtitle: Padding(
                         padding: const EdgeInsets.only(top: 6),
-                        child: Text(_myRoutineSubtitle(l10n, routine)),
+                        child: Text(
+                          _myRoutineSubtitle(l10n, routine),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                       ),
                       trailing: const Icon(Icons.chevron_right),
                       onTap: () => _openLocalRoutine(routine.id),
@@ -607,6 +613,7 @@ class _HomeScreenState extends State<HomeScreen>
                         l10n.homeDownloadCatalogHint,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: Theme.of(context).colorScheme.outline,
+                          height: 1.35,
                         ),
                       ),
                       const SizedBox(height: 16),
@@ -688,9 +695,11 @@ class _HomeBottomActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final panelColor = Theme.of(context).scaffoldBackgroundColor;
+    final borderColor = colorScheme.outlineVariant.withValues(alpha: 0.7);
     return Material(
-      elevation: 8,
-      color: colorScheme.surface,
+      elevation: 0,
+      color: panelColor,
       child: SafeArea(
         top: false,
         child: Padding(
@@ -702,6 +711,12 @@ class _HomeBottomActions extends StatelessWidget {
                 width: double.infinity,
                 child: OutlinedButton.icon(
                   onPressed: onAiCreate,
+                  style: OutlinedButton.styleFrom(
+                    minimumSize: const Size.fromHeight(44),
+                    backgroundColor: Colors.white,
+                    side: BorderSide(color: borderColor),
+                    foregroundColor: colorScheme.onSurface,
+                  ),
                   icon: const Icon(Icons.auto_awesome_outlined, size: 20),
                   label: Text(aiLabel),
                 ),
@@ -716,6 +731,10 @@ class _HomeBottomActions extends StatelessWidget {
                         onPressed: onCreate,
                         style: FilledButton.styleFrom(
                           minimumSize: const Size.fromHeight(48),
+                          backgroundColor: Colors.white,
+                          foregroundColor: colorScheme.onSurface,
+                          side: BorderSide(color: borderColor),
+                          elevation: 0,
                           padding: const EdgeInsets.symmetric(
                             horizontal: 12,
                             vertical: 8,
@@ -745,6 +764,9 @@ class _HomeBottomActions extends StatelessWidget {
                         onPressed: onUpload,
                         style: OutlinedButton.styleFrom(
                           minimumSize: const Size.fromHeight(48),
+                          backgroundColor: Colors.white,
+                          foregroundColor: colorScheme.onSurface,
+                          side: BorderSide(color: borderColor),
                           padding: const EdgeInsets.symmetric(
                             horizontal: 12,
                             vertical: 8,
@@ -790,7 +812,11 @@ class _SectionTitle extends StatelessWidget {
       title,
       style: Theme.of(
         context,
-      ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+      ).textTheme.titleSmall?.copyWith(
+        fontWeight: FontWeight.w700,
+        letterSpacing: 0.2,
+        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.86),
+      ),
     );
   }
 }
@@ -880,6 +906,13 @@ class _CatalogCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final metaStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
+      color: Theme.of(context).colorScheme.onSurfaceVariant,
+      fontWeight: FontWeight.w500,
+    );
+    final ownerText = summary.ownerName?.trim().isNotEmpty == true
+        ? summary.ownerName!
+        : null;
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Card(
@@ -935,11 +968,18 @@ class _CatalogCard extends StatelessWidget {
           minLeadingWidth: thumbnailImageUrl != null ? 108 : 48,
           title: Text(
             summary.title,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
           ),
           subtitle: Padding(
             padding: const EdgeInsets.only(top: 6),
-            child: Text(l10n.routineCountOnly(summary.exerciseCount)),
+            child: Text(
+              ownerText == null
+                  ? l10n.routineCountOnly(summary.exerciseCount)
+                  : '${l10n.routineCountOnly(summary.exerciseCount)}  ·  $ownerText',
+              style: metaStyle,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
           trailing: const Icon(Icons.chevron_right),
           onTap: onOpen,

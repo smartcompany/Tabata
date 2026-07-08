@@ -191,7 +191,24 @@ class _TabataAppState extends State<TabataApp> with WidgetsBindingObserver {
           brightness: Brightness.light,
         ),
         useMaterial3: true,
-        appBarTheme: const AppBarTheme(centerTitle: true),
+        scaffoldBackgroundColor: const Color(0xFFF7F7F8),
+        appBarTheme: const AppBarTheme(
+          centerTitle: true,
+          backgroundColor: Color(0xFFF7F7F8),
+          surfaceTintColor: Colors.transparent,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+        ),
+        cardTheme: CardThemeData(
+          elevation: 0,
+          color: Colors.white,
+          surfaceTintColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: const BorderSide(color: Color(0x11000000)),
+          ),
+        ),
+        dividerColor: Colors.transparent,
       ),
       builder: (context, child) {
         if (child == null) return const SizedBox.shrink();

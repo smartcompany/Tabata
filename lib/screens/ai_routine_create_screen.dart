@@ -55,21 +55,17 @@ class _AiRoutineCreateScreenState extends State<AiRoutineCreateScreen> {
     }
 
     setState(() => _loadingAd = true);
-    final outcome = await RewardedAdGate.show();
-    if (!mounted) return;
-    setState(() => _loadingAd = false);
-    if (outcome != RewardedAdOutcome.rewarded &&
-        outcome != RewardedAdOutcome.skipped) {
-      final message = switch (outcome) {
-        RewardedAdOutcome.loadFailed => l10n.aiRoutineCreateAdLoadFailed,
-        RewardedAdOutcome.dismissedEarly => l10n.aiRoutineCreateAdRequired,
-        RewardedAdOutcome.rewarded || RewardedAdOutcome.skipped => '',
-      };
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(message)),
-      );
-      return;
+    try {
+      await RewardedAdGate.show();
+    } catch (error) {
+      // Ad failures must not block routine generation.
+      debugPrint('[AiRoutineCreate] Rewarded ad flow error: $error');
+    } finally {
+      if (mounted) {
+        setState(() => _loadingAd = false);
+      }
     }
+    if (!mounted) return;
 
     setState(() => _loading = true);
     try {

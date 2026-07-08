@@ -136,6 +136,11 @@ class RewardedAdGate {
           ad.show(
             onUserEarnedReward: (ad, reward) {
               rewarded = true;
+              // Some SDK/device combinations delay or miss dismiss callbacks.
+              // Unblock the AI flow as soon as reward is granted.
+              if (!completer.isCompleted) {
+                completer.complete(RewardedAdOutcome.rewarded);
+              }
             },
           );
         },
@@ -186,6 +191,11 @@ class RewardedAdGate {
     ad.show(
       onUserEarnedReward: (ad, reward) {
         rewarded = true;
+        // Some SDK/device combinations delay or miss dismiss callbacks.
+        // Unblock the AI flow as soon as reward is granted.
+        if (!completer.isCompleted) {
+          completer.complete(RewardedAdOutcome.rewarded);
+        }
       },
     );
 
