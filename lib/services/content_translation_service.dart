@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:translator/translator.dart';
 
 import 'locale_settings.dart';
@@ -40,21 +41,35 @@ class ContentTranslationService {
       if (seen.add(text)) pending.add(text);
     }
 
-    if (pending.isEmpty) {
-      return {for (final text in texts) text: text};
+    if (pending.isNotEmpty) {
+      for (var i = 0; i < pending.length; i += _translateConcurrency) {
+        final chunk = pending.skip(i).take(_translateConcurrency).toList();
+        await Future.wait([
+          for (final source in chunk) _translateOne(source, targetLanguage),
+        ]);
+      }
     }
 
-    for (var i = 0; i < pending.length; i += _translateConcurrency) {
-      final chunk = pending.skip(i).take(_translateConcurrency).toList();
-      await Future.wait([
-        for (final source in chunk) _translateOne(source, targetLanguage),
-      ]);
-    }
+    return _resultMap(texts, targetLanguage);
+  }
 
+  Map<String, String> _resultMap(
+    Iterable<String> texts,
+    String targetLanguage,
+  ) {
     return {
       for (final text in texts)
         text: _cache[_cacheKey(targetLanguage, text)] ?? text,
     };
+  }
+
+  @visibleForTesting
+  void seedCacheForTesting({
+    required String targetLanguage,
+    required String source,
+    required String translated,
+  }) {
+    _cache[_cacheKey(targetLanguage, source)] = translated;
   }
 
   Future<void> _translateOne(String source, String targetLanguage) async {

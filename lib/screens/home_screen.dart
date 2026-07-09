@@ -20,6 +20,7 @@ import '../services/share_link_log.dart';
 import '../services/workout_completion_recorder.dart';
 import '../services/workout_launch_coordinator.dart';
 import '../utils/auth_helper.dart';
+import '../utils/catalog_thumbnail.dart';
 import '../utils/duration_calculator.dart';
 import '../utils/video_link_utils.dart';
 import 'admin_upload_routine_screen.dart';
@@ -355,13 +356,11 @@ class _HomeScreenState extends State<HomeScreen>
     for (final id in unresolvedIds) {
       String? thumbnailUrl;
       try {
-        final routine = await widget.apiClient.fetchProfile(id);
-        for (final block in routine.effectiveDescriptionBlocks) {
-          if (block is ImageDescriptionBlock && block.hasRemoteUrl) {
-            thumbnailUrl = block.url;
-            break;
-          }
-        }
+        final routine = await widget.apiClient.fetchProfile(
+          id,
+          localize: false,
+        );
+        thumbnailUrl = pickCatalogThumbnailImageUrl(routine);
       } catch (_) {
         thumbnailUrl = null;
       }
@@ -642,8 +641,6 @@ class _HomeScreenState extends State<HomeScreen>
                                   .hasDownloadedCatalog(summary.id),
                               thumbnailImageUrl:
                                   _catalogThumbnailImageUrls[summary.id],
-                              thumbnailLoading: !_catalogThumbnailImageUrls
-                                  .containsKey(summary.id),
                               onOpen: () => _openCatalogRoutine(summary.id),
                               onDownload: () => _forkCatalogProfile(summary),
                             ),
@@ -663,8 +660,6 @@ class _HomeScreenState extends State<HomeScreen>
                                   .hasDownloadedCatalog(summary.id),
                               thumbnailImageUrl:
                                   _catalogThumbnailImageUrls[summary.id],
-                              thumbnailLoading: !_catalogThumbnailImageUrls
-                                  .containsKey(summary.id),
                               onOpen: () => _openCatalogRoutine(summary.id),
                               onDownload: () => _forkCatalogProfile(summary),
                             ),
@@ -897,7 +892,6 @@ class _CatalogCard extends StatelessWidget {
     required this.isDownloading,
     required this.isDownloaded,
     required this.thumbnailImageUrl,
-    required this.thumbnailLoading,
     required this.onOpen,
     required this.onDownload,
   });
@@ -907,7 +901,6 @@ class _CatalogCard extends StatelessWidget {
   final bool isDownloading;
   final bool isDownloaded;
   final String? thumbnailImageUrl;
-  final bool thumbnailLoading;
   final VoidCallback onOpen;
   final VoidCallback onDownload;
 
@@ -922,7 +915,6 @@ class _CatalogCard extends StatelessWidget {
         : null;
     final resolvedUrl = thumbnailImageUrl?.trim();
     final hasImage = resolvedUrl != null && resolvedUrl.isNotEmpty;
-    final showThumbSlot = thumbnailLoading || hasImage;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
@@ -932,7 +924,7 @@ class _CatalogCard extends StatelessWidget {
             horizontal: 16,
             vertical: 12,
           ),
-          leading: showThumbSlot
+          leading: hasImage
               ? SizedBox(
                   width: 108,
                   child: Row(
@@ -956,9 +948,7 @@ class _CatalogCard extends StatelessWidget {
                               ),
                       ),
                       const SizedBox(width: 4),
-                      _CatalogThumbnailSlot(
-                        imageUrl: hasImage ? resolvedUrl : null,
-                      ),
+                      _CatalogThumbnailSlot(imageUrl: resolvedUrl),
                     ],
                   ),
                 )
@@ -978,7 +968,7 @@ class _CatalogCard extends StatelessWidget {
                           color: Theme.of(context).colorScheme.primary,
                         ),
                 ),
-          minLeadingWidth: showThumbSlot ? 108 : 48,
+          minLeadingWidth: hasImage ? 108 : 48,
           title: Text(
             summary.title,
             style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
@@ -1007,39 +997,20 @@ class _CatalogThumbnailSlot extends StatelessWidget {
     required this.imageUrl,
   });
 
-  final String? imageUrl;
+  final String imageUrl;
 
   @override
   Widget build(BuildContext context) {
-    final placeholderColor = Theme.of(context).colorScheme.surfaceContainer;
-
     return SizedBox(
       width: 56,
       height: 56,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
-        child: imageUrl != null
-            ? DescriptionBlockImage(
-                block: ImageDescriptionBlock(url: imageUrl),
-                borderRadius: 10,
-                fit: BoxFit.cover,
-              )
-            : ColoredBox(
-                color: placeholderColor,
-                child: Center(
-                  child: SizedBox(
-                    width: 18,
-                    height: 18,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: Theme.of(context)
-                          .colorScheme
-                          .onSurfaceVariant
-                          .withValues(alpha: 0.45),
-                    ),
-                  ),
-                ),
-              ),
+        child: DescriptionBlockImage(
+          block: ImageDescriptionBlock(url: imageUrl),
+          borderRadius: 10,
+          fit: BoxFit.cover,
+        ),
       ),
     );
   }

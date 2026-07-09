@@ -129,7 +129,7 @@ class RoutineApiClient {
     return Future.wait(ids.map(fetchProfile));
   }
 
-  Future<Routine> fetchProfile(String id) async {
+  Future<Routine> fetchProfile(String id, {bool localize = true}) async {
     final uri = _baseUri.replace(path: '/api/profiles/$id');
     final response = await _client.get(uri);
     if (response.statusCode != 200) {
@@ -139,7 +139,9 @@ class RoutineApiClient {
     }
 
     final body = jsonDecode(response.body) as Map<String, dynamic>;
-    return _localizeRoutine(Routine.fromJson(body));
+    final routine = Routine.fromJson(body);
+    if (!localize) return routine;
+    return _localizeRoutine(routine);
   }
 
   Future<Routine> _localizeRoutine(Routine routine) async {
