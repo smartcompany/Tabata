@@ -1207,6 +1207,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get healthConnectActivityTypeNone => 'Health Connect에 저장 안 함';
 
   @override
+  String get healthConnectWorkoutTypesRecommended => '추천';
+
+  @override
   String get healthConnectReadyStatus => 'Health Connect 사용 가능';
 
   @override

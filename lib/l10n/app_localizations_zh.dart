@@ -1191,6 +1191,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get healthConnectActivityTypeNone => '不保存到 Health Connect';
 
   @override
+  String get healthConnectWorkoutTypesRecommended => '推荐';
+
+  @override
   String get healthConnectReadyStatus => '可使用 Health Connect';
 
   @override

@@ -27,6 +27,9 @@ class HealthActivityTypePicker extends StatefulWidget {
 
 class _HealthActivityTypePickerState extends State<HealthActivityTypePicker> {
   static const _itemPadding = EdgeInsets.symmetric(horizontal: 16, vertical: 12);
+  static const _menuDividerValue = '__health_activity_menu_divider__';
+  static const _menuSectionValue = '__health_activity_menu_section__';
+  static const _menuDividerLabel = '────────────────────────';
 
   bool? _healthAppReady;
 
@@ -69,6 +72,8 @@ class _HealthActivityTypePickerState extends State<HealthActivityTypePicker> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final activityOptions = HealthActivityCatalog.options(l10n);
+    final menuEntries = HealthActivityCatalog.menuEntries(l10n);
+    final usesHealthConnectList = HealthActivityCatalog.usesHealthConnectList;
     final selectedValue = _selectedId();
     final isSelected = selectedValue != null;
     final healthAppReady = _healthAppReady;
@@ -174,14 +179,54 @@ class _HealthActivityTypePickerState extends State<HealthActivityTypePicker> {
                     label: platform.activityTypeNone,
                     style: MenuItemButton.styleFrom(padding: _itemPadding),
                   ),
-                  for (final option in activityOptions)
-                    DropdownMenuEntry<String?>(
-                      value: option.id,
-                      label: option.label,
-                      style: MenuItemButton.styleFrom(padding: _itemPadding),
-                    ),
+                  if (usesHealthConnectList)
+                    for (final entry in menuEntries)
+                      switch (entry.kind) {
+                        HealthActivityMenuEntryKind.sectionHeader =>
+                          DropdownMenuEntry<String?>(
+                            value: _menuSectionValue,
+                            label: entry.label,
+                            enabled: false,
+                            style: MenuItemButton.styleFrom(
+                              padding: _itemPadding,
+                            ),
+                          ),
+                        HealthActivityMenuEntryKind.divider =>
+                          DropdownMenuEntry<String?>(
+                            value: _menuDividerValue,
+                            label: _menuDividerLabel,
+                            enabled: false,
+                            style: MenuItemButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 8,
+                              ),
+                            ),
+                          ),
+                        HealthActivityMenuEntryKind.option =>
+                          DropdownMenuEntry<String?>(
+                            value: entry.id,
+                            label: entry.label,
+                            style: MenuItemButton.styleFrom(
+                              padding: _itemPadding,
+                            ),
+                          ),
+                      }
+                  else
+                    for (final option in activityOptions)
+                      DropdownMenuEntry<String?>(
+                        value: option.id,
+                        label: option.label,
+                        style: MenuItemButton.styleFrom(padding: _itemPadding),
+                      ),
                 ],
-                onSelected: widget.onChanged,
+                onSelected: (value) {
+                  if (value == _menuDividerValue ||
+                      value == _menuSectionValue) {
+                    return;
+                  }
+                  widget.onChanged(value);
+                },
               ),
           ],
         );

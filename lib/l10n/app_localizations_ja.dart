@@ -1203,6 +1203,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get healthConnectActivityTypeNone => 'Health Connectに保存しない';
 
   @override
+  String get healthConnectWorkoutTypesRecommended => 'おすすめ';
+
+  @override
   String get healthConnectReadyStatus => 'Health Connectを利用できます';
 
   @override

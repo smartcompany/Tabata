@@ -82,6 +82,16 @@ abstract final class HealthConnectWorkoutTypes {
     return null;
   }
 
+  static List<String> otherIds({
+    required int Function(String a, String b) compare,
+  }) {
+    final prioritySet = priorityIds.toSet();
+    final others =
+        supportedIds.where((id) => !prioritySet.contains(id)).toList();
+    others.sort(compare);
+    return others;
+  }
+
   static List<String> sortedIds() {
     final priority = {
       for (var i = 0; i < priorityIds.length; i++) priorityIds[i]: i,

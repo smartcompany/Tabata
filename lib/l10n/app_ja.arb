@@ -485,6 +485,7 @@
   "healthConnectSaveDetail": "ルーティンにワークアウト種別が設定されている場合、完了時にGoogle Health Connectへ保存されます。Health Connectアプリのインストールが必要です。ここでオン/オフでき、初回は権限画面が表示されます。",
   "healthConnectActivityTypeDetail": "種別を設定すると、このルーティン完了時にHealth Connectへワークアウトを保存します。「Health Connectに保存しない」を選べば保存しません。アプリ設定の「Health Connectに記録」をオンにしてください。",
   "healthConnectActivityTypeNone": "Health Connectに保存しない",
+  "healthConnectWorkoutTypesRecommended": "おすすめ",
   "healthConnectReadyStatus": "Health Connectを利用できます",
   "healthConnectUnavailableStatus": "Health Connectアプリのインストールまたは更新が必要です",
   "healthConnectRoutineWillSaveDetail": "このルーティン完了時、Health Connectに{type}として保存されます。アプリ設定で「Health Connectに記録」がオンである必要があります。",

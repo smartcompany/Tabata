@@ -594,6 +594,7 @@
   "healthConnectSaveDetail": "When a routine has a workout type, finishing saves it to Google Health Connect. The Health Connect app must be installed. You can turn this on or off here; the permission screen appears the first time you enable it.",
   "healthConnectActivityTypeDetail": "When set, completing this routine saves a workout to Health Connect. Choose \"Do not save to Health Connect\" to skip. Turn on \"Save to Health Connect\" in app settings.",
   "healthConnectActivityTypeNone": "Do not save to Health Connect",
+  "healthConnectWorkoutTypesRecommended": "Recommended",
   "healthConnectReadyStatus": "Health Connect is available",
   "healthConnectUnavailableStatus": "Install or update the Health Connect app",
   "healthConnectRoutineWillSaveDetail": "Completing this routine saves a {type} workout to Health Connect. \"Save to Health Connect\" must be enabled in app settings.",

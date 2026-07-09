@@ -485,6 +485,7 @@
   "healthConnectSaveDetail": "若训练已设置运动类型，完成时会保存到 Google Health Connect。需安装 Health Connect 应用。可在此开关；首次开启会显示权限界面。",
   "healthConnectActivityTypeDetail": "设置后，完成此训练会保存到 Health Connect。选择“不保存到 Health Connect”则跳过。需在应用设置中开启“保存到 Health Connect”。",
   "healthConnectActivityTypeNone": "不保存到 Health Connect",
+  "healthConnectWorkoutTypesRecommended": "推荐",
   "healthConnectReadyStatus": "可使用 Health Connect",
   "healthConnectUnavailableStatus": "需要安装或更新 Health Connect 应用",
   "healthConnectRoutineWillSaveDetail": "完成此训练后将以{type}保存到 Health Connect。需在应用设置中开启“保存到 Health Connect”。",

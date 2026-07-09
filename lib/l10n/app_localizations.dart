@@ -2274,6 +2274,12 @@ abstract class AppLocalizations {
   /// **'Do not save to Health Connect'**
   String get healthConnectActivityTypeNone;
 
+  /// No description provided for @healthConnectWorkoutTypesRecommended.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended'**
+  String get healthConnectWorkoutTypesRecommended;
+
   /// No description provided for @healthConnectReadyStatus.
   ///
   /// In en, this message translates to:

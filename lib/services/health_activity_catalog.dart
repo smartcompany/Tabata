@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:health/health.dart';
 import 'package:tabata_timer/l10n/app_localizations.dart';
+import 'package:tabata_timer/l10n/health_connect_workout_type_labels.dart';
 
 import '../models/health_activity_type.dart';
 import '../models/health_connect_workout_types.dart';
@@ -15,25 +16,72 @@ class HealthActivityOption {
   final String label;
 }
 
+enum HealthActivityMenuEntryKind { option, sectionHeader, divider }
+
+class HealthActivityMenuEntry {
+  const HealthActivityMenuEntry.option({
+    required this.id,
+    required this.label,
+  }) : kind = HealthActivityMenuEntryKind.option;
+
+  const HealthActivityMenuEntry.sectionHeader(this.label)
+      : id = null,
+        kind = HealthActivityMenuEntryKind.sectionHeader;
+
+  const HealthActivityMenuEntry.divider()
+      : id = null,
+        label = '',
+        kind = HealthActivityMenuEntryKind.divider;
+
+  final String? id;
+  final String label;
+  final HealthActivityMenuEntryKind kind;
+}
+
 /// 플랫폼별 Health 운동 유형 목록 (iOS: Apple Health curated, Android: HC 지원 전체).
 abstract final class HealthActivityCatalog {
-  static bool get usesHealthConnectList =>
-      !kIsWeb && Platform.isAndroid;
+  static bool get usesHealthConnectList => !kIsWeb && Platform.isAndroid;
 
   static List<HealthActivityOption> options(AppLocalizations l10n) {
     if (usesHealthConnectList) {
       return [
-        for (final id in HealthConnectWorkoutTypes.sortedIds())
-          HealthActivityOption(
-            id: id,
-            label: HealthConnectWorkoutTypes.displayLabel(id),
-          ),
+        for (final entry in menuEntries(l10n))
+          if (entry.kind == HealthActivityMenuEntryKind.option)
+            HealthActivityOption(id: entry.id!, label: entry.label),
       ];
     }
     return [
       for (final type in RoutineHealthActivityType.values)
         HealthActivityOption(id: type.id, label: type.label(l10n)),
     ];
+  }
+
+  static List<HealthActivityMenuEntry> menuEntries(AppLocalizations l10n) {
+    if (!usesHealthConnectList) {
+      return [
+        for (final type in RoutineHealthActivityType.values)
+          HealthActivityMenuEntry.option(
+            id: type.id,
+            label: type.label(l10n),
+          ),
+      ];
+    }
+
+    String label(String id) => HealthConnectWorkoutTypeLabels.label(l10n, id);
+
+    final entries = <HealthActivityMenuEntry>[
+      HealthActivityMenuEntry.sectionHeader(
+        l10n.healthConnectWorkoutTypesRecommended,
+      ),
+      for (final id in HealthConnectWorkoutTypes.priorityIds)
+        HealthActivityMenuEntry.option(id: id, label: label(id)),
+      const HealthActivityMenuEntry.divider(),
+      for (final id in HealthConnectWorkoutTypes.otherIds(
+        compare: (a, b) => label(a).compareTo(label(b)),
+      ))
+        HealthActivityMenuEntry.option(id: id, label: label(id)),
+    ];
+    return entries;
   }
 
   static String noneLabel(AppLocalizations l10n) =>
@@ -43,7 +91,7 @@ abstract final class HealthActivityCatalog {
     if (usesHealthConnectList) {
       final hc = HealthConnectWorkoutTypes.toWorkoutType(id);
       if (hc != null) {
-        return HealthConnectWorkoutTypes.displayLabel(id);
+        return HealthConnectWorkoutTypeLabels.label(l10n, id);
       }
     }
     final ios = RoutineHealthActivityType.fromId(id);

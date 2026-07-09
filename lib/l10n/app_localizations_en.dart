@@ -1237,6 +1237,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get healthConnectActivityTypeNone => 'Do not save to Health Connect';
 
   @override
+  String get healthConnectWorkoutTypesRecommended => 'Recommended';
+
+  @override
   String get healthConnectReadyStatus => 'Health Connect is available';
 
   @override
