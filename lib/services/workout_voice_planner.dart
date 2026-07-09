@@ -65,6 +65,20 @@ class WorkoutVoicePlanner {
     );
   }
 
+  static bool hasCountdownCues(List<VoiceCue> cues) {
+    return cues.any((cue) => cue.kind == VoiceCueKind.countdown);
+  }
+
+  /// Whether the workout timer should freeze until announce audio finishes.
+  static bool shouldHoldTimerForAnnounce(
+    List<VoiceCue> cues, {
+    bool holdCountdown = false,
+  }) {
+    if (hasBlockingIntroCues(cues)) return true;
+    if (holdCountdown && hasCountdownCues(cues)) return true;
+    return false;
+  }
+
   List<VoiceCue> plan({
     required WorkoutTimerSnapshot? previous,
     required WorkoutTimerSnapshot current,

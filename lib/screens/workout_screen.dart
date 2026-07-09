@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tabata_timer/l10n/app_localizations.dart';
@@ -82,9 +83,12 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
       phrases: WorkoutVoicePhrases.fromL10n(l10n),
       locale: Localizations.localeOf(context),
       onAudioSessionRestored: () async {
-        await _soundCoach?.refreshAudioSession();
+        await _soundCoach?.refreshAudioSession(allowClockRestart: false);
         if (_engine != null) {
-          await _soundCoach?.syncClock(_engine!.snapshot);
+          await _soundCoach?.syncClock(
+            _engine!.snapshot,
+            blockForIntro: _shouldBlockClock(_engine!.snapshot),
+          );
         }
       },
     );
@@ -106,13 +110,16 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
         current: current,
         countSecondsWithTts: _countSecondsWithTts,
       );
-      if (WorkoutVoicePlanner.hasBlockingIntroCues(introCues) &&
-          !current.isPaused) {
+      if (_shouldHoldTimerForAnnounce(introCues) && !current.isPaused) {
         engine.holdForAnnounce();
       }
 
       final soundPrevious = _lastSoundSnapshot;
-      _soundCoach?.handleSnapshot(soundPrevious, current);
+      _soundCoach?.handleSnapshot(
+        soundPrevious,
+        current,
+        blockForIntro: _shouldBlockClock(current),
+      );
       _lastSoundSnapshot = current;
     }
     _scheduleAnnounce();
@@ -149,10 +156,8 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
         current: capturedCurrent,
         countSecondsWithTts: _countSecondsWithTts,
       );
-      final blockingIntro = WorkoutVoicePlanner.hasBlockingIntroCues(introCues);
-      if (blockingIntro &&
-          !capturedCurrent.isPaused &&
-          !engine.isAnnounceHold) {
+      final holdTimer = _shouldHoldTimerForAnnounce(introCues);
+      if (holdTimer && !capturedCurrent.isPaused && !engine.isAnnounceHold) {
         engine.holdForAnnounce();
       }
       if (needsWorkRelaxSessionGap(previous, capturedCurrent)) {
@@ -163,12 +168,31 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
         capturedCurrent,
         countSecondsWithTts: _countSecondsWithTts,
       );
-      if (blockingIntro) {
+      if (holdTimer) {
         engine.releaseAnnounceHold();
         await _soundCoach?.syncClock(engine.snapshot);
       }
       _previousSnapshot = capturedCurrent;
     });
+  }
+
+  bool _shouldHoldTimerForAnnounce(List<VoiceCue> cues) {
+    return WorkoutVoicePlanner.shouldHoldTimerForAnnounce(
+      cues,
+      holdCountdown: defaultTargetPlatform == TargetPlatform.android,
+    );
+  }
+
+  bool _shouldBlockClock(WorkoutTimerSnapshot current) {
+    final engine = _engine;
+    if (engine == null) return false;
+    if (engine.isAnnounceHold) return true;
+    final cues = _voicePlanner.plan(
+      previous: _previousSnapshot,
+      current: current,
+      countSecondsWithTts: _countSecondsWithTts,
+    );
+    return WorkoutVoicePlanner.hasBlockingIntroCues(cues);
   }
 
   @override
@@ -210,7 +234,10 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     } else {
       engine.pause();
     }
-    _soundCoach?.syncClock(engine.snapshot);
+    _soundCoach?.syncClock(
+      engine.snapshot,
+      blockForIntro: _shouldBlockClock(engine.snapshot),
+    );
     setState(() {});
   }
 
@@ -218,28 +245,40 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     final engine = _engine!;
     if (!engine.canGoToPreviousPhase) return;
     engine.goToPreviousPhase();
-    _soundCoach?.syncClock(engine.snapshot);
+    _soundCoach?.syncClock(
+      engine.snapshot,
+      blockForIntro: _shouldBlockClock(engine.snapshot),
+    );
   }
 
   void _goToNextPhase() {
     final engine = _engine!;
     if (!engine.canGoToNextPhase) return;
     engine.goToNextPhase();
-    _soundCoach?.syncClock(engine.snapshot);
+    _soundCoach?.syncClock(
+      engine.snapshot,
+      blockForIntro: _shouldBlockClock(engine.snapshot),
+    );
   }
 
   void _goToPreviousExercise() {
     final engine = _engine!;
     if (!engine.canGoToPreviousExercise) return;
     engine.goToPreviousExercise();
-    _soundCoach?.syncClock(engine.snapshot);
+    _soundCoach?.syncClock(
+      engine.snapshot,
+      blockForIntro: _shouldBlockClock(engine.snapshot),
+    );
   }
 
   void _goToNextExercise() {
     final engine = _engine!;
     if (!engine.canGoToNextExercise) return;
     engine.goToNextExercise();
-    _soundCoach?.syncClock(engine.snapshot);
+    _soundCoach?.syncClock(
+      engine.snapshot,
+      blockForIntro: _shouldBlockClock(engine.snapshot),
+    );
   }
 
   @override

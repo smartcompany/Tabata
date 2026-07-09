@@ -32,7 +32,7 @@ class _FakeApiClient extends RoutineApiClient {
       _officialSummaries.map((summary) => summary.id).toList();
 
   @override
-  Future<Routine> fetchProfile(String id) async {
+  Future<Routine> fetchProfile(String id, {bool localize = true}) async {
     fetchProfileCallCount++;
     final profile = _profiles[id];
     if (profile == null) {

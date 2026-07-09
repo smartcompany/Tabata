@@ -9,8 +9,8 @@ class WorkoutAudioSession {
           options: {AVAudioSessionOptions.mixWithOthers},
         ),
         android: const AudioContextAndroid(
-          contentType: AndroidContentType.sonification,
-          usageType: AndroidUsageType.assistanceSonification,
+          contentType: AndroidContentType.music,
+          usageType: AndroidUsageType.media,
           audioFocus: AndroidAudioFocus.none,
         ),
       );
@@ -26,7 +26,7 @@ class WorkoutAudioSession {
         ),
         android: const AudioContextAndroid(
           contentType: AndroidContentType.speech,
-          usageType: AndroidUsageType.assistanceNavigationGuidance,
+          usageType: AndroidUsageType.media,
           audioFocus: AndroidAudioFocus.gainTransientMayDuck,
         ),
       );

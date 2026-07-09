@@ -4,6 +4,7 @@ import 'package:flutter_tts/flutter_tts.dart';
 
 import '../utils/tts_locale.dart';
 import '../engine/workout_timer_engine.dart';
+import 'workout_android_audio.dart';
 import 'workout_audio_session.dart';
 import 'workout_voice_phrases.dart';
 import 'workout_voice_planner.dart';
@@ -36,19 +37,22 @@ class WorkoutVoiceCoach {
   }
 
   Future<void> _configureTts() async {
-    if (defaultTargetPlatform == TargetPlatform.android) {
-      await _tts.setAudioAttributesForNavigation();
-    }
-
     final candidates = ttsFallbackLanguagesForLocale(_locale);
     for (final language in candidates) {
       final result = await _tts.setLanguage(language);
       if (result == 1) break;
     }
-    await _tts.setSpeechRate(0.48);
+    await _tts.setSpeechRate(0.5);
     await _tts.setVolume(1.0);
     await _tts.setPitch(1.0);
     await _tts.awaitSpeakCompletion(true);
+
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      final configured = await WorkoutAndroidAudio.configureTtsMediaPlayback();
+      if (!configured) {
+        await _tts.setAudioAttributesForNavigation();
+      }
+    }
   }
 
   Future<void>? _snapshotQueue;
@@ -99,15 +103,22 @@ class WorkoutVoiceCoach {
   }
 
   Future<void> _prepareTtsAudioSession() async {
-    await WorkoutAudioSession.applyTtsDucking();
-
     if (defaultTargetPlatform == TargetPlatform.iOS) {
+      await WorkoutAudioSession.applyTtsDucking();
       await _tts.setIosAudioCategory(
         IosTextToSpeechAudioCategory.playback,
         [IosTextToSpeechAudioCategoryOptions.duckOthers],
         IosTextToSpeechAudioMode.voicePrompt,
       );
       await _tts.setSharedInstance(true);
+      return;
+    }
+
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      final configured = await WorkoutAndroidAudio.configureTtsMediaPlayback();
+      if (!configured) {
+        await _tts.setAudioAttributesForNavigation();
+      }
     }
   }
 
@@ -138,16 +149,24 @@ class WorkoutVoiceCoach {
       return;
     }
 
-    // Keep the session active between chained utterances (e.g. 준비 → 3 → 2 → 1).
-    await _tts.autoStopSharedSession(false);
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      await WorkoutAndroidAudio.configureTtsMediaPlayback();
+    }
+
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      // Android flutter_tts does not implement autoStopSharedSession.
+      await _tts.autoStopSharedSession(false);
+    }
     await _prepareTtsAudioSession();
     _backgroundDucked = true;
   }
 
   Future<void> _endDucking() async {
     if (!_backgroundDucked) return;
-    await _restoreBackgroundAudioSession();
-    await _tts.autoStopSharedSession(true);
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      await _restoreBackgroundAudioSession();
+      await _tts.autoStopSharedSession(true);
+    }
     _backgroundDucked = false;
   }
 
@@ -177,10 +196,39 @@ class WorkoutVoiceCoach {
 
     if (text.isEmpty) return;
 
+    if (cue.kind == VoiceCueKind.countdown &&
+        defaultTargetPlatform == TargetPlatform.android) {
+      await _speakCountdownOnAndroid(text, cue);
+      return;
+    }
+
     _speaking = true;
     try {
       await _beginDucking();
       await _tts.speak(text, focus: true);
+    } catch (error, stackTrace) {
+      debugPrint('WorkoutVoiceCoach speak failed: $error\n$stackTrace');
+    } finally {
+      _speaking = false;
+      if (!_shouldKeepBackgroundDuckedAfter(cue)) {
+        await _endDucking();
+      }
+    }
+  }
+
+  /// Android TTS completion can lag or stall; stop the prior digit and cap wait
+  /// so the announce queue does not stack behind [awaitSpeakCompletion].
+  Future<void> _speakCountdownOnAndroid(String text, VoiceCue cue) async {
+    _speaking = true;
+    try {
+      await _beginDucking();
+      await _tts.stop();
+      await _tts.speak(text, focus: true).timeout(
+        const Duration(milliseconds: 850),
+        onTimeout: () {
+          debugPrint('WorkoutVoiceCoach: Android countdown speak timed out');
+        },
+      );
     } catch (error, stackTrace) {
       debugPrint('WorkoutVoiceCoach speak failed: $error\n$stackTrace');
     } finally {

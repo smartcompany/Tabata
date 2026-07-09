@@ -11,24 +11,19 @@ import 'workout_audio_session.dart';
 class WorkoutSoundCoach {
   static const tickVolume = 1.0;
   static const eventVolume = 1.0;
-  static const clockStrongAsset = 'sounds/clock_tick_strong.wav';
-  static const clockWeakAsset = 'sounds/clock_tock_weak.wav';
 
-  /// Tick-tock interval — rapid clicks for a fast-running clock feel.
-  static const clockClickInterval = Duration(milliseconds: 220);
+  /// Tick + 220ms gap + tock + 220ms gap (440ms loop).
+  static const clockLoopAsset = 'sounds/clock_tick_tock_loop.wav';
 
   bool countSecondsWithTts = true;
 
-  final AudioPlayer _clockStrongPlayer = AudioPlayer();
-  final AudioPlayer _clockWeakPlayer = AudioPlayer();
+  final AudioPlayer _clockPlayer = AudioPlayer();
   final AudioPlayer _tickPlayer = AudioPlayer();
   final AudioPlayer _eventPlayer = AudioPlayer();
 
   bool _initialized = false;
   bool _clockSourceReady = false;
   bool _clockPlaying = false;
-  bool _clockStrongNext = true;
-  Timer? _clockTimer;
   bool _tickReady = false;
   bool _disposed = false;
 
@@ -36,23 +31,19 @@ class WorkoutSoundCoach {
     if (_disposed) return;
     await WorkoutAudioSession.configure();
     if (_disposed) return;
-    await WorkoutAudioSession.applyTo(_clockStrongPlayer);
-    if (_disposed) return;
-    await WorkoutAudioSession.applyTo(_clockWeakPlayer);
+    await WorkoutAudioSession.applyTo(_clockPlayer);
     if (_disposed) return;
     await WorkoutAudioSession.applyTo(_tickPlayer);
     if (_disposed) return;
     await WorkoutAudioSession.applyTo(_eventPlayer);
     if (_disposed) return;
-    await _clockStrongPlayer.setReleaseMode(ReleaseMode.stop);
-    await _clockWeakPlayer.setReleaseMode(ReleaseMode.stop);
+    await _clockPlayer.setReleaseMode(ReleaseMode.loop);
+    await _clockPlayer.setVolume(tickVolume);
     await _tickPlayer.setReleaseMode(ReleaseMode.stop);
     await _eventPlayer.setReleaseMode(ReleaseMode.stop);
-    await _clockStrongPlayer.setVolume(tickVolume);
-    await _clockWeakPlayer.setVolume(tickVolume);
     await _tickPlayer.setVolume(tickVolume);
     await _eventPlayer.setVolume(eventVolume);
-    await _prepareClockSources();
+    await _prepareClockSource();
     _initialized = true;
   }
 
@@ -69,14 +60,12 @@ class WorkoutSoundCoach {
     return file.path;
   }
 
-  Future<void> _prepareClockSources() async {
+  Future<void> _prepareClockSource() async {
     if (_disposed) return;
     try {
-      final strongPath = await _materializeAsset(clockStrongAsset);
-      final weakPath = await _materializeAsset(clockWeakAsset);
+      final loopPath = await _materializeAsset(clockLoopAsset);
       if (_disposed) return;
-      await _clockStrongPlayer.setSourceDeviceFile(strongPath);
-      await _clockWeakPlayer.setSourceDeviceFile(weakPath);
+      await _clockPlayer.setSourceDeviceFile(loopPath);
       _clockSourceReady = true;
     } catch (error, stackTrace) {
       _clockSourceReady = false;
@@ -89,33 +78,44 @@ class WorkoutSoundCoach {
   /// Keeps clock clicks, per-second ticks, and event chimes in sync with the timer.
   Future<void> handleSnapshot(
     WorkoutTimerSnapshot? previous,
-    WorkoutTimerSnapshot current,
-  ) async {
+    WorkoutTimerSnapshot current, {
+    bool blockForIntro = false,
+  }) async {
     if (_disposed) return;
     if (!_initialized) await init();
     if (_disposed) return;
 
-    await syncClock(current);
+    await syncClock(current, blockForIntro: blockForIntro);
     await _handleCountModeTick(previous, current);
     await handleEvents(previous, current);
   }
 
   /// Starts or stops rapid tick-tock clicks for duration mode.
-  Future<void> syncClock(WorkoutTimerSnapshot current) async {
+  Future<void> syncClock(
+    WorkoutTimerSnapshot current, {
+    bool blockForIntro = false,
+  }) async {
     if (_disposed) return;
     if (!_initialized) await init();
     if (_disposed) return;
 
-    final shouldPlay = shouldPlayClockLoop(current);
+    final shouldPlay = shouldPlayClockLoop(
+      current,
+      blockForIntro: blockForIntro,
+    );
     if (shouldPlay) {
-      _startClockClicks();
+      await _startClockLoop();
     } else if (_clockPlaying) {
-      _stopClockClicks();
+      await _stopClockLoop();
     }
   }
 
   @visibleForTesting
-  static bool shouldPlayClockLoop(WorkoutTimerSnapshot current) {
+  static bool shouldPlayClockLoop(
+    WorkoutTimerSnapshot current, {
+    bool blockForIntro = false,
+  }) {
+    if (blockForIntro) return false;
     if (current.isPaused || current.isCompleted) return false;
     if (current.phase.isCountRep) return false;
     if (current.phase.kind == WorkoutPhaseKind.completed) return false;
@@ -185,34 +185,25 @@ class WorkoutSoundCoach {
         previous.repIndex == current.repIndex;
   }
 
-  void _startClockClicks() {
+  Future<void> _startClockLoop() async {
     if (_disposed || !_clockSourceReady || _clockPlaying) return;
     _clockPlaying = true;
-    _clockStrongNext = true;
-    unawaited(_playClockClick());
-    _clockTimer?.cancel();
-    _clockTimer = Timer.periodic(clockClickInterval, (_) {
-      unawaited(_playClockClick());
-    });
-  }
-
-  void _stopClockClicks() {
-    _clockTimer?.cancel();
-    _clockTimer = null;
-    _clockPlaying = false;
-    unawaited(_clockStrongPlayer.stop());
-    unawaited(_clockWeakPlayer.stop());
-  }
-
-  Future<void> _playClockClick() async {
-    if (_disposed || !_clockSourceReady) return;
-    final player = _clockStrongNext ? _clockStrongPlayer : _clockWeakPlayer;
-    _clockStrongNext = !_clockStrongNext;
     try {
-      await player.seek(Duration.zero);
-      await player.resume();
+      await _clockPlayer.seek(Duration.zero);
+      await _clockPlayer.resume();
     } catch (error, stackTrace) {
-      debugPrint('WorkoutSoundCoach clock click failed: $error\n$stackTrace');
+      _clockPlaying = false;
+      debugPrint('WorkoutSoundCoach clock loop failed: $error\n$stackTrace');
+    }
+  }
+
+  Future<void> _stopClockLoop() async {
+    _clockPlaying = false;
+    try {
+      await _clockPlayer.stop();
+      await _clockPlayer.seek(Duration.zero);
+    } catch (error, stackTrace) {
+      debugPrint('WorkoutSoundCoach clock stop failed: $error\n$stackTrace');
     }
   }
 
@@ -246,24 +237,22 @@ class WorkoutSoundCoach {
     }
   }
 
-  Future<void> refreshAudioSession() async {
+  Future<void> refreshAudioSession({bool allowClockRestart = true}) async {
     if (!_initialized || _disposed) return;
     final wasClockPlaying = _clockPlaying;
-    _stopClockClicks();
+    await _stopClockLoop();
     try {
       await WorkoutAudioSession.configure();
       if (_disposed) return;
-      await WorkoutAudioSession.applyTo(_clockStrongPlayer);
-      if (_disposed) return;
-      await WorkoutAudioSession.applyTo(_clockWeakPlayer);
+      await WorkoutAudioSession.applyTo(_clockPlayer);
       if (_disposed) return;
       await WorkoutAudioSession.applyTo(_tickPlayer);
       if (_disposed) return;
       await WorkoutAudioSession.applyTo(_eventPlayer);
       if (_disposed) return;
-      await _prepareClockSources();
-      if (wasClockPlaying && _clockSourceReady) {
-        _startClockClicks();
+      await _prepareClockSource();
+      if (allowClockRestart && wasClockPlaying && _clockSourceReady) {
+        await _startClockLoop();
       }
     } catch (error, stackTrace) {
       debugPrint(
@@ -276,17 +265,15 @@ class WorkoutSoundCoach {
     if (_disposed) return;
     _disposed = true;
     _initialized = false;
-    _stopClockClicks();
+    await _stopClockLoop();
     _clockSourceReady = false;
     try {
-      await _clockStrongPlayer.stop();
-      await _clockWeakPlayer.stop();
+      await _clockPlayer.stop();
       await _tickPlayer.stop();
       await _eventPlayer.stop();
     } catch (_) {}
     try {
-      await _clockStrongPlayer.dispose();
-      await _clockWeakPlayer.dispose();
+      await _clockPlayer.dispose();
       await _tickPlayer.dispose();
       await _eventPlayer.dispose();
     } catch (_) {}

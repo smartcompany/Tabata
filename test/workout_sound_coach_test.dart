@@ -77,6 +77,16 @@ void main() {
     );
   });
 
+  test('clock loop does not play during intro announce', () {
+    expect(
+      WorkoutSoundCoach.shouldPlayClockLoop(
+        _snap(remainingSec: 10),
+        blockForIntro: true,
+      ),
+      isFalse,
+    );
+  });
+
   test('clock loop stops when paused or completed', () {
     expect(
       WorkoutSoundCoach.shouldPlayClockLoop(_snap(isPaused: true)),

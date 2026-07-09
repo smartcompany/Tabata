@@ -61,6 +61,24 @@ void main() {
     expect(WorkoutVoicePlanner.hasBlockingIntroCues(cues), isFalse);
   });
 
+  test('shouldHoldTimerForAnnounce holds countdown when requested', () {
+    final cues = planner.plan(
+      previous: _snap(remainingSec: 4, durationSec: 10),
+      current: _snap(remainingSec: 3, durationSec: 10),
+    );
+    expect(
+      WorkoutVoicePlanner.shouldHoldTimerForAnnounce(cues),
+      isFalse,
+    );
+    expect(
+      WorkoutVoicePlanner.shouldHoldTimerForAnnounce(
+        cues,
+        holdCountdown: true,
+      ),
+      isTrue,
+    );
+  });
+
   test('first snapshot announces exercise name then phase start', () {
     final cues = planner.plan(
       previous: null,
