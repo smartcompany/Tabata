@@ -1013,14 +1013,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingWelcomeTitle => 'Welcome to Everyone\'s Tabata';
 
   @override
-  String get onboardingWelcomeSubtitle => 'How would you like to get started?';
+  String get onboardingWelcomeSubtitle =>
+      'Build a prepare · work · rest schedule — the timer cues you through it. How would you like to get started?';
 
   @override
   String get onboardingOptionQuickStartTitle => 'Start working out now';
 
   @override
   String get onboardingOptionQuickStartSubtitle =>
-      'Pick recommended routines to add to My Routines';
+      'Pick a recommended routine and jump straight to Start';
 
   @override
   String get onboardingOptionYoutubeTitle => 'Follow YouTube or a workout';
@@ -1054,7 +1055,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Select routines to add. All are selected by default.';
 
   @override
-  String get onboardingRecommendedSave => 'Add to My Routines';
+  String get onboardingRecommendedSave => 'Add and start';
 
   @override
   String get onboardingRecommendedSelectAtLeastOne =>
@@ -1067,6 +1068,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get onboardingRecommendedLoadError =>
       'Could not load recommended routines.';
+
+  @override
+  String get onboardingStartHint =>
+      'When you’re ready, tap Start all. Prepare, work, and rest will run in order.';
 
   @override
   String get onboardingGoalTitle => 'Custom routine';

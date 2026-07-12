@@ -6,7 +6,10 @@ import '../../models/profile_summary.dart';
 import '../../services/app_analytics_service.dart';
 import '../../services/app_settings_service.dart';
 
-typedef OnboardingCompleteCallback = Future<void> Function();
+/// Returns the local routine id to open after onboarding, if any.
+typedef OnboardingRecommendedCompleteCallback = Future<void> Function(
+  String? openRoutineId,
+);
 
 class OnboardingRecommendedRoutinesScreen extends StatefulWidget {
   const OnboardingRecommendedRoutinesScreen({
@@ -16,7 +19,7 @@ class OnboardingRecommendedRoutinesScreen extends StatefulWidget {
   });
 
   final RoutineRepository repository;
-  final OnboardingCompleteCallback onComplete;
+  final OnboardingRecommendedCompleteCallback onComplete;
 
   @override
   State<OnboardingRecommendedRoutinesScreen> createState() =>
@@ -88,10 +91,21 @@ class _OnboardingRecommendedRoutinesScreenState
 
     setState(() => _saving = true);
     var failed = false;
-    for (final id in _selectedIds) {
-      if (widget.repository.hasDownloadedCatalog(id)) continue;
+    String? firstOpenRoutineId;
+
+    // Preserve selection order from the recommended list.
+    for (final summary in _summaries) {
+      if (!_selectedIds.contains(summary.id)) continue;
       try {
-        await widget.repository.forkCatalogProfile(id);
+        if (widget.repository.hasDownloadedCatalog(summary.id)) {
+          final existing =
+              widget.repository.myRoutinesForkedFromCatalog(summary.id);
+          firstOpenRoutineId ??=
+              existing.isNotEmpty ? existing.first.id : null;
+          continue;
+        }
+        final forked = await widget.repository.forkCatalogProfile(summary.id);
+        firstOpenRoutineId ??= forked.id;
       } catch (_) {
         failed = true;
       }
@@ -100,7 +114,7 @@ class _OnboardingRecommendedRoutinesScreenState
     if (!mounted) return;
     setState(() => _saving = false);
 
-    if (failed) {
+    if (failed || firstOpenRoutineId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.onboardingRecommendedDownloadFailed)),
       );
@@ -112,7 +126,7 @@ class _OnboardingRecommendedRoutinesScreenState
       count: _selectedIds.length,
     );
 
-    await widget.onComplete();
+    await widget.onComplete(firstOpenRoutineId);
   }
 
   @override

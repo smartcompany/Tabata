@@ -32,6 +32,7 @@ class RoutineDetailScreen extends StatefulWidget {
     required this.workoutCompletionRecorder,
     this.routineId,
     this.catalogId,
+    this.showStartHint = false,
   }) : assert(
           routineId != null || catalogId != null,
           'Provide either routineId or catalogId',
@@ -41,12 +42,15 @@ class RoutineDetailScreen extends StatefulWidget {
   final WorkoutCompletionRecorder workoutCompletionRecorder;
   final String? routineId;
   final String? catalogId;
+  /// Shown after onboarding so the next action (Start) is obvious.
+  final bool showStartHint;
 
   @override
   State<RoutineDetailScreen> createState() => _RoutineDetailScreenState();
 }
 
-class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
+class _RoutineDetailScreenState extends State<RoutineDetailScreen>
+    with SingleTickerProviderStateMixin {
   Routine? _routine;
   RoutineSchedule? _schedule;
   bool _loadingCatalog = false;
@@ -54,18 +58,39 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
   bool _downloading = false;
   final _shareService = RoutineShareService();
   final _shareApi = RoutineShareApi();
+  late bool _showStartHint;
+  AnimationController? _startPulseController;
 
   bool get _isCatalogPreview => widget.catalogId != null;
 
   @override
   void initState() {
     super.initState();
+    _showStartHint = widget.showStartHint;
+    if (_showStartHint) {
+      _startPulseController = AnimationController(
+        vsync: this,
+        duration: const Duration(milliseconds: 900),
+      )..repeat(reverse: true);
+    }
     if (_isCatalogPreview) {
       _loadCatalogRoutine();
     } else {
       _routine = widget.repository.findById(widget.routineId!);
       _refreshSchedule();
     }
+  }
+
+  @override
+  void dispose() {
+    _startPulseController?.dispose();
+    super.dispose();
+  }
+
+  void _clearStartHint() {
+    if (!_showStartHint) return;
+    _startPulseController?.stop();
+    setState(() => _showStartHint = false);
   }
 
   void _refreshSchedule() {
@@ -275,12 +300,14 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
   Future<void> _start() async {
     final routine = _routine;
     if (routine == null) return;
+    _clearStartHint();
     await _openWorkout(routine);
   }
 
   Future<void> _startExercise(Exercise exercise) async {
     final routine = _routine;
     if (routine == null) return;
+    _clearStartHint();
     await _openWorkout(routine.forSingleExercise(exercise));
   }
 
@@ -361,6 +388,37 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
     setState(() {
       _routine = widget.repository.findById(routineId);
     });
+  }
+
+  Widget _buildStartAllButton(AppLocalizations l10n) {
+    final button = FilledButton.icon(
+      onPressed: _start,
+      icon: const Icon(Icons.play_arrow, size: 18),
+      label: Text(l10n.startAll),
+      style: FilledButton.styleFrom(
+        visualDensity: VisualDensity.compact,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+      ),
+    );
+    final controller = _startPulseController;
+    if (!_showStartHint || controller == null) return button;
+
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (context, child) {
+        final t = Curves.easeInOut.transform(controller.value);
+        final opacity = 0.45 + (0.55 * t);
+        final scale = 0.96 + (0.04 * t);
+        return Opacity(
+          opacity: opacity,
+          child: Transform.scale(
+            scale: scale,
+            child: child,
+          ),
+        );
+      },
+      child: button,
+    );
   }
 
   @override
@@ -520,6 +578,24 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
             const SizedBox(height: 16),
           ],
           EstimatedDurationCard(totalSec: totalSec),
+          if (_showStartHint && !_isCatalogPreview) ...[
+            const SizedBox(height: 16),
+            Card(
+              color: Theme.of(context).colorScheme.secondaryContainer,
+              child: ListTile(
+                leading: Icon(
+                  Icons.play_circle_outline,
+                  color: Theme.of(context).colorScheme.onSecondaryContainer,
+                ),
+                title: Text(
+                  l10n.onboardingStartHint,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSecondaryContainer,
+                  ),
+                ),
+              ),
+            ),
+          ],
           if (!_isCatalogPreview && _scheduleLabel(l10n) != null) ...[
             Card(
               color: Theme.of(context).colorScheme.primaryContainer,
@@ -574,15 +650,7 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
               if (!_isCatalogPreview &&
                   RoutineScheduleService.shared.isSupported)
                 const SizedBox(width: 8),
-              FilledButton.icon(
-                onPressed: _start,
-                icon: const Icon(Icons.play_arrow, size: 18),
-                label: Text(l10n.startAll),
-                style: FilledButton.styleFrom(
-                  visualDensity: VisualDensity.compact,
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                ),
-              ),
+              _buildStartAllButton(l10n),
             ],
           ),
           const SizedBox(height: 12),

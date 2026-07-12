@@ -46,6 +46,7 @@ class HomeScreen extends StatefulWidget {
     required this.linkCoordinator,
     required this.workoutLaunchCoordinator,
     this.onShowOnboardingAgain,
+    this.initialOpenRoutineId,
   });
 
   final RoutineRepository repository;
@@ -56,6 +57,8 @@ class HomeScreen extends StatefulWidget {
   final SharedRoutineLinkCoordinator linkCoordinator;
   final WorkoutLaunchCoordinator workoutLaunchCoordinator;
   final Future<void> Function()? onShowOnboardingAgain;
+  /// When set (e.g. after onboarding), open this local routine once.
+  final String? initialOpenRoutineId;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -78,6 +81,7 @@ class _HomeScreenState extends State<HomeScreen>
   int _titleTapCount = 0;
   DateTime? _lastTitleTapAt;
   final _shareService = RoutineShareService();
+  bool _didOpenInitialRoutine = false;
 
   @override
   void initState() {
@@ -93,9 +97,18 @@ class _HomeScreenState extends State<HomeScreen>
       shareLinkLog('HomeScreen first frame — onHomeReady');
       widget.linkCoordinator.onHomeReady();
       widget.workoutLaunchCoordinator.onHomeReady();
+      _openInitialRoutineIfNeeded();
     });
     ContentSettings.addListener(_onCatalogRefreshPreferencesChanged);
     _loadCatalogInitial();
+  }
+
+  Future<void> _openInitialRoutineIfNeeded() async {
+    final routineId = widget.initialOpenRoutineId;
+    if (_didOpenInitialRoutine || routineId == null) return;
+    if (widget.repository.findById(routineId) == null) return;
+    _didOpenInitialRoutine = true;
+    await _openLocalRoutine(routineId, showStartHint: true);
   }
 
   @override
@@ -310,13 +323,17 @@ class _HomeScreenState extends State<HomeScreen>
     setState(() => _openSwipeItemKey = null);
   }
 
-  Future<void> _openLocalRoutine(String routineId) async {
+  Future<void> _openLocalRoutine(
+    String routineId, {
+    bool showStartHint = false,
+  }) async {
     await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => RoutineDetailScreen(
           repository: widget.repository,
           workoutCompletionRecorder: widget.workoutCompletionRecorder,
           routineId: routineId,
+          showStartHint: showStartHint,
         ),
       ),
     );

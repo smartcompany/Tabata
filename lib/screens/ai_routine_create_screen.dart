@@ -18,11 +18,15 @@ class AiRoutineCreateScreen extends StatefulWidget {
     required this.repository,
     required this.aiRoutineService,
     this.initialPrompt,
+    /// When true, save the generated routine and pop immediately (no editor).
+    /// Used by onboarding so the user can start the workout right away.
+    this.autoSaveWithoutEditor = false,
   });
 
   final RoutineRepository repository;
   final AiRoutineService aiRoutineService;
   final String? initialPrompt;
+  final bool autoSaveWithoutEditor;
 
   @override
   State<AiRoutineCreateScreen> createState() => _AiRoutineCreateScreenState();
@@ -99,6 +103,19 @@ class _AiRoutineCreateScreenState extends State<AiRoutineCreateScreen> {
       );
       if (!mounted) return;
       setState(() => _loading = false);
+
+      if (widget.autoSaveWithoutEditor) {
+        if (routine.exercises.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.requireAtLeastOneExercise)),
+          );
+          return;
+        }
+        await widget.repository.upsert(routine);
+        if (!mounted) return;
+        Navigator.of(context).pop(routine);
+        return;
+      }
 
       final saved = await Navigator.of(context).push<Routine>(
         MaterialPageRoute(

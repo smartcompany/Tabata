@@ -40,6 +40,7 @@ class AppShell extends StatefulWidget {
 class _AppShellState extends State<AppShell> {
   bool _ready = false;
   bool _showOnboarding = false;
+  String? _initialOpenRoutineId;
 
   @override
   void initState() {
@@ -61,11 +62,17 @@ class _AppShellState extends State<AppShell> {
     });
   }
 
-  Future<void> _completeOnboarding({required String path}) async {
+  Future<void> _completeOnboarding({
+    required String path,
+    String? openRoutineId,
+  }) async {
     await AppAnalyticsService.logOnboardingComplete(path: path);
     await OnboardingSettings.markCompleted();
     if (!mounted) return;
-    setState(() => _showOnboarding = false);
+    setState(() {
+      _showOnboarding = false;
+      _initialOpenRoutineId = openRoutineId;
+    });
   }
 
   Future<void> showOnboardingAgain() async {
@@ -74,7 +81,10 @@ class _AppShellState extends State<AppShell> {
       await widget.repository.refreshRemoteProfiles();
     } catch (_) {}
     if (!mounted) return;
-    setState(() => _showOnboarding = true);
+    setState(() {
+      _showOnboarding = true;
+      _initialOpenRoutineId = null;
+    });
   }
 
   @override
@@ -101,6 +111,7 @@ class _AppShellState extends State<AppShell> {
       linkCoordinator: widget.linkCoordinator,
       workoutLaunchCoordinator: widget.workoutLaunchCoordinator,
       onShowOnboardingAgain: showOnboardingAgain,
+      initialOpenRoutineId: _initialOpenRoutineId,
     );
   }
 }

@@ -989,13 +989,14 @@ class AppLocalizationsJa extends AppLocalizations {
   String get onboardingWelcomeTitle => 'みんなのタバタへようこそ';
 
   @override
-  String get onboardingWelcomeSubtitle => 'どのように始めますか？';
+  String get onboardingWelcomeSubtitle =>
+      '準備・運動・休憩のスケジュールを作り、タイマーが順番に案内します。どのように始めますか？';
 
   @override
   String get onboardingOptionQuickStartTitle => 'すぐに運動を始める';
 
   @override
-  String get onboardingOptionQuickStartSubtitle => 'おすすめルーティンを選んでマイルーティンに追加';
+  String get onboardingOptionQuickStartSubtitle => 'おすすめルーティンを選ぶと開始画面へ移動します';
 
   @override
   String get onboardingOptionYoutubeTitle => 'YouTube・動画の運動に合わせる';
@@ -1026,7 +1027,7 @@ class AppLocalizationsJa extends AppLocalizations {
       '追加するルーティンを選んでください。初期状態ですべて選択されています。';
 
   @override
-  String get onboardingRecommendedSave => 'マイルーティンに追加';
+  String get onboardingRecommendedSave => '追加して開始';
 
   @override
   String get onboardingRecommendedSelectAtLeastOne => '1つ以上選んでください。';
@@ -1037,6 +1038,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get onboardingRecommendedLoadError => 'おすすめルーティンを読み込めませんでした。';
+
+  @override
+  String get onboardingStartHint => '準備ができたら「すべて開始」を押してください。準備・運動・休憩が順番に進みます。';
 
   @override
   String get onboardingGoalTitle => 'カスタムルーティン';

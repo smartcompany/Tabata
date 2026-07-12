@@ -994,13 +994,14 @@ class AppLocalizationsKo extends AppLocalizations {
   String get onboardingWelcomeTitle => '모두의 타바타에 오신 걸 환영해요';
 
   @override
-  String get onboardingWelcomeSubtitle => '어떻게 시작할까요? 원하는 방법을 골라 주세요.';
+  String get onboardingWelcomeSubtitle =>
+      '준비·운동·휴식 시간표를 만들고, 타이머가 알아서 알려 줍니다. 어떻게 시작할까요?';
 
   @override
   String get onboardingOptionQuickStartTitle => '바로 운동 시작';
 
   @override
-  String get onboardingOptionQuickStartSubtitle => '추천 루틴을 골라 내 루틴에 추가해요';
+  String get onboardingOptionQuickStartSubtitle => '추천 루틴을 고르면 바로 시작 화면으로 이동해요';
 
   @override
   String get onboardingOptionYoutubeTitle => '유튜브·운동 따라하기';
@@ -1030,7 +1031,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get onboardingRecommendedSubtitle => '추가할 루틴을 선택하세요. 모두 기본 선택되어 있어요.';
 
   @override
-  String get onboardingRecommendedSave => '내 루틴에 추가';
+  String get onboardingRecommendedSave => '추가하고 시작하기';
 
   @override
   String get onboardingRecommendedSelectAtLeastOne => '루틴을 하나 이상 선택해 주세요.';
@@ -1041,6 +1042,10 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get onboardingRecommendedLoadError => '추천 루틴 목록을 불러오지 못했습니다.';
+
+  @override
+  String get onboardingStartHint =>
+      '준비가 되면 「전체 시작」을 눌러 주세요. 준비·운동·휴식이 순서대로 진행됩니다.';
 
   @override
   String get onboardingGoalTitle => '맞춤 루틴';

@@ -980,13 +980,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get onboardingWelcomeTitle => '欢迎使用「大家的 Tabata」';
 
   @override
-  String get onboardingWelcomeSubtitle => '你想怎么开始？';
+  String get onboardingWelcomeSubtitle => '创建准备·运动·休息时间表，计时器会按顺序提醒你。想怎么开始？';
 
   @override
   String get onboardingOptionQuickStartTitle => '马上开始运动';
 
   @override
-  String get onboardingOptionQuickStartSubtitle => '选择推荐训练并添加到「我的训练」';
+  String get onboardingOptionQuickStartSubtitle => '选择推荐训练后直接进入开始界面';
 
   @override
   String get onboardingOptionYoutubeTitle => '跟着 YouTube/运动做';
@@ -1016,7 +1016,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get onboardingRecommendedSubtitle => '选择要添加的训练，默认全选。';
 
   @override
-  String get onboardingRecommendedSave => '添加到我的训练';
+  String get onboardingRecommendedSave => '添加并开始';
 
   @override
   String get onboardingRecommendedSelectAtLeastOne => '请至少选择一项训练。';
@@ -1026,6 +1026,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get onboardingRecommendedLoadError => '无法加载推荐训练列表。';
+
+  @override
+  String get onboardingStartHint => '准备好后请点「全部开始」。准备、运动、休息会按顺序进行。';
 
   @override
   String get onboardingGoalTitle => '定制训练';

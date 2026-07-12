@@ -10,7 +10,10 @@ import '../routine_editor_screen.dart';
 import 'onboarding_goal_screen.dart';
 import 'onboarding_recommended_routines_screen.dart';
 
-typedef OnboardingCompleteCallback = Future<void> Function({required String path});
+typedef OnboardingCompleteCallback = Future<void> Function({
+  required String path,
+  String? openRoutineId,
+});
 
 class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({
@@ -22,23 +25,27 @@ class OnboardingScreen extends StatelessWidget {
   final RoutineRepository repository;
   final OnboardingCompleteCallback onComplete;
 
-  Future<void> _finish(BuildContext context, {required String path}) async {
-    await onComplete(path: path);
+  Future<void> _finish(
+    BuildContext context, {
+    required String path,
+    String? openRoutineId,
+  }) async {
+    await onComplete(path: path, openRoutineId: openRoutineId);
   }
 
   Future<void> _openQuickStart(BuildContext context) async {
-    final finished = await Navigator.of(context).push<bool>(
+    final openRoutineId = await Navigator.of(context).push<String>(
       MaterialPageRoute(
         builder: (routeContext) => OnboardingRecommendedRoutinesScreen(
           repository: repository,
-          onComplete: () async {
-            Navigator.of(routeContext).pop(true);
+          onComplete: (routineId) async {
+            Navigator.of(routeContext).pop(routineId);
           },
         ),
       ),
     );
-    if (finished == true && context.mounted) {
-      await onComplete(path: 'quick_start');
+    if (openRoutineId != null && context.mounted) {
+      await onComplete(path: 'quick_start', openRoutineId: openRoutineId);
     }
   }
 
@@ -48,11 +55,12 @@ class OnboardingScreen extends StatelessWidget {
         builder: (_) => AiRoutineCreateScreen(
           repository: repository,
           aiRoutineService: AiRoutineService(),
+          autoSaveWithoutEditor: true,
         ),
       ),
     );
     if (!context.mounted || saved == null) return;
-    await _finish(context, path: 'youtube_ai');
+    await _finish(context, path: 'youtube_ai', openRoutineId: saved.id);
   }
 
   Future<void> _openGoalFlow(BuildContext context) async {
@@ -69,11 +77,12 @@ class OnboardingScreen extends StatelessWidget {
           repository: repository,
           aiRoutineService: AiRoutineService(),
           initialPrompt: prompt,
+          autoSaveWithoutEditor: true,
         ),
       ),
     );
     if (!context.mounted || saved == null) return;
-    await _finish(context, path: 'goal_ai');
+    await _finish(context, path: 'goal_ai', openRoutineId: saved.id);
   }
 
   Future<void> _openCreateRoutine(BuildContext context) async {
@@ -91,7 +100,7 @@ class OnboardingScreen extends StatelessWidget {
       ),
     );
     if (!context.mounted || saved == null) return;
-    await _finish(context, path: 'create');
+    await _finish(context, path: 'create', openRoutineId: saved.id);
   }
 
   @override

@@ -1881,7 +1881,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingWelcomeSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'How would you like to get started?'**
+  /// **'Build a prepare · work · rest schedule — the timer cues you through it. How would you like to get started?'**
   String get onboardingWelcomeSubtitle;
 
   /// No description provided for @onboardingOptionQuickStartTitle.
@@ -1893,7 +1893,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingOptionQuickStartSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Pick recommended routines to add to My Routines'**
+  /// **'Pick a recommended routine and jump straight to Start'**
   String get onboardingOptionQuickStartSubtitle;
 
   /// No description provided for @onboardingOptionYoutubeTitle.
@@ -1953,7 +1953,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingRecommendedSave.
   ///
   /// In en, this message translates to:
-  /// **'Add to My Routines'**
+  /// **'Add and start'**
   String get onboardingRecommendedSave;
 
   /// No description provided for @onboardingRecommendedSelectAtLeastOne.
@@ -1973,6 +1973,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not load recommended routines.'**
   String get onboardingRecommendedLoadError;
+
+  /// No description provided for @onboardingStartHint.
+  ///
+  /// In en, this message translates to:
+  /// **'When you’re ready, tap Start all. Prepare, work, and rest will run in order.'**
+  String get onboardingStartHint;
 
   /// No description provided for @onboardingGoalTitle.
   ///
