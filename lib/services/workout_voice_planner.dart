@@ -1,6 +1,13 @@
 import '../engine/workout_timer_engine.dart';
 
-enum VoiceCueKind { exerciseName, phaseStart, countdown, repCount, completed }
+enum VoiceCueKind {
+  exerciseName,
+  phaseStart,
+  instruction,
+  countdown,
+  repCount,
+  completed,
+}
 
 class VoiceCue {
   const VoiceCue._(
@@ -12,6 +19,7 @@ class VoiceCue {
     this.repNumber,
     this.totalReps,
     this.exerciseName,
+    this.instructionText,
   });
 
   const VoiceCue.exerciseName(String name)
@@ -27,6 +35,9 @@ class VoiceCue {
           label: label,
           phaseDurationSec: phaseDurationSec,
         );
+
+  const VoiceCue.instruction(String text)
+      : this._(VoiceCueKind.instruction, instructionText: text);
 
   const VoiceCue.countdown(int seconds)
       : this._(VoiceCueKind.countdown, seconds: seconds);
@@ -50,6 +61,7 @@ class VoiceCue {
   final int? repNumber;
   final int? totalReps;
   final String? exerciseName;
+  final String? instructionText;
 }
 
 class WorkoutVoicePlanner {
@@ -130,6 +142,12 @@ class WorkoutVoicePlanner {
             phaseDurationSec: current.phase.durationSec,
           ),
         );
+        if (current.phase.kind == WorkoutPhaseKind.prepare) {
+          final instruction = current.exerciseInstruction.trim();
+          if (instruction.isNotEmpty) {
+            cues.add(VoiceCue.instruction(instruction));
+          }
+        }
       }
     } else if (previous != null &&
         countSecondsWithTts &&

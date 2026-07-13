@@ -190,7 +190,16 @@ class WorkoutSoundCoach {
     _clockPlaying = true;
     try {
       await _clockPlayer.seek(Duration.zero);
+      if (_disposed) {
+        _clockPlaying = false;
+        await _clockPlayer.stop();
+        return;
+      }
       await _clockPlayer.resume();
+      if (_disposed) {
+        _clockPlaying = false;
+        await _clockPlayer.stop();
+      }
     } catch (error, stackTrace) {
       _clockPlaying = false;
       debugPrint('WorkoutSoundCoach clock loop failed: $error\n$stackTrace');
@@ -201,7 +210,9 @@ class WorkoutSoundCoach {
     _clockPlaying = false;
     try {
       await _clockPlayer.stop();
-      await _clockPlayer.seek(Duration.zero);
+      if (!_disposed) {
+        await _clockPlayer.seek(Duration.zero);
+      }
     } catch (error, stackTrace) {
       debugPrint('WorkoutSoundCoach clock stop failed: $error\n$stackTrace');
     }

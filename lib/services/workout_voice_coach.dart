@@ -29,6 +29,8 @@ class WorkoutVoiceCoach {
   bool _speaking = false;
   bool _backgroundDucked = false;
   bool _disposed = false;
+  int _speechGeneration = 0;
+  Future<void>? _deferredSpeech;
 
   Future<void> init(Locale locale) async {
     _locale = locale;
@@ -89,17 +91,57 @@ class WorkoutVoiceCoach {
       current: current,
       countSecondsWithTts: countSecondsWithTts,
     );
+    if (cues.isEmpty) return;
+
+    final immediate = <VoiceCue>[];
+    final deferred = <VoiceCue>[];
     for (final cue in cues) {
+      if (cue.kind == VoiceCueKind.instruction) {
+        deferred.add(cue);
+      } else {
+        immediate.add(cue);
+      }
+    }
+
+    // 3-2-1 / next-phase cues preempt prepare instruction TTS.
+    if (immediate.isNotEmpty) {
+      await _cancelDeferredSpeech();
+    }
+
+    for (final cue in immediate) {
       await _speakCue(cue);
+    }
+
+    if (deferred.isNotEmpty) {
+      _startDeferredSpeech(deferred);
     }
   }
 
-  Future<void> stop() async {
+  void _startDeferredSpeech(List<VoiceCue> cues) {
+    final generation = ++_speechGeneration;
+    _deferredSpeech = Future<void>(() async {
+      for (final cue in cues) {
+        if (_disposed || generation != _speechGeneration) return;
+        await _speakCue(cue);
+      }
+    });
+  }
+
+  Future<void> _cancelDeferredSpeech() async {
+    _speechGeneration++;
     if (_speaking) {
-      await _tts.stop();
+      try {
+        await _tts.stop();
+      } catch (_) {}
       _speaking = false;
     }
+    await _deferredSpeech;
+    _deferredSpeech = null;
     await _endDucking();
+  }
+
+  Future<void> stop() async {
+    await _cancelDeferredSpeech();
   }
 
   Future<void> _prepareTtsAudioSession() async {
@@ -135,6 +177,7 @@ class WorkoutVoiceCoach {
       VoiceCueKind.exerciseName => true,
       // Long phases: unduck after the intro so the clock loop can play.
       VoiceCueKind.phaseStart => (cue.phaseDurationSec ?? 0) <= 3,
+      VoiceCueKind.instruction => false,
       VoiceCueKind.countdown => cue.seconds! > 1,
       VoiceCueKind.repCount => cue.repNumber! < cue.totalReps!,
       VoiceCueKind.completed => false,
@@ -189,6 +232,7 @@ class WorkoutVoiceCoach {
           workTitle: _phrases.work,
           relaxTitle: _phrases.relax,
         ),
+      VoiceCueKind.instruction => cue.instructionText ?? '',
       VoiceCueKind.countdown => _phrases.countdown(cue.seconds!),
       VoiceCueKind.repCount => _phrases.repCount(cue.repNumber!),
       VoiceCueKind.completed => _phrases.completed,

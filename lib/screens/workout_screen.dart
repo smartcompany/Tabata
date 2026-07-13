@@ -83,13 +83,14 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
       phrases: WorkoutVoicePhrases.fromL10n(l10n),
       locale: Localizations.localeOf(context),
       onAudioSessionRestored: () async {
-        await _soundCoach?.refreshAudioSession(allowClockRestart: false);
-        if (_engine != null) {
-          await _soundCoach?.syncClock(
-            _engine!.snapshot,
-            blockForIntro: _shouldBlockClock(_engine!.snapshot),
-          );
-        }
+        final coach = _soundCoach;
+        final engine = _engine;
+        if (coach == null || engine == null) return;
+        await coach.refreshAudioSession(allowClockRestart: false);
+        await coach.syncClock(
+          engine.snapshot,
+          blockForIntro: _shouldBlockClock(engine.snapshot),
+        );
       },
     );
     await Future.wait([
@@ -206,9 +207,11 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     _soundCoach = null;
     _voiceCoach = null;
 
+    // Stop clock immediately — do not wait for the TTS announce queue.
+    unawaited(soundCoach?.dispose() ?? Future<void>.value());
+
     (_announceQueue ?? Future<void>.value())
         .then((_) => voiceCoach?.dispose())
-        .then((_) => soundCoach?.dispose())
         .catchError((_) {});
 
     _engine?.dispose();

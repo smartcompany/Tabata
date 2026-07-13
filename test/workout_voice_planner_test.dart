@@ -12,6 +12,7 @@ WorkoutTimerSnapshot _snap({
   String phaseGroupKey = '',
   int exerciseIndex = 1,
   String exerciseName = '팽귄 운동',
+  String exerciseInstruction = '',
   bool isPaused = false,
   bool isCompleted = false,
 }) {
@@ -29,6 +30,7 @@ WorkoutTimerSnapshot _snap({
     setIndex: 1,
     repIndex: 1,
     exerciseName: exerciseName,
+    exerciseInstruction: exerciseInstruction,
     routineTitle: '테스트',
     totalExercises: 1,
     totalSets: 1,
@@ -93,6 +95,64 @@ void main() {
     expect(cues[0].exerciseName, '사이드 플랭크');
     expect(cues[1].kind, VoiceCueKind.phaseStart);
     expect(cues[1].phaseDurationSec, 8);
+  });
+
+  test('prepare with instruction announces instruction after phase start', () {
+    final cues = planner.plan(
+      previous: null,
+      current: _snap(
+        kind: WorkoutPhaseKind.prepare,
+        label: '준비',
+        durationSec: 10,
+        remainingSec: 10,
+        exerciseName: '스쿼트',
+        exerciseInstruction: '무릎이 발끝을 넘어가지 않게 앉았다 일어납니다.',
+      ),
+    );
+    expect(cues.map((c) => c.kind).toList(), [
+      VoiceCueKind.exerciseName,
+      VoiceCueKind.phaseStart,
+      VoiceCueKind.instruction,
+    ]);
+    expect(
+      cues[2].instructionText,
+      '무릎이 발끝을 넘어가지 않게 앉았다 일어납니다.',
+    );
+    expect(WorkoutVoicePlanner.hasBlockingIntroCues(cues), isTrue);
+    expect(
+      WorkoutVoicePlanner.hasBlockingIntroCues([
+        VoiceCue.instruction('x'),
+      ]),
+      isFalse,
+    );
+  });
+
+  test('work phase does not announce instruction', () {
+    final cues = planner.plan(
+      previous: _snap(
+        kind: WorkoutPhaseKind.prepare,
+        label: '준비',
+        exerciseInstruction: '설명',
+      ),
+      current: _snap(
+        kind: WorkoutPhaseKind.work,
+        label: '운동',
+        exerciseInstruction: '설명',
+      ),
+    );
+    expect(
+      cues.any((c) => c.kind == VoiceCueKind.instruction),
+      isFalse,
+    );
+  });
+
+  test('instruction alone does not hold the timer', () {
+    expect(
+      WorkoutVoicePlanner.shouldHoldTimerForAnnounce([
+        VoiceCue.instruction('무릎을 살짝 굽히고 제자리 걷기를 합니다.'),
+      ]),
+      isFalse,
+    );
   });
 
   test('new exercise announces name before prepare', () {

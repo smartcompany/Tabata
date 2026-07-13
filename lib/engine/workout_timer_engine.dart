@@ -37,6 +37,7 @@ class WorkoutTimerSnapshot {
     required this.setIndex,
     required this.repIndex,
     required this.exerciseName,
+    this.exerciseInstruction = '',
     required this.routineTitle,
     required this.totalExercises,
     required this.totalSets,
@@ -51,6 +52,8 @@ class WorkoutTimerSnapshot {
   final int setIndex;
   final int repIndex;
   final String exerciseName;
+  /// Plain-text how-to for the current exercise (spoken during prepare).
+  final String exerciseInstruction;
   final String routineTitle;
   final int totalExercises;
   final int totalSets;
@@ -345,6 +348,7 @@ class WorkoutTimerEngine extends ChangeNotifier {
         setIndex: 0,
         repIndex: 0,
         exerciseName: '',
+        exerciseInstruction: '',
         routineTitle: routine.title,
         totalExercises: _exercises.length,
         totalSets: 0,
@@ -363,6 +367,7 @@ class WorkoutTimerEngine extends ChangeNotifier {
       setIndex: current.setIndex,
       repIndex: current.repIndex,
       exerciseName: exercise.name,
+      exerciseInstruction: exercise.instructionPlainText.trim(),
       routineTitle: routine.title,
       totalExercises: _exercises.length,
       totalSets: exercise.sets,
