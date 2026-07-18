@@ -6,6 +6,8 @@ import '../models/routine.dart';
 import '../services/admin_session.dart';
 import '../services/routine_api_client.dart';
 import '../utils/duration_calculator.dart';
+import '../utils/routine_list_thumbnail.dart';
+import '../widgets/routine_list_thumbnail.dart';
 import 'routine_editor_screen.dart';
 
 /// Hidden admin entry: dashboard username/password login, then official catalog upload.
@@ -242,10 +244,18 @@ class _AdminUploadRoutineScreenState extends State<AdminUploadRoutineScreen> {
     VoidCallback? onTap,
   }) {
     final duration = routineDurationSec(routine);
+    final thumbnail = pickRoutineListThumbnail(routine);
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Card(
         child: ListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 12,
+          ),
+          leading: thumbnail == null
+              ? null
+              : RoutineListThumbnail.fromRef(thumbnail),
           title: Text(routine.title),
           subtitle: Text(
             l10n.routineCountDuration(

@@ -9,6 +9,7 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 import '../engine/workout_timer_engine.dart';
 import '../engine/workout_timer_labels.dart';
 import '../models/routine.dart';
+import '../services/app_analytics_service.dart';
 import '../services/workout_announce_gap.dart';
 import '../services/workout_completion_recorder.dart';
 import '../services/workout_settings.dart';
@@ -17,6 +18,7 @@ import '../services/workout_voice_coach.dart';
 import '../services/workout_voice_phrases.dart';
 import '../services/workout_voice_planner.dart';
 import '../utils/duration_format.dart';
+import '../utils/duration_calculator.dart';
 import 'app_settings_screen.dart';
 import '../widgets/workout_phase_stage.dart';
 
@@ -49,11 +51,22 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
   Future<void>? _announceQueue;
   bool _countSecondsWithTts = true;
   bool _completionRecorded = false;
+  bool _startRecorded = false;
 
   @override
   void initState() {
     super.initState();
     WakelockPlus.enable();
+    unawaited(
+      AppAnalyticsService.logProductEvent(
+        'workout_opened',
+        properties: {
+          'routine_source': widget.routine.id.startsWith('ai-')
+              ? 'ai'
+              : 'other',
+        },
+      ),
+    );
   }
 
   @override
@@ -105,6 +118,19 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
   void _onTick() {
     final engine = _engine;
     if (engine != null) {
+      if (!_startRecorded && engine.elapsedSec > 0) {
+        _startRecorded = true;
+        unawaited(
+          AppAnalyticsService.logProductEvent(
+            'workout_started',
+            properties: {
+              'routine_source': widget.routine.id.startsWith('ai-')
+                  ? 'ai'
+                  : 'other',
+            },
+          ),
+        );
+      }
       final current = engine.snapshot;
       final introCues = _voicePlanner.plan(
         previous: _previousSnapshot,
@@ -199,6 +225,24 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
   @override
   void dispose() {
     WakelockPlus.disable();
+    final elapsed = _engine?.elapsedSec ?? 0;
+    if (!_completionRecorded && elapsed > 0) {
+      final planned = routineDurationSec(widget.routine);
+      final percent = planned <= 0 ? 0 : ((elapsed / planned) * 100).round();
+      final progressBucket = percent < 25
+          ? 'under_25_percent'
+          : percent < 50
+              ? '25_to_50_percent'
+              : percent < 75
+                  ? '50_to_75_percent'
+                  : '75_percent_plus';
+      unawaited(
+        AppAnalyticsService.logProductEvent(
+          'workout_abandoned',
+          properties: {'progress_bucket': progressBucket},
+        ),
+      );
+    }
     _engine?.removeListener(_onTick);
     _engine?.pause();
 

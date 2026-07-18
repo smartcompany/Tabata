@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:tabata_timer/l10n/app_localizations.dart';
 
 import '../utils/health_platform_l10n.dart';
+import 'app_analytics_service.dart';
 import 'health_workout_recorder.dart';
 import 'workout_settings.dart';
 
@@ -33,6 +34,8 @@ abstract final class HealthPermissionFlow {
 
     var enable = true;
     if (!settings.appleHealthPreferenceAsked) {
+      await AppAnalyticsService.logProductEvent('health_prompt_shown');
+      if (!context.mounted) return;
       enable = await showDialog<bool>(
             context: context,
             barrierDismissible: false,
@@ -62,6 +65,12 @@ abstract final class HealthPermissionFlow {
         saveToHealth = false;
       } else {
         saveToHealth = await HealthWorkoutRecorder.requestWritePermission();
+        await AppAnalyticsService.logProductEvent(
+          'health_permission_result',
+          properties: {
+            'result': saveToHealth ? 'granted' : 'denied_or_unknown',
+          },
+        );
         if (!saveToHealth && context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(platform.permissionRequiredSnack)),
@@ -73,6 +82,9 @@ abstract final class HealthPermissionFlow {
     final latest = await WorkoutSettings.load();
     await latest.setSaveToAppleHealth(saveToHealth);
     await latest.setAppleHealthPreferenceAsked(true);
+    await AppAnalyticsService.logProductEvent(
+      saveToHealth ? 'health_sync_enabled' : 'health_sync_disabled',
+    );
   }
 
   /// Android: Health Connect 미설치 시 Play Store 설치 화면 안내.

@@ -2,6 +2,8 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
+import 'product_analytics_transport.dart';
+
 /// Firebase Analytics wrapper for retention and funnel metrics.
 abstract final class AppAnalyticsService {
   static FirebaseAnalytics? _analytics;
@@ -12,7 +14,8 @@ abstract final class AppAnalyticsService {
     try {
       _analytics = FirebaseAnalytics.instance;
       await _analytics!.setAnalyticsCollectionEnabled(true);
-      await logAppOpen();
+      await ProductAnalyticsTransport.shared.initialize();
+      await _analytics!.logAppOpen();
       FirebaseAuth.instance.authStateChanges().listen(_onAuthStateChanged);
     } catch (error) {
       debugPrint('AppAnalytics init error: $error');
@@ -22,6 +25,7 @@ abstract final class AppAnalyticsService {
   static Future<void> logAppOpen() async {
     try {
       await _analytics?.logAppOpen();
+      await ProductAnalyticsTransport.shared.log('app_open');
     } catch (error) {
       debugPrint('Analytics logAppOpen error: $error');
     }
@@ -37,9 +41,8 @@ abstract final class AppAnalyticsService {
     String? routineId,
   }) async {
     await _logEvent('workout_complete', {
-      'duration_sec': durationSec,
-      'exercise_count': exerciseCount,
-      if (routineId != null && routineId.isNotEmpty) 'routine_id': routineId,
+      'duration_bucket': _durationBucket(durationSec),
+      'exercise_count_bucket': _countBucket(exerciseCount),
     });
   }
 
@@ -52,7 +55,6 @@ abstract final class AppAnalyticsService {
     await _logEvent('routine_download', {
       'source': source,
       'count': count,
-      if (catalogId != null && catalogId.isNotEmpty) 'catalog_id': catalogId,
     });
   }
 
@@ -126,8 +128,49 @@ abstract final class AppAnalyticsService {
   ) async {
     try {
       await _analytics?.logEvent(name: name, parameters: parameters);
+      await ProductAnalyticsTransport.shared.log(
+        _firstPartyEventName(name),
+        properties: parameters,
+      );
     } catch (error) {
       debugPrint('Analytics log error ($name): $error');
     }
+  }
+
+  /// Records a privacy-safe, allowlisted first-party journey event.
+  static Future<void> logProductEvent(
+    String name, {
+    Map<String, Object> properties = const {},
+  }) async {
+    try {
+      await ProductAnalyticsTransport.shared.log(
+        name,
+        properties: properties,
+      );
+    } catch (error) {
+      debugPrint('Product analytics log error ($name): $error');
+    }
+  }
+
+  static String _firstPartyEventName(String firebaseName) => switch (
+        firebaseName
+      ) {
+        'workout_complete' => 'workout_completed',
+        'routine_download' => 'routine_download_succeeded',
+        'routine_share' => 'routine_share_succeeded',
+        _ => firebaseName,
+      };
+
+  static String _durationBucket(int seconds) {
+    if (seconds < 300) return 'under_5_min';
+    if (seconds < 900) return '5_to_15_min';
+    if (seconds < 1800) return '15_to_30_min';
+    return '30_min_plus';
+  }
+
+  static String _countBucket(int count) {
+    if (count <= 3) return '1_to_3';
+    if (count <= 6) return '4_to_6';
+    return '7_plus';
   }
 }

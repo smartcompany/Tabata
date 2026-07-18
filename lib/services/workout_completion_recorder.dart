@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:tabata_timer/l10n/app_localizations.dart';
@@ -66,6 +67,14 @@ class WorkoutCompletionRecorder {
     if (saved) {
       await _historyRepository.updateHealthSynced(sessionId, true);
     }
+    await AppAnalyticsService.logProductEvent(
+      saved
+          ? 'health_workout_sync_succeeded'
+          : 'health_workout_sync_failed',
+      properties: {
+        'platform': Platform.isIOS ? 'ios' : 'android',
+      },
+    );
 
     if (!context.mounted) return;
 

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:share_lib/share_lib.dart';
 import 'package:tabata_timer/l10n/app_localizations.dart';
@@ -68,17 +70,32 @@ abstract final class RoutineShareSheet {
                     ),
                     onTap: () async {
                       Navigator.of(ctx).pop();
+                      var shareFailed = false;
                       // 도파민 자산과 동일: 본문은 텍스트만, 클릭은 linkUrl(Universal Link).
                       await _shareToKakaoCompat(
                         kakaoShareText,
                         linkUrl: resolvedLink,
                         linkButtonTitle: resolvedButtonTitle,
-                        onError: (_) => _showShareFailed(context, l10n),
+                        onError: (_) {
+                          shareFailed = true;
+                          _showShareFailed(context, l10n);
+                          unawaited(
+                            AppAnalyticsService.logProductEvent(
+                              'routine_share_failed',
+                              properties: {
+                                'share_type': shareType,
+                                'channel': 'kakao',
+                              },
+                            ),
+                          );
+                        },
                       );
-                      await AppAnalyticsService.logRoutineShare(
-                        shareType: shareType,
-                        channel: 'kakao',
-                      );
+                      if (!shareFailed) {
+                        await AppAnalyticsService.logRoutineShare(
+                          shareType: shareType,
+                          channel: 'kakao',
+                        );
+                      }
                     },
                   ),
                 ListTile(
@@ -92,15 +109,28 @@ abstract final class RoutineShareSheet {
                   ),
                   onTap: () async {
                     Navigator.of(ctx).pop();
-                    await ShareService.shareText(
-                      mergedText,
-                      subject: subject,
-                      sharePositionOrigin: shareOrigin,
-                    );
-                    await AppAnalyticsService.logRoutineShare(
-                      shareType: shareType,
-                      channel: 'system',
-                    );
+                      try {
+                        await ShareService.shareText(
+                          mergedText,
+                          subject: subject,
+                          sharePositionOrigin: shareOrigin,
+                        );
+                        await AppAnalyticsService.logRoutineShare(
+                          shareType: shareType,
+                          channel: 'system',
+                        );
+                      } catch (_) {
+                        await AppAnalyticsService.logProductEvent(
+                          'routine_share_failed',
+                          properties: {
+                            'share_type': shareType,
+                            'channel': 'system',
+                          },
+                        );
+                        if (context.mounted) {
+                          _showShareFailed(context, l10n);
+                        }
+                      }
                   },
                 ),
               ],

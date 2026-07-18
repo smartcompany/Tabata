@@ -8,10 +8,13 @@ import '../config/auth_config.dart';
 import '../features/legal/privacy_processing_consent.dart';
 import '../models/user.dart';
 import '../screens/profile_setup_screen.dart';
+import '../services/app_analytics_service.dart';
 
 class AuthHelper {
   static Future<bool> requireAuth(BuildContext context) async {
     if (!AppAuthProvider.shared.isLoggedIn()) {
+      await AppAnalyticsService.logProductEvent('login_started');
+      if (!context.mounted) return false;
       final result = await Navigator.push<bool>(
         context,
         MaterialPageRoute(
@@ -22,11 +25,16 @@ class AuthHelper {
           fullscreenDialog: true,
         ),
       );
-      if (result != true) return false;
-      if (!AppAuthProvider.shared.isLoggedIn() &&
-          AppAuthProvider.shared.kakaoId == null) {
+      if (result != true) {
+        await AppAnalyticsService.logProductEvent('login_cancelled');
         return false;
       }
+      if (!AppAuthProvider.shared.isLoggedIn() &&
+          AppAuthProvider.shared.kakaoId == null) {
+        await AppAnalyticsService.logProductEvent('login_failed');
+        return false;
+      }
+      await AppAnalyticsService.logProductEvent('login_succeeded');
     }
 
     if (!context.mounted) return false;

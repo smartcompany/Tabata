@@ -1,19 +1,10 @@
-import '../models/description_block.dart';
 import '../models/routine.dart';
+import 'routine_list_thumbnail.dart';
 
-/// First remote image URL in a catalog routine (description or exercise blocks).
+export 'routine_list_thumbnail.dart'
+    show RoutineListThumbnailRef, pickRoutineListThumbnail, youtubeThumbnailUrl;
+
+/// First remote image or YouTube thumbnail URL for catalog list rows.
 String? pickCatalogThumbnailImageUrl(Routine routine) {
-  for (final block in routine.effectiveDescriptionBlocks) {
-    if (block is ImageDescriptionBlock && block.hasRemoteUrl) {
-      return block.url;
-    }
-  }
-  for (final exercise in routine.orderedExercises) {
-    for (final block in exercise.effectiveInstructionBlocks) {
-      if (block is ImageDescriptionBlock && block.hasRemoteUrl) {
-        return block.url;
-      }
-    }
-  }
-  return null;
+  return pickRoutineListThumbnail(routine)?.imageUrl;
 }

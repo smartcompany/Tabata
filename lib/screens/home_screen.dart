@@ -8,7 +8,6 @@ import '../data/routine_repository.dart';
 import '../data/workout_history_repository.dart';
 import '../models/profile_summary.dart';
 import '../models/routine.dart';
-import '../models/description_block.dart';
 import '../services/ai_routine_service.dart';
 import '../services/admin_session.dart';
 import '../services/app_analytics_service.dart';
@@ -22,7 +21,7 @@ import '../services/workout_launch_coordinator.dart';
 import '../utils/auth_helper.dart';
 import '../utils/catalog_thumbnail.dart';
 import '../utils/duration_calculator.dart';
-import '../utils/video_link_utils.dart';
+import '../widgets/routine_list_thumbnail.dart';
 import 'admin_upload_routine_screen.dart';
 import 'ai_routine_create_screen.dart';
 import 'routine_detail_screen.dart';
@@ -30,7 +29,6 @@ import 'routine_editor_screen.dart';
 import 'upload_routine_screen.dart';
 import 'workout_history_screen.dart';
 import 'app_settings_screen.dart';
-import '../widgets/description_block_image.dart';
 import '../widgets/home_app_bar_title.dart';
 import '../widgets/routine_share_sheet.dart';
 import '../widgets/swipe_reveal_delete.dart';
@@ -72,7 +70,8 @@ class _HomeScreenState extends State<HomeScreen>
   String? _downloadingCatalogId;
   String? _openSwipeItemKey;
   late final TextEditingController _catalogSearchController;
-  final Map<String, String?> _catalogThumbnailImageUrls = {};
+  /// Missing key = still resolving; null value = no media; non-null = ready.
+  final Map<String, RoutineListThumbnailRef?> _catalogThumbnails = {};
 
   static const _bottomBarHeight = 120.0;
   static const _adminTapTarget = 7;
@@ -233,6 +232,11 @@ class _HomeScreenState extends State<HomeScreen>
 
   Future<void> _createRoutine() async {
     final l10n = AppLocalizations.of(context);
+    await AppAnalyticsService.logProductEvent(
+      'routine_create_started',
+      properties: {'source': 'home'},
+    );
+    if (!mounted) return;
     final routine = createEmptyRoutine().copyWith(
       title: l10n.defaultRoutineName,
     );
@@ -265,6 +269,13 @@ class _HomeScreenState extends State<HomeScreen>
   Future<void> _forkCatalogProfile(ProfileSummary summary) async {
     final l10n = AppLocalizations.of(context);
     setState(() => _downloadingCatalogId = summary.id);
+    await AppAnalyticsService.logProductEvent(
+      'routine_download_started',
+      properties: {
+        'source': 'catalog',
+        'catalog_type': summary.isOfficialCatalog ? 'official' : 'shared',
+      },
+    );
 
     try {
       await widget.repository.forkCatalogProfile(summary.id);
@@ -275,6 +286,10 @@ class _HomeScreenState extends State<HomeScreen>
       if (!mounted) return;
       setState(() => _downloadingCatalogId = null);
     } catch (_) {
+      await AppAnalyticsService.logProductEvent(
+        'routine_download_failed',
+        properties: {'source': 'catalog'},
+      );
       if (!mounted) return;
       setState(() => _downloadingCatalogId = null);
       ScaffoldMessenger.of(
@@ -349,16 +364,6 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  DescriptionBlock? _pickRoutineThumbnailBlock(Routine routine) {
-    for (final block in routine.effectiveDescriptionBlocks) {
-      if (block is ImageDescriptionBlock) return block;
-    }
-    for (final block in routine.effectiveDescriptionBlocks) {
-      if (block is VideoDescriptionBlock) return block;
-    }
-    return null;
-  }
-
   Future<void> _loadCatalogThumbnailImages() async {
     final summaries = [
       ...widget.repository.officialCatalogSummaries,
@@ -366,23 +371,23 @@ class _HomeScreenState extends State<HomeScreen>
     ];
     final unresolvedIds = <String>[
       for (final summary in summaries)
-        if (!_catalogThumbnailImageUrls.containsKey(summary.id)) summary.id,
+        if (!_catalogThumbnails.containsKey(summary.id)) summary.id,
     ];
     if (unresolvedIds.isEmpty) return;
 
     for (final id in unresolvedIds) {
-      String? thumbnailUrl;
+      RoutineListThumbnailRef? thumbnail;
       try {
         final routine = await widget.apiClient.fetchProfile(
           id,
           localize: false,
         );
-        thumbnailUrl = pickCatalogThumbnailImageUrl(routine);
+        thumbnail = pickRoutineListThumbnail(routine);
       } catch (_) {
-        thumbnailUrl = null;
+        thumbnail = null;
       }
       if (!mounted) return;
-      setState(() => _catalogThumbnailImageUrls[id] = thumbnailUrl);
+      setState(() => _catalogThumbnails[id] = thumbnail);
     }
   }
 
@@ -489,7 +494,7 @@ class _HomeScreenState extends State<HomeScreen>
             onReorder: _onReorderMyRoutines,
             itemBuilder: (context, index) {
               final routine = routines[index];
-              final thumbnailBlock = _pickRoutineThumbnailBlock(routine);
+              final thumbnail = pickRoutineListThumbnail(routine);
               return Padding(
                 key: ValueKey(routine.id),
                 padding: EdgeInsets.only(
@@ -510,7 +515,7 @@ class _HomeScreenState extends State<HomeScreen>
                         vertical: 12,
                       ),
                       leading: SizedBox(
-                        width: thumbnailBlock != null ? 88 : 36,
+                        width: thumbnail != null ? 88 : 36,
                         child: Row(
                           children: [
                             ReorderableDragStartListener(
@@ -523,14 +528,14 @@ class _HomeScreenState extends State<HomeScreen>
                                     .withValues(alpha: 0.7),
                               ),
                             ),
-                            if (thumbnailBlock != null) ...[
+                            if (thumbnail != null) ...[
                               const SizedBox(width: 8),
-                              _RoutineListThumbnail(block: thumbnailBlock),
+                              RoutineListThumbnail.fromRef(thumbnail),
                             ],
                           ],
                         ),
                       ),
-                      minLeadingWidth: thumbnailBlock != null ? 88 : 36,
+                      minLeadingWidth: thumbnail != null ? 88 : 36,
                       title: Text(
                         routine.title,
                         style: const TextStyle(
@@ -656,8 +661,7 @@ class _HomeScreenState extends State<HomeScreen>
                                   _downloadingCatalogId == summary.id,
                               isDownloaded: widget.repository
                                   .hasDownloadedCatalog(summary.id),
-                              thumbnailImageUrl:
-                                  _catalogThumbnailImageUrls[summary.id],
+                              thumbnail: _catalogThumbnails[summary.id],
                               onOpen: () => _openCatalogRoutine(summary.id),
                               onDownload: () => _forkCatalogProfile(summary),
                             ),
@@ -675,8 +679,7 @@ class _HomeScreenState extends State<HomeScreen>
                                   _downloadingCatalogId == summary.id,
                               isDownloaded: widget.repository
                                   .hasDownloadedCatalog(summary.id),
-                              thumbnailImageUrl:
-                                  _catalogThumbnailImageUrls[summary.id],
+                              thumbnail: _catalogThumbnails[summary.id],
                               onOpen: () => _openCatalogRoutine(summary.id),
                               onDownload: () => _forkCatalogProfile(summary),
                             ),
@@ -838,77 +841,13 @@ class _SectionTitle extends StatelessWidget {
   }
 }
 
-class _RoutineListThumbnail extends StatelessWidget {
-  const _RoutineListThumbnail({required this.block});
-
-  final DescriptionBlock block;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 56,
-      height: 56,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: switch (block) {
-          ImageDescriptionBlock imageBlock => DescriptionBlockImage(
-              block: imageBlock,
-              borderRadius: 10,
-              fit: BoxFit.cover,
-            ),
-          VideoDescriptionBlock(:final url) => _RoutineVideoThumbnail(url: url),
-          _ => const SizedBox.shrink(),
-        },
-      ),
-    );
-  }
-}
-
-class _RoutineVideoThumbnail extends StatelessWidget {
-  const _RoutineVideoThumbnail({required this.url});
-
-  final String url;
-
-  @override
-  Widget build(BuildContext context) {
-    final videoId = VideoLinkUtils.youtubeVideoId(url);
-    final thumbnailUrl = videoId == null
-        ? null
-        : 'https://img.youtube.com/vi/$videoId/hqdefault.jpg';
-
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        if (thumbnailUrl != null)
-          Image.network(
-            thumbnailUrl,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) => Container(
-              color: Theme.of(context).colorScheme.surfaceContainer,
-            ),
-          )
-        else
-          Container(color: Theme.of(context).colorScheme.surfaceContainer),
-        Container(color: Colors.black.withValues(alpha: 0.22)),
-        Center(
-          child: Icon(
-            Icons.play_circle_fill_rounded,
-            color: Colors.white.withValues(alpha: 0.92),
-            size: 24,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
 class _CatalogCard extends StatelessWidget {
   const _CatalogCard({
     required this.summary,
     required this.l10n,
     required this.isDownloading,
     required this.isDownloaded,
-    required this.thumbnailImageUrl,
+    required this.thumbnail,
     required this.onOpen,
     required this.onDownload,
   });
@@ -917,7 +856,7 @@ class _CatalogCard extends StatelessWidget {
   final AppLocalizations l10n;
   final bool isDownloading;
   final bool isDownloaded;
-  final String? thumbnailImageUrl;
+  final RoutineListThumbnailRef? thumbnail;
   final VoidCallback onOpen;
   final VoidCallback onDownload;
 
@@ -930,8 +869,26 @@ class _CatalogCard extends StatelessWidget {
     final ownerText = summary.ownerName?.trim().isNotEmpty == true
         ? summary.ownerName!
         : null;
-    final resolvedUrl = thumbnailImageUrl?.trim();
-    final hasImage = resolvedUrl != null && resolvedUrl.isNotEmpty;
+    final showThumbSlot = thumbnail != null;
+
+    Widget downloadButton() {
+      return IconButton(
+        onPressed: isDownloading ? null : onDownload,
+        tooltip: l10n.downloadRoutineTooltip,
+        icon: isDownloading
+            ? const SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
+            : Icon(
+                isDownloaded
+                    ? Icons.download_done_outlined
+                    : Icons.download_outlined,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+      );
+    }
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
@@ -941,51 +898,19 @@ class _CatalogCard extends StatelessWidget {
             horizontal: 16,
             vertical: 12,
           ),
-          leading: hasImage
+          leading: showThumbSlot
               ? SizedBox(
                   width: 108,
                   child: Row(
                     children: [
-                      IconButton(
-                        onPressed: isDownloading ? null : onDownload,
-                        tooltip: l10n.downloadRoutineTooltip,
-                        icon: isDownloading
-                            ? const SizedBox(
-                                width: 24,
-                                height: 24,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                ),
-                              )
-                            : Icon(
-                                isDownloaded
-                                    ? Icons.download_done_outlined
-                                    : Icons.download_outlined,
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
-                      ),
+                      downloadButton(),
                       const SizedBox(width: 4),
-                      _CatalogThumbnailSlot(imageUrl: resolvedUrl),
+                      RoutineListThumbnail.fromRef(thumbnail!),
                     ],
                   ),
                 )
-              : IconButton(
-                  onPressed: isDownloading ? null : onDownload,
-                  tooltip: l10n.downloadRoutineTooltip,
-                  icon: isDownloading
-                      ? const SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : Icon(
-                          isDownloaded
-                              ? Icons.download_done_outlined
-                              : Icons.download_outlined,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                ),
-          minLeadingWidth: hasImage ? 108 : 48,
+              : downloadButton(),
+          minLeadingWidth: showThumbSlot ? 108 : 48,
           title: Text(
             summary.title,
             style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
@@ -1003,30 +928,6 @@ class _CatalogCard extends StatelessWidget {
           ),
           trailing: const Icon(Icons.chevron_right),
           onTap: onOpen,
-        ),
-      ),
-    );
-  }
-}
-
-class _CatalogThumbnailSlot extends StatelessWidget {
-  const _CatalogThumbnailSlot({
-    required this.imageUrl,
-  });
-
-  final String imageUrl;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 56,
-      height: 56,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: DescriptionBlockImage(
-          block: ImageDescriptionBlock(url: imageUrl),
-          borderRadius: 10,
-          fit: BoxFit.cover,
         ),
       ),
     );

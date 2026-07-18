@@ -6,10 +6,13 @@ import '../app_auth_provider.dart';
 import '../data/routine_repository.dart';
 import '../features/legal/privacy_processing_consent.dart';
 import '../models/routine.dart';
+import '../services/app_analytics_service.dart';
 import '../services/routine_api_client.dart';
 import '../utils/account_deletion.dart';
 import '../utils/content_language.dart';
 import '../utils/duration_calculator.dart';
+import '../utils/routine_list_thumbnail.dart';
+import '../widgets/routine_list_thumbnail.dart';
 import '../widgets/swipe_reveal_delete.dart';
 import 'routine_editor_screen.dart';
 
@@ -226,6 +229,10 @@ class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
     if (confirmed != true || !mounted) return;
 
     setState(() => _uploading = true);
+    await AppAnalyticsService.logProductEvent(
+      'routine_upload_started',
+      properties: {'action': onServer ? 'update' : 'create'},
+    );
 
     try {
       var serverCopy = widget.repository.copyForServerUpload(
@@ -266,17 +273,34 @@ class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
       final message = result.action == UploadProfileAction.created
           ? l10n.uploadSuccessCreated(routine.title)
           : l10n.uploadSuccessUpdated(routine.title);
+      await AppAnalyticsService.logProductEvent(
+        'routine_upload_succeeded',
+        properties: {
+          'action': result.action == UploadProfileAction.created
+              ? 'created'
+              : 'updated',
+        },
+      );
+      if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(message)),
       );
     } on RoutineApiException catch (error) {
+      await AppAnalyticsService.logProductEvent(
+        'routine_upload_failed',
+        properties: {'reason': 'api'},
+      );
       if (!mounted) return;
       setState(() => _uploading = false);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(error.message)),
       );
     } catch (_) {
+      await AppAnalyticsService.logProductEvent(
+        'routine_upload_failed',
+        properties: {'reason': 'unknown'},
+      );
       if (!mounted) return;
       setState(() => _uploading = false);
       ScaffoldMessenger.of(context).showSnackBar(
@@ -375,6 +399,7 @@ class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
     VoidCallback? onTap,
   }) {
     final duration = routineDurationSec(routine);
+    final thumbnail = pickRoutineListThumbnail(routine);
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: SwipeRevealDelete(
@@ -386,6 +411,13 @@ class _UploadRoutineScreenState extends State<UploadRoutineScreen> {
         child: Card(
           margin: EdgeInsets.zero,
           child: ListTile(
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 12,
+            ),
+            leading: thumbnail == null
+                ? null
+                : RoutineListThumbnail.fromRef(thumbnail),
             title: Text(routine.title),
             subtitle: Text(
               l10n.routineCountDuration(

@@ -154,6 +154,10 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen>
     final routine = _routine;
     if (routine == null) return;
     final l10n = AppLocalizations.of(context);
+    await AppAnalyticsService.logProductEvent(
+      'routine_share_tapped',
+      properties: {'source': 'routine_detail'},
+    );
 
     if (!mounted) return;
     unawaited(
@@ -250,6 +254,10 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen>
 
     final l10n = AppLocalizations.of(context);
     setState(() => _downloading = true);
+    await AppAnalyticsService.logProductEvent(
+      'routine_download_started',
+      properties: {'source': 'catalog_detail'},
+    );
 
     try {
       await widget.repository.forkCatalogProfile(catalogId);
@@ -260,6 +268,10 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen>
       if (!mounted) return;
       setState(() => _downloading = false);
     } catch (_) {
+      await AppAnalyticsService.logProductEvent(
+        'routine_download_failed',
+        properties: {'source': 'catalog_detail'},
+      );
       if (!mounted) return;
       setState(() => _downloading = false);
       ScaffoldMessenger.of(context).showSnackBar(

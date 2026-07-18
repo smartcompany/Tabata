@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:tabata_timer/l10n/app_localizations.dart';
 
@@ -5,6 +7,7 @@ import '../models/routine.dart';
 import '../models/routine_schedule.dart';
 import '../models/schedule_recurrence.dart';
 import '../services/routine_schedule_service.dart';
+import '../services/app_analytics_service.dart';
 import '../utils/routine_schedule_format.dart';
 import 'wheel_date_time_picker.dart';
 
@@ -52,6 +55,7 @@ class _RoutineScheduleSheetBodyState extends State<_RoutineScheduleSheetBody> {
   @override
   void initState() {
     super.initState();
+    unawaited(AppAnalyticsService.logProductEvent('schedule_opened'));
     final now = DateTime.now();
     final existing = widget.existing;
     if (existing != null && existing.isActiveAt(now)) {
@@ -195,6 +199,14 @@ class _RoutineScheduleSheetBodyState extends State<_RoutineScheduleSheetBody> {
       );
       return;
     }
+    await AppAnalyticsService.logProductEvent(
+      widget.existing == null ? 'schedule_created' : 'schedule_updated',
+      properties: {
+        'recurrence': schedule.recurrence.name,
+        'has_end_date': schedule.endDate != null,
+      },
+    );
+    if (!mounted) return;
 
     final messenger = ScaffoldMessenger.of(context);
     final message = scheduleSuccessMessage(schedule, l10n, material);
@@ -206,6 +218,7 @@ class _RoutineScheduleSheetBodyState extends State<_RoutineScheduleSheetBody> {
     if (_saving || widget.existing == null) return;
     setState(() => _saving = true);
     await RoutineScheduleService.shared.cancelForRoutine(widget.routine.id);
+    await AppAnalyticsService.logProductEvent('schedule_cancelled');
     if (!mounted) return;
     setState(() => _saving = false);
     final messenger = ScaffoldMessenger.of(context);

@@ -8,6 +8,7 @@ import '../models/description_block.dart';
 import '../models/exercise.dart';
 import '../models/routine.dart';
 import '../services/routine_api_client.dart';
+import '../services/app_analytics_service.dart';
 import '../utils/content_language.dart';
 import '../utils/duration_calculator.dart';
 import '../utils/form_validation_scroll.dart';
@@ -192,6 +193,17 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
 
     final saved = await _persistDraft();
     if (!saved || !mounted) return;
+    await AppAnalyticsService.logProductEvent(
+      widget.isNew ? 'routine_created' : 'routine_edited',
+      properties: {
+        'exercise_count_bucket': _exercises.length <= 3
+            ? '1_to_3'
+            : _exercises.length <= 6
+                ? '4_to_6'
+                : '7_plus',
+      },
+    );
+    if (!mounted) return;
     Navigator.of(context).pop(_draft);
   }
 
@@ -270,6 +282,17 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
       await widget.repository.delete(widget.routine.id);
     }
 
+    if (!mounted) return;
+    await AppAnalyticsService.logProductEvent(
+      'routine_deleted',
+      properties: {
+        'scope': widget.persistToDashboard
+            ? 'admin_server'
+            : widget.persistToServer
+                ? 'user_server'
+                : 'local',
+      },
+    );
     if (!mounted) return;
     Navigator.of(context).pop();
   }

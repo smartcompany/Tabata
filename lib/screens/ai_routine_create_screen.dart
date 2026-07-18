@@ -6,6 +6,7 @@ import 'package:tabata_timer/l10n/app_localizations.dart';
 
 import '../data/routine_repository.dart';
 import '../models/routine.dart';
+import '../services/app_analytics_service.dart';
 import '../services/ai_routine_service.dart';
 import '../services/routine_api_client.dart';
 import '../utils/content_language.dart';
@@ -41,6 +42,14 @@ class _AiRoutineCreateScreenState extends State<AiRoutineCreateScreen> {
   void initState() {
     super.initState();
     _promptController = TextEditingController(text: widget.initialPrompt ?? '');
+    unawaited(
+      AppAnalyticsService.logProductEvent(
+        'ai_create_opened',
+        properties: {
+          'source': widget.initialPrompt == null ? 'home' : 'onboarding',
+        },
+      ),
+    );
   }
 
   @override
@@ -51,12 +60,17 @@ class _AiRoutineCreateScreenState extends State<AiRoutineCreateScreen> {
 
   Future<void> _showConfiguredAd() async {
     final completer = Completer<void>();
+    await AppAnalyticsService.logProductEvent('ai_ad_requested');
     try {
       await AdService.shared.showAd(
         onAdDismissed: () {
+          unawaited(
+            AppAnalyticsService.logProductEvent('ai_ad_dismissed'),
+          );
           if (!completer.isCompleted) completer.complete();
         },
         onAdFailedToShow: () {
+          unawaited(AppAnalyticsService.logProductEvent('ai_ad_failed'));
           if (!completer.isCompleted) completer.complete();
         },
         onUserEarnedReward: (_) {
@@ -65,6 +79,7 @@ class _AiRoutineCreateScreenState extends State<AiRoutineCreateScreen> {
       );
       await completer.future.timeout(const Duration(seconds: 90));
     } catch (error) {
+      await AppAnalyticsService.logProductEvent('ai_ad_failed');
       // Ad failures must not block routine generation.
       debugPrint('[AiRoutineCreate] AdService.showAd error: $error');
       if (!completer.isCompleted) completer.complete();
@@ -81,6 +96,17 @@ class _AiRoutineCreateScreenState extends State<AiRoutineCreateScreen> {
       );
       return;
     }
+    await AppAnalyticsService.logProductEvent(
+      'ai_prompt_submitted',
+      properties: {
+        'prompt_length_bucket': prompt.length <= 100
+            ? '1_to_100'
+            : prompt.length <= 300
+                ? '101_to_300'
+                : '301_plus',
+        'has_video_url': prompt.contains('youtu'),
+      },
+    );
 
     setState(() => _loadingAd = true);
     try {
@@ -93,6 +119,8 @@ class _AiRoutineCreateScreenState extends State<AiRoutineCreateScreen> {
     if (!mounted) return;
 
     setState(() => _loading = true);
+    await AppAnalyticsService.logProductEvent('ai_generation_started');
+    if (!mounted) return;
     try {
       final contentLanguage = ContentLanguage.current(
         systemLocale: Localizations.localeOf(context),
@@ -100,6 +128,16 @@ class _AiRoutineCreateScreenState extends State<AiRoutineCreateScreen> {
       final routine = await widget.aiRoutineService.generateRoutine(
         prompt: prompt,
         contentLanguage: contentLanguage,
+      );
+      await AppAnalyticsService.logProductEvent(
+        'ai_generation_succeeded',
+        properties: {
+          'exercise_count_bucket': routine.exercises.length <= 3
+              ? '1_to_3'
+              : routine.exercises.length <= 6
+                  ? '4_to_6'
+                  : '7_plus',
+        },
       );
       if (!mounted) return;
       setState(() => _loading = false);
@@ -112,11 +150,17 @@ class _AiRoutineCreateScreenState extends State<AiRoutineCreateScreen> {
           return;
         }
         await widget.repository.upsert(routine);
+        await AppAnalyticsService.logProductEvent(
+          'ai_routine_saved',
+          properties: {'edited_before_save': false},
+        );
         if (!mounted) return;
         Navigator.of(context).pop(routine);
         return;
       }
 
+      await AppAnalyticsService.logProductEvent('ai_editor_opened');
+      if (!mounted) return;
       final saved = await Navigator.of(context).push<Routine>(
         MaterialPageRoute(
           builder: (_) => RoutineEditorScreen(
@@ -128,15 +172,30 @@ class _AiRoutineCreateScreenState extends State<AiRoutineCreateScreen> {
       );
       if (!mounted) return;
       if (saved != null) {
+        await AppAnalyticsService.logProductEvent(
+          'ai_routine_saved',
+          properties: {'edited_before_save': true},
+        );
+        if (!mounted) return;
         Navigator.of(context).pop(saved);
+      } else {
+        await AppAnalyticsService.logProductEvent('ai_routine_abandoned');
       }
     } on RoutineApiException catch (error) {
+      await AppAnalyticsService.logProductEvent(
+        'ai_generation_failed',
+        properties: {'reason': 'api'},
+      );
       if (!mounted) return;
       setState(() => _loading = false);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(error.message)),
       );
     } catch (error) {
+      await AppAnalyticsService.logProductEvent(
+        'ai_generation_failed',
+        properties: {'reason': 'unknown'},
+      );
       if (!mounted) return;
       setState(() => _loading = false);
       ScaffoldMessenger.of(context).showSnackBar(
