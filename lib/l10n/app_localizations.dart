@@ -492,6 +492,12 @@ abstract class AppLocalizations {
   /// **'Create routine after watching ad'**
   String get aiRoutineCreateSubmit;
 
+  /// No description provided for @aiRoutineCreateSubmitNoAd.
+  ///
+  /// In en, this message translates to:
+  /// **'Create routine'**
+  String get aiRoutineCreateSubmitNoAd;
+
   /// No description provided for @aiRoutineCreateLoading.
   ///
   /// In en, this message translates to:
@@ -1893,7 +1899,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingOptionQuickStartSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Pick a recommended routine and jump straight to Start'**
+  /// **'Pick a short routine and the workout starts right away'**
   String get onboardingOptionQuickStartSubtitle;
 
   /// No description provided for @onboardingOptionYoutubeTitle.
@@ -1947,7 +1953,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingRecommendedSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Select routines to add. All are selected by default.'**
+  /// **'Select routines to add. The shortest one is selected by default.'**
   String get onboardingRecommendedSubtitle;
 
   /// No description provided for @onboardingRecommendedSave.
@@ -1977,8 +1983,38 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingStartHint.
   ///
   /// In en, this message translates to:
-  /// **'When you’re ready, tap Start all. Prepare, work, and rest will run in order.'**
+  /// **'Tap Start all below to begin the workout.'**
   String get onboardingStartHint;
+
+  /// No description provided for @homeStartNowTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready for your first workout?'**
+  String get homeStartNowTitle;
+
+  /// No description provided for @homeStartNowSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Finishing one short session shows how the timer helps you.'**
+  String get homeStartNowSubtitle;
+
+  /// No description provided for @homeStartNowButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Start now'**
+  String get homeStartNowButton;
+
+  /// No description provided for @homeEmptyStartRecommended.
+  ///
+  /// In en, this message translates to:
+  /// **'Start with a recommended routine'**
+  String get homeEmptyStartRecommended;
+
+  /// No description provided for @homeEmptyBrowseCatalog.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse shared routines'**
+  String get homeEmptyBrowseCatalog;
 
   /// No description provided for @onboardingGoalTitle.
   ///

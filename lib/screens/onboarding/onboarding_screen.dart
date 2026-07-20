@@ -5,6 +5,7 @@ import '../../data/routine_factory.dart';
 import '../../data/routine_repository.dart';
 import '../../models/routine.dart';
 import '../../services/ai_routine_service.dart';
+import '../../services/onboarding_routine_seeder.dart';
 import '../ai_routine_create_screen.dart';
 import '../routine_editor_screen.dart';
 import 'onboarding_goal_screen.dart';
@@ -15,7 +16,7 @@ typedef OnboardingCompleteCallback = Future<void> Function({
   String? openRoutineId,
 });
 
-class OnboardingScreen extends StatelessWidget {
+class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({
     super.key,
     required this.repository,
@@ -25,67 +26,73 @@ class OnboardingScreen extends StatelessWidget {
   final RoutineRepository repository;
   final OnboardingCompleteCallback onComplete;
 
-  Future<void> _finish(
-    BuildContext context, {
+  @override
+  State<OnboardingScreen> createState() => _OnboardingScreenState();
+}
+
+class _OnboardingScreenState extends State<OnboardingScreen> {
+  bool _skipping = false;
+
+  Future<void> _finish({
     required String path,
     String? openRoutineId,
   }) async {
-    await onComplete(path: path, openRoutineId: openRoutineId);
+    await widget.onComplete(path: path, openRoutineId: openRoutineId);
   }
 
-  Future<void> _openQuickStart(BuildContext context) async {
+  Future<void> _openQuickStart() async {
     final openRoutineId = await Navigator.of(context).push<String>(
       MaterialPageRoute(
         builder: (routeContext) => OnboardingRecommendedRoutinesScreen(
-          repository: repository,
+          repository: widget.repository,
           onComplete: (routineId) async {
             Navigator.of(routeContext).pop(routineId);
           },
         ),
       ),
     );
-    if (openRoutineId != null && context.mounted) {
-      await onComplete(path: 'quick_start', openRoutineId: openRoutineId);
+    if (openRoutineId != null && mounted) {
+      await _finish(path: 'quick_start', openRoutineId: openRoutineId);
     }
   }
 
-  Future<void> _openYoutubeAi(BuildContext context) async {
+  Future<void> _openYoutubeAi() async {
     final saved = await Navigator.of(context).push<Routine>(
       MaterialPageRoute(
         builder: (_) => AiRoutineCreateScreen(
-          repository: repository,
+          repository: widget.repository,
           aiRoutineService: AiRoutineService(),
           autoSaveWithoutEditor: true,
         ),
       ),
     );
-    if (!context.mounted || saved == null) return;
-    await _finish(context, path: 'youtube_ai', openRoutineId: saved.id);
+    if (!mounted || saved == null) return;
+    await _finish(path: 'youtube_ai', openRoutineId: saved.id);
   }
 
-  Future<void> _openGoalFlow(BuildContext context) async {
+  Future<void> _openGoalFlow() async {
     final prompt = await Navigator.of(context).push<String>(
       MaterialPageRoute(
         builder: (_) => const OnboardingGoalScreen(),
       ),
     );
-    if (!context.mounted || prompt == null) return;
+    if (!mounted || prompt == null) return;
 
     final saved = await Navigator.of(context).push<Routine>(
       MaterialPageRoute(
         builder: (_) => AiRoutineCreateScreen(
-          repository: repository,
+          repository: widget.repository,
           aiRoutineService: AiRoutineService(),
           initialPrompt: prompt,
           autoSaveWithoutEditor: true,
         ),
       ),
     );
-    if (!context.mounted || saved == null) return;
-    await _finish(context, path: 'goal_ai', openRoutineId: saved.id);
+    if (!mounted || saved == null) return;
+    await _finish(path: 'goal_ai', openRoutineId: saved.id);
   }
 
-  Future<void> _openCreateRoutine(BuildContext context) async {
+  Future<void> _openCreateRoutine() async {
     final l10n = AppLocalizations.of(context);
     final routine = createEmptyRoutine().copyWith(
       title: l10n.defaultRoutineName,
@@ -93,14 +100,25 @@ class OnboardingScreen extends StatelessWidget {
     final saved = await Navigator.of(context).push<Routine>(
       MaterialPageRoute(
         builder: (_) => RoutineEditorScreen(
-          repository: repository,
+          repository: widget.repository,
           routine: routine,
           isNew: true,
         ),
       ),
     );
-    if (!context.mounted || saved == null) return;
-    await _finish(context, path: 'create', openRoutineId: saved.id);
+    if (!mounted || saved == null) return;
+    await _finish(path: 'create', openRoutineId: saved.id);
+  }
+
+  Future<void> _skipWithSeededRoutine() async {
+    if (_skipping) return;
+    setState(() => _skipping = true);
+    final openRoutineId = await OnboardingRoutineSeeder.seedFirstRecommended(
+      widget.repository,
+    );
+    if (!mounted) return;
+    setState(() => _skipping = false);
+    await _finish(path: 'skip', openRoutineId: openRoutineId);
   }
 
   @override
@@ -131,32 +149,38 @@ class OnboardingScreen extends StatelessWidget {
               icon: Icons.directions_run_outlined,
               title: l10n.onboardingOptionQuickStartTitle,
               subtitle: l10n.onboardingOptionQuickStartSubtitle,
-              onTap: () => _openQuickStart(context),
+              onTap: _skipping ? null : _openQuickStart,
             ),
             _OnboardingOptionCard(
               icon: Icons.play_circle_outline,
               title: l10n.onboardingOptionYoutubeTitle,
               subtitle: l10n.onboardingOptionYoutubeSubtitle,
-              onTap: () => _openYoutubeAi(context),
+              onTap: _skipping ? null : _openYoutubeAi,
             ),
             _OnboardingOptionCard(
               icon: Icons.track_changes_outlined,
               title: l10n.onboardingOptionGoalTitle,
               subtitle: l10n.onboardingOptionGoalSubtitle,
-              onTap: () => _openGoalFlow(context),
+              onTap: _skipping ? null : _openGoalFlow,
             ),
             _OnboardingOptionCard(
               icon: Icons.edit_outlined,
               title: l10n.onboardingOptionCreateTitle,
               subtitle: l10n.onboardingOptionCreateSubtitle,
-              onTap: () => _openCreateRoutine(context),
+              onTap: _skipping ? null : _openCreateRoutine,
             ),
             const SizedBox(height: 16),
             Center(
-              child: TextButton(
-                onPressed: () => _finish(context, path: 'skip'),
-                child: Text(l10n.onboardingSkip),
-              ),
+              child: _skipping
+                  ? const SizedBox(
+                      width: 22,
+                      height: 22,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : TextButton(
+                      onPressed: _skipWithSeededRoutine,
+                      child: Text(l10n.onboardingSkip),
+                    ),
             ),
           ],
         ),
@@ -176,7 +200,7 @@ class _OnboardingOptionCard extends StatelessWidget {
   final IconData icon;
   final String title;
   final String subtitle;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {

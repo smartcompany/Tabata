@@ -112,6 +112,7 @@ class _AppShellState extends State<AppShell> {
       workoutLaunchCoordinator: widget.workoutLaunchCoordinator,
       onShowOnboardingAgain: showOnboardingAgain,
       initialOpenRoutineId: _initialOpenRoutineId,
+      autoStartWorkout: _initialOpenRoutineId != null,
     );
   }
 }

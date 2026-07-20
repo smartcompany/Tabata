@@ -36,11 +36,7 @@ class ProductAnalyticsTransport {
 
   Future<void> initialize() async {
     _preferences = await SharedPreferences.getInstance();
-    _installId = _preferences!.getString(_installIdKey);
-    if (_installId == null || _installId!.isEmpty) {
-      _installId = _uuid.v4();
-      await _preferences!.setString(_installIdKey, _installId!);
-    }
+    await ensureInstallId();
 
     if (!isEnabled) return;
     if (!(_preferences!.getBool(_firstOpenSentKey) ?? false)) {
@@ -51,6 +47,20 @@ class ProductAnalyticsTransport {
   }
 
   bool get isEnabled => _preferences?.getBool(_enabledKey) ?? true;
+
+  /// Stable pseudonymous install id (SharedPreferences). Used by analytics
+  /// and server entitlements when the user is not logged in.
+  Future<String> ensureInstallId() async {
+    final prefs = _preferences ?? await SharedPreferences.getInstance();
+    _preferences = prefs;
+    var id = _installId ?? prefs.getString(_installIdKey);
+    if (id == null || id.isEmpty) {
+      id = _uuid.v4();
+      await prefs.setString(_installIdKey, id);
+    }
+    _installId = id;
+    return id;
+  }
 
   Future<void> setEnabled(bool enabled) async {
     final prefs = _preferences ?? await SharedPreferences.getInstance();

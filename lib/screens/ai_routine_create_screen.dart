@@ -8,6 +8,7 @@ import '../data/routine_repository.dart';
 import '../models/routine.dart';
 import '../services/app_analytics_service.dart';
 import '../services/ai_routine_service.dart';
+import '../services/onboarding_ad_waiver_service.dart';
 import '../services/routine_api_client.dart';
 import '../utils/content_language.dart';
 import '../widgets/ai_routine_generating_overlay.dart';
@@ -37,19 +38,36 @@ class _AiRoutineCreateScreenState extends State<AiRoutineCreateScreen> {
   late final TextEditingController _promptController;
   bool _loading = false;
   bool _loadingAd = false;
+  /// First-time onboarding only — replay from settings still requires an ad.
+  bool _waiveAd = false;
+  bool _adPolicyReady = false;
 
   @override
   void initState() {
     super.initState();
     _promptController = TextEditingController(text: widget.initialPrompt ?? '');
+    if (!widget.autoSaveWithoutEditor) {
+      _adPolicyReady = true;
+    } else {
+      unawaited(_resolveAdWaiver());
+    }
     unawaited(
       AppAnalyticsService.logProductEvent(
         'ai_create_opened',
         properties: {
-          'source': widget.initialPrompt == null ? 'home' : 'onboarding',
+          'source': widget.autoSaveWithoutEditor ? 'onboarding' : 'home',
         },
       ),
     );
+  }
+
+  Future<void> _resolveAdWaiver() async {
+    final eligible = await OnboardingAdWaiverService.isEligible();
+    if (!mounted) return;
+    setState(() {
+      _waiveAd = eligible;
+      _adPolicyReady = true;
+    });
   }
 
   @override
@@ -87,7 +105,7 @@ class _AiRoutineCreateScreenState extends State<AiRoutineCreateScreen> {
   }
 
   Future<void> _submit() async {
-    if (_loading) return;
+    if (_loading || !_adPolicyReady) return;
     final l10n = AppLocalizations.of(context);
     final prompt = _promptController.text.trim();
     if (prompt.isEmpty) {
@@ -110,7 +128,11 @@ class _AiRoutineCreateScreenState extends State<AiRoutineCreateScreen> {
 
     setState(() => _loadingAd = true);
     try {
-      await _showConfiguredAd();
+      // First-time onboarding only. Replaying onboarding from settings still
+      // requires an ad so users cannot bypass forever.
+      if (!_waiveAd) {
+        await _showConfiguredAd();
+      }
     } finally {
       if (mounted) {
         setState(() => _loadingAd = false);
@@ -118,6 +140,7 @@ class _AiRoutineCreateScreenState extends State<AiRoutineCreateScreen> {
     }
     if (!mounted) return;
 
+    final waivedAd = _waiveAd;
     setState(() => _loading = true);
     await AppAnalyticsService.logProductEvent('ai_generation_started');
     if (!mounted) return;
@@ -141,6 +164,10 @@ class _AiRoutineCreateScreenState extends State<AiRoutineCreateScreen> {
       );
       if (!mounted) return;
       setState(() => _loading = false);
+
+      if (waivedAd) {
+        await OnboardingAdWaiverService.recordUsed();
+      }
 
       if (widget.autoSaveWithoutEditor) {
         if (routine.exercises.isEmpty) {
@@ -252,8 +279,13 @@ class _AiRoutineCreateScreenState extends State<AiRoutineCreateScreen> {
               ),
               const SizedBox(height: 20),
               FilledButton(
-                onPressed: (_loading || _loadingAd) ? null : _submit,
-                child: Text(l10n.aiRoutineCreateSubmit),
+                onPressed:
+                    (_loading || _loadingAd || !_adPolicyReady) ? null : _submit,
+                child: Text(
+                  _waiveAd
+                      ? l10n.aiRoutineCreateSubmitNoAd
+                      : l10n.aiRoutineCreateSubmit,
+                ),
               ),
             ],
           ),

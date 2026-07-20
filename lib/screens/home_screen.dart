@@ -28,7 +28,9 @@ import 'routine_detail_screen.dart';
 import 'routine_editor_screen.dart';
 import 'upload_routine_screen.dart';
 import 'workout_history_screen.dart';
+import 'workout_screen.dart';
 import 'app_settings_screen.dart';
+import '../services/onboarding_routine_seeder.dart';
 import '../widgets/home_app_bar_title.dart';
 import '../widgets/routine_share_sheet.dart';
 import '../widgets/swipe_reveal_delete.dart';
@@ -45,6 +47,7 @@ class HomeScreen extends StatefulWidget {
     required this.workoutLaunchCoordinator,
     this.onShowOnboardingAgain,
     this.initialOpenRoutineId,
+    this.autoStartWorkout = false,
   });
 
   final RoutineRepository repository;
@@ -57,6 +60,8 @@ class HomeScreen extends StatefulWidget {
   final Future<void> Function()? onShowOnboardingAgain;
   /// When set (e.g. after onboarding), open this local routine once.
   final String? initialOpenRoutineId;
+  /// After onboarding, open the workout timer directly instead of detail.
+  final bool autoStartWorkout;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -81,6 +86,7 @@ class _HomeScreenState extends State<HomeScreen>
   DateTime? _lastTitleTapAt;
   final _shareService = RoutineShareService();
   bool _didOpenInitialRoutine = false;
+  bool _seedingRecommended = false;
 
   @override
   void initState() {
@@ -105,9 +111,52 @@ class _HomeScreenState extends State<HomeScreen>
   Future<void> _openInitialRoutineIfNeeded() async {
     final routineId = widget.initialOpenRoutineId;
     if (_didOpenInitialRoutine || routineId == null) return;
-    if (widget.repository.findById(routineId) == null) return;
+    final routine = widget.repository.findById(routineId);
+    if (routine == null) return;
     _didOpenInitialRoutine = true;
+    if (widget.autoStartWorkout) {
+      await _openWorkout(routine);
+      return;
+    }
     await _openLocalRoutine(routineId, showStartHint: true);
+  }
+
+  Future<void> _openWorkout(Routine routine) async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => WorkoutScreen(
+          routine: routine,
+          completionRecorder: widget.workoutCompletionRecorder,
+        ),
+        fullscreenDialog: true,
+      ),
+    );
+    if (!mounted) return;
+    setState(() {});
+  }
+
+  Future<void> _startFirstRoutineWorkout() async {
+    final routines = widget.repository.myRoutines;
+    if (routines.isEmpty) return;
+    await _openWorkout(routines.first);
+  }
+
+  Future<void> _seedRecommendedAndStart() async {
+    if (_seedingRecommended) return;
+    setState(() => _seedingRecommended = true);
+    final routineId = await OnboardingRoutineSeeder.seedFirstRecommended(
+      widget.repository,
+      analyticsSource: 'home_empty',
+    );
+    if (!mounted) return;
+    setState(() => _seedingRecommended = false);
+    if (routineId == null) {
+      _tabController.animateTo(1);
+      return;
+    }
+    final routine = widget.repository.findById(routineId);
+    if (routine == null) return;
+    await _openWorkout(routine);
   }
 
   @override
@@ -475,15 +524,81 @@ class _HomeScreenState extends State<HomeScreen>
 
   Widget _buildMyRoutinesTab(AppLocalizations l10n) {
     final routines = widget.repository.myRoutines;
+    final hasCompletedWorkout =
+        widget.workoutHistoryRepository.allRecords.isNotEmpty;
+    final showStartBanner = routines.isNotEmpty && !hasCompletedWorkout;
 
     return ListView(
       physics: const AlwaysScrollableScrollPhysics(),
       padding: EdgeInsets.fromLTRB(16, 12, 16, _listBottomPadding),
       children: [
+        if (showStartBanner) ...[
+          Card(
+            color: Theme.of(context).colorScheme.primaryContainer,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    l10n.homeStartNowTitle,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    l10n.homeStartNowSubtitle,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onPrimaryContainer
+                          .withValues(alpha: 0.85),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  FilledButton.icon(
+                    onPressed: _startFirstRoutineWorkout,
+                    icon: const Icon(Icons.play_arrow),
+                    label: Text(l10n.homeStartNowButton),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+        ],
         if (routines.isEmpty)
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 48),
-            child: Center(child: Text(l10n.noMyRoutines)),
+            padding: const EdgeInsets.symmetric(vertical: 32),
+            child: Column(
+              children: [
+                Text(
+                  l10n.noMyRoutines,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                const SizedBox(height: 20),
+                FilledButton.icon(
+                  onPressed:
+                      _seedingRecommended ? null : _seedRecommendedAndStart,
+                  icon: _seedingRecommended
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.play_arrow),
+                  label: Text(l10n.homeEmptyStartRecommended),
+                ),
+                const SizedBox(height: 8),
+                TextButton(
+                  onPressed: () => _tabController.animateTo(1),
+                  child: Text(l10n.homeEmptyBrowseCatalog),
+                ),
+              ],
+            ),
           )
         else
           ReorderableListView.builder(

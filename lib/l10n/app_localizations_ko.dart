@@ -224,6 +224,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get aiRoutineCreateSubmit => '광고 보고 루틴 생성하기';
 
   @override
+  String get aiRoutineCreateSubmitNoAd => '루틴 생성하기';
+
+  @override
   String get aiRoutineCreateLoading => 'AI가 루틴을 만들고 있어요...';
 
   @override
@@ -1001,7 +1004,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get onboardingOptionQuickStartTitle => '바로 운동 시작';
 
   @override
-  String get onboardingOptionQuickStartSubtitle => '추천 루틴을 고르면 바로 시작 화면으로 이동해요';
+  String get onboardingOptionQuickStartSubtitle => '짧은 추천 루틴을 고르면 바로 운동이 시작돼요';
 
   @override
   String get onboardingOptionYoutubeTitle => '유튜브·운동 따라하기';
@@ -1028,7 +1031,8 @@ class AppLocalizationsKo extends AppLocalizations {
   String get onboardingRecommendedTitle => '추천 루틴';
 
   @override
-  String get onboardingRecommendedSubtitle => '추가할 루틴을 선택하세요. 모두 기본 선택되어 있어요.';
+  String get onboardingRecommendedSubtitle =>
+      '추가할 루틴을 선택하세요. 가장 짧은 루틴이 기본 선택되어 있어요.';
 
   @override
   String get onboardingRecommendedSave => '추가하고 시작하기';
@@ -1044,8 +1048,22 @@ class AppLocalizationsKo extends AppLocalizations {
   String get onboardingRecommendedLoadError => '추천 루틴 목록을 불러오지 못했습니다.';
 
   @override
-  String get onboardingStartHint =>
-      '준비가 되면 「전체 시작」을 눌러 주세요. 준비·운동·휴식이 순서대로 진행됩니다.';
+  String get onboardingStartHint => '아래 「전체 시작」을 누르면 바로 운동이 시작됩니다.';
+
+  @override
+  String get homeStartNowTitle => '지금 바로 운동해 볼까요?';
+
+  @override
+  String get homeStartNowSubtitle => '첫 운동을 끝까지 해보면 앱이 어떻게 도움이 되는지 바로 느껴져요.';
+
+  @override
+  String get homeStartNowButton => '지금 시작';
+
+  @override
+  String get homeEmptyStartRecommended => '추천 루틴으로 시작';
+
+  @override
+  String get homeEmptyBrowseCatalog => '공유 루틴 둘러보기';
 
   @override
   String get onboardingGoalTitle => '맞춤 루틴';

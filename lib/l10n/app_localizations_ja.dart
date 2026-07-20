@@ -224,6 +224,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get aiRoutineCreateSubmit => '広告視聴後にルーティン生成';
 
   @override
+  String get aiRoutineCreateSubmitNoAd => 'ルーティンを生成';
+
+  @override
   String get aiRoutineCreateLoading => 'AIがルーティンを作成しています...';
 
   @override
@@ -996,7 +999,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get onboardingOptionQuickStartTitle => 'すぐに運動を始める';
 
   @override
-  String get onboardingOptionQuickStartSubtitle => 'おすすめルーティンを選ぶと開始画面へ移動します';
+  String get onboardingOptionQuickStartSubtitle => '短いおすすめを選ぶとすぐに運動が始まります';
 
   @override
   String get onboardingOptionYoutubeTitle => 'YouTube・動画の運動に合わせる';
@@ -1024,7 +1027,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get onboardingRecommendedSubtitle =>
-      '追加するルーティンを選んでください。初期状態ですべて選択されています。';
+      '追加するルーティンを選んでください。いちばん短いものが初期選択されています。';
 
   @override
   String get onboardingRecommendedSave => '追加して開始';
@@ -1040,7 +1043,22 @@ class AppLocalizationsJa extends AppLocalizations {
   String get onboardingRecommendedLoadError => 'おすすめルーティンを読み込めませんでした。';
 
   @override
-  String get onboardingStartHint => '準備ができたら「すべて開始」を押してください。準備・運動・休憩が順番に進みます。';
+  String get onboardingStartHint => '下の「すべて開始」を押すと運動が始まります。';
+
+  @override
+  String get homeStartNowTitle => '今すぐ運動してみますか？';
+
+  @override
+  String get homeStartNowSubtitle => '最初の1回を最後まで行うと、アプリの使い方がすぐわかります。';
+
+  @override
+  String get homeStartNowButton => '今すぐ開始';
+
+  @override
+  String get homeEmptyStartRecommended => 'おすすめルーティンで開始';
+
+  @override
+  String get homeEmptyBrowseCatalog => '共有ルーティンを見る';
 
   @override
   String get onboardingGoalTitle => 'カスタムルーティン';

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:share_lib/share_lib_auth.dart';
@@ -9,6 +11,7 @@ import '../features/legal/privacy_processing_consent.dart';
 import '../models/user.dart';
 import '../screens/profile_setup_screen.dart';
 import '../services/app_analytics_service.dart';
+import '../services/onboarding_ad_waiver_service.dart';
 
 class AuthHelper {
   static Future<bool> requireAuth(BuildContext context) async {
@@ -35,6 +38,7 @@ class AuthHelper {
         return false;
       }
       await AppAnalyticsService.logProductEvent('login_succeeded');
+      unawaited(OnboardingAdWaiverService.linkInstallToUser());
     }
 
     if (!context.mounted) return false;

@@ -52,8 +52,17 @@ class _OnboardingRecommendedRoutinesScreenState
       }
 
       final ids = await AppSettingsService.onboardingRecommendedRoutineIds();
+      const preferredIds = [
+        'first-try',
+        'tabata-basic',
+        'upper-body-warmup',
+      ];
+      final orderedIds = <String>{
+        ...preferredIds,
+        ...ids,
+      }.toList();
       final summaries = <ProfileSummary>[];
-      for (final id in ids) {
+      for (final id in orderedIds) {
         final summary = widget.repository.catalogSummaryFor(id);
         if (summary != null) {
           summaries.add(summary);
@@ -66,7 +75,9 @@ class _OnboardingRecommendedRoutinesScreenState
         _summaries = summaries;
         _selectedIds
           ..clear()
-          ..addAll(summaries.map((summary) => summary.id));
+          // Default to the shortest first routine so new users aren't
+          // overwhelmed with a long multi-routine download.
+          ..addAll(summaries.take(1).map((summary) => summary.id));
         if (summaries.isEmpty) {
           _error = AppLocalizations.of(context).onboardingRecommendedLoadError;
         }

@@ -222,6 +222,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aiRoutineCreateSubmit => '观看广告后生成训练';
 
   @override
+  String get aiRoutineCreateSubmitNoAd => '生成训练';
+
+  @override
   String get aiRoutineCreateLoading => 'AI 正在创建训练...';
 
   @override
@@ -986,7 +989,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get onboardingOptionQuickStartTitle => '马上开始运动';
 
   @override
-  String get onboardingOptionQuickStartSubtitle => '选择推荐训练后直接进入开始界面';
+  String get onboardingOptionQuickStartSubtitle => '选择短推荐训练后会立即开始运动';
 
   @override
   String get onboardingOptionYoutubeTitle => '跟着 YouTube/运动做';
@@ -1013,7 +1016,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get onboardingRecommendedTitle => '推荐训练';
 
   @override
-  String get onboardingRecommendedSubtitle => '选择要添加的训练，默认全选。';
+  String get onboardingRecommendedSubtitle => '选择要添加的训练，默认选中最短的一项。';
 
   @override
   String get onboardingRecommendedSave => '添加并开始';
@@ -1028,7 +1031,22 @@ class AppLocalizationsZh extends AppLocalizations {
   String get onboardingRecommendedLoadError => '无法加载推荐训练列表。';
 
   @override
-  String get onboardingStartHint => '准备好后请点「全部开始」。准备、运动、休息会按顺序进行。';
+  String get onboardingStartHint => '点击下方「全部开始」即可开始运动。';
+
+  @override
+  String get homeStartNowTitle => '现在就开始运动吗？';
+
+  @override
+  String get homeStartNowSubtitle => '完成第一次短训练，就能立刻感受到计时器的帮助。';
+
+  @override
+  String get homeStartNowButton => '立即开始';
+
+  @override
+  String get homeEmptyStartRecommended => '用推荐训练开始';
+
+  @override
+  String get homeEmptyBrowseCatalog => '浏览共享训练';
 
   @override
   String get onboardingGoalTitle => '定制训练';
