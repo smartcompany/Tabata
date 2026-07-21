@@ -87,6 +87,7 @@ class WorkoutTimerEngine extends ChangeNotifier {
   bool _isPaused = false;
   bool _announceHold = false;
   Timer? _timer;
+  DateTime? _wallClockAnchor;
   late WorkoutTimerSnapshot _snapshot;
 
   WorkoutTimerSnapshot get snapshot => _snapshot;
@@ -124,18 +125,33 @@ class WorkoutTimerEngine extends ChangeNotifier {
   void start() {
     if (_snapshot.isCompleted || _isPaused || _announceHold) return;
     _timer?.cancel();
-    _timer = Timer.periodic(const Duration(seconds: 1), (_) => _tick());
+    _wallClockAnchor ??= DateTime.now();
+    _timer = Timer.periodic(const Duration(milliseconds: 250), (_) {
+      _tickOnWallClock();
+    });
+  }
+
+  void _tickOnWallClock() {
+    if (_snapshot.isCompleted || _isPaused || _announceHold) return;
+    final anchor = _wallClockAnchor;
+    if (anchor == null) return;
+    final now = DateTime.now();
+    if (now.difference(anchor).inMilliseconds < 900) return;
+    _wallClockAnchor = now;
+    _tick();
   }
 
   /// Freezes the countdown while intro speech plays (exercise name, phase, rep).
   void holdForAnnounce() {
     _announceHold = true;
     _timer?.cancel();
+    _wallClockAnchor = null;
   }
 
   void releaseAnnounceHold() {
     if (!_announceHold) return;
     _announceHold = false;
+    _wallClockAnchor = DateTime.now();
     start();
   }
 
@@ -143,12 +159,14 @@ class WorkoutTimerEngine extends ChangeNotifier {
     _isPaused = true;
     _announceHold = false;
     _timer?.cancel();
+    _wallClockAnchor = null;
     _refreshSnapshot();
   }
 
   void resume() {
     if (_snapshot.isCompleted) return;
     _isPaused = false;
+    _wallClockAnchor = DateTime.now();
     start();
   }
 

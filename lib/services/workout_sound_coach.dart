@@ -17,6 +17,11 @@ class WorkoutSoundCoach {
 
   bool countSecondsWithTts = true;
 
+  /// When true, keeps a silent clock loop in the background so iOS grants
+  /// audio background execution between TTS cues.
+  bool backgroundKeepAlive = false;
+  bool inBackground = false;
+
   final AudioPlayer _clockPlayer = AudioPlayer();
   final AudioPlayer _tickPlayer = AudioPlayer();
   final AudioPlayer _eventPlayer = AudioPlayer();
@@ -24,6 +29,7 @@ class WorkoutSoundCoach {
   bool _initialized = false;
   bool _clockSourceReady = false;
   bool _clockPlaying = false;
+  bool _clockSilent = false;
   bool _tickReady = false;
   bool _disposed = false;
 
@@ -99,15 +105,28 @@ class WorkoutSoundCoach {
     if (!_initialized) await init();
     if (_disposed) return;
 
-    final shouldPlay = shouldPlayClockLoop(
+    final shouldPlayAudible = shouldPlayClockLoop(
       current,
       blockForIntro: blockForIntro,
     );
-    if (shouldPlay) {
-      await _startClockLoop();
+    final shouldPlaySilent = !shouldPlayAudible &&
+        _shouldPlaySilentKeepAlive(current, blockForIntro: blockForIntro);
+    if (shouldPlayAudible || shouldPlaySilent) {
+      await _startClockLoop(silent: shouldPlaySilent);
     } else if (_clockPlaying) {
       await _stopClockLoop();
     }
+  }
+
+  bool _shouldPlaySilentKeepAlive(
+    WorkoutTimerSnapshot current, {
+    bool blockForIntro = false,
+  }) {
+    if (!backgroundKeepAlive || !inBackground) return false;
+    if (blockForIntro) return false;
+    if (current.isPaused || current.isCompleted) return false;
+    if (current.phase.kind == WorkoutPhaseKind.completed) return false;
+    return true;
   }
 
   @visibleForTesting
@@ -185,29 +204,39 @@ class WorkoutSoundCoach {
         previous.repIndex == current.repIndex;
   }
 
-  Future<void> _startClockLoop() async {
-    if (_disposed || !_clockSourceReady || _clockPlaying) return;
+  Future<void> _startClockLoop({bool silent = false}) async {
+    if (_disposed || !_clockSourceReady) return;
+    if (_clockPlaying && _clockSilent == silent) return;
+    if (_clockPlaying) {
+      await _stopClockLoop();
+    }
     _clockPlaying = true;
+    _clockSilent = silent;
     try {
+      await _clockPlayer.setVolume(silent ? 0 : tickVolume);
       await _clockPlayer.seek(Duration.zero);
       if (_disposed) {
         _clockPlaying = false;
+        _clockSilent = false;
         await _clockPlayer.stop();
         return;
       }
       await _clockPlayer.resume();
       if (_disposed) {
         _clockPlaying = false;
+        _clockSilent = false;
         await _clockPlayer.stop();
       }
     } catch (error, stackTrace) {
       _clockPlaying = false;
+      _clockSilent = false;
       debugPrint('WorkoutSoundCoach clock loop failed: $error\n$stackTrace');
     }
   }
 
   Future<void> _stopClockLoop() async {
     _clockPlaying = false;
+    _clockSilent = false;
     try {
       await _clockPlayer.stop();
       if (!_disposed) {

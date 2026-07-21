@@ -250,7 +250,10 @@ class _WorkoutScreenState extends State<WorkoutScreen> with WidgetsBindingObserv
   Future<void> _loadWorkoutSettings() async {
     final settings = await WorkoutSettings.load();
     if (!mounted) return;
-    setState(() => _continueInBackground = settings.continueInBackground);
+    setState(() {
+      _continueInBackground = settings.continueInBackground;
+      _soundCoach?.backgroundKeepAlive = settings.continueInBackground;
+    });
   }
 
   @override
@@ -306,19 +309,27 @@ class _WorkoutScreenState extends State<WorkoutScreen> with WidgetsBindingObserv
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
+      _soundCoach?.inBackground = false;
       final engine = _engine;
       if (engine != null && _continueInBackground && !engine.snapshot.isCompleted) {
-        _soundCoach?.syncClock(
-          engine.snapshot,
-          blockForIntro: _shouldBlockClock(engine.snapshot),
-        );
+        unawaited(_refreshBackgroundAudio(engine));
         setState(() {});
       }
       return;
     }
     if (!_isBackgroundLifecycle(state)) return;
 
-    if (_continueInBackground) return;
+    if (_continueInBackground) {
+      final engine = _engine;
+      if (engine == null ||
+          engine.snapshot.isCompleted ||
+          engine.snapshot.isPaused) {
+        return;
+      }
+      _soundCoach?.inBackground = true;
+      unawaited(_refreshBackgroundAudio(engine));
+      return;
+    }
 
     final engine = _engine;
     if (engine == null ||
@@ -338,6 +349,16 @@ class _WorkoutScreenState extends State<WorkoutScreen> with WidgetsBindingObserv
     return state == AppLifecycleState.paused ||
         state == AppLifecycleState.detached ||
         state == AppLifecycleState.hidden;
+  }
+
+  Future<void> _refreshBackgroundAudio(WorkoutTimerEngine engine) async {
+    final coach = _soundCoach;
+    if (coach == null) return;
+    await coach.refreshAudioSession(allowClockRestart: false);
+    await coach.syncClock(
+      engine.snapshot,
+      blockForIntro: _shouldBlockClock(engine.snapshot),
+    );
   }
 
   Future<void> _openEdit() async {
