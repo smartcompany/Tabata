@@ -770,21 +770,11 @@ class AppLocalizationsJa extends AppLocalizations {
   String get workoutSettingsSection => 'ワークアウト';
 
   @override
-  String get countSecondsWithTtsTitle => '秒カウント音声';
+  String get workoutContinueInBackgroundTitle => 'バックグラウンドでも進行';
 
   @override
-  String get countSecondsWithTtsSubtitle =>
-      'カウントモードでのみ毎秒数字を読み上げます。オフの場合はビープ音が鳴ります。';
-
-  @override
-  String get contentSettingsSection => 'コンテンツ';
-
-  @override
-  String get autoTranslateContentTitle => 'コンテンツ自動翻訳';
-
-  @override
-  String get autoTranslateContentSubtitle =>
-      'サーバーから読み込んだルーティンのタイトル・説明・種目名をアプリの言語に自動翻訳して表示します。';
+  String get workoutContinueInBackgroundSubtitle =>
+      'アプリを離れてもタイマーと音声案内は続きます。オフにするとバックグラウンドで一時停止します。';
 
   @override
   String get languageTitle => '言語';
@@ -1020,7 +1010,16 @@ class AppLocalizationsJa extends AppLocalizations {
   String get onboardingOptionCreateSubtitle => '準備・運動・休息を自分で設定';
 
   @override
-  String get onboardingSkip => 'あとで';
+  String get onboardingSkip => '1分だけ試す';
+
+  @override
+  String get onboardingActivationTitle => '最初の運動を始めますか？';
+
+  @override
+  String get onboardingActivationSubtitle => '約1分で終わる短い体験です。すぐに運動が始まります。';
+
+  @override
+  String get onboardingActivationStart => '今すぐ開始';
 
   @override
   String get onboardingRecommendedTitle => 'おすすめルーティン';

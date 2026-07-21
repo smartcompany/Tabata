@@ -1482,35 +1482,17 @@ abstract class AppLocalizations {
   /// **'Workout'**
   String get workoutSettingsSection;
 
-  /// No description provided for @countSecondsWithTtsTitle.
+  /// No description provided for @workoutContinueInBackgroundTitle.
   ///
   /// In en, this message translates to:
-  /// **'Voice second count'**
-  String get countSecondsWithTtsTitle;
+  /// **'Continue in background'**
+  String get workoutContinueInBackgroundTitle;
 
-  /// No description provided for @countSecondsWithTtsSubtitle.
+  /// No description provided for @workoutContinueInBackgroundSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Speaks each second in count mode only. When off, beeps play instead.'**
-  String get countSecondsWithTtsSubtitle;
-
-  /// No description provided for @contentSettingsSection.
-  ///
-  /// In en, this message translates to:
-  /// **'Content'**
-  String get contentSettingsSection;
-
-  /// No description provided for @autoTranslateContentTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Auto-translate content'**
-  String get autoTranslateContentTitle;
-
-  /// No description provided for @autoTranslateContentSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Translate titles, descriptions, and exercise names from the server into your app language.'**
-  String get autoTranslateContentSubtitle;
+  /// **'The timer and voice cues keep running in the background. Turn off to pause when you leave the app.'**
+  String get workoutContinueInBackgroundSubtitle;
 
   /// No description provided for @languageTitle.
   ///
@@ -1941,8 +1923,26 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingSkip.
   ///
   /// In en, this message translates to:
-  /// **'Not now'**
+  /// **'Try a 1-minute workout'**
   String get onboardingSkip;
+
+  /// No description provided for @onboardingActivationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready for your first workout?'**
+  String get onboardingActivationTitle;
+
+  /// No description provided for @onboardingActivationSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A short trial that takes about one minute. Your workout starts right away.'**
+  String get onboardingActivationSubtitle;
+
+  /// No description provided for @onboardingActivationStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start now'**
+  String get onboardingActivationStart;
 
   /// No description provided for @onboardingRecommendedTitle.
   ///

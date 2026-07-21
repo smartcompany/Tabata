@@ -1,6 +1,6 @@
 {
-  "ko": "• 준비 구간에 운동 설명을 음성으로 읽어 줍니다",
-  "en-US": "• Voice reads exercise instructions during the prepare phase",
-  "ja": "• 準備中に種目の説明を音声で読み上げます",
-  "zh-Hans": "• 准备阶段会语音朗读动作说明"
+  "ko": "• 앱이 백그라운드일 때도 운동이 진행됩니다. 필요하면 설정에서 끌 수 있습니다.",
+  "en-US": "• Workouts keep running in the background. Turn it off in Settings if you prefer.",
+  "ja": "• アプリをバックグラウンドにしてもワークアウトが続きます。不要な場合は設定でオフにできます。",
+  "zh-Hans": "• 应用在后台时训练仍会继续。可在设置中关闭。"
 }

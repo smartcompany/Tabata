@@ -784,21 +784,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutSettingsSection => 'Workout';
 
   @override
-  String get countSecondsWithTtsTitle => 'Voice second count';
+  String get workoutContinueInBackgroundTitle => 'Continue in background';
 
   @override
-  String get countSecondsWithTtsSubtitle =>
-      'Speaks each second in count mode only. When off, beeps play instead.';
-
-  @override
-  String get contentSettingsSection => 'Content';
-
-  @override
-  String get autoTranslateContentTitle => 'Auto-translate content';
-
-  @override
-  String get autoTranslateContentSubtitle =>
-      'Translate titles, descriptions, and exercise names from the server into your app language.';
+  String get workoutContinueInBackgroundSubtitle =>
+      'The timer and voice cues keep running in the background. Turn off to pause when you leave the app.';
 
   @override
   String get languageTitle => 'Language';
@@ -1048,7 +1038,17 @@ class AppLocalizationsEn extends AppLocalizations {
       'Set prep, work, and rest intervals yourself';
 
   @override
-  String get onboardingSkip => 'Not now';
+  String get onboardingSkip => 'Try a 1-minute workout';
+
+  @override
+  String get onboardingActivationTitle => 'Ready for your first workout?';
+
+  @override
+  String get onboardingActivationSubtitle =>
+      'A short trial that takes about one minute. Your workout starts right away.';
+
+  @override
+  String get onboardingActivationStart => 'Start now';
 
   @override
   String get onboardingRecommendedTitle => 'Recommended routines';

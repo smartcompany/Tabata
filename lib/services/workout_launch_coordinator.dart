@@ -53,6 +53,7 @@ class WorkoutLaunchCoordinator {
       MaterialPageRoute(
         builder: (_) => WorkoutScreen(
           routine: routine,
+          repository: repository,
           completionRecorder: completionRecorder,
         ),
         fullscreenDialog: true,

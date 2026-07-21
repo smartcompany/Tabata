@@ -173,4 +173,11 @@ abstract final class AppAnalyticsService {
     if (count <= 6) return '4_to_6';
     return '7_plus';
   }
+
+  static String elapsedSecBucket(int seconds) {
+    if (seconds < 30) return 'under_30_sec';
+    if (seconds < 60) return '30_to_60_sec';
+    if (seconds < 180) return '1_to_3_min';
+    return '3_min_plus';
+  }
 }

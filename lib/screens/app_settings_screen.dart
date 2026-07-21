@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:tabata_timer/l10n/app_localizations.dart';
 
 import '../services/app_review_service.dart';
-import '../services/content_settings.dart';
 import '../services/health_workout_recorder.dart';
 import '../services/health_permission_flow.dart';
 import '../services/workout_settings.dart';
@@ -38,10 +37,8 @@ class AppSettingsScreen extends StatefulWidget {
 
 class _AppSettingsScreenState extends State<AppSettingsScreen> {
   WorkoutSettings? _workoutSettings;
-  ContentSettings? _contentSettings;
-  var _countSecondsWithTts = false;
   var _saveToAppleHealth = false;
-  var _autoTranslateContent = false;
+  var _continueInBackground = true;
   var _loading = true;
 
   @override
@@ -52,14 +49,11 @@ class _AppSettingsScreenState extends State<AppSettingsScreen> {
 
   Future<void> _load() async {
     final workoutSettings = await WorkoutSettings.load();
-    final contentSettings = await ContentSettings.load();
     if (!mounted) return;
     setState(() {
       _workoutSettings = workoutSettings;
-      _contentSettings = contentSettings;
-      _countSecondsWithTts = workoutSettings.countSecondsWithTts;
       _saveToAppleHealth = workoutSettings.saveToAppleHealth;
-      _autoTranslateContent = contentSettings.autoTranslateContent;
+      _continueInBackground = workoutSettings.continueInBackground;
       _loading = false;
     });
   }
@@ -111,13 +105,13 @@ class _AppSettingsScreenState extends State<AppSettingsScreen> {
                   ),
                   SwitchListTile(
                     contentPadding: EdgeInsets.zero,
-                    title: Text(l10n.countSecondsWithTtsTitle),
-                    subtitle: Text(l10n.countSecondsWithTtsSubtitle),
-                    value: _countSecondsWithTts,
+                    title: Text(l10n.workoutContinueInBackgroundTitle),
+                    subtitle: Text(l10n.workoutContinueInBackgroundSubtitle),
+                    value: _continueInBackground,
                     onChanged: (value) async {
-                      await _workoutSettings?.setCountSecondsWithTts(value);
+                      await _workoutSettings?.setContinueInBackground(value);
                       if (!mounted) return;
-                      setState(() => _countSecondsWithTts = value);
+                      setState(() => _continueInBackground = value);
                     },
                   ),
                   if (HealthWorkoutRecorder.isSupported)
@@ -155,24 +149,6 @@ class _AppSettingsScreenState extends State<AppSettingsScreen> {
                         setState(() => _saveToAppleHealth = value);
                       },
                     ),
-                  const SizedBox(height: 8),
-                  const Divider(height: 1),
-                  const SizedBox(height: 20),
-                  Text(
-                    l10n.contentSettingsSection,
-                    style: sectionTitleStyle,
-                  ),
-                  SwitchListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(l10n.autoTranslateContentTitle),
-                    subtitle: Text(l10n.autoTranslateContentSubtitle),
-                    value: _autoTranslateContent,
-                    onChanged: (value) async {
-                      await _contentSettings?.setAutoTranslateContent(value);
-                      if (!mounted) return;
-                      setState(() => _autoTranslateContent = value);
-                    },
-                  ),
                   const SizedBox(height: 8),
                   const Divider(height: 1),
                   const SizedBox(height: 20),

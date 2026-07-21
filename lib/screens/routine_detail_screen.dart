@@ -297,12 +297,19 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen>
     );
   }
 
-  Future<void> _openWorkout(Routine routine) async {
+  Future<void> _openWorkout(
+    Routine routine, {
+    WorkoutLaunchScope launchScope = WorkoutLaunchScope.routine,
+    String? singleExerciseId,
+  }) async {
     await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => WorkoutScreen(
           routine: routine,
+          repository: widget.repository,
           completionRecorder: widget.workoutCompletionRecorder,
+          launchScope: launchScope,
+          singleExerciseId: singleExerciseId,
         ),
         fullscreenDialog: true,
       ),
@@ -320,7 +327,11 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen>
     final routine = _routine;
     if (routine == null) return;
     _clearStartHint();
-    await _openWorkout(routine.forSingleExercise(exercise));
+    await _openWorkout(
+      routine.forSingleExercise(exercise),
+      launchScope: WorkoutLaunchScope.singleExercise,
+      singleExerciseId: exercise.id,
+    );
   }
 
   Future<void> _setHealthActivityType(String? healthActivityType) async {

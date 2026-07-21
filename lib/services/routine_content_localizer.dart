@@ -6,26 +6,20 @@ import '../models/exercise_phase.dart';
 import '../models/profile_summary.dart';
 import '../models/routine.dart';
 import '../utils/content_language.dart';
-import 'content_settings.dart';
 import 'content_translation_service.dart';
 
 class RoutineContentLocalizer {
   RoutineContentLocalizer({
-    required ContentSettings contentSettings,
     ContentTranslationService? translationService,
-  })  : _contentSettings = contentSettings,
-        _translationService =
+  }) : _translationService =
             translationService ?? ContentTranslationService();
 
-  final ContentSettings _contentSettings;
   final ContentTranslationService _translationService;
 
   Future<List<ProfileSummary>> localizeSummaries(
     List<ProfileSummary> summaries, {
     Locale? systemLocale,
   }) async {
-    if (!_contentSettings.autoTranslateContent) return summaries;
-
     final target = _targetLanguage(systemLocale);
     final strings = <String>{};
     for (final summary in summaries) {
@@ -59,9 +53,7 @@ class RoutineContentLocalizer {
     List<Routine> routines, {
     Locale? systemLocale,
   }) async {
-    if (!_contentSettings.autoTranslateContent || routines.isEmpty) {
-      return routines;
-    }
+    if (routines.isEmpty) return routines;
 
     final target = _targetLanguage(systemLocale);
     final strings = <String>{};

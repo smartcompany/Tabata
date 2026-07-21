@@ -6,8 +6,11 @@ import 'package:flutter/services.dart';
 import 'package:tabata_timer/l10n/app_localizations.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
+import '../data/routine_repository.dart';
+import '../data/routine_factory.dart';
 import '../engine/workout_timer_engine.dart';
 import '../engine/workout_timer_labels.dart';
+import '../models/exercise.dart';
 import '../models/routine.dart';
 import '../services/app_analytics_service.dart';
 import '../services/workout_announce_gap.dart';
@@ -19,24 +22,33 @@ import '../services/workout_voice_phrases.dart';
 import '../services/workout_voice_planner.dart';
 import '../utils/duration_format.dart';
 import '../utils/duration_calculator.dart';
-import 'app_settings_screen.dart';
+import 'exercise_editor_screen.dart';
+import 'routine_editor_screen.dart';
 import '../widgets/workout_phase_stage.dart';
+
+enum WorkoutLaunchScope { routine, singleExercise }
 
 class WorkoutScreen extends StatefulWidget {
   const WorkoutScreen({
     super.key,
     required this.routine,
+    required this.repository,
     required this.completionRecorder,
+    this.launchScope = WorkoutLaunchScope.routine,
+    this.singleExerciseId,
   });
 
   final Routine routine;
+  final RoutineRepository repository;
   final WorkoutCompletionRecorder completionRecorder;
+  final WorkoutLaunchScope launchScope;
+  final String? singleExerciseId;
 
   @override
   State<WorkoutScreen> createState() => _WorkoutScreenState();
 }
 
-class _WorkoutScreenState extends State<WorkoutScreen> {
+class _WorkoutScreenState extends State<WorkoutScreen> with WidgetsBindingObserver {
   static const _voicePlanner = WorkoutVoicePlanner();
   static const _accent = Color(0xFFE8F55A);
   static const _bg = Color(0xFF0A0A0A);
@@ -49,19 +61,23 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
   WorkoutTimerSnapshot? _previousSnapshot;
   WorkoutTimerSnapshot? _lastSoundSnapshot;
   Future<void>? _announceQueue;
-  bool _countSecondsWithTts = true;
   bool _completionRecorded = false;
   bool _startRecorded = false;
+  late Routine _activeRoutine;
+  var _continueInBackground = true;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _activeRoutine = widget.routine;
+    unawaited(_loadWorkoutSettings());
     WakelockPlus.enable();
     unawaited(
       AppAnalyticsService.logProductEvent(
         'workout_opened',
         properties: {
-          'routine_source': widget.routine.id.startsWith('ai-')
+          'routine_source': _activeRoutine.id.startsWith('ai-')
               ? 'ai'
               : 'other',
         },
@@ -73,25 +89,38 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (_engine != null) return;
+    _engine = _createEngine(_activeRoutine);
+    _engine!.addListener(_onTick);
+    _initVoiceCoach(AppLocalizations.of(context));
+  }
+
+  WorkoutTimerEngine _createEngine(Routine routine) {
     final l10n = AppLocalizations.of(context);
-    _engine = WorkoutTimerEngine(
-      widget.routine,
+    return WorkoutTimerEngine(
+      routine,
       labels: WorkoutTimerLabels(
         prepare: l10n.phasePrepare,
         completedMessage: l10n.workoutCompletedMessage,
       ),
     );
-    _engine!.addListener(_onTick);
-    _initVoiceCoach(l10n);
+  }
+
+  void _reloadEngine(Routine routine) {
+    _engine?.removeListener(_onTick);
+    _engine?.dispose();
+    _previousSnapshot = null;
+    _lastSoundSnapshot = null;
+    _startRecorded = false;
+    _activeRoutine = routine;
+    _engine = _createEngine(routine)..addListener(_onTick);
+    _engine!.holdForAnnounce();
+    _scheduleAnnounce();
+    setState(() {});
   }
 
   Future<void> _initVoiceCoach(AppLocalizations l10n) async {
     if (!mounted) return;
-    final settings = await WorkoutSettings.load();
-    if (!mounted) return;
-    _countSecondsWithTts = settings.countSecondsWithTts;
-    _soundCoach = WorkoutSoundCoach()
-      ..countSecondsWithTts = _countSecondsWithTts;
+    _soundCoach = WorkoutSoundCoach();
     _voiceCoach = WorkoutVoiceCoach(
       phrases: WorkoutVoicePhrases.fromL10n(l10n),
       locale: Localizations.localeOf(context),
@@ -124,7 +153,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
           AppAnalyticsService.logProductEvent(
             'workout_started',
             properties: {
-              'routine_source': widget.routine.id.startsWith('ai-')
+              'routine_source': _activeRoutine.id.startsWith('ai-')
                   ? 'ai'
                   : 'other',
             },
@@ -135,7 +164,6 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
       final introCues = _voicePlanner.plan(
         previous: _previousSnapshot,
         current: current,
-        countSecondsWithTts: _countSecondsWithTts,
       );
       if (_shouldHoldTimerForAnnounce(introCues) && !current.isPaused) {
         engine.holdForAnnounce();
@@ -166,7 +194,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
 
     await widget.completionRecorder.recordCompletedWorkout(
       context: context,
-      routine: widget.routine,
+      routine: _activeRoutine,
       elapsedSec: engine.elapsedSec,
     );
   }
@@ -181,7 +209,6 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
       final introCues = _voicePlanner.plan(
         previous: previous,
         current: capturedCurrent,
-        countSecondsWithTts: _countSecondsWithTts,
       );
       final holdTimer = _shouldHoldTimerForAnnounce(introCues);
       if (holdTimer && !capturedCurrent.isPaused && !engine.isAnnounceHold) {
@@ -193,7 +220,6 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
       await _voiceCoach?.handleSnapshot(
         previous,
         capturedCurrent,
-        countSecondsWithTts: _countSecondsWithTts,
       );
       if (holdTimer) {
         engine.releaseAnnounceHold();
@@ -217,17 +243,23 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     final cues = _voicePlanner.plan(
       previous: _previousSnapshot,
       current: current,
-      countSecondsWithTts: _countSecondsWithTts,
     );
     return WorkoutVoicePlanner.hasBlockingIntroCues(cues);
   }
 
+  Future<void> _loadWorkoutSettings() async {
+    final settings = await WorkoutSettings.load();
+    if (!mounted) return;
+    setState(() => _continueInBackground = settings.continueInBackground);
+  }
+
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     WakelockPlus.disable();
     final elapsed = _engine?.elapsedSec ?? 0;
     if (!_completionRecorded && elapsed > 0) {
-      final planned = routineDurationSec(widget.routine);
+      final planned = routineDurationSec(_activeRoutine);
       final percent = planned <= 0 ? 0 : ((elapsed / planned) * 100).round();
       final progressBucket = percent < 25
           ? 'under_25_percent'
@@ -236,10 +268,19 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
               : percent < 75
                   ? '50_to_75_percent'
                   : '75_percent_plus';
+      final snap = _engine?.snapshot;
+      final phaseKind = snap?.phase.kind.name ?? 'unknown';
       unawaited(
         AppAnalyticsService.logProductEvent(
           'workout_abandoned',
-          properties: {'progress_bucket': progressBucket},
+          properties: {
+            'progress_bucket': progressBucket,
+            'phase_kind': phaseKind,
+            'elapsed_sec_bucket': AppAnalyticsService.elapsedSecBucket(elapsed),
+            'exercise_index': snap?.exerciseIndex ?? 0,
+            'is_first_workout': !widget.completionRecorder.hasCompletedWorkout,
+            'routine_source': _activeRoutine.id.startsWith('ai-') ? 'ai' : 'other',
+          },
         ),
       );
     }
@@ -262,14 +303,97 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     super.dispose();
   }
 
-  Future<void> _openSettings() async {
-    await AppSettingsScreen.open(context);
-    final settings = await WorkoutSettings.load();
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      final engine = _engine;
+      if (engine != null && _continueInBackground && !engine.snapshot.isCompleted) {
+        _soundCoach?.syncClock(
+          engine.snapshot,
+          blockForIntro: _shouldBlockClock(engine.snapshot),
+        );
+        setState(() {});
+      }
+      return;
+    }
+    if (!_isBackgroundLifecycle(state)) return;
+
+    if (_continueInBackground) return;
+
+    final engine = _engine;
+    if (engine == null ||
+        engine.snapshot.isCompleted ||
+        engine.snapshot.isPaused) {
+      return;
+    }
+    engine.pause();
+    _soundCoach?.syncClock(
+      engine.snapshot,
+      blockForIntro: _shouldBlockClock(engine.snapshot),
+    );
+    setState(() {});
+  }
+
+  bool _isBackgroundLifecycle(AppLifecycleState state) {
+    return state == AppLifecycleState.paused ||
+        state == AppLifecycleState.detached ||
+        state == AppLifecycleState.hidden;
+  }
+
+  Future<void> _openEdit() async {
+    final engine = _engine;
+    if (engine == null) return;
+
+    final stored = widget.repository.findById(_activeRoutine.id);
+    if (stored == null) return;
+
+    engine.pause();
     if (!mounted) return;
-    setState(() {
-      _countSecondsWithTts = settings.countSecondsWithTts;
-      _soundCoach?.countSecondsWithTts = _countSecondsWithTts;
-    });
+
+    if (widget.launchScope == WorkoutLaunchScope.singleExercise) {
+      final exerciseId = widget.singleExerciseId;
+      if (exerciseId == null) return;
+
+      final exercises = stored.orderedExercises;
+      final index = exercises.indexWhere((item) => item.id == exerciseId);
+      if (index < 0) return;
+
+      final updated = await Navigator.of(context).push<Exercise>(
+        MaterialPageRoute(
+          builder: (_) => ExerciseEditorScreen(exercise: exercises[index]),
+        ),
+      );
+      if (updated == null || !mounted) return;
+
+      final nextExercises = List<Exercise>.from(exercises);
+      nextExercises[index] = updated;
+      final saved = stored.copyWith(
+        exercises: reindexExercises(nextExercises),
+      );
+      await widget.repository.upsert(saved);
+      if (!mounted) return;
+      if (widget.repository.findById(saved.id) == null) {
+        Navigator.of(context).pop();
+        return;
+      }
+      _reloadEngine(saved.forSingleExercise(updated));
+      return;
+    }
+
+    final updated = await Navigator.of(context).push<Routine>(
+      MaterialPageRoute(
+        builder: (_) => RoutineEditorScreen(
+          repository: widget.repository,
+          routine: stored,
+        ),
+      ),
+    );
+    if (updated == null || !mounted) return;
+    if (widget.repository.findById(updated.id) == null) {
+      Navigator.of(context).pop();
+      return;
+    }
+    _reloadEngine(updated);
   }
 
   void _togglePause() {
@@ -373,12 +497,15 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                           ),
                         ),
                       ),
-                      if (!snap.isCompleted)
+                      if (!snap.isCompleted && widget.repository.findById(_activeRoutine.id) != null)
                         IconButton(
-                          onPressed: _openSettings,
-                          tooltip: l10n.settingsTitle,
+                          onPressed: _openEdit,
+                          tooltip: widget.launchScope ==
+                                  WorkoutLaunchScope.singleExercise
+                              ? l10n.editExerciseTitle
+                              : l10n.editRoutineTitle,
                           icon: Icon(
-                            Icons.settings_outlined,
+                            Icons.edit_outlined,
                             color: Colors.white.withValues(alpha: 0.45),
                           ),
                         )

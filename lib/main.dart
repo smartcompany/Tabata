@@ -19,7 +19,6 @@ import 'screens/app_shell.dart';
 import 'services/admin_session.dart';
 import 'services/app_analytics_service.dart';
 import 'services/ad_settings.dart';
-import 'services/content_settings.dart';
 import 'services/locale_settings.dart';
 import 'services/routine_api_client.dart';
 import 'services/routine_content_localizer.dart';
@@ -57,12 +56,9 @@ Future<void> main() async {
     debugPrint('Kakao SDK skipped: app keys not configured');
   }
 
-  final contentSettings = await ContentSettings.load();
+  final contentLocalizer = RoutineContentLocalizer();
   // Warm documents root so local routine thumbnails skip FutureBuilder flicker.
   await RoutineDescriptionMediaService().documentsRoot();
-  final contentLocalizer = RoutineContentLocalizer(
-    contentSettings: contentSettings,
-  );
   final apiClient = RoutineApiClient(contentLocalizer: contentLocalizer);
   final repository = await RoutineRepository.create(apiClient: apiClient);
   final scheduleRepository = await RoutineScheduleRepository.create();

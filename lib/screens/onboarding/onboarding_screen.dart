@@ -5,7 +5,6 @@ import '../../data/routine_factory.dart';
 import '../../data/routine_repository.dart';
 import '../../models/routine.dart';
 import '../../services/ai_routine_service.dart';
-import '../../services/onboarding_routine_seeder.dart';
 import '../ai_routine_create_screen.dart';
 import '../routine_editor_screen.dart';
 import 'onboarding_goal_screen.dart';
@@ -31,8 +30,6 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-  bool _skipping = false;
-
   Future<void> _finish({
     required String path,
     String? openRoutineId,
@@ -111,14 +108,20 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   Future<void> _skipWithSeededRoutine() async {
-    if (_skipping) return;
-    setState(() => _skipping = true);
-    final openRoutineId = await OnboardingRoutineSeeder.seedFirstRecommended(
-      widget.repository,
+    final openRoutineId = await Navigator.of(context).push<String>(
+      MaterialPageRoute(
+        builder: (routeContext) => OnboardingRecommendedRoutinesScreen(
+          repository: widget.repository,
+          compactActivationMode: true,
+          onComplete: (routineId) async {
+            Navigator.of(routeContext).pop(routineId);
+          },
+        ),
+      ),
     );
-    if (!mounted) return;
-    setState(() => _skipping = false);
-    await _finish(path: 'skip', openRoutineId: openRoutineId);
+    if (openRoutineId != null && mounted) {
+      await _finish(path: 'skip', openRoutineId: openRoutineId);
+    }
   }
 
   @override
@@ -149,38 +152,32 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               icon: Icons.directions_run_outlined,
               title: l10n.onboardingOptionQuickStartTitle,
               subtitle: l10n.onboardingOptionQuickStartSubtitle,
-              onTap: _skipping ? null : _openQuickStart,
+              onTap: _openQuickStart,
             ),
             _OnboardingOptionCard(
               icon: Icons.play_circle_outline,
               title: l10n.onboardingOptionYoutubeTitle,
               subtitle: l10n.onboardingOptionYoutubeSubtitle,
-              onTap: _skipping ? null : _openYoutubeAi,
+              onTap: _openYoutubeAi,
             ),
             _OnboardingOptionCard(
               icon: Icons.track_changes_outlined,
               title: l10n.onboardingOptionGoalTitle,
               subtitle: l10n.onboardingOptionGoalSubtitle,
-              onTap: _skipping ? null : _openGoalFlow,
+              onTap: _openGoalFlow,
             ),
             _OnboardingOptionCard(
               icon: Icons.edit_outlined,
               title: l10n.onboardingOptionCreateTitle,
               subtitle: l10n.onboardingOptionCreateSubtitle,
-              onTap: _skipping ? null : _openCreateRoutine,
+              onTap: _openCreateRoutine,
             ),
             const SizedBox(height: 16),
             Center(
-              child: _skipping
-                  ? const SizedBox(
-                      width: 22,
-                      height: 22,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : TextButton(
-                      onPressed: _skipWithSeededRoutine,
-                      child: Text(l10n.onboardingSkip),
-                    ),
+              child: TextButton(
+                onPressed: _skipWithSeededRoutine,
+                child: Text(l10n.onboardingSkip),
+              ),
             ),
           ],
         ),

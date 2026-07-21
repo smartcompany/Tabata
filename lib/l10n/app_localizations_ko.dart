@@ -772,21 +772,11 @@ class AppLocalizationsKo extends AppLocalizations {
   String get workoutSettingsSection => '운동';
 
   @override
-  String get countSecondsWithTtsTitle => '초 카운팅 음성';
+  String get workoutContinueInBackgroundTitle => '백그라운드에서도 진행';
 
   @override
-  String get countSecondsWithTtsSubtitle =>
-      '카운트 모드에서만 초마다 숫자를 음성으로 안내합니다. 끄면 비프음이 재생됩니다.';
-
-  @override
-  String get contentSettingsSection => '콘텐츠';
-
-  @override
-  String get autoTranslateContentTitle => '콘텐츠 자동 번역';
-
-  @override
-  String get autoTranslateContentSubtitle =>
-      '서버에서 불러온 루틴 제목·설명·운동 이름을 앱 언어로 자동 번역해 표시합니다.';
+  String get workoutContinueInBackgroundSubtitle =>
+      '앱을 내려도 타이머·음성 안내가 계속됩니다. 끄면 백그라운드에서 일시정지됩니다.';
 
   @override
   String get languageTitle => '언어';
@@ -1025,7 +1015,16 @@ class AppLocalizationsKo extends AppLocalizations {
   String get onboardingOptionCreateSubtitle => '준비·운동·휴식 구간을 직접 설정해요';
 
   @override
-  String get onboardingSkip => '나중에 할게요';
+  String get onboardingSkip => '1분 체험만 해볼게요';
+
+  @override
+  String get onboardingActivationTitle => '첫 운동을 시작해 볼까요?';
+
+  @override
+  String get onboardingActivationSubtitle => '1분이면 끝나는 짧은 체험이에요. 바로 운동이 시작됩니다.';
+
+  @override
+  String get onboardingActivationStart => '지금 시작';
 
   @override
   String get onboardingRecommendedTitle => '추천 루틴';

@@ -16,10 +16,14 @@ class OnboardingRecommendedRoutinesScreen extends StatefulWidget {
     super.key,
     required this.repository,
     required this.onComplete,
+    this.compactActivationMode = false,
   });
 
   final RoutineRepository repository;
   final OnboardingRecommendedCompleteCallback onComplete;
+
+  /// Skip-path activation: one short routine, no multi-select.
+  final bool compactActivationMode;
 
   @override
   State<OnboardingRecommendedRoutinesScreen> createState() =>
@@ -72,13 +76,14 @@ class _OnboardingRecommendedRoutinesScreenState
       if (!mounted) return;
       setState(() {
         _loading = false;
-        _summaries = summaries;
+        final visible = widget.compactActivationMode
+            ? summaries.take(1).toList(growable: false)
+            : summaries;
+        _summaries = visible;
         _selectedIds
           ..clear()
-          // Default to the shortest first routine so new users aren't
-          // overwhelmed with a long multi-routine download.
-          ..addAll(summaries.take(1).map((summary) => summary.id));
-        if (summaries.isEmpty) {
+          ..addAll(visible.take(1).map((summary) => summary.id));
+        if (visible.isEmpty) {
           _error = AppLocalizations.of(context).onboardingRecommendedLoadError;
         }
       });
@@ -104,7 +109,6 @@ class _OnboardingRecommendedRoutinesScreenState
     var failed = false;
     String? firstOpenRoutineId;
 
-    // Preserve selection order from the recommended list.
     for (final summary in _summaries) {
       if (!_selectedIds.contains(summary.id)) continue;
       try {
@@ -133,7 +137,7 @@ class _OnboardingRecommendedRoutinesScreenState
     }
 
     await AppAnalyticsService.logRoutineDownload(
-      source: 'onboarding',
+      source: widget.compactActivationMode ? 'onboarding_skip' : 'onboarding',
       count: _selectedIds.length,
     );
 
@@ -144,10 +148,13 @@ class _OnboardingRecommendedRoutinesScreenState
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
+    final compact = widget.compactActivationMode;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.onboardingRecommendedTitle),
+        title: Text(
+          compact ? l10n.onboardingActivationTitle : l10n.onboardingRecommendedTitle,
+        ),
       ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
@@ -171,7 +178,9 @@ class _OnboardingRecommendedRoutinesScreenState
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
                   child: Text(
-                    l10n.onboardingRecommendedSubtitle,
+                    compact
+                        ? l10n.onboardingActivationSubtitle
+                        : l10n.onboardingRecommendedSubtitle,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: theme.colorScheme.outline,
                     ),
@@ -183,6 +192,21 @@ class _OnboardingRecommendedRoutinesScreenState
                     itemCount: _summaries.length,
                     itemBuilder: (context, index) {
                       final summary = _summaries[index];
+                      if (compact) {
+                        return Card(
+                          child: ListTile(
+                            leading: Icon(
+                              Icons.fitness_center_outlined,
+                              color: theme.colorScheme.primary,
+                            ),
+                            title: Text(
+                              summary.title,
+                              style: const TextStyle(fontWeight: FontWeight.w600),
+                            ),
+                            subtitle: Text(summary.description),
+                          ),
+                        );
+                      }
                       final selected = _selectedIds.contains(summary.id);
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 8),
@@ -237,7 +261,11 @@ class _OnboardingRecommendedRoutinesScreenState
                             height: 22,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : Text(l10n.onboardingRecommendedSave),
+                        : Text(
+                            compact
+                                ? l10n.onboardingActivationStart
+                                : l10n.onboardingRecommendedSave,
+                          ),
                   ),
                 ),
               ],

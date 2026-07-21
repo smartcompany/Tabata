@@ -11,7 +11,6 @@ import '../models/routine.dart';
 import '../services/ai_routine_service.dart';
 import '../services/admin_session.dart';
 import '../services/app_analytics_service.dart';
-import '../services/content_settings.dart';
 import '../services/routine_api_client.dart';
 import '../services/routine_share_service.dart';
 import '../services/shared_routine_link_coordinator.dart';
@@ -104,7 +103,6 @@ class _HomeScreenState extends State<HomeScreen>
       widget.workoutLaunchCoordinator.onHomeReady();
       _openInitialRoutineIfNeeded();
     });
-    ContentSettings.addListener(_onCatalogRefreshPreferencesChanged);
     _loadCatalogInitial();
   }
 
@@ -126,6 +124,7 @@ class _HomeScreenState extends State<HomeScreen>
       MaterialPageRoute(
         builder: (_) => WorkoutScreen(
           routine: routine,
+          repository: widget.repository,
           completionRecorder: widget.workoutCompletionRecorder,
         ),
         fullscreenDialog: true,
@@ -161,15 +160,9 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   void dispose() {
-    ContentSettings.removeListener(_onCatalogRefreshPreferencesChanged);
     _catalogSearchController.dispose();
     _tabController.dispose();
     super.dispose();
-  }
-
-  Future<void> _onCatalogRefreshPreferencesChanged() async {
-    if (!mounted) return;
-    await _refreshCatalog();
   }
 
   Future<void> _loadCatalogInitial() async {

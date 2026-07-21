@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tabata_timer/models/description_block.dart';
 import 'package:tabata_timer/models/exercise.dart';
 import 'package:tabata_timer/models/exercise_phase.dart';
 import 'package:tabata_timer/models/phase_config.dart';
 import 'package:tabata_timer/models/profile_summary.dart';
 import 'package:tabata_timer/models/routine.dart';
-import 'package:tabata_timer/services/content_settings.dart';
 import 'package:tabata_timer/services/content_translation_service.dart';
 import 'package:tabata_timer/services/routine_content_localizer.dart';
 
@@ -28,14 +26,8 @@ class _FakeTranslationService extends ContentTranslationService {
 }
 
 void main() {
-  setUp(() {
-    SharedPreferences.setMockInitialValues({});
-  });
-
   test('localizer translates routine and summary text fields', () async {
-    final contentSettings = await ContentSettings.load();
     final localizer = RoutineContentLocalizer(
-      contentSettings: contentSettings,
       translationService: _FakeTranslationService({
         '한국어 제목': 'Korean title',
         '한국어 설명': 'Korean description',
@@ -98,9 +90,7 @@ void main() {
 
   test('localizer skips translation when contentLanguage matches app language',
       () async {
-    final contentSettings = await ContentSettings.load();
     final localizer = RoutineContentLocalizer(
-      contentSettings: contentSettings,
       translationService: _FakeTranslationService({
         '한국어 제목': 'Korean title',
       }),
@@ -124,9 +114,7 @@ void main() {
 
   test('localizer skips translation for legacy summaries without contentLanguage',
       () async {
-    final contentSettings = await ContentSettings.load();
     final localizer = RoutineContentLocalizer(
-      contentSettings: contentSettings,
       translationService: _FakeTranslationService({
         '한국어 제목': 'Korean title',
       }),
@@ -142,32 +130,6 @@ void main() {
         ),
       ],
       systemLocale: const Locale('ko'),
-    );
-
-    expect(summary.first.title, '한국어 제목');
-  });
-
-  test('localizer skips translation when setting is off', () async {
-    final contentSettings = await ContentSettings.load();
-    await contentSettings.setAutoTranslateContent(false);
-
-    final localizer = RoutineContentLocalizer(
-      contentSettings: contentSettings,
-      translationService: _FakeTranslationService({
-        '한국어 제목': 'Korean title',
-      }),
-    );
-
-    final summary = await localizer.localizeSummaries(
-      [
-        const ProfileSummary(
-          id: 'p1',
-          title: '한국어 제목',
-          description: '',
-          exerciseCount: 0,
-        ),
-      ],
-      systemLocale: const Locale('en'),
     );
 
     expect(summary.first.title, '한국어 제목');

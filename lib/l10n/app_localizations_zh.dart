@@ -767,19 +767,11 @@ class AppLocalizationsZh extends AppLocalizations {
   String get workoutSettingsSection => '训练';
 
   @override
-  String get countSecondsWithTtsTitle => '秒数语音计数';
+  String get workoutContinueInBackgroundTitle => '后台继续计时';
 
   @override
-  String get countSecondsWithTtsSubtitle => '仅在计数模式下每秒播报数字。关闭后改为播放提示音。';
-
-  @override
-  String get contentSettingsSection => '内容';
-
-  @override
-  String get autoTranslateContentTitle => '内容自动翻译';
-
-  @override
-  String get autoTranslateContentSubtitle => '将服务器加载的训练标题、说明和动作名称自动翻译为应用语言后显示。';
+  String get workoutContinueInBackgroundSubtitle =>
+      '应用在后台时计时和语音会继续。关闭后进入后台会自动暂停。';
 
   @override
   String get languageTitle => '语言';
@@ -1010,7 +1002,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get onboardingOptionCreateSubtitle => '自行设置准备、运动和放松阶段';
 
   @override
-  String get onboardingSkip => '稍后再说';
+  String get onboardingSkip => '先试1分钟';
+
+  @override
+  String get onboardingActivationTitle => '开始第一次训练？';
+
+  @override
+  String get onboardingActivationSubtitle => '约1分钟的短体验，会立即开始训练。';
+
+  @override
+  String get onboardingActivationStart => '现在开始';
 
   @override
   String get onboardingRecommendedTitle => '推荐训练';

@@ -23,6 +23,8 @@ class WorkoutCompletionRecorder {
 
   final WorkoutHistoryRepository _historyRepository;
 
+  bool get hasCompletedWorkout => _historyRepository.allRecords.isNotEmpty;
+
   Future<void> recordCompletedWorkout({
     required BuildContext context,
     required Routine routine,
