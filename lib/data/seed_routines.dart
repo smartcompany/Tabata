@@ -100,7 +100,7 @@ Routine createRotatorCuffRoutine() {
           ExercisePhase(
             id: _uuid.v4(),
             kind: ExercisePhaseKind.relax,
-            label: '이완',
+            label: '휴식',
             durationSec: 5,
             order: 1,
           ),

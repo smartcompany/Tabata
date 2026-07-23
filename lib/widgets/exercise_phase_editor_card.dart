@@ -74,11 +74,16 @@ class _ExercisePhaseEditorCardState extends State<ExercisePhaseEditorCard> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
     final kindLabel =
         ExerciseFormatter.phaseKindLabel(widget.phase.kind, l10n);
     final kindColor = widget.phase.kind == ExercisePhaseKind.work
-        ? Theme.of(context).colorScheme.error
-        : Theme.of(context).colorScheme.primary;
+        ? theme.colorScheme.error
+        : theme.colorScheme.primary;
+    final needsLabel = _labelController.text.trim().isEmpty;
+    final labelPromptColor = needsLabel
+        ? theme.colorScheme.primary
+        : theme.colorScheme.onSurfaceVariant;
 
     return Card(
       key: widget.key,
@@ -125,9 +130,14 @@ class _ExercisePhaseEditorCardState extends State<ExercisePhaseEditorCard> {
               controller: _labelController,
               decoration: InputDecoration(
                 labelText: l10n.phaseLabel,
+                labelStyle: TextStyle(color: labelPromptColor),
+                floatingLabelStyle: TextStyle(color: labelPromptColor),
                 hintText: widget.phase.kind == ExercisePhaseKind.work
                     ? l10n.workLabelHint
                     : l10n.relaxLabelHint,
+                hintStyle: TextStyle(
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.38),
+                ),
                 border: const OutlineInputBorder(),
               ),
               validator: (value) {
@@ -136,7 +146,10 @@ class _ExercisePhaseEditorCardState extends State<ExercisePhaseEditorCard> {
                 }
                 return null;
               },
-              onChanged: (_) => _emit(),
+              onChanged: (_) {
+                setState(() {});
+                _emit();
+              },
             ),
             if (widget.phase.kind == ExercisePhaseKind.work ||
                 widget.phase.kind == ExercisePhaseKind.relax) ...[
@@ -154,28 +167,27 @@ class _ExercisePhaseEditorCardState extends State<ExercisePhaseEditorCard> {
                 ],
                 selected: {widget.phase.timingMode},
                 onSelectionChanged: (selection) {
-                  _emit(timingMode: selection.first);
+                  final mode = selection.first;
+                  if (mode == PhaseTimingMode.count &&
+                      widget.phase.timingMode != PhaseTimingMode.count) {
+                    _emit(
+                      timingMode: mode,
+                      countOrder: CountOrder.descending,
+                    );
+                  } else {
+                    _emit(timingMode: mode);
+                  }
                 },
               ),
             ],
-            const SizedBox(height: 8),
             if (widget.phase.isCountMode) ...[
-              IntegerInputControl(
-                value: widget.phase.countReps,
-                min: ExerciseLimits.minCountReps,
-                max: ExerciseLimits.maxCountReps,
-                pickerTitle: l10n.labelPhaseCount,
-                unitLabel: l10n.unitReps,
-                hintText: l10n.tapToSetPhaseCount,
-                onChanged: (value) => _emit(countReps: value),
-              ),
-              const SizedBox(height: 8),
-              DurationInputControl(
-                valueSec: widget.phase.secondsPerRep,
-                minSec: ExerciseLimits.minSecondsPerRep,
-                maxSec: ExerciseLimits.maxSecondsPerRep,
-                pickerTitle: l10n.labelSecondsPerRep,
-                onChanged: (value) => _emit(secondsPerRep: value),
+              const SizedBox(height: 12),
+              Text(
+                l10n.countOrderLabel,
+                style: theme.textTheme.labelMedium?.copyWith(
+                  color: theme.colorScheme.primary,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               const SizedBox(height: 8),
               SegmentedButton<CountOrder>(
@@ -194,7 +206,65 @@ class _ExercisePhaseEditorCardState extends State<ExercisePhaseEditorCard> {
                   _emit(countOrder: selection.first);
                 },
               ),
-            ] else
+              const SizedBox(height: 12),
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primary.withValues(alpha: 0.06),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: theme.colorScheme.primary.withValues(alpha: 0.18),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        l10n.countSettingsTitle,
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          color: theme.colorScheme.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        l10n.labelPhaseCount,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      IntegerInputControl(
+                        value: widget.phase.countReps,
+                        min: ExerciseLimits.minCountReps,
+                        max: ExerciseLimits.maxCountReps,
+                        pickerTitle: l10n.labelPhaseCount,
+                        unitLabel: l10n.unitReps,
+                        hintText: l10n.tapToSetPhaseCount,
+                        onChanged: (value) => _emit(countReps: value),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        l10n.labelSecondsPerRep,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      DurationInputControl(
+                        valueSec: widget.phase.secondsPerRep,
+                        minSec: ExerciseLimits.minSecondsPerRep,
+                        maxSec: ExerciseLimits.maxSecondsPerRep,
+                        pickerTitle: l10n.labelSecondsPerRep,
+                        onChanged: (value) => _emit(secondsPerRep: value),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ] else ...[
+              const SizedBox(height: 8),
               DurationInputControl(
                 valueSec: widget.phase.durationSec,
                 minSec: ExerciseLimits.minWorkRelaxDurationSec,
@@ -202,6 +272,7 @@ class _ExercisePhaseEditorCardState extends State<ExercisePhaseEditorCard> {
                 pickerTitle: kindLabel,
                 onChanged: (value) => _emit(durationSec: value),
               ),
+            ],
           ],
         ),
       ),

@@ -344,7 +344,7 @@ void main() {
         label: '준비',
         prepareTitle: '준비',
         workTitle: '운동',
-        relaxTitle: '이완',
+        relaxTitle: '휴식',
       ),
       '준비',
     );
@@ -354,7 +354,7 @@ void main() {
         label: '팔 벌리기',
         prepareTitle: '준비',
         workTitle: '운동',
-        relaxTitle: '이완',
+        relaxTitle: '휴식',
       ),
       '운동, 팔 벌리기',
     );

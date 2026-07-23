@@ -9,6 +9,7 @@ import '../models/exercise.dart';
 import '../models/routine.dart';
 import '../services/routine_api_client.dart';
 import '../services/app_analytics_service.dart';
+import '../services/workout_completion_recorder.dart';
 import '../utils/content_language.dart';
 import '../utils/duration_calculator.dart';
 import '../utils/form_validation_scroll.dart';
@@ -29,6 +30,7 @@ class RoutineEditorScreen extends StatefulWidget {
     this.adminToken,
     this.persistToServer = false,
     this.persistToDashboard = false,
+    this.completionRecorder,
   });
 
   final RoutineRepository repository;
@@ -39,6 +41,7 @@ class RoutineEditorScreen extends StatefulWidget {
   final String? adminToken;
   final bool persistToServer;
   final bool persistToDashboard;
+  final WorkoutCompletionRecorder? completionRecorder;
 
   @override
   State<RoutineEditorScreen> createState() => _RoutineEditorScreenState();
@@ -325,11 +328,19 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
   Future<void> _addExercise() async {
     KeyboardDismissScope.dismiss(context);
     final l10n = AppLocalizations.of(context);
-    final exercise = createEmptyExercise(order: _exercises.length)
-        .copyWith(name: l10n.defaultExerciseName);
+    final exercise = createEmptyExercise(
+      order: _exercises.length,
+      relaxLabel: l10n.labelRelax,
+    ).copyWith(name: l10n.defaultExerciseName);
     final result = await Navigator.of(context).push<Exercise>(
       MaterialPageRoute(
-        builder: (_) => ExerciseEditorScreen(exercise: exercise, isNew: true),
+        builder: (_) => ExerciseEditorScreen(
+          exercise: exercise,
+          isNew: true,
+          repository: widget.repository,
+          completionRecorder: widget.completionRecorder,
+          parentRoutine: _draft,
+        ),
       ),
     );
     if (result == null) return;
@@ -341,7 +352,12 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     KeyboardDismissScope.dismiss(context);
     final result = await Navigator.of(context).push<Exercise>(
       MaterialPageRoute(
-        builder: (_) => ExerciseEditorScreen(exercise: _exercises[index]),
+        builder: (_) => ExerciseEditorScreen(
+          exercise: _exercises[index],
+          repository: widget.repository,
+          completionRecorder: widget.completionRecorder,
+          parentRoutine: _draft,
+        ),
       ),
     );
     if (result == null) return;
@@ -429,6 +445,7 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
         ],
       ),
       body: KeyboardDismissScope(
+        showAccessoryBar: false,
         child: Form(
           key: _formKey,
           child: ListView(

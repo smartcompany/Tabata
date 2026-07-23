@@ -381,7 +381,12 @@ class _WorkoutScreenState extends State<WorkoutScreen> with WidgetsBindingObserv
 
       final updated = await Navigator.of(context).push<Exercise>(
         MaterialPageRoute(
-          builder: (_) => ExerciseEditorScreen(exercise: exercises[index]),
+          builder: (_) => ExerciseEditorScreen(
+            exercise: exercises[index],
+            repository: widget.repository,
+            completionRecorder: widget.completionRecorder,
+            parentRoutine: stored,
+          ),
         ),
       );
       if (updated == null || !mounted) return;
@@ -406,6 +411,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> with WidgetsBindingObserv
         builder: (_) => RoutineEditorScreen(
           repository: widget.repository,
           routine: stored,
+          completionRecorder: widget.completionRecorder,
         ),
       ),
     );

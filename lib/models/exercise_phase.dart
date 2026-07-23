@@ -41,6 +41,8 @@ enum CountOrder {
   static CountOrder fromJson(String? value) {
     return switch (value) {
       'descending' => CountOrder.descending,
+      'ascending' => CountOrder.ascending,
+      // Legacy records without countOrder were ascending.
       _ => CountOrder.ascending,
     };
   }
@@ -58,7 +60,7 @@ class ExercisePhase {
     this.timingMode = PhaseTimingMode.duration,
     this.countReps = ExerciseLimits.defaultCountReps,
     this.secondsPerRep = ExerciseLimits.defaultSecondsPerRep,
-    this.countOrder = CountOrder.ascending,
+    this.countOrder = CountOrder.descending,
   });
 
   final String id;
@@ -134,9 +136,11 @@ class ExercisePhase {
             min: ExerciseLimits.minSecondsPerRep,
           ) ??
           ExerciseLimits.defaultSecondsPerRep,
-      countOrder: CountOrder.fromJson(
-        JsonField.optionalString(json, 'countOrder'),
-      ),
+      countOrder: timingMode == PhaseTimingMode.count
+          ? CountOrder.fromJson(
+              JsonField.optionalString(json, 'countOrder'),
+            )
+          : CountOrder.descending,
     );
   }
 
@@ -168,11 +172,12 @@ class ExercisePhase {
 ExercisePhase createEmptyPhase({
   required ExercisePhaseKind kind,
   required int order,
+  String label = '',
 }) {
   return ExercisePhase(
     id: _uuid.v4(),
     kind: kind,
-    label: '',
+    label: label,
     durationSec: ExerciseLimits.defaultWorkRelaxDurationSec,
     order: order,
   );

@@ -137,6 +137,7 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen>
         builder: (_) => RoutineEditorScreen(
           repository: widget.repository,
           routine: routine,
+          completionRecorder: widget.workoutCompletionRecorder,
         ),
       ),
     );
@@ -392,7 +393,12 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen>
 
     final updated = await Navigator.of(context).push<Exercise>(
       MaterialPageRoute(
-        builder: (_) => ExerciseEditorScreen(exercise: exercise),
+        builder: (_) => ExerciseEditorScreen(
+          exercise: exercise,
+          repository: widget.repository,
+          completionRecorder: widget.workoutCompletionRecorder,
+          parentRoutine: routine,
+        ),
       ),
     );
     if (updated == null || !mounted) return;

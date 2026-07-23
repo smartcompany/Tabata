@@ -98,6 +98,7 @@ class _AppShellState extends State<AppShell> {
     if (_showOnboarding) {
       return OnboardingScreen(
         repository: widget.repository,
+        workoutCompletionRecorder: widget.workoutCompletionRecorder,
         onComplete: _completeOnboarding,
       );
     }

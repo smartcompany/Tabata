@@ -5,6 +5,7 @@ import '../../data/routine_factory.dart';
 import '../../data/routine_repository.dart';
 import '../../models/routine.dart';
 import '../../services/ai_routine_service.dart';
+import '../../services/workout_completion_recorder.dart';
 import '../ai_routine_create_screen.dart';
 import '../routine_editor_screen.dart';
 import 'onboarding_goal_screen.dart';
@@ -20,10 +21,12 @@ class OnboardingScreen extends StatefulWidget {
     super.key,
     required this.repository,
     required this.onComplete,
+    this.workoutCompletionRecorder,
   });
 
   final RoutineRepository repository;
   final OnboardingCompleteCallback onComplete;
+  final WorkoutCompletionRecorder? workoutCompletionRecorder;
 
   @override
   State<OnboardingScreen> createState() => _OnboardingScreenState();
@@ -100,6 +103,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           repository: widget.repository,
           routine: routine,
           isNew: true,
+          completionRecorder: widget.workoutCompletionRecorder,
         ),
       ),
     );

@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:tabata_timer/l10n/app_localizations.dart';
 
+import '../data/routine_factory.dart';
+import '../data/routine_repository.dart';
 import '../models/description_block.dart';
 import '../models/exercise.dart';
 import '../models/exercise_phase.dart';
 import '../models/phase_config.dart';
+import '../models/routine.dart';
+import '../services/workout_completion_recorder.dart';
 import '../utils/duration_calculator.dart';
 import '../utils/form_validation_scroll.dart';
 import '../widgets/description_blocks_editor.dart';
@@ -12,16 +16,23 @@ import '../widgets/duration_input_control.dart';
 import '../widgets/exercise_phase_editor_card.dart';
 import '../widgets/integer_input_control.dart';
 import '../widgets/keyboard_dismiss_scope.dart';
+import 'workout_screen.dart';
 
 class ExerciseEditorScreen extends StatefulWidget {
   const ExerciseEditorScreen({
     super.key,
     required this.exercise,
     this.isNew = false,
+    this.repository,
+    this.completionRecorder,
+    this.parentRoutine,
   });
 
   final Exercise exercise;
   final bool isNew;
+  final RoutineRepository? repository;
+  final WorkoutCompletionRecorder? completionRecorder;
+  final Routine? parentRoutine;
 
   @override
   State<ExerciseEditorScreen> createState() => _ExerciseEditorScreenState();
@@ -97,10 +108,15 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
 
   void _addPhase(ExercisePhaseKind kind) {
     KeyboardDismissScope.dismiss(context);
+    final l10n = AppLocalizations.of(context);
     setState(() {
       _phases = [
         ..._phases,
-        createEmptyPhase(kind: kind, order: _phases.length),
+        createEmptyPhase(
+          kind: kind,
+          order: _phases.length,
+          label: kind == ExercisePhaseKind.relax ? l10n.labelRelax : '',
+        ),
       ];
     });
   }
@@ -133,16 +149,50 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
   }
 
   void _save() {
-    if (!validateFormAndScrollToError(_formKey)) return;
+    if (!_validateForRun()) return;
+    Navigator.of(context).pop(_draft);
+  }
+
+  bool get _canPreviewPlay =>
+      widget.repository != null && widget.completionRecorder != null;
+
+  bool _validateForRun() {
+    if (!validateFormAndScrollToError(_formKey)) return false;
     if (_phases.isEmpty) {
       final l10n = AppLocalizations.of(context);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.requireAtLeastOnePhase)),
       );
       scrollToKey(_phasesSectionKey);
-      return;
+      return false;
     }
-    Navigator.of(context).pop(_draft);
+    return true;
+  }
+
+  Future<void> _previewPlay() async {
+    if (!_canPreviewPlay || !_validateForRun()) return;
+
+    final exercise = _draft;
+    final parent = widget.parentRoutine;
+    final routine = parent != null
+        ? parent.forSingleExercise(exercise)
+        : createEmptyRoutine().copyWith(
+            title: exercise.name,
+            exercises: [exercise.copyWith(order: 0)],
+          );
+
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => WorkoutScreen(
+          routine: routine,
+          repository: widget.repository!,
+          completionRecorder: widget.completionRecorder!,
+          launchScope: WorkoutLaunchScope.singleExercise,
+          singleExerciseId: exercise.id,
+        ),
+        fullscreenDialog: true,
+      ),
+    );
   }
 
   @override
@@ -161,6 +211,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
         ],
       ),
       body: KeyboardDismissScope(
+        showAccessoryBar: false,
         child: Form(
           key: _formKey,
           child: ListView(
@@ -289,9 +340,27 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        l10n.previewSection,
-                        style: Theme.of(context).textTheme.titleSmall,
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              l10n.previewSection,
+                              style: Theme.of(context).textTheme.titleSmall,
+                            ),
+                          ),
+                          if (_canPreviewPlay)
+                            FilledButton.icon(
+                              onPressed: _previewPlay,
+                              icon: const Icon(Icons.play_arrow_rounded, size: 20),
+                              label: Text(l10n.start),
+                              style: FilledButton.styleFrom(
+                                visualDensity: VisualDensity.compact,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                ),
+                              ),
+                            ),
+                        ],
                       ),
                       const SizedBox(height: 8),
                       Text(l10n.oneSetDuration(formatDuration(_oneSetSec, l10n))),

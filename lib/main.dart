@@ -29,6 +29,7 @@ import 'services/shared_routine_link_coordinator.dart';
 import 'services/share_link_log.dart';
 import 'services/workout_completion_recorder.dart';
 import 'services/workout_launch_coordinator.dart';
+import 'widgets/keyboard_dismiss_scope.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -211,7 +212,7 @@ class _TabataAppState extends State<TabataApp> with WidgetsBindingObserver {
           data: MediaQuery.of(
             context,
           ).copyWith(textScaler: const TextScaler.linear(1.0)),
-          child: child,
+          child: KeyboardDismissScope(child: child),
         );
       },
       home: AppShell(

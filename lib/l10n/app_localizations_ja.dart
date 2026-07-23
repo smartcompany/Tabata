@@ -402,10 +402,16 @@ class AppLocalizationsJa extends AppLocalizations {
   String get tapToSetPhaseCount => 'タップして回数を設定';
 
   @override
-  String get countOrderAscending => '順';
+  String get countOrderAscending => '順 · 1→N';
 
   @override
-  String get countOrderDescending => '逆';
+  String get countOrderDescending => '逆 · N→1';
+
+  @override
+  String get countOrderLabel => 'カウント方向';
+
+  @override
+  String get countSettingsTitle => 'カウント設定';
 
   @override
   String repCountProgress(int current, int total) {
@@ -500,7 +506,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get descriptionAddVideo => '動画リンク';
 
   @override
-  String get descriptionTextHint => '説明を入力';
+  String get descriptionTextHint => '説明を入力してください（任意）';
 
   @override
   String get descriptionVideoUrlHint => 'YouTubeなどの動画URL';
@@ -621,7 +627,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get repeatSection => '繰り返し';
 
   @override
-  String get phaseLabel => 'フェーズラベル';
+  String get phaseLabel => '動作ラベルを入力してください';
 
   @override
   String get workLabelHint => '例：腕を広げる';

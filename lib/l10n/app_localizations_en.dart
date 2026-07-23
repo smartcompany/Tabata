@@ -373,7 +373,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get labelWork => 'Work';
 
   @override
-  String get labelRelax => 'Relax';
+  String get labelRelax => 'Rest';
 
   @override
   String get labelReps => 'Reps';
@@ -412,10 +412,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tapToSetPhaseCount => 'Tap to set reps';
 
   @override
-  String get countOrderAscending => 'Ascending';
+  String get countOrderAscending => 'Asc · 1→N';
 
   @override
-  String get countOrderDescending => 'Descending';
+  String get countOrderDescending => 'Desc · N→1';
+
+  @override
+  String get countOrderLabel => 'Count direction';
+
+  @override
+  String get countSettingsTitle => 'Count settings';
 
   @override
   String repCountProgress(int current, int total) {
@@ -511,7 +517,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get descriptionAddVideo => 'Video link';
 
   @override
-  String get descriptionTextHint => 'Enter description';
+  String get descriptionTextHint => 'Enter a description (optional)';
 
   @override
   String get descriptionVideoUrlHint => 'YouTube or other video URL';
@@ -617,7 +623,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addWorkPhase => 'Add work';
 
   @override
-  String get addRelaxPhase => 'Add relax';
+  String get addRelaxPhase => 'Add rest';
 
   @override
   String get requireAtLeastOnePhase => 'Add at least one phase';
@@ -629,13 +635,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workSection => 'Work';
 
   @override
-  String get relaxSection => 'Relax';
+  String get relaxSection => 'Rest';
 
   @override
   String get repeatSection => 'Repeat';
 
   @override
-  String get phaseLabel => 'Phase label';
+  String get phaseLabel => 'Enter a move label';
 
   @override
   String get workLabelHint => 'e.g. Arms out';
@@ -734,7 +740,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get phaseWork => 'Work';
 
   @override
-  String get phaseRelax => 'Relax';
+  String get phaseRelax => 'Rest';
 
   @override
   String get phaseCompleted => 'Done';

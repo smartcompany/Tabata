@@ -360,7 +360,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get labelWork => '运动';
 
   @override
-  String get labelRelax => '放松';
+  String get labelRelax => '休息';
 
   @override
   String get labelReps => '次数';
@@ -399,10 +399,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tapToSetPhaseCount => '点击设置次数';
 
   @override
-  String get countOrderAscending => '正序';
+  String get countOrderAscending => '正序 · 1→N';
 
   @override
-  String get countOrderDescending => '倒序';
+  String get countOrderDescending => '倒序 · N→1';
+
+  @override
+  String get countOrderLabel => '计数方向';
+
+  @override
+  String get countSettingsTitle => '计数设置';
 
   @override
   String repCountProgress(int current, int total) {
@@ -497,7 +503,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get descriptionAddVideo => '视频链接';
 
   @override
-  String get descriptionTextHint => '输入说明';
+  String get descriptionTextHint => '请输入说明（可选）';
 
   @override
   String get descriptionVideoUrlHint => 'YouTube 等视频 URL';
@@ -600,7 +606,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get addWorkPhase => '添加运动';
 
   @override
-  String get addRelaxPhase => '添加放松';
+  String get addRelaxPhase => '添加休息';
 
   @override
   String get requireAtLeastOnePhase => '请至少添加一个阶段';
@@ -612,13 +618,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get workSection => '运动';
 
   @override
-  String get relaxSection => '放松';
+  String get relaxSection => '休息';
 
   @override
   String get repeatSection => '重复';
 
   @override
-  String get phaseLabel => '阶段标签';
+  String get phaseLabel => '请输入动作标签';
 
   @override
   String get workLabelHint => '例如：张开手臂';
@@ -717,7 +723,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get phaseWork => '运动';
 
   @override
-  String get phaseRelax => '放松';
+  String get phaseRelax => '休息';
 
   @override
   String get phaseCompleted => '完成';

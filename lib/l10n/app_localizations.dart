@@ -747,7 +747,7 @@ abstract class AppLocalizations {
   /// No description provided for @labelRelax.
   ///
   /// In en, this message translates to:
-  /// **'Relax'**
+  /// **'Rest'**
   String get labelRelax;
 
   /// No description provided for @labelReps.
@@ -813,14 +813,26 @@ abstract class AppLocalizations {
   /// No description provided for @countOrderAscending.
   ///
   /// In en, this message translates to:
-  /// **'Ascending'**
+  /// **'Asc · 1→N'**
   String get countOrderAscending;
 
   /// No description provided for @countOrderDescending.
   ///
   /// In en, this message translates to:
-  /// **'Descending'**
+  /// **'Desc · N→1'**
   String get countOrderDescending;
+
+  /// No description provided for @countOrderLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Count direction'**
+  String get countOrderLabel;
+
+  /// No description provided for @countSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Count settings'**
+  String get countSettingsTitle;
 
   /// No description provided for @repCountProgress.
   ///
@@ -993,7 +1005,7 @@ abstract class AppLocalizations {
   /// No description provided for @descriptionTextHint.
   ///
   /// In en, this message translates to:
-  /// **'Enter description'**
+  /// **'Enter a description (optional)'**
   String get descriptionTextHint;
 
   /// No description provided for @descriptionVideoUrlHint.
@@ -1191,7 +1203,7 @@ abstract class AppLocalizations {
   /// No description provided for @addRelaxPhase.
   ///
   /// In en, this message translates to:
-  /// **'Add relax'**
+  /// **'Add rest'**
   String get addRelaxPhase;
 
   /// No description provided for @requireAtLeastOnePhase.
@@ -1215,7 +1227,7 @@ abstract class AppLocalizations {
   /// No description provided for @relaxSection.
   ///
   /// In en, this message translates to:
-  /// **'Relax'**
+  /// **'Rest'**
   String get relaxSection;
 
   /// No description provided for @repeatSection.
@@ -1227,7 +1239,7 @@ abstract class AppLocalizations {
   /// No description provided for @phaseLabel.
   ///
   /// In en, this message translates to:
-  /// **'Phase label'**
+  /// **'Enter a move label'**
   String get phaseLabel;
 
   /// No description provided for @workLabelHint.
@@ -1389,7 +1401,7 @@ abstract class AppLocalizations {
   /// No description provided for @phaseRelax.
   ///
   /// In en, this message translates to:
-  /// **'Relax'**
+  /// **'Rest'**
   String get phaseRelax;
 
   /// No description provided for @phaseCompleted.

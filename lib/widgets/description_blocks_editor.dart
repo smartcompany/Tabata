@@ -127,11 +127,6 @@ class _DescriptionBlocksEditorState extends State<DescriptionBlocksEditor> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          l10n.descriptionOptionalLabel,
-          style: Theme.of(context).textTheme.titleSmall,
-        ),
-        const SizedBox(height: 8),
         if (widget.blocks.isEmpty)
           Text(
             l10n.descriptionBlocksEmptyHint,
@@ -140,7 +135,7 @@ class _DescriptionBlocksEditorState extends State<DescriptionBlocksEditor> {
                 ),
           ),
         for (var i = 0; i < widget.blocks.length; i++) ...[
-          const SizedBox(height: 12),
+          if (i > 0) const SizedBox(height: 12),
           _BlockCard(
             index: i,
             total: widget.blocks.length,
@@ -264,6 +259,7 @@ class _VideoUrlInputDialogState extends State<_VideoUrlInputDialog> {
   Widget build(BuildContext context) {
     final l10n = widget.l10n;
     return KeyboardDismissScope(
+      showAccessoryBar: false,
       child: AlertDialog(
         title: Text(l10n.descriptionAddVideo),
         content: TextField(

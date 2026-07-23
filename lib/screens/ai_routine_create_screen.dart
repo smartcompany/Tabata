@@ -5,20 +5,21 @@ import 'package:share_lib/share_lib.dart';
 import 'package:tabata_timer/l10n/app_localizations.dart';
 
 import '../data/routine_repository.dart';
-import '../models/routine.dart';
 import '../services/app_analytics_service.dart';
 import '../services/ai_routine_service.dart';
 import '../services/onboarding_ad_waiver_service.dart';
 import '../services/routine_api_client.dart';
+import '../services/workout_completion_recorder.dart';
 import '../utils/content_language.dart';
 import '../widgets/ai_routine_generating_overlay.dart';
-import 'routine_editor_screen.dart';
+import 'routine_detail_screen.dart';
 
 class AiRoutineCreateScreen extends StatefulWidget {
   const AiRoutineCreateScreen({
     super.key,
     required this.repository,
     required this.aiRoutineService,
+    this.workoutCompletionRecorder,
     this.initialPrompt,
     /// When true, save the generated routine and pop immediately (no editor).
     /// Used by onboarding so the user can start the workout right away.
@@ -27,6 +28,7 @@ class AiRoutineCreateScreen extends StatefulWidget {
 
   final RoutineRepository repository;
   final AiRoutineService aiRoutineService;
+  final WorkoutCompletionRecorder? workoutCompletionRecorder;
   final String? initialPrompt;
   final bool autoSaveWithoutEditor;
 
@@ -168,46 +170,43 @@ class _AiRoutineCreateScreenState extends State<AiRoutineCreateScreen> {
       if (waivedAd) {
         await OnboardingAdWaiverService.recordUsed();
       }
+      if (!mounted) return;
+
+      if (routine.exercises.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.requireAtLeastOneExercise)),
+        );
+        return;
+      }
+
+      await widget.repository.upsert(routine);
+      await AppAnalyticsService.logProductEvent(
+        'ai_routine_saved',
+        properties: {'edited_before_save': false},
+      );
+      if (!mounted) return;
 
       if (widget.autoSaveWithoutEditor) {
-        if (routine.exercises.isEmpty) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(l10n.requireAtLeastOneExercise)),
-          );
-          return;
-        }
-        await widget.repository.upsert(routine);
-        await AppAnalyticsService.logProductEvent(
-          'ai_routine_saved',
-          properties: {'edited_before_save': false},
-        );
-        if (!mounted) return;
         Navigator.of(context).pop(routine);
         return;
       }
 
-      await AppAnalyticsService.logProductEvent('ai_editor_opened');
-      if (!mounted) return;
-      final saved = await Navigator.of(context).push<Routine>(
+      final recorder = widget.workoutCompletionRecorder;
+      if (recorder == null) {
+        throw StateError(
+          'workoutCompletionRecorder is required when autoSaveWithoutEditor is false',
+        );
+      }
+
+      await Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (_) => RoutineEditorScreen(
+          builder: (_) => RoutineDetailScreen(
             repository: widget.repository,
-            routine: routine,
-            isNew: true,
+            workoutCompletionRecorder: recorder,
+            routineId: routine.id,
           ),
         ),
       );
-      if (!mounted) return;
-      if (saved != null) {
-        await AppAnalyticsService.logProductEvent(
-          'ai_routine_saved',
-          properties: {'edited_before_save': true},
-        );
-        if (!mounted) return;
-        Navigator.of(context).pop(saved);
-      } else {
-        await AppAnalyticsService.logProductEvent('ai_routine_abandoned');
-      }
     } on RoutineApiException catch (error) {
       await AppAnalyticsService.logProductEvent(
         'ai_generation_failed',

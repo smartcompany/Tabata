@@ -265,6 +265,7 @@ class _HomeScreenState extends State<HomeScreen>
         builder: (_) => AiRoutineCreateScreen(
           repository: widget.repository,
           aiRoutineService: AiRoutineService(),
+          workoutCompletionRecorder: widget.workoutCompletionRecorder,
         ),
       ),
     );
@@ -288,6 +289,7 @@ class _HomeScreenState extends State<HomeScreen>
           repository: widget.repository,
           routine: routine,
           isNew: true,
+          completionRecorder: widget.workoutCompletionRecorder,
         ),
       ),
     );
@@ -646,6 +648,8 @@ class _HomeScreenState extends State<HomeScreen>
                       minLeadingWidth: thumbnail != null ? 88 : 36,
                       title: Text(
                         routine.title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.w600,
@@ -661,7 +665,20 @@ class _HomeScreenState extends State<HomeScreen>
                           ),
                         ),
                       ),
-                      trailing: const Icon(Icons.chevron_right),
+                      trailing: IconButton.filled(
+                        onPressed: () => _openWorkout(routine),
+                        icon: const Icon(Icons.play_arrow_rounded, size: 32),
+                        tooltip: l10n.start,
+                        style: IconButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          visualDensity: VisualDensity.compact,
+                          minimumSize: const Size(52, 52),
+                          maximumSize: const Size(52, 52),
+                          iconSize: 32,
+                          padding: EdgeInsets.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                      ),
                       onTap: () => _openLocalRoutine(routine.id),
                     ),
                   ),

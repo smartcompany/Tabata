@@ -363,7 +363,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get labelWork => '운동';
 
   @override
-  String get labelRelax => '이완';
+  String get labelRelax => '휴식';
 
   @override
   String get labelReps => '횟수';
@@ -402,10 +402,16 @@ class AppLocalizationsKo extends AppLocalizations {
   String get tapToSetPhaseCount => '탭하여 회수 설정';
 
   @override
-  String get countOrderAscending => '순서';
+  String get countOrderAscending => '순서 · 1→N';
 
   @override
-  String get countOrderDescending => '역순';
+  String get countOrderDescending => '역순 · N→1';
+
+  @override
+  String get countOrderLabel => '카운트 방향';
+
+  @override
+  String get countSettingsTitle => '카운트 설정';
 
   @override
   String repCountProgress(int current, int total) {
@@ -501,7 +507,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get descriptionAddVideo => '영상 링크';
 
   @override
-  String get descriptionTextHint => '설명을 입력하세요';
+  String get descriptionTextHint => '설명을 입력하세요 (선택)';
 
   @override
   String get descriptionVideoUrlHint => 'YouTube 등 영상 URL';
@@ -605,7 +611,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get addWorkPhase => '운동 추가';
 
   @override
-  String get addRelaxPhase => '이완 추가';
+  String get addRelaxPhase => '휴식 추가';
 
   @override
   String get requireAtLeastOnePhase => '동작을 1개 이상 추가하세요';
@@ -617,13 +623,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String get workSection => '운동';
 
   @override
-  String get relaxSection => '이완';
+  String get relaxSection => '휴식';
 
   @override
   String get repeatSection => '반복';
 
   @override
-  String get phaseLabel => '동작 라벨';
+  String get phaseLabel => '동작 라벨을 입력해 주세요';
 
   @override
   String get workLabelHint => '예: 팔을 벌리기';
@@ -722,7 +728,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get phaseWork => '운동';
 
   @override
-  String get phaseRelax => '이완';
+  String get phaseRelax => '휴식';
 
   @override
   String get phaseCompleted => '완료';

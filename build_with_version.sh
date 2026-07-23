@@ -1,4 +1,14 @@
 #!/bin/bash
+set -euo pipefail
+
+# Broken sdkman JAVA_HOME breaks plugin Kotlin→Java compile.
+if [[ -z "${JAVA_HOME:-}" || ! -x "${JAVA_HOME}/bin/java" ]]; then
+  if [[ -x "/Applications/Android Studio.app/Contents/jbr/Contents/Home/bin/java" ]]; then
+    export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
+  elif [[ -x "/opt/homebrew/opt/openjdk@17/bin/java" ]]; then
+    export JAVA_HOME="/opt/homebrew/opt/openjdk@17"
+  fi
+fi
 
 # pubspec.yaml 파일 경로
 PUBSPEC_FILE="pubspec.yaml"
@@ -13,6 +23,7 @@ NEW_BUILD_NUMBER=$((BUILD_NUMBER + 1))
 NEW_VERSION="$VERSION_NAME+$NEW_BUILD_NUMBER"
 
 echo "Updating version from $CURRENT_VERSION to $NEW_VERSION"
+echo "Using JAVA_HOME=${JAVA_HOME:-"(unset)"}"
 
 # Flutter 명령어로 버전 업데이트 및 빌드
 flutter build appbundle --release --build-number=$NEW_BUILD_NUMBER
