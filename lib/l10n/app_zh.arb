@@ -289,6 +289,13 @@
   "phaseRelax": "休息",
   "phaseCompleted": "完成",
   "workoutCompletedMessage": "辛苦了",
+  "watchHeartRateSummary": "手表心率 — 平均 {avgBpm} · 最高 {maxBpm}",
+  "watchStatusTitle": "Apple Watch",
+  "watchStatusConnected": "已连接 — 显示训练画面与心率",
+  "watchStatusPaired": "已配对 — 开始训练后同步",
+  "watchStatusUnavailable": "此设备不可用",
+  "watchStatusUnsupported": "需要已配对 Apple Watch 的 iPhone",
+
   "repSetProgress": "{rep}/{totalReps} 次 · {set}/{totalSets} 组",
   "skipPhase": "跳过",
   "pause": "暂停",

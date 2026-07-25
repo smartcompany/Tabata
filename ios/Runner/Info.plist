@@ -43,9 +43,9 @@
 		<key>NSCameraUsageDescription</key>
 		<string>Camera access is needed to take a photo for routine descriptions.</string>
 		<key>NSHealthShareUsageDescription</key>
-		<string>Health data access is needed to save completed workouts to the Health app.</string>
+		<string>Health access is needed to save completed workouts and, with Apple Watch, show live heart rate during exercise.</string>
 		<key>NSHealthUpdateUsageDescription</key>
-		<string>Health data access is needed to save completed workouts to the Health app.</string>
+		<string>Health access is needed to save completed workouts to the Health app.</string>
 		<key>UIStatusBarHidden</key>
 		<false/>
 		<key>ITSAppUsesNonExemptEncryption</key>

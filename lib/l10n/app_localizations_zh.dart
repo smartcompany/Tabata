@@ -732,6 +732,26 @@ class AppLocalizationsZh extends AppLocalizations {
   String get workoutCompletedMessage => '辛苦了';
 
   @override
+  String watchHeartRateSummary(int avgBpm, int maxBpm) {
+    return '手表心率 — 平均 $avgBpm · 最高 $maxBpm';
+  }
+
+  @override
+  String get watchStatusTitle => 'Apple Watch';
+
+  @override
+  String get watchStatusConnected => '已连接 — 显示训练画面与心率';
+
+  @override
+  String get watchStatusPaired => '已配对 — 开始训练后同步';
+
+  @override
+  String get watchStatusUnavailable => '此设备不可用';
+
+  @override
+  String get watchStatusUnsupported => '需要已配对 Apple Watch 的 iPhone';
+
+  @override
   String repSetProgress(int rep, int totalReps, int set, int totalSets) {
     return '$rep/$totalReps 次 · $set/$totalSets 组';
   }

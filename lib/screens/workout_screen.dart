@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:tabata_timer/l10n/app_localizations.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
@@ -20,6 +21,7 @@ import '../services/workout_sound_coach.dart';
 import '../services/workout_voice_coach.dart';
 import '../services/workout_voice_phrases.dart';
 import '../services/workout_voice_planner.dart';
+import '../services/watch_workout_bridge.dart';
 import '../utils/duration_format.dart';
 import '../utils/duration_calculator.dart';
 import 'exercise_editor_screen.dart';
@@ -44,6 +46,11 @@ class WorkoutScreen extends StatefulWidget {
   final WorkoutLaunchScope launchScope;
   final String? singleExerciseId;
 
+  static int _activeCount = 0;
+
+  /// True while at least one [WorkoutScreen] is mounted.
+  static bool get isActive => _activeCount > 0;
+
   @override
   State<WorkoutScreen> createState() => _WorkoutScreenState();
 }
@@ -65,13 +72,33 @@ class _WorkoutScreenState extends State<WorkoutScreen> with WidgetsBindingObserv
   bool _startRecorded = false;
   late Routine _activeRoutine;
   var _continueInBackground = true;
+  final _watch = WatchWorkoutBridge.instance;
+  StreamSubscription<WatchCommand>? _watchCommandSub;
+  StreamSubscription<WatchHeartRateUpdate>? _watchHeartSub;
+  double _heartRateBpm = 0;
+  double _avgHeartRateBpm = 0;
+  double _maxHeartRateBpm = 0;
+  var _watchReachable = false;
+  var _endingFromWatch = false;
 
   @override
   void initState() {
     super.initState();
+    WorkoutScreen._activeCount++;
     WidgetsBinding.instance.addObserver(this);
     _activeRoutine = widget.routine;
     unawaited(_loadWorkoutSettings());
+    _watch.ensureListening();
+    _watchCommandSub = _watch.commands.listen(_onWatchCommand);
+    _watchHeartSub = _watch.heartRates.listen((update) {
+      if (!mounted) return;
+      setState(() {
+        _heartRateBpm = update.bpm;
+        if (update.avgBpm > 0) _avgHeartRateBpm = update.avgBpm;
+        if (update.maxBpm > 0) _maxHeartRateBpm = update.maxBpm;
+      });
+    });
+    unawaited(_refreshWatchReachability());
     WakelockPlus.enable();
     unawaited(
       AppAnalyticsService.logProductEvent(
@@ -92,6 +119,86 @@ class _WorkoutScreenState extends State<WorkoutScreen> with WidgetsBindingObserv
     _engine = _createEngine(_activeRoutine);
     _engine!.addListener(_onTick);
     _initVoiceCoach(AppLocalizations.of(context));
+    unawaited(
+      _watch.syncSnapshot(
+        _engine!.snapshot,
+        healthActivityType: _activeRoutine.healthActivityType,
+        force: true,
+      ),
+    );
+  }
+
+  Future<void> _refreshWatchReachability() async {
+    final reachable = await _watch.isWatchReachable();
+    if (!mounted) return;
+    setState(() => _watchReachable = reachable);
+  }
+
+  void _onWatchCommand(WatchCommand command) {
+    final engine = _engine;
+    if (engine == null || !mounted) return;
+    switch (command.command) {
+      case 'pause':
+        if (!engine.snapshot.isPaused && !engine.snapshot.isCompleted) {
+          engine.pause();
+          _soundCoach?.syncClock(
+            engine.snapshot,
+            blockForIntro: _shouldBlockClock(engine.snapshot),
+          );
+          setState(() {});
+          unawaited(
+            _watch.syncSnapshot(
+              engine.snapshot,
+              healthActivityType: _activeRoutine.healthActivityType,
+              force: true,
+            ),
+          );
+        }
+      case 'resume':
+        if (engine.snapshot.isPaused && !engine.snapshot.isCompleted) {
+          engine.resume();
+          _soundCoach?.syncClock(
+            engine.snapshot,
+            blockForIntro: _shouldBlockClock(engine.snapshot),
+          );
+          setState(() {});
+          unawaited(
+            _watch.syncSnapshot(
+              engine.snapshot,
+              healthActivityType: _activeRoutine.healthActivityType,
+              force: true,
+            ),
+          );
+        }
+      case 'end':
+        _endWorkoutFromWatch();
+      // startRoutine is handled globally in TabataApp.
+    }
+  }
+
+  /// Stop timer/audio immediately. [Navigator.maybePop] alone is unreliable
+  /// while the iPhone app is backgrounded (frames may not run until resume).
+  void _endWorkoutFromWatch() {
+    if (_endingFromWatch) return;
+    _endingFromWatch = true;
+
+    final engine = _engine;
+    if (engine != null && !engine.snapshot.isCompleted) {
+      engine.pause();
+      _soundCoach?.syncClock(
+        engine.snapshot,
+        blockForIntro: _shouldBlockClock(engine.snapshot),
+      );
+    }
+
+    unawaited(_watch.endSession());
+
+    if (!mounted) return;
+    Navigator.of(context).maybePop();
+    // Ensure dispose runs while backgrounded so a later Watch start is not
+    // blocked by WorkoutScreen.isActive.
+    SchedulerBinding.instance.scheduleWarmUpFrame();
+    SchedulerBinding.instance.scheduleFrame();
   }
 
   WorkoutTimerEngine _createEngine(Routine routine) {
@@ -146,42 +253,48 @@ class _WorkoutScreenState extends State<WorkoutScreen> with WidgetsBindingObserv
 
   void _onTick() {
     final engine = _engine;
-    if (engine != null) {
-      if (!_startRecorded && engine.elapsedSec > 0) {
-        _startRecorded = true;
-        unawaited(
-          AppAnalyticsService.logProductEvent(
-            'workout_started',
-            properties: {
-              'routine_source': _activeRoutine.id.startsWith('ai-')
-                  ? 'ai'
-                  : 'other',
-            },
-          ),
-        );
-      }
-      final current = engine.snapshot;
-      final introCues = _voicePlanner.plan(
-        previous: _previousSnapshot,
-        current: current,
+    if (engine == null) return;
+    if (!_startRecorded && engine.elapsedSec > 0) {
+      _startRecorded = true;
+      unawaited(
+        AppAnalyticsService.logProductEvent(
+          'workout_started',
+          properties: {
+            'routine_source': _activeRoutine.id.startsWith('ai-')
+                ? 'ai'
+                : 'other',
+          },
+        ),
       );
-      if (_shouldHoldTimerForAnnounce(introCues) && !current.isPaused) {
-        engine.holdForAnnounce();
-      }
-
-      final soundPrevious = _lastSoundSnapshot;
-      _soundCoach?.handleSnapshot(
-        soundPrevious,
-        current,
-        blockForIntro: _shouldBlockClock(current),
-      );
-      _lastSoundSnapshot = current;
     }
+    final current = engine.snapshot;
+    final introCues = _voicePlanner.plan(
+      previous: _previousSnapshot,
+      current: current,
+    );
+    if (_shouldHoldTimerForAnnounce(introCues) && !current.isPaused) {
+      engine.holdForAnnounce();
+    }
+
+    final soundPrevious = _lastSoundSnapshot;
+    _soundCoach?.handleSnapshot(
+      soundPrevious,
+      current,
+      blockForIntro: _shouldBlockClock(current),
+    );
+    _lastSoundSnapshot = current;
     _scheduleAnnounce();
     setState(() {});
-    if (_engine!.snapshot.isCompleted) {
+    unawaited(
+      _watch.syncSnapshot(
+        engine.snapshot,
+        healthActivityType: _activeRoutine.healthActivityType,
+      ),
+    );
+    if (engine.snapshot.isCompleted) {
       HapticFeedback.mediumImpact();
       _maybeRecordCompletion();
+      unawaited(_watch.endSession());
     }
   }
 
@@ -197,6 +310,19 @@ class _WorkoutScreenState extends State<WorkoutScreen> with WidgetsBindingObserv
       routine: _activeRoutine,
       elapsedSec: engine.elapsedSec,
     );
+    if (!mounted) return;
+    if (_avgHeartRateBpm > 0 || _maxHeartRateBpm > 0) {
+      final l10n = AppLocalizations.of(context);
+      final avg = _avgHeartRateBpm.round();
+      final max = _maxHeartRateBpm.round();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            l10n.watchHeartRateSummary(avg, max),
+          ),
+        ),
+      );
+    }
   }
 
   void _scheduleAnnounce() {
@@ -258,8 +384,13 @@ class _WorkoutScreenState extends State<WorkoutScreen> with WidgetsBindingObserv
 
   @override
   void dispose() {
+    WorkoutScreen._activeCount =
+        (WorkoutScreen._activeCount - 1).clamp(0, 1 << 30);
     WidgetsBinding.instance.removeObserver(this);
     WakelockPlus.disable();
+    unawaited(_watchCommandSub?.cancel() ?? Future<void>.value());
+    unawaited(_watchHeartSub?.cancel() ?? Future<void>.value());
+    unawaited(_watch.endSession());
     final elapsed = _engine?.elapsedSec ?? 0;
     if (!_completionRecorded && elapsed > 0) {
       final planned = routineDurationSec(_activeRoutine);
@@ -437,6 +568,13 @@ class _WorkoutScreenState extends State<WorkoutScreen> with WidgetsBindingObserv
       blockForIntro: _shouldBlockClock(engine.snapshot),
     );
     setState(() {});
+    unawaited(
+      _watch.syncSnapshot(
+        engine.snapshot,
+        healthActivityType: _activeRoutine.healthActivityType,
+        force: true,
+      ),
+    );
   }
 
   void _goToPreviousPhase() {
@@ -541,13 +679,53 @@ class _WorkoutScreenState extends State<WorkoutScreen> with WidgetsBindingObserv
                     ],
                   ),
                   if (!snap.isCompleted) ...[
-                    Text(
-                      formatDurationClock(engine.elapsedSec),
-                      style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.38),
-                        fontSize: 14,
-                        fontFeatures: const [FontFeature.tabularFigures()],
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          formatDurationClock(engine.elapsedSec),
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.38),
+                            fontSize: 14,
+                            fontFeatures: const [FontFeature.tabularFigures()],
+                          ),
+                        ),
+                        if (_heartRateBpm > 0) ...[
+                          Text(
+                            '  ·  ',
+                            style: TextStyle(
+                              color: Colors.white.withValues(alpha: 0.28),
+                            ),
+                          ),
+                          Icon(
+                            Icons.favorite_rounded,
+                            size: 14,
+                            color: Colors.redAccent.withValues(alpha: 0.9),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            '${_heartRateBpm.round()}',
+                            style: TextStyle(
+                              color: Colors.white.withValues(alpha: 0.7),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              fontFeatures: const [FontFeature.tabularFigures()],
+                            ),
+                          ),
+                        ] else if (_watchReachable) ...[
+                          Text(
+                            '  ·  ',
+                            style: TextStyle(
+                              color: Colors.white.withValues(alpha: 0.28),
+                            ),
+                          ),
+                          Icon(
+                            Icons.watch_rounded,
+                            size: 14,
+                            color: Colors.white.withValues(alpha: 0.38),
+                          ),
+                        ],
+                      ],
                     ),
                     const SizedBox(height: 6),
                     Row(

@@ -390,6 +390,19 @@
   "phaseRelax": "휴식",
   "phaseCompleted": "완료",
   "workoutCompletedMessage": "수고하셨습니다",
+  "watchHeartRateSummary": "워치 심박 — 평균 {avgBpm} · 최대 {maxBpm}",
+  "@watchHeartRateSummary": {
+    "placeholders": {
+      "avgBpm": {"type": "int"},
+      "maxBpm": {"type": "int"}
+    }
+  },
+  "watchStatusTitle": "Apple Watch",
+  "watchStatusConnected": "연결됨 — 운동 화면과 심박을 표시합니다",
+  "watchStatusPaired": "페어링됨 — 운동을 시작하면 동기화됩니다",
+  "watchStatusUnavailable": "이 기기에서는 사용할 수 없습니다",
+  "watchStatusUnsupported": "페어링된 Apple Watch가 있는 iPhone이 필요합니다",
+
   "repSetProgress": "{rep}/{totalReps}회 · {set}/{totalSets}세트",
   "@repSetProgress": {
     "placeholders": {

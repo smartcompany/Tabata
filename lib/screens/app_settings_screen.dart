@@ -4,6 +4,7 @@ import 'package:tabata_timer/l10n/app_localizations.dart';
 import '../services/app_review_service.dart';
 import '../services/health_workout_recorder.dart';
 import '../services/health_permission_flow.dart';
+import '../services/watch_workout_bridge.dart';
 import '../services/workout_settings.dart';
 import '../utils/health_platform_l10n.dart';
 import '../utils/legal_urls.dart';
@@ -40,6 +41,8 @@ class _AppSettingsScreenState extends State<AppSettingsScreen> {
   var _saveToAppleHealth = false;
   var _continueInBackground = true;
   var _loading = true;
+  var _watchPaired = false;
+  var _watchReachable = false;
 
   @override
   void initState() {
@@ -49,11 +52,17 @@ class _AppSettingsScreenState extends State<AppSettingsScreen> {
 
   Future<void> _load() async {
     final workoutSettings = await WorkoutSettings.load();
+    final watch = WatchWorkoutBridge.instance;
+    watch.ensureListening();
+    final paired = await watch.isWatchPaired();
+    final reachable = await watch.isWatchReachable();
     if (!mounted) return;
     setState(() {
       _workoutSettings = workoutSettings;
       _saveToAppleHealth = workoutSettings.saveToAppleHealth;
       _continueInBackground = workoutSettings.continueInBackground;
+      _watchPaired = paired;
+      _watchReachable = reachable;
       _loading = false;
     });
   }
@@ -149,6 +158,25 @@ class _AppSettingsScreenState extends State<AppSettingsScreen> {
                         setState(() => _saveToAppleHealth = value);
                       },
                     ),
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: Icon(
+                      Icons.watch_rounded,
+                      color: _watchReachable
+                          ? colorScheme.primary
+                          : colorScheme.outline,
+                    ),
+                    title: Text(l10n.watchStatusTitle),
+                    subtitle: Text(
+                      !WatchWorkoutBridge.instance.isSupported
+                          ? l10n.watchStatusUnsupported
+                          : _watchReachable
+                              ? l10n.watchStatusConnected
+                              : _watchPaired
+                                  ? l10n.watchStatusPaired
+                                  : l10n.watchStatusUnavailable,
+                    ),
+                  ),
                   const SizedBox(height: 8),
                   const Divider(height: 1),
                   const SizedBox(height: 20),

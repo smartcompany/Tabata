@@ -29,6 +29,7 @@ import 'services/shared_routine_link_coordinator.dart';
 import 'services/share_link_log.dart';
 import 'services/workout_completion_recorder.dart';
 import 'services/workout_launch_coordinator.dart';
+import 'services/watch_workout_bridge.dart';
 import 'widgets/keyboard_dismiss_scope.dart';
 
 Future<void> main() async {
@@ -130,21 +131,63 @@ class TabataApp extends StatefulWidget {
 }
 
 class _TabataAppState extends State<TabataApp> with WidgetsBindingObserver {
+  StreamSubscription<WatchCommand>? _watchCommandSub;
+  StreamSubscription<void>? _watchRoutineRequestSub;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _configureWatchBridge();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       shareLinkLog('TabataApp first frame — starting link coordinator');
       if (!kIsWeb) {
         unawaited(widget.linkCoordinator.start());
       }
+      _syncWatchRoutineList(force: true);
     });
+  }
+
+  void _configureWatchBridge() {
+    final watch = WatchWorkoutBridge.instance;
+    if (!watch.isSupported) return;
+    watch.ensureListening();
+    _watchCommandSub = watch.commands.listen((command) {
+      debugPrint('Watch command: ${command.command} id=${command.routineId}');
+      if (command.command == 'startRoutine') {
+        final id = command.routineId;
+        if (id != null && id.isNotEmpty) {
+          widget.workoutLaunchCoordinator.startRoutine(id);
+        }
+      }
+    });
+    _watchRoutineRequestSub = watch.routineListRequests.listen((_) {
+      _syncWatchRoutineList(force: true);
+    });
+    unawaited(_consumePendingWatchStart());
+  }
+
+  Future<void> _consumePendingWatchStart() async {
+    final id =
+        await WatchWorkoutBridge.instance.consumePendingStartRoutine();
+    if (id == null || id.isEmpty) return;
+    widget.workoutLaunchCoordinator.startRoutine(id);
+  }
+
+  void _syncWatchRoutineList({bool force = false}) {
+    unawaited(
+      WatchWorkoutBridge.instance.syncRoutineList(
+        widget.repository.myRoutines,
+        force: force,
+      ),
+    );
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    unawaited(_watchCommandSub?.cancel() ?? Future<void>.value());
+    unawaited(_watchRoutineRequestSub?.cancel() ?? Future<void>.value());
     widget.linkCoordinator.dispose();
     super.dispose();
   }
@@ -158,6 +201,8 @@ class _TabataAppState extends State<TabataApp> with WidgetsBindingObserver {
       shareLinkLog('TabataApp resumed — checking pending share link');
       unawaited(widget.linkCoordinator.onAppResumed());
       unawaited(RoutineScheduleService.shared.syncAllSchedules());
+      _syncWatchRoutineList();
+      unawaited(_consumePendingWatchStart());
     }
   }
 

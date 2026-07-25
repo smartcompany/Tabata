@@ -735,6 +735,26 @@ class AppLocalizationsJa extends AppLocalizations {
   String get workoutCompletedMessage => 'お疲れさまでした';
 
   @override
+  String watchHeartRateSummary(int avgBpm, int maxBpm) {
+    return 'Watch心拍 — 平均 $avgBpm · 最大 $maxBpm';
+  }
+
+  @override
+  String get watchStatusTitle => 'Apple Watch';
+
+  @override
+  String get watchStatusConnected => '接続済み — ワークアウトと心拍を表示します';
+
+  @override
+  String get watchStatusPaired => 'ペアリング済み — 運動開始で同期します';
+
+  @override
+  String get watchStatusUnavailable => 'このデバイスでは利用できません';
+
+  @override
+  String get watchStatusUnsupported => 'ペアリング済みの Apple Watch が必要です';
+
+  @override
   String repSetProgress(int rep, int totalReps, int set, int totalSets) {
     return '$rep/$totalReps 回 · $set/$totalSets セット';
   }

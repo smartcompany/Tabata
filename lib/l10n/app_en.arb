@@ -390,6 +390,19 @@
   "phaseRelax": "Rest",
   "phaseCompleted": "Done",
   "workoutCompletedMessage": "Great job",
+  "watchHeartRateSummary": "Watch HR — avg {avgBpm} · max {maxBpm}",
+  "@watchHeartRateSummary": {
+    "placeholders": {
+      "avgBpm": {"type": "int"},
+      "maxBpm": {"type": "int"}
+    }
+  },
+  "watchStatusTitle": "Apple Watch",
+  "watchStatusConnected": "Connected — mirrors workouts and heart rate",
+  "watchStatusPaired": "Paired — open a workout to sync",
+  "watchStatusUnavailable": "Not available on this device",
+  "watchStatusUnsupported": "Requires iPhone with a paired Apple Watch",
+
   "repSetProgress": "{rep}/{totalReps} reps · {set}/{totalSets} sets",
   "@repSetProgress": {
     "placeholders": {

@@ -289,6 +289,13 @@
   "phaseRelax": "休息",
   "phaseCompleted": "完了",
   "workoutCompletedMessage": "お疲れさまでした",
+  "watchHeartRateSummary": "Watch心拍 — 平均 {avgBpm} · 最大 {maxBpm}",
+  "watchStatusTitle": "Apple Watch",
+  "watchStatusConnected": "接続済み — ワークアウトと心拍を表示します",
+  "watchStatusPaired": "ペアリング済み — 運動開始で同期します",
+  "watchStatusUnavailable": "このデバイスでは利用できません",
+  "watchStatusUnsupported": "ペアリング済みの Apple Watch が必要です",
+
   "repSetProgress": "{rep}/{totalReps} 回 · {set}/{totalSets} セット",
   "skipPhase": "スキップ",
   "pause": "一時停止",

@@ -1416,6 +1416,42 @@ abstract class AppLocalizations {
   /// **'Great job'**
   String get workoutCompletedMessage;
 
+  /// No description provided for @watchHeartRateSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch HR — avg {avgBpm} · max {maxBpm}'**
+  String watchHeartRateSummary(int avgBpm, int maxBpm);
+
+  /// No description provided for @watchStatusTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Apple Watch'**
+  String get watchStatusTitle;
+
+  /// No description provided for @watchStatusConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected — mirrors workouts and heart rate'**
+  String get watchStatusConnected;
+
+  /// No description provided for @watchStatusPaired.
+  ///
+  /// In en, this message translates to:
+  /// **'Paired — open a workout to sync'**
+  String get watchStatusPaired;
+
+  /// No description provided for @watchStatusUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Not available on this device'**
+  String get watchStatusUnavailable;
+
+  /// No description provided for @watchStatusUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Requires iPhone with a paired Apple Watch'**
+  String get watchStatusUnsupported;
+
   /// No description provided for @repSetProgress.
   ///
   /// In en, this message translates to:

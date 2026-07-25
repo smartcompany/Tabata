@@ -13,7 +13,24 @@ import UserNotifications
       UNUserNotificationCenter.current().delegate = self as UNUserNotificationCenterDelegate
     }
     GeneratedPluginRegistrant.register(with: self)
-    return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+
+    // Activate WatchConnectivity before Flutter finishes booting so a Watch
+    // `transferUserInfo(startRoutine)` can wake a terminated phone app.
+    WatchSessionManager.shared.prepareAtLaunch()
+
+    let finished = super.application(application, didFinishLaunchingWithOptions: launchOptions)
+
+    if let controller = window?.rootViewController as? FlutterViewController {
+      WatchSessionManager.shared.configure(messenger: controller.binaryMessenger)
+    } else {
+      DispatchQueue.main.async {
+        if let controller = self.window?.rootViewController as? FlutterViewController {
+          WatchSessionManager.shared.configure(messenger: controller.binaryMessenger)
+        }
+      }
+    }
+
+    return finished
   }
 
   override func application(

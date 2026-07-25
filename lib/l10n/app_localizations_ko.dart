@@ -737,6 +737,26 @@ class AppLocalizationsKo extends AppLocalizations {
   String get workoutCompletedMessage => '수고하셨습니다';
 
   @override
+  String watchHeartRateSummary(int avgBpm, int maxBpm) {
+    return '워치 심박 — 평균 $avgBpm · 최대 $maxBpm';
+  }
+
+  @override
+  String get watchStatusTitle => 'Apple Watch';
+
+  @override
+  String get watchStatusConnected => '연결됨 — 운동 화면과 심박을 표시합니다';
+
+  @override
+  String get watchStatusPaired => '페어링됨 — 운동을 시작하면 동기화됩니다';
+
+  @override
+  String get watchStatusUnavailable => '이 기기에서는 사용할 수 없습니다';
+
+  @override
+  String get watchStatusUnsupported => '페어링된 Apple Watch가 있는 iPhone이 필요합니다';
+
+  @override
   String repSetProgress(int rep, int totalReps, int set, int totalSets) {
     return '$rep/$totalReps회 · $set/$totalSets세트';
   }

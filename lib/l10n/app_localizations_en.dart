@@ -749,6 +749,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutCompletedMessage => 'Great job';
 
   @override
+  String watchHeartRateSummary(int avgBpm, int maxBpm) {
+    return 'Watch HR — avg $avgBpm · max $maxBpm';
+  }
+
+  @override
+  String get watchStatusTitle => 'Apple Watch';
+
+  @override
+  String get watchStatusConnected =>
+      'Connected — mirrors workouts and heart rate';
+
+  @override
+  String get watchStatusPaired => 'Paired — open a workout to sync';
+
+  @override
+  String get watchStatusUnavailable => 'Not available on this device';
+
+  @override
+  String get watchStatusUnsupported =>
+      'Requires iPhone with a paired Apple Watch';
+
+  @override
   String repSetProgress(int rep, int totalReps, int set, int totalSets) {
     return '$rep/$totalReps reps · $set/$totalSets sets';
   }

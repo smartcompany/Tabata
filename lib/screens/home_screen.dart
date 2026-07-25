@@ -17,6 +17,7 @@ import '../services/shared_routine_link_coordinator.dart';
 import '../services/share_link_log.dart';
 import '../services/workout_completion_recorder.dart';
 import '../services/workout_launch_coordinator.dart';
+import '../services/watch_workout_bridge.dart';
 import '../utils/auth_helper.dart';
 import '../utils/catalog_thumbnail.dart';
 import '../utils/duration_calculator.dart';
@@ -96,11 +97,18 @@ class _HomeScreenState extends State<HomeScreen>
       if (!mounted) return;
       _tabController.animateTo(0);
       setState(() {});
+      _syncWatchRoutineList();
     };
     WidgetsBinding.instance.addPostFrameCallback((_) {
       shareLinkLog('HomeScreen first frame — onHomeReady');
       widget.linkCoordinator.onHomeReady();
       widget.workoutLaunchCoordinator.onHomeReady();
+      unawaited(
+        WatchWorkoutBridge.instance.syncRoutineList(
+          widget.repository.myRoutines,
+          force: true,
+        ),
+      );
       _openInitialRoutineIfNeeded();
     });
     _loadCatalogInitial();
@@ -271,6 +279,7 @@ class _HomeScreenState extends State<HomeScreen>
     );
     if (!mounted) return;
     setState(() {});
+    _syncWatchRoutineList();
   }
 
   Future<void> _createRoutine() async {
@@ -296,6 +305,7 @@ class _HomeScreenState extends State<HomeScreen>
     if (saved == null) return;
     if (!mounted) return;
     setState(() {});
+    _syncWatchRoutineList();
   }
 
   void _onReorderMyRoutines(int oldIndex, int newIndex) {
@@ -308,6 +318,7 @@ class _HomeScreenState extends State<HomeScreen>
       widget.repository.localIdsInDisplayOrder(updated),
     );
     setState(() {});
+    _syncWatchRoutineList();
   }
 
   Future<void> _forkCatalogProfile(ProfileSummary summary) async {
@@ -329,6 +340,7 @@ class _HomeScreenState extends State<HomeScreen>
       );
       if (!mounted) return;
       setState(() => _downloadingCatalogId = null);
+      _syncWatchRoutineList();
     } catch (_) {
       await AppAnalyticsService.logProductEvent(
         'routine_download_failed',
@@ -354,6 +366,7 @@ class _HomeScreenState extends State<HomeScreen>
     );
     if (!mounted) return;
     setState(() {});
+    _syncWatchRoutineList();
   }
 
   Future<void> _confirmDeleteMyRoutine(Routine routine) async {
@@ -380,6 +393,7 @@ class _HomeScreenState extends State<HomeScreen>
     await widget.repository.delete(routine.id);
     if (!mounted) return;
     setState(() => _openSwipeItemKey = null);
+    _syncWatchRoutineList();
   }
 
   Future<void> _openLocalRoutine(
@@ -398,6 +412,15 @@ class _HomeScreenState extends State<HomeScreen>
     );
     if (!mounted) return;
     setState(() {});
+    _syncWatchRoutineList();
+  }
+
+  void _syncWatchRoutineList() {
+    unawaited(
+      WatchWorkoutBridge.instance.syncRoutineList(
+        widget.repository.myRoutines,
+      ),
+    );
   }
 
   String _myRoutineSubtitle(AppLocalizations l10n, Routine routine) {
