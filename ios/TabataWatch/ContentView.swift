@@ -18,7 +18,7 @@ struct ContentView: View {
       }
     }
     .onAppear {
-      if !connectivity.sessionActive {
+      if connectivity.screenshotDemoMode == nil, !connectivity.sessionActive {
         connectivity.requestRoutines()
       }
     }
@@ -29,7 +29,7 @@ struct ContentView: View {
       if !connectivity.routinesLoaded {
         VStack(spacing: 8) {
           ProgressView()
-          Text("루틴 불러오는 중…")
+          Text("loading_routines", comment: "Idle: loading routines")
             .font(.caption2)
             .foregroundStyle(.secondary)
         }
@@ -38,7 +38,7 @@ struct ContentView: View {
         VStack(spacing: 8) {
           Image(systemName: "iphone")
             .font(.title2)
-          Text("iPhone에서 루틴을 추가하세요")
+          Text("add_routines_on_iphone", comment: "Idle: empty routines")
             .multilineTextAlignment(.center)
             .font(.caption)
             .foregroundStyle(.secondary)
@@ -66,7 +66,7 @@ struct ContentView: View {
                 }
               }
             } header: {
-              Text("내 루틴")
+              Text("my_routines", comment: "Idle list header")
             }
           }
         }
@@ -77,10 +77,10 @@ struct ContentView: View {
   private var startingView: some View {
     VStack(spacing: 8) {
       ProgressView()
-      Text("시작하는 중…")
+      Text("starting", comment: "Starting workout")
         .font(.caption)
         .foregroundStyle(.secondary)
-      Button("취소") {
+      Button(String(localized: "cancel")) {
         connectivity.dismissCompleted()
         connectivity.startError = nil
         connectivity.isStarting = false
@@ -92,19 +92,19 @@ struct ContentView: View {
 
   private var completedView: some View {
     VStack(spacing: 8) {
-      Text("완료")
+      Text("completed", comment: "Workout finished")
         .font(.headline)
       if connectivity.avgBpm > 0 {
-        Text("평균 \(Int(connectivity.avgBpm)) bpm")
+        Text("avg_bpm \(Int(connectivity.avgBpm))", comment: "Average heart rate")
           .font(.caption)
           .foregroundStyle(.secondary)
       }
       if connectivity.maxBpm > 0 {
-        Text("최대 \(Int(connectivity.maxBpm)) bpm")
+        Text("max_bpm \(Int(connectivity.maxBpm))", comment: "Max heart rate")
           .font(.caption2)
           .foregroundStyle(.secondary)
       }
-      Button("루틴 목록") {
+      Button(String(localized: "routine_list")) {
         connectivity.dismissCompleted()
         connectivity.requestRoutines()
       }
@@ -139,7 +139,10 @@ struct ContentView: View {
             .multilineTextAlignment(.center)
         }
 
-        Text("세트 \(connectivity.setIndex)/\(connectivity.totalSets) · 횟수 \(connectivity.repIndex)/\(connectivity.totalReps)")
+        Text(
+          "sets_reps \(connectivity.setIndex) \(connectivity.totalSets) \(connectivity.repIndex) \(connectivity.totalReps)",
+          comment: "Set and rep progress"
+        )
           .font(.caption2)
           .foregroundStyle(.secondary)
 
@@ -172,21 +175,26 @@ struct ContentView: View {
       }
       .padding(.horizontal, 4)
     }
-    .confirmationDialog("운동을 종료할까요?", isPresented: $confirmEnd) {
-      Button("종료", role: .destructive) {
+    .confirmationDialog(
+      String(localized: "end_workout_confirm"),
+      isPresented: $confirmEnd
+    ) {
+      Button(String(localized: "end"), role: .destructive) {
         connectivity.sendCommand("end")
       }
-      Button("취소", role: .cancel) {}
+      Button(String(localized: "cancel"), role: .cancel) {}
     }
   }
 
   private var phaseTitle: String {
     switch connectivity.phaseKind {
-    case "prepare": return "준비"
-    case "work": return "운동"
-    case "relax": return "휴식"
-    case "completed": return "완료"
-    default: return connectivity.phaseKind.isEmpty ? "운동" : connectivity.phaseKind
+    case "prepare": return String(localized: "phase_prepare")
+    case "work": return String(localized: "phase_work")
+    case "relax": return String(localized: "phase_relax")
+    case "completed": return String(localized: "completed")
+    default: return connectivity.phaseKind.isEmpty
+      ? String(localized: "phase_work")
+      : connectivity.phaseKind
     }
   }
 

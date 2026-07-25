@@ -31,6 +31,9 @@ final class WatchConnectivityService: NSObject, ObservableObject {
   @Published var routinesLoaded = false
   @Published var startError: String?
 
+  /// When set, ignore WCSession updates so App Store screenshot demos stay stable.
+  private(set) var screenshotDemoMode: String?
+
   private var lastPhaseKind = ""
   private var lastRemainingSec = -1
   private var startTimeoutWork: DispatchWorkItem?
@@ -86,7 +89,7 @@ final class WatchConnectivityService: NSObject, ObservableObject {
       guard let self else { return }
       guard self.isStarting, !self.sessionActive else { return }
       self.isStarting = false
-      self.startError = "iPhone에서 시작하지 못했습니다"
+      self.startError = String(localized: "start_failed")
     }
     startTimeoutWork = work
     DispatchQueue.main.asyncAfter(deadline: .now() + 20, execute: work)
@@ -100,6 +103,7 @@ final class WatchConnectivityService: NSObject, ObservableObject {
   }
 
   func requestRoutines() {
+    if screenshotDemoMode != nil { return }
     sendPayload(["command": "requestRoutines"])
   }
 
@@ -107,6 +111,50 @@ final class WatchConnectivityService: NSObject, ObservableObject {
     isCompleted = false
     sessionActive = false
     clearStartingState()
+  }
+
+  /// Simulator / App Store screenshot demos via launch args:
+  /// `-demoIdle` or `-demoWorkout`
+  func applyScreenshotDemo(_ mode: String) {
+    screenshotDemoMode = mode
+    DispatchQueue.main.async { [weak self] in
+      guard let self else { return }
+      self.clearStartingState()
+      self.startError = nil
+      switch mode {
+      case "idle":
+        self.sessionActive = false
+        self.isCompleted = false
+        self.routinesLoaded = true
+        self.routines = [
+          WatchRoutineItem(id: "1", title: String(localized: "demo_routine_rehab")),
+          WatchRoutineItem(id: "2", title: String(localized: "demo_routine_warmup")),
+          WatchRoutineItem(id: "3", title: String(localized: "demo_routine_tabata")),
+        ]
+      case "workout":
+        self.sessionActive = true
+        self.isCompleted = false
+        self.isPaused = false
+        self.phaseKind = "work"
+        let squat = String(localized: "demo_exercise_squat")
+        self.label = squat
+        self.exerciseName = squat
+        self.remainingSec = 20
+        self.setIndex = 1
+        self.repIndex = 2
+        self.totalSets = 3
+        self.totalReps = 8
+        self.heartRateBpm = 128
+        self.routineTitle = String(localized: "demo_routine_tabata")
+      case "done":
+        self.sessionActive = false
+        self.isCompleted = true
+        self.avgBpm = 118
+        self.maxBpm = 142
+      default:
+        break
+      }
+    }
   }
 
   private func sendPayload(_ payload: [String: Any]) {
@@ -150,6 +198,7 @@ final class WatchConnectivityService: NSObject, ObservableObject {
   }
 
   func apply(context: [String: Any]) {
+    if screenshotDemoMode != nil { return }
     DispatchQueue.main.async { [weak self] in
       guard let self else { return }
       let previousKind = self.phaseKind
@@ -172,7 +221,7 @@ final class WatchConnectivityService: NSObject, ObservableObject {
         self.clearStartingState()
         self.sessionActive = false
         self.isCompleted = false
-        self.startError = "iPhone에서 시작하지 못했습니다"
+        self.startError = String(localized: "start_failed")
         HeartRateService.shared.stop()
         return
       }

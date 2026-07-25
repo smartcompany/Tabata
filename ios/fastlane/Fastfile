@@ -10,6 +10,7 @@ app_store_connect_api_key(
 default_platform(:ios)
 
 APP_IDENTIFIER = "com.smartcompany.tabata"
+WATCH_APP_IDENTIFIER = "com.smartcompany.tabata.watchkitapp"
 TEAM_ID = "NTCK5U8AWD"
 FLUTTER_PROJECT_ROOT = File.expand_path("../..", __dir__)
 
@@ -35,7 +36,18 @@ platform :ios do
       xcodeproj: "Runner.xcodeproj"
     )
 
-    # Requires App ID "#{APP_IDENTIFIER}" in Apple Developer Portal
+    # Ensure Watch App ID exists with HealthKit (required for export).
+    produce(
+      app_identifier: WATCH_APP_IDENTIFIER,
+      app_name: "Tabata Watch",
+      skip_itc: true,
+      team_id: TEAM_ID,
+      enable_services: {
+        health_kit: "on"
+      }
+    )
+
+    # iPhone app profile
     get_provisioning_profile(
       app_identifier: APP_IDENTIFIER,
       adhoc: false,
@@ -43,19 +55,30 @@ platform :ios do
       skip_install: false,
       team_id: TEAM_ID
     )
+    iphone_profile_name = lane_context[SharedValues::SIGH_NAME]
+
+    # Watch companion needs its own App Store profile (HealthKit capability).
+    get_provisioning_profile(
+      app_identifier: WATCH_APP_IDENTIFIER,
+      adhoc: false,
+      force: true,
+      skip_install: false,
+      team_id: TEAM_ID
+    )
+    watch_profile_name = lane_context[SharedValues::SIGH_NAME]
 
     clean_build_artifacts
 
-    profile_name = lane_context[SharedValues::SIGH_NAME]
     export_opts = {
-      method: "app-store",
+      method: "app-store-connect",
       uploadBitcode: false,
       uploadSymbols: true,
       compileBitcode: false,
       signingStyle: "manual",
       teamID: TEAM_ID,
       provisioningProfiles: {
-        APP_IDENTIFIER => profile_name
+        APP_IDENTIFIER => iphone_profile_name,
+        WATCH_APP_IDENTIFIER => watch_profile_name
       }
     }
 

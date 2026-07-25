@@ -3,7 +3,7 @@ export default {
   "ko": {
     name: "모두의 타바타 - 인터벌 타이머",
     subtitle: "헬스·운동·홈트·근력·웨이트 재활·스트레칭·AI 루틴",
-    promotionalText: "AI로 맞춤 루틴을 만들어 보세요(광고 시청 후). 운동마다 다른 준비·운동·휴식, 횟수·세트, 공유 루틴, 운동 참고 영상 링크까지 한 앱에서.",
+    promotionalText: "Apple Watch로 타이머·심박을 보고 일시정지·종료·루틴 시작까지. AI 맞춤 루틴(광고 시청 후), 운동별 준비·운동·휴식·횟수·세트까지 한 앱에서.",
     description: `
 모두의 타바타는 운동 하나하나에 맞춘 인터벌 타이머 앱입니다.
 
@@ -13,6 +13,13 @@ export default {
 • 회전근개 등 재활 운동을 처방대로 정확한 타이밍에 수행하고 싶은 분
 • 홈트·서킷·HIIT를 내 방식대로 구성하고 싶은 분
 • 트레이너·물리치료사가 만든 루틴을 받아 쓰고 싶은 분
+• Apple Watch로 손목에서 타이머를 보고 운동을 시작하고 싶은 분
+
+■ Apple Watch 지원
+• iPhone과 함께 설치되는 Apple Watch 컴패니언 앱
+• 운동 중 구간·남은 시간·일시정지/재개/종료를 워치에서 확인·조작
+• 실시간 심박(bpm) 표시
+• 워치의 「내 루틴」에서 루틴을 탭해 운동 시작 (폰 앱이 꺼져 있어도 백그라운드로 시작)
 
 ■ 주요 기능
 • AI 루틴 생성 — 원하는 운동을 글로 설명하거나 운동 영상 링크와 함께 요청 (광고 시청 후 이용)
@@ -43,12 +50,12 @@ export default {
 
 개인정보 처리방침: https://tabata-server.vercel.app/legal/privacy.html
 `,
-    keywords: "홈트레이닝,물리치료,회전근개,세트,횟수,휴식,서킷,HIIT,피트니스,운동타이머,맞춤,공유,유산소,웜업,쿨다운,다이어트,복근,상체,하체,체력,근육,크로스핏,필라테스,코어,요가,PT",
+    keywords: "홈트레이닝,물리치료,회전근개,세트,횟수,휴식,서킷,HIIT,피트니스,운동타이머,맞춤,공유,애플워치,워치,심박,유산소,웜업,쿨다운,다이어트,복근,상체,하체,체력,근육,코어,요가,PT",
   },
   "en-US": {
     name: "Everyone's Tabata Timer",
     subtitle: "Interval · Per-Exercise Rehab",
-    promotionalText: "Describe your workout—or add a workout video link—and AI builds a custom routine after a short ad. Per-exercise intervals, reps, sets, and community sharing.",
+    promotionalText: "Apple Watch: live timer, heart rate, pause/end, and start routines from your wrist. AI custom routines after a short ad—plus per-exercise intervals, reps, and sets.",
     description: `
 Everyone's Tabata is an interval timer built for real workout routines—not just one global timer for the whole session.
 
@@ -59,6 +66,13 @@ Many tabata apps apply the same intervals to an entire workout. That works for s
 • Home workouts, circuits, and custom HIIT
 • Trainers and coaches sharing routines with clients
 • Anyone who wants community-made workout presets
+• Apple Watch users who want timer control on the wrist
+
+■ APPLE WATCH
+• Companion Apple Watch app installs with the iPhone app
+• See phase, remaining time, and pause / resume / end on your Watch
+• Live heart rate (bpm) during workouts
+• Start a routine from My Routines on the Watch (wakes the iPhone app in the background if needed)
 
 ■ KEY FEATURES
 • AI routine generation — describe your goal in text or include a workout video link (available after watching a short ad)
@@ -89,12 +103,12 @@ Workout routines and timers are for general fitness assistance only. They do not
 
 Privacy Policy: https://tabata-server.vercel.app/legal/privacy.html
 `,
-    keywords: "workout,hiit,sets,reps,fitness,routine,AI,stretching,strength,physical,therapy,share,circuit,rest",
+    keywords: "workout,hiit,sets,reps,fitness,routine,AI,watch,heartrate,stretching,strength,share,circuit,rest",
   },
   "ja": {
     name: "みんなのタバタ - インターバルタイマー",
     subtitle: "種目別ルーティン・リハビリ・AI",
-    promotionalText: "AIでカスタムルーティンを作成（広告視聴後）。種目ごとの準備・運動・休憩、回数・セット、共有ルーティン、運動参考動画リンクに対応。",
+    promotionalText: "Apple Watchでタイマー・心拍の表示、一時停止・終了、ルーティン開始に対応。AIカスタムルーティン（広告視聴後）、種目ごとの準備・運動・休憩も。",
     description: `
 みんなのタバタは、種目ごとにタイマーを設定できるインターバルトレーニングアプリです。
 
@@ -104,6 +118,13 @@ Privacy Policy: https://tabata-server.vercel.app/legal/privacy.html
 • リハビリなど、正確なタイミングで処方どおりに運動したい方
 • ホームトレ・サーキット・HIITを自分好みに組みたい方
 • トレーナーやコミュニティのルーティンを使いたい方
+• Apple Watchで手首からタイマーを確認・操作したい方
+
+■ Apple Watch対応
+• iPhoneアプリと一緒にインストールされるApple Watchコンパニオンアプリ
+• ワークアウト中のフェーズ・残り時間・一時停止／再開／終了をWatchで確認・操作
+• リアルタイム心拍（bpm）表示
+• Watchの「マイルーティン」からルーティンをタップして開始（iPhoneアプリが終了していてもバックグラウンドで起動）
 
 ■ 主な機能
 • AIルーティン作成 — テキストで要望を入力、または運動動画リンク付きでリクエスト（広告視聴後）
@@ -134,12 +155,12 @@ Privacy Policy: https://tabata-server.vercel.app/legal/privacy.html
 
 プライバシーポリシー：https://tabata-server.vercel.app/legal/privacy.html
 `,
-    keywords: "ワークアウト,筋トレ,ホームトレ,サーキット,HIIT,セット,回数,休憩,ストレッチ,フィットネス,トレーニング,運動,共有,筋力,体幹,ウォームアップ,有酸素,カスタム,ダイエット,レップ",
+    keywords: "ワークアウト,筋トレ,ホームトレ,サーキット,HIIT,セット,回数,休憩,AppleWatch,心拍,ストレッチ,フィットネス,トレーニング,運動,共有,筋力,体幹,有酸素,カスタム,ダイエット",
   },
   "zh-Hans": {
     name: "大家的塔巴塔 - 间歇计时器",
     subtitle: "按动作训练·康复·AI生成",
-    promotionalText: "用文字描述训练需求，或附上运动视频链接，观看短广告后 AI 生成定制训练。支持按动作设置时间、组数、次数与共享训练。",
+    promotionalText: "Apple Watch 可查看计时与心率，暂停/结束，并从手表启动训练。观看短广告后 AI 生成定制训练，支持按动作设置时间、组数与次数。",
     description: `
 大家的塔巴塔是一款按「每个动作」设置计时的间歇训练应用。
 
@@ -149,6 +170,13 @@ Privacy Policy: https://tabata-server.vercel.app/legal/privacy.html
 • 需要按处方精确完成康复训练的用户
 • 居家健身、循环训练、自定义 HIIT 的用户
 • 希望使用教练或社区分享训练计划的用户
+• 希望用 Apple Watch 在手腕上查看并控制计时的用户
+
+■ Apple Watch 支持
+• 随 iPhone 应用一起安装的 Apple Watch 配套应用
+• 在手表上查看阶段、剩余时间，并可暂停/继续/结束
+• 训练中显示实时心率（bpm）
+• 在手表「我的训练」中点选训练即可开始（即使 iPhone 应用已退出，也可在后台启动）
 
 ■ 主要功能
 • AI 训练生成 — 用文字描述需求或附上运动视频链接（观看短广告后可用）

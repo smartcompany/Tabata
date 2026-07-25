@@ -76,6 +76,10 @@ cd client/tools/asc-metadata
 ./update-metadata.sh --only promotionalText
 ./update-metadata.sh --only name,subtitle
 ./update-metadata.sh --version 1.0.3
+
+# Apple Watch screenshots (Ultra 3 → 422×514, APP_WATCH_ULTRA)
+./capture-watch-screenshots.sh
+./update-watch-screenshots.sh
 ```
 
 ## 주의

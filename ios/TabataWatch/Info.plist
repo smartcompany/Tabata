@@ -19,7 +19,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
-	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<string>29</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
@@ -34,7 +34,7 @@
 	<string>Heart rate is used to show live bpm during workouts on Apple Watch.</string>
 	<key>NSHealthUpdateUsageDescription</key>
 	<string>Workout session access is needed to read live heart rate on Apple Watch.</string>
-	<key>UIBackgroundModes</key>
+	<key>WKBackgroundModes</key>
 	<array>
 		<string>workout-processing</string>
 	</array>
