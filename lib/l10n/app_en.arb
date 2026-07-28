@@ -390,6 +390,25 @@
   "phaseRelax": "Rest",
   "phaseCompleted": "Done",
   "workoutCompletedMessage": "Great job",
+  "workoutCompleteShareTitle": "Today's workout complete",
+  "workoutSummaryDuration": "Duration",
+  "workoutSummaryCalories": "Calories",
+  "workoutSummaryExercises": "Exercises",
+  "workoutSummaryExercisesTitle": "Exercises",
+  "workoutSummaryAvgHeartRate": "Avg HR",
+  "workoutSummaryMaxHeartRate": "Max HR",
+  "workoutSummaryCaloriesHint": "Estimated · based on workout type and time",
+  "workoutSummaryShare": "Share workout",
+  "workoutSummaryShareMessage": "I finished {title}!\n⏱ {duration} · 🔥 {calories} kcal · 💪 {exercises} exercises\n#EveryonesTabata",
+  "@workoutSummaryShareMessage": {
+    "placeholders": {
+      "title": { "type": "String" },
+      "duration": { "type": "String" },
+      "calories": { "type": "int" },
+      "exercises": { "type": "int" }
+    }
+  },
+  "debugPreviewWorkoutComplete": "[Debug] Workout complete screen",
   "watchHeartRateSummary": "Watch HR — avg {avgBpm} · max {maxBpm}",
   "@watchHeartRateSummary": {
     "placeholders": {
@@ -493,6 +512,7 @@
   "scheduleRecurrenceWeekly": "Weekly",
   "scheduleRecurrenceMonthly": "Monthly",
   "scheduleWorkoutStartDate": "Start date",
+  "scheduleDateToday": "Today",
   "scheduleRecurrenceEndDate": "End repeat",
   "scheduleRecurrenceEndDateNone": "None (ongoing)",
   "scheduleRecurrenceEndDateRequired": "Choose an end date for the repeat.",
@@ -643,6 +663,10 @@
   "healthConnectInstallPromptBody": "Health Connect is not installed on this device. Install it from the Play Store and try again.",
   "healthConnectInstallPromptInstall": "Install",
   "workoutHistoryTitle": "Workout history",
+  "scheduleHistoryTitle": "Scheduled workouts",
+  "scheduleHistoryTooltip": "Scheduled workouts",
+  "scheduleHistoryEmpty": "No scheduled workouts yet.\nTap the calendar icon on a routine to schedule one.",
+  "scheduleHistoryMissingRoutine": "That routine is no longer in My Routines.",
   "workoutHistoryYearLabel": "Year",
   "workoutHistoryMonthLabel": "Month",
   "workoutHistoryMonthWorkouts": "{count} workouts",

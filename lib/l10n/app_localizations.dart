@@ -1416,6 +1416,77 @@ abstract class AppLocalizations {
   /// **'Great job'**
   String get workoutCompletedMessage;
 
+  /// No description provided for @workoutCompleteShareTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s workout complete'**
+  String get workoutCompleteShareTitle;
+
+  /// No description provided for @workoutSummaryDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration'**
+  String get workoutSummaryDuration;
+
+  /// No description provided for @workoutSummaryCalories.
+  ///
+  /// In en, this message translates to:
+  /// **'Calories'**
+  String get workoutSummaryCalories;
+
+  /// No description provided for @workoutSummaryExercises.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercises'**
+  String get workoutSummaryExercises;
+
+  /// No description provided for @workoutSummaryExercisesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercises'**
+  String get workoutSummaryExercisesTitle;
+
+  /// No description provided for @workoutSummaryAvgHeartRate.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg HR'**
+  String get workoutSummaryAvgHeartRate;
+
+  /// No description provided for @workoutSummaryMaxHeartRate.
+  ///
+  /// In en, this message translates to:
+  /// **'Max HR'**
+  String get workoutSummaryMaxHeartRate;
+
+  /// No description provided for @workoutSummaryCaloriesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated · based on workout type and time'**
+  String get workoutSummaryCaloriesHint;
+
+  /// No description provided for @workoutSummaryShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share workout'**
+  String get workoutSummaryShare;
+
+  /// No description provided for @workoutSummaryShareMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'I finished {title}!\n⏱ {duration} · 🔥 {calories} kcal · 💪 {exercises} exercises\n#EveryonesTabata'**
+  String workoutSummaryShareMessage(
+    String title,
+    String duration,
+    int calories,
+    int exercises,
+  );
+
+  /// No description provided for @debugPreviewWorkoutComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'[Debug] Workout complete screen'**
+  String get debugPreviewWorkoutComplete;
+
   /// No description provided for @watchHeartRateSummary.
   ///
   /// In en, this message translates to:
@@ -1853,6 +1924,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Start date'**
   String get scheduleWorkoutStartDate;
+
+  /// No description provided for @scheduleDateToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get scheduleDateToday;
 
   /// No description provided for @scheduleRecurrenceEndDate.
   ///
@@ -2441,6 +2518,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Workout history'**
   String get workoutHistoryTitle;
+
+  /// No description provided for @scheduleHistoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled workouts'**
+  String get scheduleHistoryTitle;
+
+  /// No description provided for @scheduleHistoryTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled workouts'**
+  String get scheduleHistoryTooltip;
+
+  /// No description provided for @scheduleHistoryEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No scheduled workouts yet.\nTap the calendar icon on a routine to schedule one.'**
+  String get scheduleHistoryEmpty;
+
+  /// No description provided for @scheduleHistoryMissingRoutine.
+  ///
+  /// In en, this message translates to:
+  /// **'That routine is no longer in My Routines.'**
+  String get scheduleHistoryMissingRoutine;
 
   /// No description provided for @workoutHistoryYearLabel.
   ///

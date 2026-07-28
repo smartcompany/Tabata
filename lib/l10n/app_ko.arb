@@ -390,6 +390,25 @@
   "phaseRelax": "휴식",
   "phaseCompleted": "완료",
   "workoutCompletedMessage": "수고하셨습니다",
+  "workoutCompleteShareTitle": "오늘의 운동 완료",
+  "workoutSummaryDuration": "운동 시간",
+  "workoutSummaryCalories": "칼로리",
+  "workoutSummaryExercises": "운동",
+  "workoutSummaryExercisesTitle": "운동 목록",
+  "workoutSummaryAvgHeartRate": "평균 심박",
+  "workoutSummaryMaxHeartRate": "최대 심박",
+  "workoutSummaryCaloriesHint": "추정값 · 운동 유형과 시간 기준",
+  "workoutSummaryShare": "운동 공유하기",
+  "workoutSummaryShareMessage": "{title} 완료!\n⏱ {duration} · 🔥 {calories} kcal · 💪 운동 {exercises}개\n#모두의타바타",
+  "@workoutSummaryShareMessage": {
+    "placeholders": {
+      "title": { "type": "String" },
+      "duration": { "type": "String" },
+      "calories": { "type": "int" },
+      "exercises": { "type": "int" }
+    }
+  },
+  "debugPreviewWorkoutComplete": "[디버그] 운동 완료 화면",
   "watchHeartRateSummary": "워치 심박 — 평균 {avgBpm} · 최대 {maxBpm}",
   "@watchHeartRateSummary": {
     "placeholders": {
@@ -493,6 +512,7 @@
   "scheduleRecurrenceWeekly": "매주",
   "scheduleRecurrenceMonthly": "매월",
   "scheduleWorkoutStartDate": "시작 날짜",
+  "scheduleDateToday": "오늘",
   "scheduleRecurrenceEndDate": "반복 종료",
   "scheduleRecurrenceEndDateNone": "없음 (계속)",
   "scheduleRecurrenceEndDateRequired": "반복 종료 날짜를 선택해 주세요.",
@@ -643,6 +663,10 @@
   "healthConnectInstallPromptBody": "이 기기에 Health Connect가 설치되어 있지 않습니다. Play Store에서 설치한 뒤 다시 시도해 주세요.",
   "healthConnectInstallPromptInstall": "설치하기",
   "workoutHistoryTitle": "운동 기록",
+  "scheduleHistoryTitle": "예약 내역",
+  "scheduleHistoryTooltip": "예약 내역",
+  "scheduleHistoryEmpty": "예약된 운동이 없습니다.\n루틴의 캘린더 아이콘으로 예약할 수 있어요.",
+  "scheduleHistoryMissingRoutine": "내 루틴에 더 이상 없는 루틴입니다.",
   "workoutHistoryYearLabel": "연도",
   "workoutHistoryMonthLabel": "월",
   "workoutHistoryMonthWorkouts": "운동 {count}회",

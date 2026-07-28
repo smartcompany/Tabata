@@ -233,12 +233,21 @@ class _RoutineScheduleSheetBodyState extends State<_RoutineScheduleSheetBody> {
     return schedule.summary(l10n, material);
   }
 
+  String _dateLabel(AppLocalizations l10n, MaterialLocalizations material) {
+    final now = DateTime.now();
+    final selected = _selectedDateTime;
+    final isToday = selected.year == now.year &&
+        selected.month == now.month &&
+        selected.day == now.day;
+    return isToday ? l10n.scheduleDateToday : material.formatFullDate(selected);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final material = MaterialLocalizations.of(context);
     final theme = Theme.of(context);
-    final dateLabel = material.formatFullDate(_selectedDateTime);
+    final dateLabel = _dateLabel(l10n, material);
     final timeLabel =
         material.formatTimeOfDay(TimeOfDay.fromDateTime(_selectedDateTime));
     final hint = _recurrenceHint(l10n, material);

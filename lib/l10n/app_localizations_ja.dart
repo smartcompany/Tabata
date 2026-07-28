@@ -735,6 +735,46 @@ class AppLocalizationsJa extends AppLocalizations {
   String get workoutCompletedMessage => 'お疲れさまでした';
 
   @override
+  String get workoutCompleteShareTitle => '今日のワークアウト完了';
+
+  @override
+  String get workoutSummaryDuration => '時間';
+
+  @override
+  String get workoutSummaryCalories => 'カロリー';
+
+  @override
+  String get workoutSummaryExercises => '種目';
+
+  @override
+  String get workoutSummaryExercisesTitle => '種目一覧';
+
+  @override
+  String get workoutSummaryAvgHeartRate => '平均心拍';
+
+  @override
+  String get workoutSummaryMaxHeartRate => '最大心拍';
+
+  @override
+  String get workoutSummaryCaloriesHint => '推定値 · 種目タイプと時間に基づく';
+
+  @override
+  String get workoutSummaryShare => 'ワークアウトを共有';
+
+  @override
+  String workoutSummaryShareMessage(
+    String title,
+    String duration,
+    int calories,
+    int exercises,
+  ) {
+    return '$titleを完了！\n⏱ $duration · 🔥 $calories kcal · 💪 $exercises種目\n#みんなのタバタ';
+  }
+
+  @override
+  String get debugPreviewWorkoutComplete => '[Debug] 完了画面';
+
+  @override
   String watchHeartRateSummary(int avgBpm, int maxBpm) {
     return 'Watch心拍 — 平均 $avgBpm · 最大 $maxBpm';
   }
@@ -970,6 +1010,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get scheduleWorkoutStartDate => '開始日';
+
+  @override
+  String get scheduleDateToday => '今日';
 
   @override
   String get scheduleRecurrenceEndDate => '繰り返し終了';
@@ -1297,6 +1340,19 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get workoutHistoryTitle => 'ワークアウト履歴';
+
+  @override
+  String get scheduleHistoryTitle => '予約一覧';
+
+  @override
+  String get scheduleHistoryTooltip => '予約一覧';
+
+  @override
+  String get scheduleHistoryEmpty =>
+      '予約されたワークアウトはありません。\nルーティンのカレンダーアイコンから予約できます。';
+
+  @override
+  String get scheduleHistoryMissingRoutine => 'マイルーティンにないルーティンです。';
 
   @override
   String get workoutHistoryYearLabel => '年';

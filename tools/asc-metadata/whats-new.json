@@ -1,6 +1,6 @@
 {
-  "ko": "• Apple Watch 컴패니언 앱 지원\n• 워치에서 구간·남은 시간·실시간 심박 확인\n• 워치에서 일시정지·재개·종료\n• 워치 「내 루틴」에서 운동 시작 (폰 앱이 꺼져 있어도 백그라운드로 시작)\n• 앱이 백그라운드일 때도 운동이 진행됩니다. 필요하면 설정에서 끌 수 있습니다.",
-  "en-US": "• Apple Watch companion app\n• See phase, remaining time, and live heart rate on your Watch\n• Pause, resume, and end workouts from your wrist\n• Start routines from My Routines on the Watch (wakes the iPhone app in the background if needed)\n• Workouts keep running in the background. Turn it off in Settings if you prefer.",
-  "ja": "• Apple Watchコンパニオンアプリに対応\n• Watchでフェーズ・残り時間・リアルタイム心拍を表示\n• Watchから一時停止・再開・終了\n• Watchの「マイルーティン」からワークアウト開始（iPhoneアプリが終了していてもバックグラウンドで起動）\n• アプリをバックグラウンドにしてもワークアウトが続きます。不要な場合は設定でオフにできます。",
-  "zh-Hans": "• 支持 Apple Watch 配套应用\n• 在手表上查看阶段、剩余时间与实时心率\n• 可在手表上暂停、继续、结束训练\n• 在手表「我的训练」中启动训练（即使 iPhone 应用已退出，也可在后台启动）\n• 应用在后台时训练仍会继续。可在设置中关闭。"
+  "ko": "• 운동 완료 후 결과 카드 공유 (카카오톡·시스템 공유)\n• 공유 이미지에 운동 시간·칼로리·운동 수 요약 포함\n• 카카오 공유 시 앱 다운로드 링크로 연결",
+  "en-US": "• Share your workout summary card after finishing (KakaoTalk & system share)\n• Shared image includes duration, calories, and exercise count\n• Kakao share links to the app download page",
+  "ja": "• ワークアウト完了後に結果カードを共有（カカオトーク・システム共有）\n• 共有画像に時間・カロリー・種目数を表示\n• カカオ共有からアプリのダウンロードページへリンク",
+  "zh-Hans": "• 训练完成后可分享结果卡片（KakaoTalk 与系统分享）\n• 分享图片包含时长、卡路里与动作数量\n• Kakao 分享可跳转至应用下载页"
 }

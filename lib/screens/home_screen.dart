@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:tabata_timer/l10n/app_localizations.dart';
 
@@ -8,32 +9,37 @@ import '../data/routine_repository.dart';
 import '../data/workout_history_repository.dart';
 import '../models/profile_summary.dart';
 import '../models/routine.dart';
-import '../services/ai_routine_service.dart';
 import '../services/admin_session.dart';
+import '../services/ai_routine_service.dart';
 import '../services/app_analytics_service.dart';
+import '../services/onboarding_routine_seeder.dart';
 import '../services/routine_api_client.dart';
+import '../services/routine_schedule_service.dart';
 import '../services/routine_share_service.dart';
-import '../services/shared_routine_link_coordinator.dart';
 import '../services/share_link_log.dart';
+import '../services/shared_routine_link_coordinator.dart';
+import '../services/watch_workout_bridge.dart';
 import '../services/workout_completion_recorder.dart';
 import '../services/workout_launch_coordinator.dart';
-import '../services/watch_workout_bridge.dart';
 import '../utils/auth_helper.dart';
 import '../utils/catalog_thumbnail.dart';
 import '../utils/duration_calculator.dart';
+import '../widgets/home_app_bar_title.dart';
 import '../widgets/routine_list_thumbnail.dart';
+import '../widgets/routine_schedule_sheet.dart';
+import '../widgets/routine_share_sheet.dart';
+import '../widgets/swipe_reveal_delete.dart';
+import '../models/workout_completion_summary.dart';
+import '../widgets/workout_completion_view.dart';
 import 'admin_upload_routine_screen.dart';
 import 'ai_routine_create_screen.dart';
+import 'app_settings_screen.dart';
 import 'routine_detail_screen.dart';
 import 'routine_editor_screen.dart';
+import 'schedule_history_screen.dart';
 import 'upload_routine_screen.dart';
 import 'workout_history_screen.dart';
 import 'workout_screen.dart';
-import 'app_settings_screen.dart';
-import '../services/onboarding_routine_seeder.dart';
-import '../widgets/home_app_bar_title.dart';
-import '../widgets/routine_share_sheet.dart';
-import '../widgets/swipe_reveal_delete.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
@@ -415,6 +421,30 @@ class _HomeScreenState extends State<HomeScreen>
     _syncWatchRoutineList();
   }
 
+  Future<void> _openScheduleForRoutine(Routine routine) async {
+    if (!RoutineScheduleService.shared.isSupported) return;
+    final changed = await RoutineScheduleSheet.show(
+      context,
+      routine: routine,
+      existing: RoutineScheduleService.shared.scheduleFor(routine.id),
+    );
+    if (changed == true && mounted) {
+      setState(() {});
+    }
+  }
+
+  void _openScheduleHistory() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => ScheduleHistoryScreen(
+          routineRepository: widget.repository,
+        ),
+      ),
+    ).then((_) {
+      if (mounted) setState(() {});
+    });
+  }
+
   void _syncWatchRoutineList() {
     unawaited(
       WatchWorkoutBridge.instance.syncRoutineList(
@@ -491,6 +521,12 @@ class _HomeScreenState extends State<HomeScreen>
             icon: const Icon(Icons.ios_share),
             tooltip: l10n.shareAppTooltip,
           ),
+          if (RoutineScheduleService.shared.isSupported)
+            IconButton(
+              onPressed: _openScheduleHistory,
+              icon: const Icon(Icons.event_note_outlined),
+              tooltip: l10n.scheduleHistoryTooltip,
+            ),
           IconButton(
             onPressed: () {
               Navigator.of(context).push(
@@ -688,19 +724,18 @@ class _HomeScreenState extends State<HomeScreen>
                           ),
                         ),
                       ),
-                      trailing: IconButton.filled(
-                        onPressed: () => _openWorkout(routine),
-                        icon: const Icon(Icons.play_arrow_rounded, size: 32),
-                        tooltip: l10n.start,
-                        style: IconButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          visualDensity: VisualDensity.compact,
-                          minimumSize: const Size(52, 52),
-                          maximumSize: const Size(52, 52),
-                          iconSize: 32,
-                          padding: EdgeInsets.zero,
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        ),
+                      trailing: _RoutineCardActions(
+                        hasActiveSchedule: RoutineScheduleService.shared
+                                .isSupported &&
+                            (RoutineScheduleService.shared
+                                    .scheduleFor(routine.id)
+                                    ?.isActiveAt(DateTime.now()) ??
+                                false),
+                        showSchedule: RoutineScheduleService.shared.isSupported,
+                        scheduleTooltip: l10n.scheduleWorkoutTooltip,
+                        startTooltip: l10n.start,
+                        onSchedule: () => _openScheduleForRoutine(routine),
+                        onStart: () => _openWorkout(routine),
                       ),
                       onTap: () => _openLocalRoutine(routine.id),
                     ),
@@ -709,6 +744,22 @@ class _HomeScreenState extends State<HomeScreen>
               );
             },
           ),
+        if (kDebugMode) ...[
+          const SizedBox(height: 24),
+          OutlinedButton.icon(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => WorkoutCompletionScreen(
+                    summary: WorkoutCompletionSummary.debugSample(),
+                  ),
+                ),
+              );
+            },
+            icon: const Icon(Icons.bug_report_outlined),
+            label: Text(l10n.debugPreviewWorkoutComplete),
+          ),
+        ],
       ],
     );
   }
@@ -837,6 +888,83 @@ class _HomeScreenState extends State<HomeScreen>
                     ],
                   ),
                 ),
+        ),
+      ],
+    );
+  }
+}
+
+class _RoutineCardActions extends StatelessWidget {
+  const _RoutineCardActions({
+    required this.hasActiveSchedule,
+    required this.showSchedule,
+    required this.scheduleTooltip,
+    required this.startTooltip,
+    required this.onSchedule,
+    required this.onStart,
+  });
+
+  final bool hasActiveSchedule;
+  final bool showSchedule;
+  final String scheduleTooltip;
+  final String startTooltip;
+  final VoidCallback onSchedule;
+  final VoidCallback onStart;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (showSchedule) ...[
+          IconButton(
+            onPressed: onSchedule,
+            tooltip: scheduleTooltip,
+            icon: Icon(
+              hasActiveSchedule
+                  ? Icons.event_available_rounded
+                  : Icons.event_outlined,
+              size: 22,
+            ),
+            style: IconButton.styleFrom(
+              foregroundColor:
+                  hasActiveSchedule ? scheme.primary : scheme.onSurfaceVariant,
+              backgroundColor: hasActiveSchedule
+                  ? scheme.primary.withValues(alpha: 0.10)
+                  : scheme.surfaceContainerHighest.withValues(alpha: 0.55),
+              visualDensity: VisualDensity.compact,
+              minimumSize: const Size(40, 40),
+              maximumSize: const Size(40, 40),
+              padding: EdgeInsets.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+        ],
+        IconButton(
+          onPressed: onStart,
+          tooltip: startTooltip,
+          icon: const Icon(Icons.play_arrow_rounded, size: 26),
+          style: IconButton.styleFrom(
+            foregroundColor: scheme.primary,
+            backgroundColor: scheme.primary.withValues(alpha: 0.12),
+            visualDensity: VisualDensity.compact,
+            minimumSize: const Size(44, 44),
+            maximumSize: const Size(44, 44),
+            padding: EdgeInsets.zero,
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+              side: BorderSide(
+                color: scheme.primary.withValues(alpha: 0.28),
+              ),
+            ),
+          ),
         ),
       ],
     );

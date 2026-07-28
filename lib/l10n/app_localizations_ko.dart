@@ -737,6 +737,46 @@ class AppLocalizationsKo extends AppLocalizations {
   String get workoutCompletedMessage => '수고하셨습니다';
 
   @override
+  String get workoutCompleteShareTitle => '오늘의 운동 완료';
+
+  @override
+  String get workoutSummaryDuration => '운동 시간';
+
+  @override
+  String get workoutSummaryCalories => '칼로리';
+
+  @override
+  String get workoutSummaryExercises => '운동';
+
+  @override
+  String get workoutSummaryExercisesTitle => '운동 목록';
+
+  @override
+  String get workoutSummaryAvgHeartRate => '평균 심박';
+
+  @override
+  String get workoutSummaryMaxHeartRate => '최대 심박';
+
+  @override
+  String get workoutSummaryCaloriesHint => '추정값 · 운동 유형과 시간 기준';
+
+  @override
+  String get workoutSummaryShare => '운동 공유하기';
+
+  @override
+  String workoutSummaryShareMessage(
+    String title,
+    String duration,
+    int calories,
+    int exercises,
+  ) {
+    return '$title 완료!\n⏱ $duration · 🔥 $calories kcal · 💪 운동 $exercises개\n#모두의타바타';
+  }
+
+  @override
+  String get debugPreviewWorkoutComplete => '[디버그] 운동 완료 화면';
+
+  @override
   String watchHeartRateSummary(int avgBpm, int maxBpm) {
     return '워치 심박 — 평균 $avgBpm · 최대 $maxBpm';
   }
@@ -975,6 +1015,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get scheduleWorkoutStartDate => '시작 날짜';
+
+  @override
+  String get scheduleDateToday => '오늘';
 
   @override
   String get scheduleRecurrenceEndDate => '반복 종료';
@@ -1302,6 +1345,18 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get workoutHistoryTitle => '운동 기록';
+
+  @override
+  String get scheduleHistoryTitle => '예약 내역';
+
+  @override
+  String get scheduleHistoryTooltip => '예약 내역';
+
+  @override
+  String get scheduleHistoryEmpty => '예약된 운동이 없습니다.\n루틴의 캘린더 아이콘으로 예약할 수 있어요.';
+
+  @override
+  String get scheduleHistoryMissingRoutine => '내 루틴에 더 이상 없는 루틴입니다.';
 
   @override
   String get workoutHistoryYearLabel => '연도';

@@ -116,6 +116,16 @@ class RoutineScheduleService {
   RoutineSchedule? scheduleFor(String routineId) =>
       _scheduleRepository.forRoutine(routineId);
 
+  List<RoutineSchedule> allSchedules() {
+    if (!_initialized) return const [];
+    final now = DateTime.now();
+    return _scheduleRepository
+        .all()
+        .where((s) => s.isActiveAt(now))
+        .toList()
+      ..sort((a, b) => a.nextOccurrence(now).compareTo(b.nextOccurrence(now)));
+  }
+
   Future<bool> requestPermissions() async {
     if (!isSupported) return false;
 

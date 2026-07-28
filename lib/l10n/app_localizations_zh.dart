@@ -732,6 +732,46 @@ class AppLocalizationsZh extends AppLocalizations {
   String get workoutCompletedMessage => '辛苦了';
 
   @override
+  String get workoutCompleteShareTitle => '今日训练完成';
+
+  @override
+  String get workoutSummaryDuration => '时长';
+
+  @override
+  String get workoutSummaryCalories => '卡路里';
+
+  @override
+  String get workoutSummaryExercises => '动作';
+
+  @override
+  String get workoutSummaryExercisesTitle => '动作列表';
+
+  @override
+  String get workoutSummaryAvgHeartRate => '平均心率';
+
+  @override
+  String get workoutSummaryMaxHeartRate => '最大心率';
+
+  @override
+  String get workoutSummaryCaloriesHint => '估算值 · 基于训练类型与时长';
+
+  @override
+  String get workoutSummaryShare => '分享训练';
+
+  @override
+  String workoutSummaryShareMessage(
+    String title,
+    String duration,
+    int calories,
+    int exercises,
+  ) {
+    return '完成了 $title！\n⏱ $duration · 🔥 $calories kcal · 💪 $exercises 个动作\n#大家的塔巴塔';
+  }
+
+  @override
+  String get debugPreviewWorkoutComplete => '[Debug] 训练完成页';
+
+  @override
   String watchHeartRateSummary(int avgBpm, int maxBpm) {
     return '手表心率 — 平均 $avgBpm · 最高 $maxBpm';
   }
@@ -963,6 +1003,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get scheduleWorkoutStartDate => '开始日期';
+
+  @override
+  String get scheduleDateToday => '今天';
 
   @override
   String get scheduleRecurrenceEndDate => '结束重复';
@@ -1284,6 +1327,18 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get workoutHistoryTitle => '训练记录';
+
+  @override
+  String get scheduleHistoryTitle => '预约列表';
+
+  @override
+  String get scheduleHistoryTooltip => '预约列表';
+
+  @override
+  String get scheduleHistoryEmpty => '暂无预约的训练。\n可点击训练旁的日历图标进行预约。';
+
+  @override
+  String get scheduleHistoryMissingRoutine => '该训练已不在「我的训练」中。';
 
   @override
   String get workoutHistoryYearLabel => '年';

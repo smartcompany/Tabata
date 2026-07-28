@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:share_lib/share_lib.dart';
@@ -22,8 +23,16 @@ abstract final class RoutineShareSheet {
     required String kakaoShareText,
     String? subject,
     Uri? linkUrl,
+    /// 카카오 하단 버튼 문구. 빈 문자열이면 버튼을 넣지 않습니다(카드 탭만 링크).
     String? linkButtonTitle,
     String shareType = 'routine',
+    Uint8List? imageBytes,
+    /// Caption title when sharing an image to Kakao as a photo message.
+    String? kakaoFeedTitle,
+    /// Caption body when sharing an image to Kakao as a photo message.
+    String? kakaoFeedDescription,
+    /// 시스템 공유 시 이미지만 전달 (운동 완료 공유용).
+    bool systemShareImageOnly = false,
   }) async {
     final shareOrigin = _shareOriginFromContext(context);
     final kakaoAvailable = await ShareService.isKakaoTalkAvailable();
@@ -40,8 +49,12 @@ abstract final class RoutineShareSheet {
         final textTheme = Theme.of(ctx).textTheme;
         final mergedText = _mergeTextAndUrl(shareText, linkUrl);
         final resolvedLink = linkUrl ?? RoutineShareService.storeLink;
-        final resolvedButtonTitle =
-            linkButtonTitle ?? l10n.shareKakaoLinkButton;
+        // null → 기본 '루틴 열기'. 빈 문자열 → 버튼 없음(카드 탭만 링크).
+        final String? resolvedButtonTitle = linkButtonTitle == null
+            ? l10n.shareKakaoLinkButton
+            : (linkButtonTitle.trim().isEmpty
+                ? null
+                : linkButtonTitle.trim());
 
         return SafeArea(
           child: Padding(
@@ -71,25 +84,58 @@ abstract final class RoutineShareSheet {
                     onTap: () async {
                       Navigator.of(ctx).pop();
                       var shareFailed = false;
-                      // 도파민 자산과 동일: 본문은 텍스트만, 클릭은 linkUrl(Universal Link).
-                      await _shareToKakaoCompat(
-                        kakaoShareText,
-                        linkUrl: resolvedLink,
-                        linkButtonTitle: resolvedButtonTitle,
-                        onError: (_) {
-                          shareFailed = true;
-                          _showShareFailed(context, l10n);
-                          unawaited(
-                            AppAnalyticsService.logProductEvent(
-                              'routine_share_failed',
-                              properties: {
-                                'share_type': shareType,
-                                'channel': 'kakao',
-                              },
-                            ),
-                          );
-                        },
-                      );
+                      if (imageBytes != null) {
+                        // FeedTemplate은 이미지 탭이 항상 링크 이동 → 사진 메시지로 공유
+                        await ShareService.shareToKakaoWithImage(
+                          imageBytes: imageBytes,
+                          title: kakaoFeedTitle?.trim().isNotEmpty == true
+                              ? kakaoFeedTitle!.trim()
+                              : (subject?.trim().isNotEmpty == true
+                                  ? subject!.trim()
+                                  : kakaoShareText.split('\n').first),
+                          description: kakaoFeedDescription ?? kakaoShareText,
+                          linkUrl: resolvedLink,
+                          linkButtonTitle: resolvedButtonTitle,
+                          sharePositionOrigin: shareOrigin,
+                          onShareDefaultUri: (uri) => logKakaoShareDefaultUri(
+                            uri,
+                            requestedLinkUrl: resolvedLink,
+                          ),
+                          onError: (_) {
+                            shareFailed = true;
+                            _showShareFailed(context, l10n);
+                            unawaited(
+                              AppAnalyticsService.logProductEvent(
+                                'routine_share_failed',
+                                properties: {
+                                  'share_type': shareType,
+                                  'channel': 'kakao',
+                                },
+                              ),
+                            );
+                          },
+                        );
+                      } else {
+                        // 도파민 자산과 동일: 본문은 텍스트만, 클릭은 linkUrl(Universal Link).
+                        await _shareToKakaoCompat(
+                          kakaoShareText,
+                          linkUrl: resolvedLink,
+                          linkButtonTitle: resolvedButtonTitle,
+                          onError: (_) {
+                            shareFailed = true;
+                            _showShareFailed(context, l10n);
+                            unawaited(
+                              AppAnalyticsService.logProductEvent(
+                                'routine_share_failed',
+                                properties: {
+                                  'share_type': shareType,
+                                  'channel': 'kakao',
+                                },
+                              ),
+                            );
+                          },
+                        );
+                      }
                       if (!shareFailed) {
                         await AppAnalyticsService.logRoutineShare(
                           shareType: shareType,
@@ -109,28 +155,37 @@ abstract final class RoutineShareSheet {
                   ),
                   onTap: () async {
                     Navigator.of(ctx).pop();
-                      try {
+                    try {
+                      if (imageBytes != null) {
+                        await ShareService.shareWithImage(
+                          systemShareImageOnly ? '' : mergedText,
+                          imageBytes,
+                          subject: systemShareImageOnly ? null : subject,
+                          sharePositionOrigin: shareOrigin,
+                        );
+                      } else {
                         await ShareService.shareText(
                           mergedText,
                           subject: subject,
                           sharePositionOrigin: shareOrigin,
                         );
-                        await AppAnalyticsService.logRoutineShare(
-                          shareType: shareType,
-                          channel: 'system',
-                        );
-                      } catch (_) {
-                        await AppAnalyticsService.logProductEvent(
-                          'routine_share_failed',
-                          properties: {
-                            'share_type': shareType,
-                            'channel': 'system',
-                          },
-                        );
-                        if (context.mounted) {
-                          _showShareFailed(context, l10n);
-                        }
                       }
+                      await AppAnalyticsService.logRoutineShare(
+                        shareType: shareType,
+                        channel: 'system',
+                      );
+                    } catch (_) {
+                      await AppAnalyticsService.logProductEvent(
+                        'routine_share_failed',
+                        properties: {
+                          'share_type': shareType,
+                          'channel': 'system',
+                        },
+                      );
+                      if (context.mounted) {
+                        _showShareFailed(context, l10n);
+                      }
+                    }
                   },
                 ),
               ],
@@ -144,7 +199,7 @@ abstract final class RoutineShareSheet {
   static Future<void> _shareToKakaoCompat(
     String shareText, {
     required Uri linkUrl,
-    required String linkButtonTitle,
+    String? linkButtonTitle,
     Function(String error)? onError,
   }) async {
     shareLinkLog('kakao 요청 linkUrl=$linkUrl');

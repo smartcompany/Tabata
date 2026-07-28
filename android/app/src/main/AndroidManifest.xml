@@ -153,6 +153,14 @@
         </intent>
         <package
             android:name="com.kakao.talk"/>
+        <intent>
+            <action android:name="android.intent.action.VIEW"/>
+            <data android:scheme="kakaolink"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.SEND"/>
+            <data android:mimeType="image/*"/>
+        </intent>
         <package
             android:name="com.google.android.gms"/>
         <package

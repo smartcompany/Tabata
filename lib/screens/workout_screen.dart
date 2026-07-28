@@ -24,6 +24,8 @@ import '../services/workout_voice_planner.dart';
 import '../services/watch_workout_bridge.dart';
 import '../utils/duration_format.dart';
 import '../utils/duration_calculator.dart';
+import '../models/workout_completion_summary.dart';
+import '../widgets/workout_completion_view.dart';
 import 'exercise_editor_screen.dart';
 import 'routine_editor_screen.dart';
 import '../widgets/workout_phase_stage.dart';
@@ -631,6 +633,22 @@ class _WorkoutScreenState extends State<WorkoutScreen> with WidgetsBindingObserv
     final snap = engine.snapshot;
     final nextPhase = engine.nextPhase;
 
+    if (snap.isCompleted) {
+      final summary = WorkoutCompletionSummary.fromRoutine(
+        routine: _activeRoutine,
+        durationSec: engine.elapsedSec,
+        avgHeartRateBpm: _avgHeartRateBpm,
+        maxHeartRateBpm: _maxHeartRateBpm,
+      );
+      return Scaffold(
+        backgroundColor: _bg,
+        body: WorkoutCompletionView(
+          summary: summary,
+          onDone: () => Navigator.of(context).pop(),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: _bg,
       body: SafeArea(
@@ -662,7 +680,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> with WidgetsBindingObserv
                           ),
                         ),
                       ),
-                      if (!snap.isCompleted && widget.repository.findById(_activeRoutine.id) != null)
+                      if (widget.repository.findById(_activeRoutine.id) != null)
                         IconButton(
                           onPressed: _openEdit,
                           tooltip: widget.launchScope ==
@@ -678,100 +696,98 @@ class _WorkoutScreenState extends State<WorkoutScreen> with WidgetsBindingObserv
                         const SizedBox(width: 48),
                     ],
                   ),
-                  if (!snap.isCompleted) ...[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        formatDurationClock(engine.elapsedSec),
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.38),
+                          fontSize: 14,
+                          fontFeatures: const [FontFeature.tabularFigures()],
+                        ),
+                      ),
+                      if (_heartRateBpm > 0) ...[
                         Text(
-                          formatDurationClock(engine.elapsedSec),
+                          '  ·  ',
                           style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.38),
+                            color: Colors.white.withValues(alpha: 0.28),
+                          ),
+                        ),
+                        Icon(
+                          Icons.favorite_rounded,
+                          size: 14,
+                          color: Colors.redAccent.withValues(alpha: 0.9),
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '${_heartRateBpm.round()}',
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.7),
                             fontSize: 14,
+                            fontWeight: FontWeight.w600,
                             fontFeatures: const [FontFeature.tabularFigures()],
                           ),
                         ),
-                        if (_heartRateBpm > 0) ...[
-                          Text(
-                            '  ·  ',
-                            style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.28),
-                            ),
-                          ),
-                          Icon(
-                            Icons.favorite_rounded,
-                            size: 14,
-                            color: Colors.redAccent.withValues(alpha: 0.9),
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            '${_heartRateBpm.round()}',
-                            style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.7),
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              fontFeatures: const [FontFeature.tabularFigures()],
-                            ),
-                          ),
-                        ] else if (_watchReachable) ...[
-                          Text(
-                            '  ·  ',
-                            style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.28),
-                            ),
-                          ),
-                          Icon(
-                            Icons.watch_rounded,
-                            size: 14,
-                            color: Colors.white.withValues(alpha: 0.38),
-                          ),
-                        ],
-                      ],
-                    ),
-                    const SizedBox(height: 6),
-                    Row(
-                      children: [
-                        _WorkoutNavButton(
-                          icon: Icons.skip_previous_rounded,
-                          label: l10n.workoutPrevious,
-                          enabled: engine.canGoToPreviousExercise,
-                          onPressed: _goToPreviousExercise,
-                        ),
-                        Expanded(
-                          child: Column(
-                            children: [
-                              Text(
-                                snap.exerciseName,
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                l10n.workoutProgress(
-                                  snap.exerciseIndex,
-                                  snap.totalExercises,
-                                ),
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.white.withValues(alpha: 0.38),
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
+                      ] else if (_watchReachable) ...[
+                        Text(
+                          '  ·  ',
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.28),
                           ),
                         ),
-                        _WorkoutNavButton(
-                          icon: Icons.skip_next_rounded,
-                          label: l10n.workoutNext,
-                          enabled: engine.canGoToNextExercise,
-                          onPressed: _goToNextExercise,
+                        Icon(
+                          Icons.watch_rounded,
+                          size: 14,
+                          color: Colors.white.withValues(alpha: 0.38),
                         ),
                       ],
-                    ),
-                  ],
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      _WorkoutNavButton(
+                        icon: Icons.skip_previous_rounded,
+                        label: l10n.workoutPrevious,
+                        enabled: engine.canGoToPreviousExercise,
+                        onPressed: _goToPreviousExercise,
+                      ),
+                      Expanded(
+                        child: Column(
+                          children: [
+                            Text(
+                              snap.exerciseName,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              l10n.workoutProgress(
+                                snap.exerciseIndex,
+                                snap.totalExercises,
+                              ),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white.withValues(alpha: 0.38),
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      _WorkoutNavButton(
+                        icon: Icons.skip_next_rounded,
+                        label: l10n.workoutNext,
+                        enabled: engine.canGoToNextExercise,
+                        onPressed: _goToNextExercise,
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -801,63 +817,50 @@ class _WorkoutScreenState extends State<WorkoutScreen> with WidgetsBindingObserv
                 20,
                 16 + MediaQuery.paddingOf(context).bottom,
               ),
-              child: snap.isCompleted
-                  ? FilledButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      style: FilledButton.styleFrom(
-                        backgroundColor: _accent,
-                        foregroundColor: Colors.black,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _GlassStatBox(
+                          value: '${snap.remainingRepsInSet}',
+                          label: l10n.workoutRemainingReps,
+                          valueColor: _statRepsColor,
                         ),
                       ),
-                      child: Text(l10n.workoutDone),
-                    )
-                  : Column(
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: _GlassStatBox(
-                                value: '${snap.remainingRepsInSet}',
-                                label: l10n.workoutRemainingReps,
-                                valueColor: _statRepsColor,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              flex: 2,
-                              child: _PlayPauseButton(
-                                isPaused: snap.isPaused,
-                                progress: snap.progress,
-                                onPressed: _togglePause,
-                                label: snap.isPaused ? l10n.resume : l10n.pause,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: _GlassStatBox(
-                                value: '${snap.remainingSetsInExercise}',
-                                label: l10n.workoutRemainingSets,
-                                valueColor: _statSetsColor,
-                              ),
-                            ),
-                          ],
+                      const SizedBox(width: 12),
+                      Expanded(
+                        flex: 2,
+                        child: _PlayPauseButton(
+                          isPaused: snap.isPaused,
+                          progress: snap.progress,
+                          onPressed: _togglePause,
+                          label: snap.isPaused ? l10n.resume : l10n.pause,
                         ),
-                        const SizedBox(height: 14),
-                        TextButton(
-                          onPressed: engine.skipPhase,
-                          child: Text(
-                            l10n.skipPhase,
-                            style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.38),
-                              fontSize: 14,
-                            ),
-                          ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _GlassStatBox(
+                          value: '${snap.remainingSetsInExercise}',
+                          label: l10n.workoutRemainingSets,
+                          valueColor: _statSetsColor,
                         ),
-                      ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 14),
+                  TextButton(
+                    onPressed: engine.skipPhase,
+                    child: Text(
+                      l10n.skipPhase,
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.38),
+                        fontSize: 14,
+                      ),
                     ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -865,7 +868,6 @@ class _WorkoutScreenState extends State<WorkoutScreen> with WidgetsBindingObserv
     );
   }
 }
-
 class _WorkoutNavButton extends StatelessWidget {
   const _WorkoutNavButton({
     required this.icon,

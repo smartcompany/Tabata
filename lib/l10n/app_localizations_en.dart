@@ -749,6 +749,47 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutCompletedMessage => 'Great job';
 
   @override
+  String get workoutCompleteShareTitle => 'Today\'s workout complete';
+
+  @override
+  String get workoutSummaryDuration => 'Duration';
+
+  @override
+  String get workoutSummaryCalories => 'Calories';
+
+  @override
+  String get workoutSummaryExercises => 'Exercises';
+
+  @override
+  String get workoutSummaryExercisesTitle => 'Exercises';
+
+  @override
+  String get workoutSummaryAvgHeartRate => 'Avg HR';
+
+  @override
+  String get workoutSummaryMaxHeartRate => 'Max HR';
+
+  @override
+  String get workoutSummaryCaloriesHint =>
+      'Estimated · based on workout type and time';
+
+  @override
+  String get workoutSummaryShare => 'Share workout';
+
+  @override
+  String workoutSummaryShareMessage(
+    String title,
+    String duration,
+    int calories,
+    int exercises,
+  ) {
+    return 'I finished $title!\n⏱ $duration · 🔥 $calories kcal · 💪 $exercises exercises\n#EveryonesTabata';
+  }
+
+  @override
+  String get debugPreviewWorkoutComplete => '[Debug] Workout complete screen';
+
+  @override
   String watchHeartRateSummary(int avgBpm, int maxBpm) {
     return 'Watch HR — avg $avgBpm · max $maxBpm';
   }
@@ -992,6 +1033,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get scheduleWorkoutStartDate => 'Start date';
+
+  @override
+  String get scheduleDateToday => 'Today';
 
   @override
   String get scheduleRecurrenceEndDate => 'End repeat';
@@ -1335,6 +1379,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get workoutHistoryTitle => 'Workout history';
+
+  @override
+  String get scheduleHistoryTitle => 'Scheduled workouts';
+
+  @override
+  String get scheduleHistoryTooltip => 'Scheduled workouts';
+
+  @override
+  String get scheduleHistoryEmpty =>
+      'No scheduled workouts yet.\nTap the calendar icon on a routine to schedule one.';
+
+  @override
+  String get scheduleHistoryMissingRoutine =>
+      'That routine is no longer in My Routines.';
 
   @override
   String get workoutHistoryYearLabel => 'Year';
