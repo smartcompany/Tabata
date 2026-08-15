@@ -38,15 +38,6 @@ enum CountOrder {
   ascending,
   descending;
 
-  static CountOrder fromJson(String? value) {
-    return switch (value) {
-      'descending' => CountOrder.descending,
-      'ascending' => CountOrder.ascending,
-      // Legacy records without countOrder were ascending.
-      _ => CountOrder.ascending,
-    };
-  }
-
   String toJson() => name;
 }
 
@@ -77,10 +68,7 @@ class ExercisePhase {
 
   List<int> get countRepSequence {
     if (!isCountMode || countReps <= 0) return const [];
-    if (countOrder == CountOrder.descending) {
-      return [for (var n = countReps; n >= 1; n--) n];
-    }
-    return [for (var n = 1; n <= countReps; n++) n];
+    return [for (var n = countReps; n >= 1; n--) n];
   }
 
   int get effectiveDurationSec {
@@ -136,11 +124,7 @@ class ExercisePhase {
             min: ExerciseLimits.minSecondsPerRep,
           ) ??
           ExerciseLimits.defaultSecondsPerRep,
-      countOrder: timingMode == PhaseTimingMode.count
-          ? CountOrder.fromJson(
-              JsonField.optionalString(json, 'countOrder'),
-            )
-          : CountOrder.descending,
+      countOrder: CountOrder.descending,
     );
   }
 

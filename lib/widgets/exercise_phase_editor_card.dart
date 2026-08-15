@@ -57,7 +57,6 @@ class _ExercisePhaseEditorCardState extends State<ExercisePhaseEditorCard> {
     PhaseTimingMode? timingMode,
     int? countReps,
     int? secondsPerRep,
-    CountOrder? countOrder,
   }) {
     widget.onChanged(
       widget.phase.copyWith(
@@ -66,7 +65,7 @@ class _ExercisePhaseEditorCardState extends State<ExercisePhaseEditorCard> {
         timingMode: timingMode ?? widget.phase.timingMode,
         countReps: countReps ?? widget.phase.countReps,
         secondsPerRep: secondsPerRep ?? widget.phase.secondsPerRep,
-        countOrder: countOrder ?? widget.phase.countOrder,
+        countOrder: CountOrder.descending,
       ),
     );
   }
@@ -167,45 +166,11 @@ class _ExercisePhaseEditorCardState extends State<ExercisePhaseEditorCard> {
                 ],
                 selected: {widget.phase.timingMode},
                 onSelectionChanged: (selection) {
-                  final mode = selection.first;
-                  if (mode == PhaseTimingMode.count &&
-                      widget.phase.timingMode != PhaseTimingMode.count) {
-                    _emit(
-                      timingMode: mode,
-                      countOrder: CountOrder.descending,
-                    );
-                  } else {
-                    _emit(timingMode: mode);
-                  }
+                  _emit(timingMode: selection.first);
                 },
               ),
             ],
             if (widget.phase.isCountMode) ...[
-              const SizedBox(height: 12),
-              Text(
-                l10n.countOrderLabel,
-                style: theme.textTheme.labelMedium?.copyWith(
-                  color: theme.colorScheme.primary,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: 8),
-              SegmentedButton<CountOrder>(
-                segments: [
-                  ButtonSegment(
-                    value: CountOrder.ascending,
-                    label: Text(l10n.countOrderAscending),
-                  ),
-                  ButtonSegment(
-                    value: CountOrder.descending,
-                    label: Text(l10n.countOrderDescending),
-                  ),
-                ],
-                selected: {widget.phase.countOrder},
-                onSelectionChanged: (selection) {
-                  _emit(countOrder: selection.first);
-                },
-              ),
               const SizedBox(height: 12),
               DecoratedBox(
                 decoration: BoxDecoration(
@@ -241,7 +206,6 @@ class _ExercisePhaseEditorCardState extends State<ExercisePhaseEditorCard> {
                         max: ExerciseLimits.maxCountReps,
                         pickerTitle: l10n.labelPhaseCount,
                         unitLabel: l10n.unitReps,
-                        hintText: l10n.tapToSetPhaseCount,
                         onChanged: (value) => _emit(countReps: value),
                       ),
                       const SizedBox(height: 12),

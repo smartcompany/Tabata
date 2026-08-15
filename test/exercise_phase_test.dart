@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tabata_timer/models/exercise_phase.dart';
 
 void main() {
-  test('ascending count sequence', () {
+  test('count sequence is always high to low', () {
     const phase = ExercisePhase(
       id: 'p1',
       kind: ExercisePhaseKind.work,
@@ -13,10 +13,10 @@ void main() {
       countReps: 3,
       secondsPerRep: 5,
     );
-    expect(phase.countRepSequence, [1, 2, 3]);
+    expect(phase.countRepSequence, [3, 2, 1]);
   });
 
-  test('descending count sequence', () {
+  test('stored ascending countOrder still runs descending', () {
     const phase = ExercisePhase(
       id: 'p1',
       kind: ExercisePhaseKind.work,
@@ -26,7 +26,7 @@ void main() {
       timingMode: PhaseTimingMode.count,
       countReps: 3,
       secondsPerRep: 5,
-      countOrder: CountOrder.descending,
+      countOrder: CountOrder.ascending,
     );
     expect(phase.countRepSequence, [3, 2, 1]);
   });

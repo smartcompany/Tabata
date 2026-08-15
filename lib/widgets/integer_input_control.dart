@@ -10,7 +10,7 @@ class IntegerInputControl extends StatelessWidget {
     required this.max,
     required this.pickerTitle,
     required this.unitLabel,
-    required this.hintText,
+    this.hintText,
     required this.onChanged,
   });
 
@@ -19,7 +19,7 @@ class IntegerInputControl extends StatelessWidget {
   final int max;
   final String pickerTitle;
   final String unitLabel;
-  final String hintText;
+  final String? hintText;
   final ValueChanged<int> onChanged;
 
   Future<void> _openPicker(BuildContext context) async {
@@ -67,13 +67,15 @@ class IntegerInputControl extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 6),
-              Text(
-                hintText,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.outline,
+              if (hintText != null && hintText!.isNotEmpty) ...[
+                const SizedBox(height: 6),
+                Text(
+                  hintText!,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.outline,
+                  ),
                 ),
-              ),
+              ],
             ],
           ),
         ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tabata_timer/l10n/app_localizations.dart';
 
 import '../utils/duration_format.dart';
 import 'duration_wheel_picker.dart';
@@ -34,7 +33,6 @@ class DurationInputControl extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
 
     return Material(
@@ -64,13 +62,6 @@ class DurationInputControl extends StatelessWidget {
                     color: theme.colorScheme.outline,
                   ),
                 ],
-              ),
-              const SizedBox(height: 6),
-              Text(
-                l10n.tapToSetDuration,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.outline,
-                ),
               ),
             ],
           ),

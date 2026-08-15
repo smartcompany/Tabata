@@ -57,7 +57,8 @@ class WorkoutScreen extends StatefulWidget {
   State<WorkoutScreen> createState() => _WorkoutScreenState();
 }
 
-class _WorkoutScreenState extends State<WorkoutScreen> with WidgetsBindingObserver {
+class _WorkoutScreenState extends State<WorkoutScreen>
+    with WidgetsBindingObserver {
   static const _voicePlanner = WorkoutVoicePlanner();
   static const _accent = Color(0xFFE8F55A);
   static const _bg = Color(0xFF0A0A0A);
@@ -82,6 +83,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> with WidgetsBindingObserv
   double _maxHeartRateBpm = 0;
   var _watchReachable = false;
   var _endingFromWatch = false;
+  var _workoutBootstrapped = false;
 
   @override
   void initState() {
@@ -119,8 +121,18 @@ class _WorkoutScreenState extends State<WorkoutScreen> with WidgetsBindingObserv
     super.didChangeDependencies();
     if (_engine != null) return;
     _engine = _createEngine(_activeRoutine);
+    _engine!.holdForAnnounce();
+    unawaited(_bootstrapWorkout());
+  }
+
+  Future<void> _bootstrapWorkout() async {
+    if (_workoutBootstrapped) return;
+    _workoutBootstrapped = true;
+
+    await _initVoiceCoach(AppLocalizations.of(context));
+    if (!mounted || _engine == null) return;
+
     _engine!.addListener(_onTick);
-    _initVoiceCoach(AppLocalizations.of(context));
     unawaited(
       _watch.syncSnapshot(
         _engine!.snapshot,
@@ -318,11 +330,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> with WidgetsBindingObserv
       final avg = _avgHeartRateBpm.round();
       final max = _maxHeartRateBpm.round();
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            l10n.watchHeartRateSummary(avg, max),
-          ),
-        ),
+        SnackBar(content: Text(l10n.watchHeartRateSummary(avg, max))),
       );
     }
   }
@@ -345,10 +353,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> with WidgetsBindingObserv
       if (needsWorkRelaxSessionGap(previous, capturedCurrent)) {
         await Future<void>.delayed(workRelaxSessionGap);
       }
-      await _voiceCoach?.handleSnapshot(
-        previous,
-        capturedCurrent,
-      );
+      await _voiceCoach?.handleSnapshot(previous, capturedCurrent);
       if (holdTimer) {
         engine.releaseAnnounceHold();
         await _soundCoach?.syncClock(engine.snapshot);
@@ -386,8 +391,10 @@ class _WorkoutScreenState extends State<WorkoutScreen> with WidgetsBindingObserv
 
   @override
   void dispose() {
-    WorkoutScreen._activeCount =
-        (WorkoutScreen._activeCount - 1).clamp(0, 1 << 30);
+    WorkoutScreen._activeCount = (WorkoutScreen._activeCount - 1).clamp(
+      0,
+      1 << 30,
+    );
     WidgetsBinding.instance.removeObserver(this);
     WakelockPlus.disable();
     unawaited(_watchCommandSub?.cancel() ?? Future<void>.value());
@@ -400,10 +407,10 @@ class _WorkoutScreenState extends State<WorkoutScreen> with WidgetsBindingObserv
       final progressBucket = percent < 25
           ? 'under_25_percent'
           : percent < 50
-              ? '25_to_50_percent'
-              : percent < 75
-                  ? '50_to_75_percent'
-                  : '75_percent_plus';
+          ? '25_to_50_percent'
+          : percent < 75
+          ? '50_to_75_percent'
+          : '75_percent_plus';
       final snap = _engine?.snapshot;
       final phaseKind = snap?.phase.kind.name ?? 'unknown';
       unawaited(
@@ -415,7 +422,9 @@ class _WorkoutScreenState extends State<WorkoutScreen> with WidgetsBindingObserv
             'elapsed_sec_bucket': AppAnalyticsService.elapsedSecBucket(elapsed),
             'exercise_index': snap?.exerciseIndex ?? 0,
             'is_first_workout': !widget.completionRecorder.hasCompletedWorkout,
-            'routine_source': _activeRoutine.id.startsWith('ai-') ? 'ai' : 'other',
+            'routine_source': _activeRoutine.id.startsWith('ai-')
+                ? 'ai'
+                : 'other',
           },
         ),
       );
@@ -444,7 +453,9 @@ class _WorkoutScreenState extends State<WorkoutScreen> with WidgetsBindingObserv
     if (state == AppLifecycleState.resumed) {
       _soundCoach?.inBackground = false;
       final engine = _engine;
-      if (engine != null && _continueInBackground && !engine.snapshot.isCompleted) {
+      if (engine != null &&
+          _continueInBackground &&
+          !engine.snapshot.isCompleted) {
         unawaited(_refreshBackgroundAudio(engine));
         setState(() {});
       }
@@ -526,9 +537,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> with WidgetsBindingObserv
 
       final nextExercises = List<Exercise>.from(exercises);
       nextExercises[index] = updated;
-      final saved = stored.copyWith(
-        exercises: reindexExercises(nextExercises),
-      );
+      final saved = stored.copyWith(exercises: reindexExercises(nextExercises));
       await widget.repository.upsert(saved);
       if (!mounted) return;
       if (widget.repository.findById(saved.id) == null) {
@@ -683,7 +692,8 @@ class _WorkoutScreenState extends State<WorkoutScreen> with WidgetsBindingObserv
                       if (widget.repository.findById(_activeRoutine.id) != null)
                         IconButton(
                           onPressed: _openEdit,
-                          tooltip: widget.launchScope ==
+                          tooltip:
+                              widget.launchScope ==
                                   WorkoutLaunchScope.singleExercise
                               ? l10n.editExerciseTitle
                               : l10n.editRoutineTitle,
@@ -868,6 +878,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> with WidgetsBindingObserv
     );
   }
 }
+
 class _WorkoutNavButton extends StatelessWidget {
   const _WorkoutNavButton({
     required this.icon,

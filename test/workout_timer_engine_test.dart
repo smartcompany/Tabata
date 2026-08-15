@@ -9,7 +9,6 @@ import 'package:tabata_timer/models/routine.dart';
 Routine _countRoutine({
   int countReps = 3,
   int secondsPerRep = 2,
-  CountOrder countOrder = CountOrder.ascending,
 }) {
   return Routine(
     id: 'r1',
@@ -31,7 +30,6 @@ Routine _countRoutine({
             timingMode: PhaseTimingMode.count,
             countReps: countReps,
             secondsPerRep: secondsPerRep,
-            countOrder: countOrder,
           ),
         ],
         reps: 1,
@@ -53,7 +51,7 @@ void main() {
     );
 
     expect(engine.snapshot.phase.isCountRep, isTrue);
-    expect(engine.snapshot.phase.countRepNumber, 1);
+    expect(engine.snapshot.phase.countRepNumber, 3);
     expect(engine.snapshot.phase.totalCountReps, 3);
     expect(engine.snapshot.phase.durationSec, 2);
 
@@ -62,28 +60,10 @@ void main() {
     expect(engine.snapshot.phase.countRepNumber, 2);
 
     engine.skipPhase();
-    expect(engine.snapshot.phase.countRepNumber, 3);
+    expect(engine.snapshot.phase.countRepNumber, 1);
 
     engine.skipPhase();
     expect(engine.snapshot.isCompleted, isTrue);
-  });
-
-  test('descending count order queues high to low rep numbers', () {
-    final engine = WorkoutTimerEngine(
-      _countRoutine(countOrder: CountOrder.descending),
-      labels: const WorkoutTimerLabels(
-        prepare: '준비',
-        completedMessage: '완료',
-      ),
-    );
-
-    expect(engine.snapshot.phase.countRepNumber, 3);
-
-    engine.skipPhase();
-    expect(engine.snapshot.phase.countRepNumber, 2);
-
-    engine.skipPhase();
-    expect(engine.snapshot.phase.countRepNumber, 1);
   });
 
   test('navigation moves by work/relax unit in count mode', () {
@@ -133,7 +113,7 @@ void main() {
     );
 
     expect(engine.snapshot.phase.kind, WorkoutPhaseKind.work);
-    expect(engine.snapshot.phase.countRepNumber, 1);
+    expect(engine.snapshot.phase.countRepNumber, 3);
     expect(engine.nextPhase?.kind, WorkoutPhaseKind.relax);
 
     engine.skipPhase();
@@ -141,11 +121,11 @@ void main() {
 
     engine.goToNextPhase();
     expect(engine.snapshot.phase.kind, WorkoutPhaseKind.relax);
-    expect(engine.snapshot.phase.countRepNumber, 1);
+    expect(engine.snapshot.phase.countRepNumber, 2);
 
     engine.goToPreviousPhase();
     expect(engine.snapshot.phase.kind, WorkoutPhaseKind.work);
-    expect(engine.snapshot.phase.countRepNumber, 1);
+    expect(engine.snapshot.phase.countRepNumber, 3);
     expect(engine.snapshot.remainingSec, 2);
 
     engine.goToNextPhase();

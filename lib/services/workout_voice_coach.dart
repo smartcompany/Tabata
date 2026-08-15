@@ -15,9 +15,9 @@ class WorkoutVoiceCoach {
     required Locale locale,
     this.onAudioSessionRestored,
     WorkoutVoicePlanner planner = const WorkoutVoicePlanner(),
-  })  : _phrases = phrases,
-        _locale = locale,
-        _planner = planner;
+  }) : _phrases = phrases,
+       _locale = locale,
+       _planner = planner;
 
   final WorkoutVoicePhrases _phrases;
   final Future<void> Function()? onAudioSessionRestored;
@@ -26,6 +26,7 @@ class WorkoutVoiceCoach {
 
   Locale _locale;
   bool _initialized = false;
+  bool _androidTtsConfigured = false;
   bool _speaking = false;
   bool _backgroundDucked = false;
   bool _disposed = false;
@@ -50,11 +51,23 @@ class WorkoutVoiceCoach {
     await _tts.awaitSpeakCompletion(true);
 
     if (defaultTargetPlatform == TargetPlatform.android) {
-      final configured = await WorkoutAndroidAudio.configureTtsMediaPlayback();
-      if (!configured) {
-        await _tts.setAudioAttributesForNavigation();
-      }
+      await _ensureAndroidTtsConfigured();
     }
+  }
+
+  /// Android TTS audio routing — 운동 화면 [init]에서 한 번만 설정합니다.
+  Future<void> _ensureAndroidTtsConfigured() async {
+    if (_androidTtsConfigured) return;
+
+    // MainActivity reflection 경로는 실패 시 8회 재시도(~1.8s)가 걸려
+    // 릴리스에서 매 발화마다 3초+ 지연이 날 수 있음 → init 1회만 시도.
+    final configured = await WorkoutAndroidAudio.configureTtsMediaPlayback(
+      maxAttempts: 1,
+    );
+    if (!configured) {
+      await _tts.setAudioAttributesForNavigation();
+    }
+    _androidTtsConfigured = true;
   }
 
   Future<void>? _snapshotQueue;
@@ -153,15 +166,8 @@ class WorkoutVoiceCoach {
         IosTextToSpeechAudioMode.voicePrompt,
       );
       await _tts.setSharedInstance(true);
-      return;
     }
-
-    if (defaultTargetPlatform == TargetPlatform.android) {
-      final configured = await WorkoutAndroidAudio.configureTtsMediaPlayback();
-      if (!configured) {
-        await _tts.setAudioAttributesForNavigation();
-      }
-    }
+    // Android: audio attributes는 init에서 1회 설정. 발화마다 native 재시도 금지.
   }
 
   Future<void> _restoreBackgroundAudioSession() async {
@@ -192,12 +198,7 @@ class WorkoutVoiceCoach {
       return;
     }
 
-    if (defaultTargetPlatform == TargetPlatform.android) {
-      await WorkoutAndroidAudio.configureTtsMediaPlayback();
-    }
-
     if (defaultTargetPlatform == TargetPlatform.iOS) {
-      // Android flutter_tts does not implement autoStopSharedSession.
       await _tts.autoStopSharedSession(false);
     }
     await _prepareTtsAudioSession();
@@ -226,12 +227,12 @@ class WorkoutVoiceCoach {
     final text = switch (cue.kind) {
       VoiceCueKind.exerciseName => cue.exerciseName!,
       VoiceCueKind.phaseStart => phaseStartSpeech(
-          phaseKind: cue.phaseKind!,
-          label: cue.label!,
-          prepareTitle: _phrases.prepare,
-          workTitle: _phrases.work,
-          relaxTitle: _phrases.relax,
-        ),
+        phaseKind: cue.phaseKind!,
+        label: cue.label!,
+        prepareTitle: _phrases.prepare,
+        workTitle: _phrases.work,
+        relaxTitle: _phrases.relax,
+      ),
       VoiceCueKind.instruction => cue.instructionText ?? '',
       VoiceCueKind.countdown => _phrases.countdown(cue.seconds!),
       VoiceCueKind.repCount => _phrases.repCount(cue.repNumber!),
@@ -267,12 +268,16 @@ class WorkoutVoiceCoach {
     try {
       await _beginDucking();
       await _tts.stop();
-      await _tts.speak(text, focus: true).timeout(
-        const Duration(milliseconds: 850),
-        onTimeout: () {
-          debugPrint('WorkoutVoiceCoach: Android countdown speak timed out');
-        },
-      );
+      await _tts
+          .speak(text, focus: true)
+          .timeout(
+            const Duration(milliseconds: 850),
+            onTimeout: () {
+              debugPrint(
+                'WorkoutVoiceCoach: Android countdown speak timed out',
+              );
+            },
+          );
     } catch (error, stackTrace) {
       debugPrint('WorkoutVoiceCoach speak failed: $error\n$stackTrace');
     } finally {

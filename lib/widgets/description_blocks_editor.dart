@@ -21,27 +21,61 @@ class DescriptionBlocksEditor extends StatefulWidget {
   final ValueChanged<List<DescriptionBlock>> onChanged;
 
   @override
-  State<DescriptionBlocksEditor> createState() => _DescriptionBlocksEditorState();
+  State<DescriptionBlocksEditor> createState() =>
+      _DescriptionBlocksEditorState();
 }
 
 class _DescriptionBlocksEditorState extends State<DescriptionBlocksEditor> {
   final _mediaService = RoutineDescriptionMediaService();
+  late final TextEditingController _textController;
   bool _pickingImage = false;
 
-  void _updateBlocks(List<DescriptionBlock> blocks) {
-    widget.onChanged(blocks);
+  @override
+  void initState() {
+    super.initState();
+    _textController = TextEditingController(text: _joinedText(widget.blocks));
+  }
+
+  @override
+  void didUpdateWidget(covariant DescriptionBlocksEditor oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.routineId != widget.routineId) {
+      _textController.text = _joinedText(widget.blocks);
+    }
+  }
+
+  @override
+  void dispose() {
+    _textController.dispose();
+    super.dispose();
+  }
+
+  String _joinedText(List<DescriptionBlock> blocks) {
+    return blocks
+        .whereType<TextDescriptionBlock>()
+        .map((block) => block.text)
+        .join('\n\n');
+  }
+
+  List<DescriptionBlock> _mediaBlocks([List<DescriptionBlock>? blocks]) {
+    return [
+      for (final block in blocks ?? widget.blocks)
+        if (block is! TextDescriptionBlock) block,
+    ];
+  }
+
+  void _emit({String? text, List<DescriptionBlock>? media}) {
+    widget.onChanged([
+      TextDescriptionBlock(text: text ?? _textController.text),
+      ...media ?? _mediaBlocks(),
+    ]);
   }
 
   void _dismissKeyboard() {
     KeyboardDismissScope.dismiss(context);
   }
 
-  void _addTextBlock() {
-    _dismissKeyboard();
-    _updateBlocks([...widget.blocks, const TextDescriptionBlock(text: '')]);
-  }
-
-  Future<void> _addImageBlock() async {
+  Future<void> _addImage() async {
     final l10n = AppLocalizations.of(context);
     if (_pickingImage) return;
 
@@ -61,7 +95,7 @@ class _DescriptionBlocksEditorState extends State<DescriptionBlocksEditor> {
         files: files,
       );
       if (!mounted) return;
-      _updateBlocks([...widget.blocks, ...imageBlocks]);
+      _emit(media: [..._mediaBlocks(), ...imageBlocks]);
     } catch (_) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -72,7 +106,7 @@ class _DescriptionBlocksEditorState extends State<DescriptionBlocksEditor> {
     }
   }
 
-  Future<void> _addVideoBlock() async {
+  Future<void> _addVideo() async {
     _dismissKeyboard();
     final l10n = AppLocalizations.of(context);
     final url = await showDialog<String>(
@@ -89,140 +123,166 @@ class _DescriptionBlocksEditorState extends State<DescriptionBlocksEditor> {
       return;
     }
 
-    _updateBlocks([
-      ...widget.blocks,
-      VideoDescriptionBlock(
-        url: url,
-        provider: VideoLinkUtils.detectProvider(url),
-      ),
-    ]);
-  }
-
-  void _removeBlock(int index) {
-    _dismissKeyboard();
-    final updated = List<DescriptionBlock>.from(widget.blocks)..removeAt(index);
-    _updateBlocks(updated);
-  }
-
-  void _moveBlock(int index, int delta) {
-    _dismissKeyboard();
-    final target = index + delta;
-    if (target < 0 || target >= widget.blocks.length) return;
-    final updated = List<DescriptionBlock>.from(widget.blocks);
-    final item = updated.removeAt(index);
-    updated.insert(target, item);
-    _updateBlocks(updated);
-  }
-
-  void _updateTextBlock(int index, String text) {
-    final updated = List<DescriptionBlock>.from(widget.blocks);
-    updated[index] = TextDescriptionBlock(text: text);
-    _updateBlocks(updated);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        if (widget.blocks.isEmpty)
-          Text(
-            l10n.descriptionBlocksEmptyHint,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.outline,
-                ),
-          ),
-        for (var i = 0; i < widget.blocks.length; i++) ...[
-          if (i > 0) const SizedBox(height: 12),
-          _BlockCard(
-            index: i,
-            total: widget.blocks.length,
-            onMoveUp: () => _moveBlock(i, -1),
-            onMoveDown: () => _moveBlock(i, 1),
-            onRemove: () => _removeBlock(i),
-            child: _buildBlockEditor(context, l10n, i, widget.blocks[i]),
-          ),
-        ],
-        const SizedBox(height: 12),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: [
-            OutlinedButton.icon(
-              onPressed: _addTextBlock,
-              icon: const Icon(Icons.notes_outlined, size: 18),
-              label: Text(l10n.descriptionAddText),
-            ),
-            OutlinedButton.icon(
-              onPressed: _pickingImage ? null : _addImageBlock,
-              icon: _pickingImage
-                  ? const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.image_outlined, size: 18),
-              label: Text(l10n.descriptionAddImage),
-            ),
-            OutlinedButton.icon(
-              onPressed: _addVideoBlock,
-              icon: const Icon(Icons.play_circle_outline, size: 18),
-              label: Text(l10n.descriptionAddVideo),
-            ),
-          ],
+    _emit(
+      media: [
+        ..._mediaBlocks(),
+        VideoDescriptionBlock(
+          url: url,
+          provider: VideoLinkUtils.detectProvider(url),
         ),
       ],
     );
   }
 
-  Widget _buildBlockEditor(
-    BuildContext context,
-    AppLocalizations l10n,
-    int index,
-    DescriptionBlock block,
-  ) {
-    return switch (block) {
-      TextDescriptionBlock(:final text) => TextFormField(
-          key: ValueKey('text-$index'),
-          initialValue: text,
-          decoration: InputDecoration(
-            hintText: l10n.descriptionTextHint,
-            border: const OutlineInputBorder(),
-            alignLabelWithHint: true,
+  void _removeMedia(int mediaIndex) {
+    _dismissKeyboard();
+    final media = _mediaBlocks()..removeAt(mediaIndex);
+    _emit(media: media);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final media = _mediaBlocks();
+    final iconColor = Theme.of(context).colorScheme.onSurfaceVariant;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        InputDecorator(
+          decoration: const InputDecoration(
+            border: OutlineInputBorder(),
+            contentPadding: EdgeInsets.zero,
           ),
-          maxLines: 4,
-          minLines: 2,
-          keyboardType: TextInputType.multiline,
-          textInputAction: TextInputAction.newline,
-          onTapOutside: (_) => _dismissKeyboard(),
-          onChanged: (value) => _updateTextBlock(index, value),
-        ),
-      ImageDescriptionBlock imageBlock => Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            DescriptionBlockImage(
-              block: imageBlock,
-              height: 160,
-              borderRadius: 8,
-            ),
-            if (imageBlock.alt != null && imageBlock.alt!.isNotEmpty) ...[
-              const SizedBox(height: 8),
-              Text(
-                imageBlock.alt!,
-                style: Theme.of(context).textTheme.bodySmall,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextField(
+                controller: _textController,
+                decoration: InputDecoration(
+                  hintText: l10n.descriptionTextHint,
+                  border: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  contentPadding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
+                ),
+                minLines: 3,
+                maxLines: 8,
+                keyboardType: TextInputType.multiline,
+                textInputAction: TextInputAction.newline,
+                onTapOutside: (_) => _dismissKeyboard(),
+                onChanged: (value) => _emit(text: value),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(4, 0, 4, 4),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                      onPressed: _pickingImage ? null : _addImage,
+                      tooltip: l10n.descriptionAddImage,
+                      visualDensity: VisualDensity.compact,
+                      icon: _pickingImage
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : Icon(Icons.image_outlined, color: iconColor),
+                    ),
+                    IconButton(
+                      onPressed: _addVideo,
+                      tooltip: l10n.descriptionAddVideo,
+                      visualDensity: VisualDensity.compact,
+                      icon: Icon(Icons.play_circle_outline, color: iconColor),
+                    ),
+                  ],
+                ),
               ),
             ],
-          ],
+          ),
         ),
-      VideoDescriptionBlock(:final url) => ListTile(
-          contentPadding: EdgeInsets.zero,
-          leading: const Icon(Icons.play_circle_outline),
-          title: Text(l10n.descriptionVideoBlockLabel),
-          subtitle: Text(url, maxLines: 2, overflow: TextOverflow.ellipsis),
+        for (var i = 0; i < media.length; i++) ...[
+          const SizedBox(height: 10),
+          _MediaAttachment(
+            block: media[i],
+            videoLabel: l10n.descriptionVideoBlockLabel,
+            onRemove: () => _removeMedia(i),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _MediaAttachment extends StatelessWidget {
+  const _MediaAttachment({
+    required this.block,
+    required this.videoLabel,
+    required this.onRemove,
+  });
+
+  final DescriptionBlock block;
+  final String videoLabel;
+  final VoidCallback onRemove;
+
+  @override
+  Widget build(BuildContext context) {
+    return switch (block) {
+      TextDescriptionBlock() => const SizedBox.shrink(),
+      ImageDescriptionBlock imageBlock => _AttachmentFrame(
+          onRemove: onRemove,
+          child: DescriptionBlockImage(
+            block: imageBlock,
+            height: 160,
+            borderRadius: 8,
+          ),
+        ),
+      VideoDescriptionBlock(:final url) => _AttachmentFrame(
+          onRemove: onRemove,
+          child: ListTile(
+            contentPadding: const EdgeInsets.fromLTRB(8, 4, 40, 4),
+            leading: const Icon(Icons.play_circle_outline),
+            title: Text(videoLabel),
+            subtitle: Text(url, maxLines: 2, overflow: TextOverflow.ellipsis),
+          ),
         ),
     };
+  }
+}
+
+class _AttachmentFrame extends StatelessWidget {
+  const _AttachmentFrame({
+    required this.onRemove,
+    required this.child,
+  });
+
+  final VoidCallback onRemove;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Card(
+          margin: EdgeInsets.zero,
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: child,
+          ),
+        ),
+        Positioned(
+          top: 0,
+          right: 0,
+          child: IconButton(
+            onPressed: onRemove,
+            icon: const Icon(Icons.close),
+            visualDensity: VisualDensity.compact,
+            tooltip: MaterialLocalizations.of(context).deleteButtonTooltip,
+          ),
+        ),
+      ],
+    );
   }
 }
 
@@ -285,61 +345,6 @@ class _VideoUrlInputDialogState extends State<_VideoUrlInputDialog> {
             child: Text(l10n.confirm),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _BlockCard extends StatelessWidget {
-  const _BlockCard({
-    required this.index,
-    required this.total,
-    required this.onMoveUp,
-    required this.onMoveDown,
-    required this.onRemove,
-    required this.child,
-  });
-
-  final int index;
-  final int total;
-  final VoidCallback onMoveUp;
-  final VoidCallback onMoveDown;
-  final VoidCallback onRemove;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.zero,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 8, 8, 12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              children: [
-                const Spacer(),
-                IconButton(
-                  onPressed: index > 0 ? onMoveUp : null,
-                  icon: const Icon(Icons.arrow_upward),
-                  tooltip: MaterialLocalizations.of(context).backButtonTooltip,
-                  visualDensity: VisualDensity.compact,
-                ),
-                IconButton(
-                  onPressed: index < total - 1 ? onMoveDown : null,
-                  icon: const Icon(Icons.arrow_downward),
-                  visualDensity: VisualDensity.compact,
-                ),
-                IconButton(
-                  onPressed: onRemove,
-                  icon: const Icon(Icons.close),
-                  visualDensity: VisualDensity.compact,
-                ),
-              ],
-            ),
-            child,
-          ],
-        ),
       ),
     );
   }
