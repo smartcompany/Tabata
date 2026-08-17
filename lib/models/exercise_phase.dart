@@ -66,6 +66,15 @@ class ExercisePhase {
 
   bool get isCountMode => timingMode == PhaseTimingMode.count;
 
+  /// Rest is duration-only in the editor; keep total time if count mode was saved.
+  ExercisePhase withRelaxForcedToDuration() {
+    if (kind != ExercisePhaseKind.relax || !isCountMode) return this;
+    return copyWith(
+      timingMode: PhaseTimingMode.duration,
+      durationSec: effectiveDurationSec,
+    );
+  }
+
   List<int> get countRepSequence {
     if (!isCountMode || countReps <= 0) return const [];
     return [for (var n = countReps; n >= 1; n--) n];

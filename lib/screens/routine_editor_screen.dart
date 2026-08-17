@@ -330,7 +330,6 @@ class _RoutineEditorScreenState extends State<RoutineEditorScreen> {
     final l10n = AppLocalizations.of(context);
     final exercise = createEmptyExercise(
       order: _exercises.length,
-      relaxLabel: l10n.labelRelax,
     ).copyWith(name: l10n.defaultExerciseName);
     final result = await Navigator.of(context).push<Exercise>(
       MaterialPageRoute(

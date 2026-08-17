@@ -29,26 +29,46 @@ class ExercisePhaseEditorCard extends StatefulWidget {
 
 class _ExercisePhaseEditorCardState extends State<ExercisePhaseEditorCard> {
   late final TextEditingController _labelController;
+  late final FocusNode _labelFocus;
+  var _didNormalizeLabel = false;
 
   @override
   void initState() {
     super.initState();
     _labelController = TextEditingController(text: widget.phase.label);
+    _labelFocus = FocusNode();
+    _labelFocus.addListener(() => setState(() {}));
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_didNormalizeLabel) return;
+    _didNormalizeLabel = true;
+    _syncLabelFromPhase(widget.phase);
   }
 
   @override
   void didUpdateWidget(covariant ExercisePhaseEditorCard oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.phase.id != widget.phase.id &&
-        _labelController.text != widget.phase.label) {
-      _labelController.text = widget.phase.label;
+    if (oldWidget.phase.id != widget.phase.id) {
+      _syncLabelFromPhase(widget.phase);
     }
   }
 
   @override
   void dispose() {
+    _labelFocus.dispose();
     _labelController.dispose();
     super.dispose();
+  }
+
+  void _syncLabelFromPhase(ExercisePhase phase) {
+    final l10n = AppLocalizations.of(context);
+    _labelController.text =
+        ExerciseFormatter.isUnsetOrKindPhaseLabel(phase.label, phase.kind, l10n)
+            ? ''
+            : phase.label;
   }
 
   void _emit({
@@ -58,11 +78,17 @@ class _ExercisePhaseEditorCardState extends State<ExercisePhaseEditorCard> {
     int? countReps,
     int? secondsPerRep,
   }) {
+    final relax = widget.phase.kind == ExercisePhaseKind.relax;
     widget.onChanged(
       widget.phase.copyWith(
         label: label ?? _labelController.text.trim(),
-        durationSec: durationSec ?? widget.phase.durationSec,
-        timingMode: timingMode ?? widget.phase.timingMode,
+        durationSec: durationSec ??
+            (relax && widget.phase.isCountMode
+                ? widget.phase.effectiveDurationSec
+                : widget.phase.durationSec),
+        timingMode: relax
+            ? PhaseTimingMode.duration
+            : (timingMode ?? widget.phase.timingMode),
         countReps: countReps ?? widget.phase.countReps,
         secondsPerRep: secondsPerRep ?? widget.phase.secondsPerRep,
         countOrder: CountOrder.descending,
@@ -76,19 +102,13 @@ class _ExercisePhaseEditorCardState extends State<ExercisePhaseEditorCard> {
     final theme = Theme.of(context);
     final kindLabel =
         ExerciseFormatter.phaseKindLabel(widget.phase.kind, l10n);
-    final kindColor = widget.phase.kind == ExercisePhaseKind.work
-        ? theme.colorScheme.error
-        : theme.colorScheme.primary;
-    final needsLabel = _labelController.text.trim().isEmpty;
-    final labelPromptColor = needsLabel
-        ? theme.colorScheme.primary
-        : theme.colorScheme.onSurfaceVariant;
+    final focused = _labelFocus.hasFocus;
 
     return Card(
       key: widget.key,
       margin: const EdgeInsets.only(bottom: 8),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(8, 12, 8, 12),
+        padding: const EdgeInsets.fromLTRB(8, 16, 8, 12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -101,22 +121,35 @@ class _ExercisePhaseEditorCardState extends State<ExercisePhaseEditorCard> {
                     child: Icon(Icons.drag_handle),
                   ),
                 ),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: kindColor.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    kindLabel,
-                    style: TextStyle(
-                      color: kindColor,
-                      fontWeight: FontWeight.w600,
+                Expanded(
+                  child: TextFormField(
+                    controller: _labelController,
+                    focusNode: _labelFocus,
+                    decoration: InputDecoration(
+                      isDense: true,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 12,
+                      ),
+                      labelText: focused ? l10n.phaseLabel : null,
+                      floatingLabelBehavior: focused
+                          ? FloatingLabelBehavior.always
+                          : FloatingLabelBehavior.never,
+                      hintText: focused
+                          ? (widget.phase.kind == ExercisePhaseKind.work
+                              ? l10n.workLabelHint
+                              : l10n.relaxLabelHint)
+                          : kindLabel,
+                      hintStyle: TextStyle(
+                        color: focused
+                            ? theme.colorScheme.onSurface.withValues(alpha: 0.38)
+                            : theme.colorScheme.onSurface,
+                      ),
+                      border: const OutlineInputBorder(),
                     ),
+                    onChanged: (_) => _emit(),
                   ),
                 ),
-                const Spacer(),
                 if (widget.canDelete)
                   IconButton(
                     onPressed: widget.onDelete,
@@ -124,34 +157,7 @@ class _ExercisePhaseEditorCardState extends State<ExercisePhaseEditorCard> {
                   ),
               ],
             ),
-            const SizedBox(height: 8),
-            TextFormField(
-              controller: _labelController,
-              decoration: InputDecoration(
-                labelText: l10n.phaseLabel,
-                labelStyle: TextStyle(color: labelPromptColor),
-                floatingLabelStyle: TextStyle(color: labelPromptColor),
-                hintText: widget.phase.kind == ExercisePhaseKind.work
-                    ? l10n.workLabelHint
-                    : l10n.relaxLabelHint,
-                hintStyle: TextStyle(
-                  color: theme.colorScheme.onSurface.withValues(alpha: 0.38),
-                ),
-                border: const OutlineInputBorder(),
-              ),
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return l10n.validationLabelRequired;
-                }
-                return null;
-              },
-              onChanged: (_) {
-                setState(() {});
-                _emit();
-              },
-            ),
-            if (widget.phase.kind == ExercisePhaseKind.work ||
-                widget.phase.kind == ExercisePhaseKind.relax) ...[
+            if (widget.phase.kind == ExercisePhaseKind.work) ...[
               const SizedBox(height: 12),
               SegmentedButton<PhaseTimingMode>(
                 segments: [
@@ -170,7 +176,8 @@ class _ExercisePhaseEditorCardState extends State<ExercisePhaseEditorCard> {
                 },
               ),
             ],
-            if (widget.phase.isCountMode) ...[
+            if (widget.phase.kind == ExercisePhaseKind.work &&
+                widget.phase.isCountMode) ...[
               const SizedBox(height: 12),
               DecoratedBox(
                 decoration: BoxDecoration(
@@ -230,7 +237,10 @@ class _ExercisePhaseEditorCardState extends State<ExercisePhaseEditorCard> {
             ] else ...[
               const SizedBox(height: 8),
               DurationInputControl(
-                valueSec: widget.phase.durationSec,
+                valueSec: widget.phase.kind == ExercisePhaseKind.relax &&
+                        widget.phase.isCountMode
+                    ? widget.phase.effectiveDurationSec
+                    : widget.phase.durationSec,
                 minSec: ExerciseLimits.minWorkRelaxDurationSec,
                 maxSec: 120,
                 pickerTitle: kindLabel,

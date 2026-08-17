@@ -1,6 +1,6 @@
 {
-  "ko": "• 운동 완료 후 결과 카드 공유 (카카오톡·시스템 공유)\n• 공유 이미지에 운동 시간·칼로리·운동 수 요약 포함\n• 카카오 공유 시 앱 다운로드 링크로 연결",
-  "en-US": "• Share your workout summary card after finishing (KakaoTalk & system share)\n• Shared image includes duration, calories, and exercise count\n• Kakao share links to the app download page",
-  "ja": "• ワークアウト完了後に結果カードを共有（カカオトーク・システム共有）\n• 共有画像に時間・カロリー・種目数を表示\n• カカオ共有からアプリのダウンロードページへリンク",
-  "zh-Hans": "• 训练完成后可分享结果卡片（KakaoTalk 与系统分享）\n• 分享图片包含时长、卡路里与动作数量\n• Kakao 分享可跳转至应用下载页"
+  "ko": "• 건강 루틴을 만들 때 입력 화면을 더 단순하게 개선\n• 동작 이름을 비워 둬도 운동·휴식으로 바로 저장\n• 휴식은 시간만 설정하면 되도록 정리",
+  "en-US": "• Simplified the input UI when creating health routines\n• Skip naming moves — Work and Rest are used by default\n• Rest now uses time only",
+  "ja": "• 健康ルーチン作成時の入力画面をシンプルに改善\n• 動作名を空のままでも運動・休憩として保存\n• 休憩は時間だけ設定すればOK",
+  "zh-Hans": "• 简化创建健康训练时的输入界面\n• 可不填写动作名称，默认保存为运动/休息\n• 休息只需设置时长"
 }

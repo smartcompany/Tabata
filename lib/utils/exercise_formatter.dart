@@ -17,6 +17,21 @@ abstract final class ExerciseFormatter {
     };
   }
 
+  static String resolvedPhaseLabel(ExercisePhase phase, AppLocalizations l10n) {
+    final trimmed = phase.label.trim();
+    if (trimmed.isEmpty) return phaseKindLabel(phase.kind, l10n);
+    return trimmed;
+  }
+
+  static bool isUnsetOrKindPhaseLabel(
+    String label,
+    ExercisePhaseKind kind,
+    AppLocalizations l10n,
+  ) {
+    final trimmed = label.trim();
+    return trimmed.isEmpty || trimmed == phaseKindLabel(kind, l10n);
+  }
+
   static String phaseWithDuration(
     String label,
     int seconds,
@@ -29,14 +44,15 @@ abstract final class ExerciseFormatter {
     ExercisePhase phase,
     AppLocalizations l10n,
   ) {
+    final label = resolvedPhaseLabel(phase, l10n);
     if (phase.isCountMode) {
       return l10n.phaseWithCountTiming(
-        phase.label,
+        label,
         phase.countReps,
         phase.secondsPerRep,
       );
     }
-    return phaseWithDuration(phase.label, phase.durationSec, l10n);
+    return phaseWithDuration(label, phase.durationSec, l10n);
   }
 
   static String phasesSummary(Exercise exercise, AppLocalizations l10n) {

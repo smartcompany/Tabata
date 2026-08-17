@@ -19,7 +19,6 @@ Routine createEmptyRoutine() {
 
 Exercise createEmptyExercise({
   required int order,
-  String relaxLabel = '',
 }) {
   return Exercise(
     id: _uuid.v4(),
@@ -29,11 +28,7 @@ Exercise createEmptyExercise({
     prepare: const TimedPhase(durationSec: ExerciseLimits.defaultPrepareDurationSec),
     phases: reindexPhases([
       createEmptyPhase(kind: ExercisePhaseKind.work, order: 0),
-      createEmptyPhase(
-        kind: ExercisePhaseKind.relax,
-        order: 1,
-        label: relaxLabel,
-      ),
+      createEmptyPhase(kind: ExercisePhaseKind.relax, order: 1),
     ]),
     reps: ExerciseLimits.minReps,
     sets: ExerciseLimits.minSets,

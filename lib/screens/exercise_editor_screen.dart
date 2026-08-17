@@ -10,6 +10,7 @@ import '../models/phase_config.dart';
 import '../models/routine.dart';
 import '../services/workout_completion_recorder.dart';
 import '../utils/duration_calculator.dart';
+import '../utils/exercise_formatter.dart';
 import '../utils/form_validation_scroll.dart';
 import '../widgets/description_blocks_editor.dart';
 import '../widgets/duration_input_control.dart';
@@ -58,7 +59,10 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
     _prepareSec = exercise.prepare.durationSec;
     _reps = exercise.reps;
     _sets = exercise.sets;
-    _phases = List<ExercisePhase>.from(exercise.orderedPhases);
+    _phases = [
+      for (final phase in exercise.orderedPhases)
+        phase.withRelaxForcedToDuration(),
+    ];
   }
 
   List<DescriptionBlock> _initialInstructionBlocks(Exercise exercise) {
@@ -92,13 +96,19 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
   }
 
   Exercise get _draft {
+    final l10n = AppLocalizations.of(context);
     final blocks = _normalizedInstructionBlocks();
     return widget.exercise.copyWith(
       name: _nameController.text.trim(),
       instruction: DescriptionBlock.plainText(blocks),
       instructionBlocks: blocks,
       prepare: TimedPhase(durationSec: _prepareSec),
-      phases: reindexPhases(_phases),
+      phases: reindexPhases([
+        for (final phase in _phases)
+          phase.withRelaxForcedToDuration().copyWith(
+            label: ExerciseFormatter.resolvedPhaseLabel(phase, l10n),
+          ),
+      ]),
       reps: _reps,
       sets: _sets,
     );
@@ -108,14 +118,12 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
 
   void _addPhase(ExercisePhaseKind kind) {
     KeyboardDismissScope.dismiss(context);
-    final l10n = AppLocalizations.of(context);
     setState(() {
       _phases = [
         ..._phases,
         createEmptyPhase(
           kind: kind,
           order: _phases.length,
-          label: kind == ExercisePhaseKind.relax ? l10n.labelRelax : '',
         ),
       ];
     });
