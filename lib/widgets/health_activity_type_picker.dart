@@ -51,10 +51,7 @@ class _HealthActivityTypePickerState extends State<HealthActivityTypePicker> {
 
   String? _selectedId() {
     if (widget.value == null || widget.value!.isEmpty) return null;
-    if (HealthActivityCatalog.toWorkoutType(widget.value) != null) {
-      return widget.value;
-    }
-    return null;
+    return HealthActivityCatalog.menuIdFor(widget.value);
   }
 
   String _selectedLabel(AppLocalizations l10n) {
