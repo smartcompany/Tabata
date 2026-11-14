@@ -11,6 +11,7 @@ import '../services/onboarding_ad_waiver_service.dart';
 import '../services/routine_api_client.dart';
 import '../services/workout_completion_recorder.dart';
 import '../utils/content_language.dart';
+import '../utils/health_activity_type_infer.dart';
 import '../widgets/ai_routine_generating_overlay.dart';
 import 'routine_detail_screen.dart';
 
@@ -150,10 +151,16 @@ class _AiRoutineCreateScreenState extends State<AiRoutineCreateScreen> {
       final contentLanguage = ContentLanguage.current(
         systemLocale: Localizations.localeOf(context),
       );
-      final routine = await widget.aiRoutineService.generateRoutine(
+      final generated = await widget.aiRoutineService.generateRoutine(
         prompt: prompt,
         contentLanguage: contentLanguage,
       );
+      // Server should set this; fall back so the health-app option matches the routine.
+      final routine = generated.healthActivityType != null
+          ? generated
+          : generated.copyWith(
+              healthActivityType: inferHealthActivityType(generated),
+            );
       await AppAnalyticsService.logProductEvent(
         'ai_generation_succeeded',
         properties: {
@@ -162,6 +169,7 @@ class _AiRoutineCreateScreenState extends State<AiRoutineCreateScreen> {
               : routine.exercises.length <= 6
                   ? '4_to_6'
                   : '7_plus',
+          'health_activity_type': routine.healthActivityType,
         },
       );
       if (!mounted) return;

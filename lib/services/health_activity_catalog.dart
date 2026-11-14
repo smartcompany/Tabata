@@ -42,6 +42,41 @@ class HealthActivityMenuEntry {
 abstract final class HealthActivityCatalog {
   static bool get usesHealthConnectList => !kIsWeb && Platform.isAndroid;
 
+  /// Canonical app ids (AI / iOS picker) → Health Connect menu ids.
+  static const Map<String, String> iosToHealthConnectIds = {
+    'high_intensity_interval_training': 'HIGH_INTENSITY_INTERVAL_TRAINING',
+    'functional_strength_training': 'STRENGTH_TRAINING',
+    'traditional_strength_training': 'WEIGHTLIFTING',
+    'flexibility': 'YOGA',
+    'other': 'OTHER',
+  };
+
+  static const Map<String, String> healthConnectToIosIds = {
+    'HIGH_INTENSITY_INTERVAL_TRAINING': 'high_intensity_interval_training',
+    'STRENGTH_TRAINING': 'functional_strength_training',
+    'CALISTHENICS': 'functional_strength_training',
+    'WEIGHTLIFTING': 'traditional_strength_training',
+    'YOGA': 'flexibility',
+    'PILATES': 'flexibility',
+    'OTHER': 'other',
+  };
+
+  /// Id to use in the platform picker menu for a stored routine value.
+  static String? menuIdFor(String? id) {
+    if (id == null || id.isEmpty) return null;
+    if (usesHealthConnectList) {
+      if (HealthConnectWorkoutTypes.toWorkoutType(id) != null) return id;
+      final mapped = iosToHealthConnectIds[id];
+      if (mapped != null &&
+          HealthConnectWorkoutTypes.toWorkoutType(mapped) != null) {
+        return mapped;
+      }
+      return null;
+    }
+    if (RoutineHealthActivityType.fromId(id) != null) return id;
+    return healthConnectToIosIds[id];
+  }
+
   static List<HealthActivityOption> options(AppLocalizations l10n) {
     if (usesHealthConnectList) {
       return [
@@ -88,22 +123,32 @@ abstract final class HealthActivityCatalog {
       HealthPlatformL10n(l10n).activityTypeNone;
 
   static String labelFor(AppLocalizations l10n, String id) {
+    final menuId = menuIdFor(id) ?? id;
     if (usesHealthConnectList) {
-      final hc = HealthConnectWorkoutTypes.toWorkoutType(id);
+      final hc = HealthConnectWorkoutTypes.toWorkoutType(menuId);
       if (hc != null) {
-        return HealthConnectWorkoutTypeLabels.label(l10n, id);
+        return HealthConnectWorkoutTypeLabels.label(l10n, menuId);
       }
     }
-    final ios = RoutineHealthActivityType.fromId(id);
+    final iosId = menuIdFor(id) ?? id;
+    final ios = RoutineHealthActivityType.fromId(iosId);
     if (ios != null) return ios.label(l10n);
+    final fallbackIos = RoutineHealthActivityType.fromId(id);
+    if (fallbackIos != null) return fallbackIos.label(l10n);
     return id;
   }
 
   static HealthWorkoutActivityType? toWorkoutType(String? id) {
     if (id == null || id.isEmpty) return null;
-    if (usesHealthConnectList) {
-      return HealthConnectWorkoutTypes.toWorkoutType(id);
+    final directHc = HealthConnectWorkoutTypes.toWorkoutType(id);
+    if (directHc != null) return directHc;
+    final mappedHc = iosToHealthConnectIds[id];
+    if (mappedHc != null) {
+      final fromMapped = HealthConnectWorkoutTypes.toWorkoutType(mappedHc);
+      if (fromMapped != null) return fromMapped;
     }
-    return RoutineHealthActivityType.fromId(id)?.toHealthWorkoutType();
+    return RoutineHealthActivityType.fromId(id)?.toHealthWorkoutType() ??
+        RoutineHealthActivityType.fromId(healthConnectToIosIds[id])
+            ?.toHealthWorkoutType();
   }
 }
